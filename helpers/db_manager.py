@@ -10,7 +10,7 @@ import aiosqlite
 
 
 #function to add a new streamer and their server and their ID to the database streamer table, if the streamer already exists, it will say that the streamer already exists
-async def add_streamer(streamer_channel: str, server_id: int, emotePrefix: str) -> int:
+async def add_streamer(streamer_channel: str, user_id: int, emotePrefix: str) -> int:
     """
     This function will add a streamer to the database.
 
@@ -19,7 +19,7 @@ async def add_streamer(streamer_channel: str, server_id: int, emotePrefix: str) 
     :param emotePrefix: The emote prefix for the streamer.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("INSERT INTO streamer(streamer_channel, server_id, streamer_id) VALUES (?, ?, ?)", (streamer_channel, server_id, emotePrefix))
+        await db.execute("INSERT INTO streamer(streamer_id, streamer_channel, user_id) VALUES (?, ?, ?)", (emotePrefix, streamer_channel, user_id))
         await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM streamer")
         async with rows as cursor:
@@ -27,17 +27,17 @@ async def add_streamer(streamer_channel: str, server_id: int, emotePrefix: str) 
             return result[0] if result is not None else 0
 
         
-#function to remove a streamer from the database streamer table
-async def remove_streamer(streamer_channel: str) -> int:
+#function to remove a streamer from the database streamer table using the streamers user ID
+async def remove_streamer(user_id: int) -> int:
     """
     This function will remove a streamer from the database.
 
-    :param streamer_name: The name of the streamer that should be removed.
+    :param user_id: The ID of the user that should be removed.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("DELETE FROM streamer WHERE streamer_channel=?", (streamer_channel,))
+        await db.execute("DELETE FROM streamer WHERE user_id = ?", (user_id,))
         await db.commit()
-        rows = await db.execute("SELECT COUNT(*) FROM streamers")
+        rows = await db.execute("SELECT COUNT(*) FROM streamer")
         async with rows as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
@@ -53,7 +53,103 @@ async def view_streamers() -> list:
         async with db.execute("SELECT * FROM streamer") as cursor:
             result = await cursor.fetchall()
             return result if result is not None else []
+        
+#add an item to the streamer_items table, uses the streamersID from the streamer table and the item name and the item price
+async def add_item(streamerID: str, itemName: str, itemPrice: int, itemEmoji: str) -> int:
+    """
+    This function will add an item to the streamer_items table.
 
+    :param streamerID: The ID of the streamer that the item should be added to.
+    :param itemName: The name of the item that should be added.
+    :param itemPrice: The price of the item that should be added.
+    """
+    #create an itemID for the item that is being added by combining the streamerID and the itemName
+    itemID = str(streamerID) + " " + itemName
+    #convert all spaces in the item name to underscores
+    itemID = itemID.replace(" ", "_")
+    async with aiosqlite.connect("database/database.db") as db:
+        #add all of it to the database
+        await db.execute("INSERT INTO streamer_items(streamer_id, item_id, item_name, item_price, item_emoji) VALUES (?, ?, ?, ?, ?)", (streamerID, itemID, itemName, itemPrice, itemEmoji))
+        await db.commit()
+        rows = await db.execute("SELECT COUNT(*) FROM streamer_items")
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0
+        
+#remove an item from the streamer_items table using the streamersID from the streamer table and the item name
+async def remove_item(streamerID: str, itemName: str) -> int:
+    """
+    This function will remove an item from the streamer_items table.
+
+    :param streamerID: The ID of the streamer that the item should be removed from.
+    :param itemName: The name of the item that should be removed.
+    """
+    #create an itemID for the item that is being removed by combining the streamerID and the itemName
+    itemID = str(streamerID) + " " + itemName
+    #convert all spaces in the item name to underscores
+    itemID = itemID.replace(" ", "_")
+    async with aiosqlite.connect("database/database.db") as db:
+        #remove the item from the database
+        await db.execute("DELETE FROM streamer_items WHERE item_id = ?", (itemID,))
+        await db.commit()
+        rows = await db.execute("SELECT COUNT(*) FROM streamer_items")
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0
+        
+#get streamerID from the streamer table using the streamers user ID
+async def get_streamerID_with_userID(user_id: int) -> str:
+    """
+    This function will get the streamerID from the streamer table.
+
+    :param user_id: The ID of the user that the streamerID should be gotten from.
+    :return: The streamerID of the user.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer WHERE user_id=?", (user_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0
+        
+#get streamerID from the streamer table using the streamers channel
+async def get_streamerID_with_channel(streamer_channel: str) -> str:
+    """
+    This function will get the streamerID from the streamer table.
+
+    :param streamer_channel: The channel of the streamer that the streamerID should be gotten from.
+    :return: The streamerID of the streamer.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer WHERE streamer_channel=?", (streamer_channel,)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0
+        
+#get streamer channel from the streamer table using the streamers user ID
+async def get_streamerChannel(user_id: int) -> str:
+    """
+    This function will get the streamerChannel from the streamer table.
+
+    :param user_id: The ID of the user that the streamerChannel should be gotten from.
+    :return: The streamerChannel of the user.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer WHERE user_id=?", (user_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
+
+#view all the items with a specific streamer_channel
+async def view_items(streamer_channel: str) -> list:
+    """
+    This function will view all items in the database.
+
+    :return: A list of all items in the database.
+    """
+    #get the streamerID from the streamer table using the streamers channel
+    streamerChannel = str(streamer_channel)
+    streamerID = await get_streamerID_with_channel(streamerChannel)
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer_items WHERE streamer_id=?", (streamerID,)) as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
 async def is_blacklisted(user_id: int) -> bool:
     """
     This function will check if a user is blacklisted.
