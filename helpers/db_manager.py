@@ -9,6 +9,51 @@ Version: 5.4
 import aiosqlite
 
 
+#function to add a new streamer and their server and their ID to the database streamer table, if the streamer already exists, it will say that the streamer already exists
+async def add_streamer(streamer_channel: str, server_id: int, emotePrefix: str) -> int:
+    """
+    This function will add a streamer to the database.
+
+    :param streamer_name: The name of the streamer that should be added.
+    :param server_id: The ID of the server where the streamer should be added.
+    :param emotePrefix: The emote prefix for the streamer.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("INSERT INTO streamer(streamer_channel, server_id, streamer_id) VALUES (?, ?, ?)", (streamer_channel, server_id, emotePrefix))
+        await db.commit()
+        rows = await db.execute("SELECT COUNT(*) FROM streamer")
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0
+
+        
+#function to remove a streamer from the database streamer table
+async def remove_streamer(streamer_channel: str) -> int:
+    """
+    This function will remove a streamer from the database.
+
+    :param streamer_name: The name of the streamer that should be removed.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("DELETE FROM streamer WHERE streamer_channel=?", (streamer_channel,))
+        await db.commit()
+        rows = await db.execute("SELECT COUNT(*) FROM streamers")
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0
+        
+#veiw all streamers in the database streamer table
+async def view_streamers() -> list:
+    """
+    This function will view all streamers in the database.
+
+    :return: A list of all streamers in the database.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer") as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+
 async def is_blacklisted(user_id: int) -> bool:
     """
     This function will check if a user is blacklisted.
