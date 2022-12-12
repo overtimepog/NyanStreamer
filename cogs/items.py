@@ -571,9 +571,10 @@ class Items(commands.Cog, name="template"):
     async def iteminfo(self, ctx: Context, item_id: str):
         #get the item info from the database
         item_info = await db_manager.get_basic_item_name(item_id)
+        print(item_info)
         #if the item doesn't exist, send a message
-        if item_info == None:
-            await ctx.send(f"Item doesn't exist.")
+        if item_info == 0:
+            await ctx.send(f"Item `{item_id}` doesn't exist.")
             return
         #get the item rarity
         item_rarity = await db_manager.get_basic_item_rarity(item_id)
