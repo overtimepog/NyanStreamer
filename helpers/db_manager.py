@@ -171,11 +171,11 @@ async def add_basic_items() -> None:
     for item in basic_items:
         data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item['item_id'],), fetch="one")
         if data is not None:
-            print(f"{item['item_name']} is already in the database")
+            print(f"|{item['item_name']}| is already in the database")
             pass
         else:
             await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable']))
-            print(f"Added {item['item_name']} to the database")
+            print(f"Added |{item['item_name']}| to the database")
 
 #function to add all the items with inShop = True to the shop table and then add a random int between 1 and 10 to the amount column
 async def add_shop_items() -> None:
@@ -185,8 +185,8 @@ async def add_shop_items() -> None:
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
     for item in data:
         ItemAmount = random.randint(1, 10)
-        await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7], item[8], ItemAmount))
-        print(f"Added {item[1]} x{ItemAmount} to the shop")
+        await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7], item[9], ItemAmount))
+        print(f"Added |{item[1]} x{ItemAmount}| to the shop")
 
 #function to display the shop items
 async def display_shop_items() -> list:
@@ -197,17 +197,20 @@ async def display_shop_items() -> list:
         else:
             return None
         
-#remove an amount of an item from the shop
-async def remove_shop_item_amount(item_id: int, amount: int) -> None:
+#remove an amount of an item from the shop, if the amount is 0 then remove the item from the shop
+async def remove_shop_item_amount(item_id: str, amount: int) -> None:
         db = DB()
         data = await db.execute(f"SELECT * FROM `shop` WHERE item_id = ?", (item_id,), fetch="one")
         if data is not None:
             await db.execute(f"UPDATE `shop` SET `item_amount` = `item_amount` - ? WHERE `item_id` = ?", (amount, item_id))
+            data = await db.execute(f"SELECT * FROM `shop` WHERE item_id = ?", (item_id,), fetch="one")
+            if data[9] <= 0:
+                await db.execute(f"DELETE FROM `shop` WHERE item_id = ?", (item_id,))
         else:
             return None
         
 #add an amount of an item to the shop
-async def add_shop_item_amount(item_id: int, amount: int) -> None:
+async def add_shop_item_amount(item_id: str, amount: int) -> None:
         db = DB()
         data = await db.execute(f"SELECT * FROM `shop` WHERE item_id = ?", (item_id,), fetch="one")
         if data is not None:
@@ -216,7 +219,7 @@ async def add_shop_item_amount(item_id: int, amount: int) -> None:
             return None
         
 #get the amount of an item in the shop
-async def get_shop_item_amount(item_id: int) -> int:
+async def get_shop_item_amount(item_id: str) -> int:
         db = DB()
         data = await db.execute(f"SELECT * FROM `shop` WHERE item_id = ?", (item_id,), fetch="one")
         if data is not None:
@@ -225,7 +228,7 @@ async def get_shop_item_amount(item_id: int) -> int:
             return None
         
 #get the price of an item in the shop
-async def get_shop_item_price(item_id: int) -> int:
+async def get_shop_item_price(item_id: str) -> int:
         db = DB()
         data = await db.execute(f"SELECT * FROM `shop` WHERE item_id = ?", (item_id,), fetch="one")
         if data is not None:
@@ -234,7 +237,7 @@ async def get_shop_item_price(item_id: int) -> int:
             return None
 
 #get shop item emoji
-async def get_shop_item_emoji(item_id: int) -> str:
+async def get_shop_item_emoji(item_id: str) -> str:
         db = DB()
         data = await db.execute(f"SELECT * FROM `shop` WHERE item_id = ?", (item_id,), fetch="one")
         if data is not None:
@@ -243,7 +246,7 @@ async def get_shop_item_emoji(item_id: int) -> str:
             return None
         
 #equip an item
-async def equip_item(user_id: int, item_id: int) -> int:
+async def equip_item(user_id: int, item_id: str) -> int:
         db = DB()
         data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_id = ?", (user_id, item_id), fetch="one")
         if data is not None:
@@ -253,7 +256,7 @@ async def equip_item(user_id: int, item_id: int) -> int:
             return None
 
 #unequip an item
-async def unequip_item(user_id: int, item_id: int) -> int:
+async def unequip_item(user_id: int, item_id: str) -> int:
         db = DB()
         data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_id = ?", (user_id, item_id), fetch="one")
         if data is not None:

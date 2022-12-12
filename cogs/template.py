@@ -55,7 +55,7 @@ class Template(commands.Cog, name="template"):
         name="unregister",
         description="This command will remove a streamer from the database.",
     )
-    async def unregister(self, ctx: Context, streamer_channel: str):
+    async def unregister(self, ctx: Context):
         """
         This command will remove a streamer from the database.
 
@@ -276,14 +276,17 @@ class Template(commands.Cog, name="template"):
         shop = await db_manager.display_shop_items()
         embed = discord.Embed(title="Shop", description="All of the items in the shop.", color=0x00ff00)
         for i in shop:
+            print(i)
             item_id = i[0]
             item_name = i[1]
             item_price = i[2]
             item_emote = i[3]
             item_rarity = i[4]
             item_type = i[5]
+            item_type = str(item_type)
             item_damage = i[6]
-            item_amount = db_manager.get_shop_item_amount(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            #grab the int out of the coroutine=
             if item_type == "Weapon":
                 embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=False)
             else:
@@ -295,7 +298,7 @@ class Template(commands.Cog, name="template"):
         name="buy",
         description="This command will buy an item from the shop.",
     )
-    async def buy(self, ctx: Context, item_id: int, amount: int):
+    async def buy(self, ctx: Context, item_id: str, amount: int):
         """
         This command will buy an item from the shop.
 
@@ -318,12 +321,14 @@ class Template(commands.Cog, name="template"):
                 item_price = int(item_price)
                 total_price = item_price * amount
                 if user_money >= total_price:
-                    item_name = db_manager.get_basic_item_name(item_id)
-                    item_price = db_manager.get_shop_item_price(item_id)
-                    item_emoji = db_manager.get_shop_item_emoji(item_id)
-                    item_rarity = db_manager.get_basic_item_rarity(item_id)
-                    item_type = db_manager.get_basic_item_type(item_id)
-                    item_damage = db_manager.get_basic_item_damage(item_id)
+                    item_name = await db_manager.get_basic_item_name(item_id)
+                    item_price = await db_manager.get_shop_item_price(item_id)
+                    item_emoji = await db_manager.get_shop_item_emoji(item_id)
+                    #Q, how to I get the string out of a coroutine?
+                    #A, use await
+                    item_rarity = await db_manager.get_basic_item_rarity(item_id)
+                    item_type = await db_manager.get_basic_item_type(item_id)
+                    item_damage = await db_manager.get_basic_item_damage(item_id)
                     #remove the item from the shop
                     await db_manager.remove_shop_item_amount(item_id, amount)
                     #add the item to the users inventory
