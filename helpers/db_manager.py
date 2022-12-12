@@ -24,9 +24,11 @@ import random
 #`isUsable` boolean NOT NULL,
 #`isEquippable` boolean NOT NULL    
       
+      
+#STUB - Basic items
 basic_items = [
     {
-        "item_id": "woodensword",
+        "item_id": "WoodenSword",
         "item_name": "Wooden Sword",
         "item_price": 100,
         "item_emoji": "🪓",
@@ -38,11 +40,35 @@ basic_items = [
         "isEquippable": True
     },
     {
-        "item_id": "smallhealthpotion",
+        "item_id": "SmallHealthPotion",
         "item_name": "Small Health Potion",
         "item_price": 100,
         "item_emoji": "🧪",
         "item_rarity": "Common",
+        "item_type": "Consumable",
+        "item_damage": 0,
+        "isUsable": True,
+        "inShop": True,
+        "isEquippable": False
+    },
+    {
+        "item_id": "MediumHealthPotion",
+        "item_name": "Medium Health Potion",
+        "item_price": 250,
+        "item_emoji": "🧪",
+        "item_rarity": "Uncommon",
+        "item_type": "Consumable",
+        "item_damage": 0,
+        "isUsable": True,
+        "inShop": True,
+        "isEquippable": False
+    },
+    {
+        "item_id": "LargeHealthPotion",
+        "item_name": "Large Health Potion",
+        "item_price": 500,
+        "item_emoji": "🧪",
+        "item_rarity": "Rare",
         "item_type": "Consumable",
         "item_damage": 0,
         "isUsable": True,
@@ -62,7 +88,7 @@ basic_items = [
         "isEquippable": False
     },
     {
-        "item_id": "ironarmor",
+        "item_id": "IronArmor",
         "item_name": "Iron Armor",
         "item_price": 500,
         "item_emoji": "🛡️",

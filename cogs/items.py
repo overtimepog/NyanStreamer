@@ -288,6 +288,7 @@ class Items(commands.Cog, name="template"):
         await ctx.send(f"Streamer doesn't exist in the database.")
 
 #shop command to view the shop using the display_shop function from helpers\db_manager.py
+#STUB - shop command
     @commands.hybrid_command(
         name="shop",
         description="This command will display the shop.",
@@ -527,9 +528,36 @@ class Items(commands.Cog, name="template"):
             await ctx.send(f"You unequipped `{item_name}`")
         else:
             await ctx.send(f"`{item_name}` is not equipped.")
-    
+            
+    #a command to use an item using the use_item function from helpers\db_manager.py, check if the item is usable, if it is, use it, if it isn't, say that it isn't usable
+    @commands.hybrid_command(
+        name="use",
+        description="This command will use an item.",
+    )
+    async def use(self, ctx: Context, item_id: str):
+        """
+        This command will use an item.
 
-
+        :param ctx: The context in which the command was called.
+        :param item: The item that should be used.
+        """
+        user_id = ctx.message.author.id
+        item_name = await db_manager.get_basic_item_name(item_id)
+        isUsable = await db_manager.is_basic_item_usable(item_id)
+        if isUsable == 1:
+            #remove item from inventory
+            await db_manager.remove_item_from_inventory(user_id, item_id)
+            #STUB - item effects
+            #if the item's name is "Potion", add 10 health to the user
+            if item_name == "Small Health Potion":
+                await db_manager.add_health(user_id, 10)
+            elif item_name == "Medium Health Potion":
+                await db_manager.add_health(user_id, 20)
+            elif item_name == "Large Health Potion":
+                await db_manager.add_health(user_id, 30)
+            await ctx.send(f"You used `{item_name}`")
+        else:
+            await ctx.send(f"`{item_name}` is not usable.")
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
