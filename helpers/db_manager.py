@@ -28,17 +28,17 @@ import random
 #STUB - Basic items
 basic_items = [
     {
-        "item_id": "knife",
-        "item_name": "Knife",
-        "item_price": 100,
-        "item_emoji": "🗡️",
+        "item_id": "WoodenSword",
+        "item_name": "Wooden Sword",
+        "item_price": 25,
+        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
         "item_rarity": "Common",
         "item_type": "Weapon",
-        "item_damage": 10,
+        "item_damage": 5,
         "isUsable": False,
         "inShop": True,
         "isEquippable": True,
-        "item_description": "A basic blade. It's not very strong, but it's better than nothing."
+        "item_description": "A wooden sword. It's not very strong, but it's better than nothing."
     },
     {
         "item_id": "SmallHealthPotion",
@@ -47,7 +47,7 @@ basic_items = [
         "item_emoji": "🧪",
         "item_rarity": "Common",
         "item_type": "Consumable",
-        "item_damage": 0,
+        "item_damage": 10,
         "isUsable": True,
         "inShop": True,
         "isEquippable": False,
@@ -60,7 +60,7 @@ basic_items = [
         "item_emoji": "🧪",
         "item_rarity": "Uncommon",
         "item_type": "Consumable",
-        "item_damage": 0,
+        "item_damage": 20,
         "isUsable": True,
         "inShop": True,
         "isEquippable": False,
@@ -73,7 +73,7 @@ basic_items = [
         "item_emoji": "🧪",
         "item_rarity": "Rare",
         "item_type": "Consumable",
-        "item_damage": 0,
+        "item_damage": 30,
         "isUsable": True,
         "inShop": True,
         "isEquippable": False,
@@ -185,6 +185,15 @@ async def get_health(user_id: int) -> int:
         users = await db.execute(f"SELECT `health` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     
+#get user, if they don't exist, create them
+async def get_user(user_id: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        return None
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, isStreamer) VALUES (?, ?, ?, ?)", (user_id, 0, 100, False))
+
 #look at a user's profile, returns a list
 async def profile(user_id: int) -> list:
     db = DB()
@@ -316,7 +325,7 @@ async def check_streamer_item(item_id: str) -> int:
         if data is not None:
             return 1
         else:
-            return None
+            return 0
 
 #check if the item ID is a basic item
 async def check_basic_item(item_id: str) -> int:
@@ -325,7 +334,7 @@ async def check_basic_item(item_id: str) -> int:
         if data is not None:
             return 1
         else:
-            return None
+            return 0
         
         
 #check if the user_id is a user
@@ -351,7 +360,7 @@ async def check_emoji(emoji: str) -> int:
         if emoji.startswith("<") and emoji.endswith(">"):
             return 1
         else:
-            return None
+            return 0
 
 #make a request to the twitch api to get the twitch id of the streamer
 async def get_twitch_id(streamer_channel: str) -> int:

@@ -320,6 +320,26 @@ class Moderation(commands.Cog, name="moderation"):
             )
             await context.send(embed=embed)
 
+    #dm every member in the server, with the login message, requires manage server permission
+    @commands.hybrid_command(
+        name="signupall",
+        description="Add all Current Server Members to the User Database.",
+    )
+    @commands.has_permissions(manage_guild=True)
+    @checks.not_blacklisted()
+    async def signupall(self, context: Context) -> None:
+        """
+        Add all Current Server Members to the User Database.
+
+        :param context: The hybrid command context.
+        """
+        await context.send("Adding Users...")
+        for member in context.guild.members:
+            if member.bot:
+                continue
+            await db_manager.get_user(member.id)
+        await context.send("Done!")
+
 
 async def setup(bot):
     await bot.add_cog(Moderation(bot))

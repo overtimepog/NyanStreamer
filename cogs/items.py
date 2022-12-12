@@ -319,8 +319,11 @@ class Items(commands.Cog, name="template"):
                 embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             if item_type == "Armor":
                 embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+            if item_type == "Consumable":
+                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Heal**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             else:
-                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
+                if item_damage == 0:
+                    embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
         await ctx.send(embed=embed)
 
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
@@ -547,18 +550,31 @@ class Items(commands.Cog, name="template"):
         """
         user_id = ctx.message.author.id
         item_name = await db_manager.get_basic_item_name(item_id)
+        item_damage = await db_manager.get_basic_item_damage(item_id)
         isUsable = await db_manager.is_basic_item_usable(item_id)
         if isUsable == 1:
             #remove item from inventory
+            #before removing the item, check if the users health is full, if it is, don't remove the item
+            user_health = await db_manager.get_health(user_id)
+            user_max_health = 100
+            if user_health == user_max_health and (item_name == "Small Health Potion" or item_name == "Medium Health Potion" or item_name == "Large Health Potion"): 
+                await ctx.send(f"You cannot use `{item_name}` because your health is full.")
+                return
             await db_manager.remove_item_from_inventory(user_id, item_id)
             #STUB - item effects
             #if the item's name is "Potion", add 10 health to the user
             if item_name == "Small Health Potion":
-                await db_manager.add_health(user_id, 10)
+                await db_manager.add_health(user_id, item_damage)
+                ctx.send(f"You used `{item_name}` and healed {item_damage} health.")
+                return
             elif item_name == "Medium Health Potion":
-                await db_manager.add_health(user_id, 20)
+                await db_manager.add_health(user_id, item_damage)
+                ctx.send(f"You used `{item_name}` and healed {item_damage} health.")
+                return
             elif item_name == "Large Health Potion":
-                await db_manager.add_health(user_id, 30)
+                await db_manager.add_health(user_id, item_damage)
+                ctx.send(f"You used `{item_name}` and healed {item_damage} health.")
+                return
             await ctx.send(f"You used `{item_name}`")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
@@ -583,8 +599,13 @@ class Items(commands.Cog, name="template"):
         is_item_streamer = await db_manager.check_streamer_item(item_id)
         basic_item_emote = await db_manager.get_basic_item_emote(item_id)
         check_emoji = await db_manager.check_emoji(basic_item_emote)
+        print(check_emoji)
+        print("is BASIC: " + str(is_item_basic))
+        print("is STREAMER: " + str(is_item_streamer))
         if check_emoji == 0:
             if is_item_basic == 1:
+                basic_item_emote = await db_manager.get_basic_item_emote(item_id)
+                print(basic_item_emote)
                 emoji_unicode = ('{:X}'.format(ord(basic_item_emote)))
                 emoji_unicode = emoji_unicode.lower()
                 #make a web request to get the emoji name
