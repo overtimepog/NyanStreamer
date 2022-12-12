@@ -12,6 +12,7 @@ import os
 import platform
 import random
 import sys
+from helpers import db_manager
 
 import aiosqlite
 import discord
@@ -104,6 +105,25 @@ async def on_ready() -> None:
     if config["sync_commands_globally"]:
         print("Syncing commands globally...")
         await bot.tree.sync()
+        print("Done syncing commands globally!")
+
+
+@bot.event
+async def on_member_join(member):
+    embed = discord.Embed(title="This Sever has DankStreamer!", description="Please read the rules type `accept` to gain access to the bot :).", color=0x00ff00)
+    #send a button to the user
+    await member.send(embed=embed)
+    #look for the word "accept" in the user's message
+    def check(m):
+        return m.content == "accept" and m.channel == member.dm_channel
+    #wait for the user to send the word "accept"
+    msg = await bot.wait_for('message', check=check)
+    #if the user sends the word "accept", run the code below
+    if msg.content == "accept":
+        await db_manager.add_user(member.id, False)
+        print(f"Added {member} to the database.")
+        await member.send("You have been added to the database! You can now use the bot :).")
+
 
 
 @tasks.loop(minutes=1.0)
@@ -206,6 +226,20 @@ async def on_command_error(context: Context, error) -> None:
             color=0xE02B2B
         )
         await context.send(embed=embed)
+    elif isinstance(error, exceptions.UserNotStreamer):
+        embed = discord.Embed(
+            title="Error!",
+            description="You are not a streamer!",
+            color=0xE02B2B
+        )
+        await context.send(embed=embed)
+    elif isinstance(error, commands.errors.EmojiNotFound):
+        embed = discord.Embed(
+            title="Error!",
+            description="The emoji you provided is not valid!",
+            color=0xE02B2B
+        )
+        await context.send(embed=embed)
     raise error
 
 
@@ -226,4 +260,6 @@ async def load_cogs() -> None:
 
 asyncio.run(init_db())
 asyncio.run(load_cogs())
+asyncio.run(db_manager.add_basic_items())
+asyncio.run(db_manager.add_shop_items())
 bot.run(config["token"])

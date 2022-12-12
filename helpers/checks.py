@@ -41,3 +41,17 @@ def not_blacklisted() -> Callable[[T], T]:
         return True
 
     return commands.check(predicate)
+
+def is_streamer() -> Callable[[T], T]:
+    """
+    This is a custom check to see if the user executing the command is a streamer.
+    """
+
+    async def predicate(context: commands.Context) -> bool:
+        userID = context.author.id
+        userID = int(userID)
+        if await db_manager.is_streamer(userID):
+            return True
+        raise UserNotStreamer
+
+    return commands.check(predicate)
