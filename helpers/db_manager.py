@@ -906,6 +906,32 @@ async def id_of_item_equipped(user_id: int, item_id: str) -> str:
         async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=? AND isEquipped=?", (user_id, item_id, 1)) as cursor:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
+        
+#get id of the weapon that is equiped
+async def id_of_weapon_equipped(user_id: int) -> str:
+    """
+    This function will get the ID of the weapon that is equipped.
+
+    :param user_id: The ID of the user that should be checked.
+    :return: The ID of the weapon that is equipped.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_type=? AND isEquipped=?", (user_id, "Weapon", 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[2] if result is not None else 0
+        
+#get id of the armor that is equiped
+async def id_of_armor_equipped(user_id: int) -> str:
+    """
+    This function will get the ID of the armor that is equipped.
+
+    :param user_id: The ID of the user that should be checked.
+    :return: The ID of the armor that is equipped.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_type=? AND isEquipped=?", (user_id, "Armor", 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[2] if result is not None else 0
 
 #get streamer channel from the streamer table using the streamers user ID
 async def get_streamerChannel(user_id: int) -> str:

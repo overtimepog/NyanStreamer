@@ -11,6 +11,7 @@ from discord.ext.commands import Context, has_permissions
 import discord
 from discord import app_commands
 from discord.ext import commands
+import random
 
 from helpers import checks
 from helpers import db_manager
@@ -558,6 +559,74 @@ class Items(commands.Cog, name="template"):
             await ctx.send(f"You used `{item_name}`")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
+            
+    #a command to attack a user using the remove_health function from helpers\db_manager.py, check if the user has a weapon equipped, if they do, get the damage of the weapon, if they don't, say that they don't have a weapon equipped, check if the user has enough health to attack, if they do, attack the user, if they don't, say that they don't have enough health to attack
+    @commands.hybrid_command(
+        name="attack",
+        description="This command will attack a user.",
+    )
+    async def attack(self, ctx: Context, user: discord.Member):
+        """
+        This command will attack a user.
+
+        :param ctx: The context in which the command was called.
+        :param user: The user that should be attacked.
+        """
+        user_id = ctx.message.author.id
+        user_name = ctx.message.author.name
+        user_health = await db_manager.get_health(user_id)
+        weapon_equipped = await db_manager.is_weapon_equipped(user_id)
+        item_id = await db_manager.id_of_weapon_equipped(user_id)
+        item_rarity = await db_manager.get_basic_item_rarity(item_id)
+        if weapon_equipped == True:
+            weapon_damage = await db_manager.get_basic_item_damage(user_id)
+        else:
+            await ctx.send(f"You don't have a weapon equipped.")
+            return
+        if user_health >= 10:
+            #depending of the weapons rarety, up the crit chance
+            #crit chance is 1/200
+            if item_rarity == "Common":
+                crit_chance = random.randint(1, 200)
+                if crit_chance == 1:
+                    weapon_damage = weapon_damage * 2
+                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
+                    await db_manager.remove_health(user_id, weapon_damage)
+                    return
+            elif item_rarity == "Uncommon":
+                crit_chance = random.randint(1, 150)
+                if crit_chance == 1:
+                    weapon_damage = weapon_damage * 2
+                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
+                    await db_manager.remove_health(user_id, weapon_damage)
+                    return
+            elif item_rarity == "Rare":
+                crit_chance = random.randint(1, 100)
+                if crit_chance == 1:
+                    weapon_damage = weapon_damage * 2
+                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
+                    await db_manager.remove_health(user_id, weapon_damage)
+                    return
+            elif item_rarity == "Epic":
+                crit_chance = random.randint(1, 50)
+                if crit_chance == 1:
+                    weapon_damage = weapon_damage * 2
+                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
+                    await db_manager.remove_health(user_id, weapon_damage)
+                    return
+            elif item_rarity == "Legendary":
+                crit_chance = random.randint(1, 25)
+                if crit_chance == 1:
+                    weapon_damage = weapon_damage * 2
+                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
+                    await db_manager.remove_health(user_id, weapon_damage)
+                    return
+            
+            await ctx.send(f"You attacked {user.mention} for `{weapon_damage}` damage.")
+            await db_manager.remove_health(user.id, weapon_damage)
+        else:
+            await ctx.send(f"You don't have enough health to attack.")
+        
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
