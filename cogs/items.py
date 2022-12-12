@@ -623,6 +623,7 @@ class Items(commands.Cog, name="template"):
             return
         elif is_item_streamer == 1:
             streamer_item_emote = await db_manager.get_streamer_item_emote(item_id)
+            streamer_name = await db_manager.get_streamer_name_from_item(item_id)
             print(streamer_item_emote)
             #strip the item emoji of : and <> and numbers
             #remove the < and > from the string
@@ -652,7 +653,7 @@ class Items(commands.Cog, name="template"):
             #create an embed
             embed = discord.Embed(
                 title=f"{item_name}",
-                description=f"An item from a streamer, very rare. :)",
+                description=f"An item from {streamer_name}, very rare. :)",
                 color=discord.Color.from_rgb(255, 255, 255),
             )
             #add the rarity to the embed
@@ -668,10 +669,10 @@ class Items(commands.Cog, name="template"):
             embed.add_field(name="Price", value=f"{item_price}")
             #send the embed
             await ctx.send(embed=embed)
+            return
 
 
-    
-            
+
     #a command to attack a user using the remove_health function from helpers\db_manager.py, check if the user has a weapon equipped, if they do, get the damage of the weapon, if they don't, say that they don't have a weapon equipped, check if the user has enough health to attack, if they do, attack the user, if they don't, say that they don't have enough health to attack
     @commands.hybrid_command(
         name="attack",

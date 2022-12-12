@@ -28,17 +28,17 @@ import random
 #STUB - Basic items
 basic_items = [
     {
-        "item_id": "WoodenSword",
-        "item_name": "Wooden Sword",
+        "item_id": "knife",
+        "item_name": "Knife",
         "item_price": 100,
-        "item_emoji": "🪓",
+        "item_emoji": "🗡️",
         "item_rarity": "Common",
         "item_type": "Weapon",
         "item_damage": 10,
         "isUsable": False,
         "inShop": True,
         "isEquippable": True,
-        "item_description": "A basic wooden sword. It's not very strong, but it's better than nothing."
+        "item_description": "A basic blade. It's not very strong, but it's better than nothing."
     },
     {
         "item_id": "SmallHealthPotion",
@@ -78,19 +78,6 @@ basic_items = [
         "inShop": True,
         "isEquippable": False,
         "item_description": "A large health potion. Bigger is better, right?"
-    },
-    {
-        "item_id": "nuggetbiscuit",
-        "item_name": "Nugget in a Biscuit",
-        "item_price": 95,
-        "item_emoji": "🍞",
-        "item_rarity": "Uncommon",
-        "item_type": "Consumable",
-        "item_damage": 0,
-        "isUsable": True,
-        "inShop": True,
-        "isEquippable": False,
-        "item_description": "A biscuit with a nugget in it. It's not very good, but it's better than nothing."
     },
     {
         "item_id": "IronArmor",
@@ -347,6 +334,15 @@ async def check_user(user_id: int) -> int:
         data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         if data is not None:
             return 1
+        else:
+            return None
+        
+#get a streamers name from an item ID
+async def get_streamer_name_from_item(item_id: str) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `streamer_items` WHERE item_id = ?", (item_id,), fetch="one")
+        if data is not None:
+            return data[1]
         else:
             return None
 
