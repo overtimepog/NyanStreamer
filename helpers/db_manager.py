@@ -346,6 +346,12 @@ async def get_streamer_name_from_item(item_id: str) -> str:
         else:
             return None
 
+#check if the emoji on the item has < and > around it
+async def check_emoji(emoji: str) -> int:
+        if emoji.startswith("<") and emoji.endswith(">"):
+            return 1
+        else:
+            return None
 
 #make a request to the twitch api to get the twitch id of the streamer
 async def get_twitch_id(streamer_channel: str) -> int:
