@@ -60,6 +60,18 @@ basic_items = [
         "isUsable": True,
         "inShop": True,
         "isEquippable": False
+    },
+    {
+        "item_id": "ironarmor",
+        "item_name": "Iron Armor",
+        "item_price": 500,
+        "item_emoji": "🛡️",
+        "item_rarity": "Uncommon",
+        "item_type": "Armor",
+        "item_damage": 0,
+        "isUsable": False,
+        "inShop": True,
+        "isEquippable": True
     }
 ]
 
@@ -245,7 +257,7 @@ async def get_shop_item_emoji(item_id: str) -> str:
         else:
             return None
         
-#equip an item
+#equip an item, if the item is not in the inventory then return None, if there is an item already equipped then unequip it,
 async def equip_item(user_id: int, item_id: str) -> int:
         db = DB()
         data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_id = ?", (user_id, item_id), fetch="one")
@@ -261,6 +273,28 @@ async def unequip_item(user_id: int, item_id: str) -> int:
         data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_id = ?", (user_id, item_id), fetch="one")
         if data is not None:
             await db.execute(f"UPDATE `inventory` SET `isEquipped` = 0 WHERE user_id = ? AND item_id = ?", (user_id, item_id))
+            return 1
+        else:
+            return None
+
+#check if an item is equipped
+async def check_item_equipped(user_id: int, item_id: str) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_id = ?", (user_id, item_id), fetch="one")
+        if data is not None:
+            if data[9] == 1:
+                return 1
+            else:
+                return None
+        else:
+            return None
+        
+        
+#check if the user_id is a user
+async def check_user(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
             return 1
         else:
             return None
@@ -438,6 +472,19 @@ async def view_basic_items() -> list:
         async with db.execute("SELECT * FROM basic_items") as cursor:
             result = await cursor.fetchall()
             return result if result is not None else []
+        
+#view an item from the basic_items table using the items id
+async def view_basic_item(item_id: str) -> list:
+    """
+    This function will view an item from the basic_items table.
+
+    :return: A list of the item from the basic_items table.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+
 
 #add a user to the users table using the users ID, setting the users balance to 0, and setting the users streamer status to false, and add them to the inventory table
 async def add_user(user_id: int, isStreamer: bool) -> int:
@@ -780,7 +827,59 @@ async def is_basic_item_equipable(item_id: str) -> bool:
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
             return result[9] if result is not None else 0
+        
+#check the inventory of a user for any items with the item_type Armor and if they are equiped with the item_type Armor
+async def is_armor_equipped(user_id: int) -> bool:
+    """
+    This function will check if a user has armor equiped.
 
+    :param user_id: The ID of the user that should be checked.
+    :return: True if the user has armor equiped, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_type=? AND isEquipped=?", (user_id, "Armor", 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
+        
+#check the inventory of a user for any items with the item_type Weapon and if they are equiped with the item_type Weapon
+async def is_weapon_equipped(user_id: int) -> bool:
+    """
+    This function will check if a user has a weapon equiped.
+
+    :param user_id: The ID of the user that should be checked.
+    :return: True if the user has a weapon equiped, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_type=? AND isEquipped=?", (user_id, "Weapon", 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
+        
+#check the inventory of a user for any items with the item_type Accessory and if they are equiped with the item_type Accessory
+async def is_accessory_equipped(user_id: int) -> bool:
+    """
+    This function will check if a user has an accessory equiped.
+
+    :param user_id: The ID of the user that should be checked.
+    :return: True if the user has an accessory equiped, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_type=? AND isEquipped=?", (user_id, "Accessory", 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
+
+#check if an item has its isEquipped value set to 1 in the inventory table
+async def id_of_item_equipped(user_id: int, item_id: str) -> str:
+    """
+    This function will check if an item is equipped.
+
+    :param user_id: The ID of the user that should be checked.
+    :param item_id: The ID of the item that should be checked.
+    :return: True if the item is equipped, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=? AND isEquipped=?", (user_id, item_id, 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
 
 #get streamer channel from the streamer table using the streamers user ID
 async def get_streamerChannel(user_id: int) -> str:

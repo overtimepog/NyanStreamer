@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `shop` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` varchar(20) NOT NULL,
-  'money' int(11) NOT NULL,
+  `money` int(11) NOT NULL,
   `health` int(11) NOT NULL,
   `isStreamer` boolean NOT NULL
 );

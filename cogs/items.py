@@ -17,7 +17,7 @@ from helpers import db_manager
 
 
 # Here we name the cog and create a new class for the cog.
-class Template(commands.Cog, name="template"):
+class Items(commands.Cog, name="template"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -45,9 +45,32 @@ class Template(commands.Cog, name="template"):
             #this code fucking sucks, ive spent way too much time and now I have to rewrite it all because I cant figure out how to make it work, yay
             await ctx.send("this person is already a streamer. :)")
             return
-        await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
-        await db_manager.add_user(user_id, True)
-        await ctx.send("Streamer added to the database.")
+        if broadcaster_cast_type == "partner":
+            #if the user already exists in the database, update their streamer status to true
+            if await db_manager.check_user(user_id):
+                await db_manager.update_is_streamer(user_id)
+                await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
+                await ctx.send("You are now a streamer.")
+                return
+            await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
+            await db_manager.add_user(user_id, True)
+            await ctx.send("Streamer added to the database.")
+            return
+        elif broadcaster_cast_type == "affiliate":
+            #if the user already exists in the database, update their streamer status to true
+            if await db_manager.check_user(user_id):
+                await db_manager.update_is_streamer(user_id)
+                await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
+                await ctx.send("You are now a streamer.")
+                return
+            await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
+            await db_manager.add_user(user_id, True)
+            await ctx.send("Streamer added to the database.")
+            return
+        elif broadcaster_cast_type == "":
+            await db_manager.add_user(user_id, False)
+            await ctx.send("Streamer is not a Partner or Affiliate, added to database as user.")
+            return
 
 
     #command to remove a streamer from the database streamer table, using the remove_streamer function from helpers\db_manager.py
@@ -113,11 +136,15 @@ class Template(commands.Cog, name="template"):
                 embed = discord.Embed(title="Inventory", description="Your inventory.", color=0x00ff00)
                 for i in inventory:
                     item_id = i[1]
+                    isitem_equipped = await db_manager.check_item_equipped(user_id, item_id)
                     item_name = i[2]
                     item_emoji = i[4]
                     item_amount = i[6]
                     item_rarity = i[5]
-                    embed.add_field(name=f"`ID:{item_id}` {item_name}{item_emoji} x{item_amount}", value=f"rarity: {item_rarity}", inline=False)
+                    if isitem_equipped == 1:
+                        embed.add_field(name=f"`ID:{item_id}` {item_name}{item_emoji}", value=f"rarity: {item_rarity} (equipped)", inline=False)
+                    else:
+                        embed.add_field(name=f"`ID:{item_id}` {item_name}{item_emoji} x{item_amount}", value=f"rarity: {item_rarity}", inline=False)
                 await ctx.send(embed=embed)
                 return
         await ctx.send(f"You do not exist in the database.")
@@ -195,30 +222,28 @@ class Template(commands.Cog, name="template"):
         await db_manager.add_item(streamerPrefix, item_name, item_price, "Legendary", emojiString, twitchID, "Collectable")
         await ctx.send(f"Added `{item_name}` {emojiString} to the database, with the price `{item_price}`.")
 
-    #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py
+    #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
     @commands.hybrid_command(
         name="removeitem",
         description="This command will remove an item from the database.",
     )
     @checks.is_streamer()
-    async def remove_item(self, ctx: Context, item_name: str):
+    async def remove_item(self, ctx: Context, item_id: str):
         """
         This command will remove an item from the database.
 
         :param ctx: The context in which the command was called.
-        :param item_name: The name of the item that should be removed.
+        :param item_id: The id of the item that should be removed.
         """
         user_id = ctx.message.author.id
         #check if the item exists in the database
-        streamerChannel = await db_manager.get_streamerChannel(user_id)
-        streamerPrefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
-        items = await db_manager.view_streamer_items(streamerChannel)
+        items = await db_manager.view_streamer_items(user_id)
         for i in items:
-            if item_name in i:
-                await db_manager.remove_item(streamerPrefix, item_name)
-                await ctx.send(f"Removed `{item_name}` from the database.")
+            if item_id in i:
+                await db_manager.remove_item(item_id)
+                await ctx.send(f"Removed item with the ID `{item_id}` from your items.")
                 return
-        await ctx.send(f"`{item_name}` doesn't exist in the database.")
+        await ctx.send(f"Item with the ID `{item_id}` does not exist in the database or you are not the streamer of this item.")
 
 
 #command to view the items of a specific streamer by their ID, using the view_streamer_items function from helpers\db_manager.py
@@ -288,9 +313,9 @@ class Template(commands.Cog, name="template"):
             item_amount = await db_manager.get_shop_item_amount(item_id)
             #grab the int out of the coroutine=
             if item_type == "Weapon":
-                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=False)
+                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             else:
-                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=False)
+                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
         await ctx.send(embed=embed)
 
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
@@ -321,6 +346,31 @@ class Template(commands.Cog, name="template"):
                 item_price = int(item_price)
                 total_price = item_price * amount
                 if user_money >= total_price:
+                    #if the item type is a weapon, check if the user has already has this weapon
+                    item_type = await db_manager.get_basic_item_type(item_id)
+                    if item_type == "Weapon":
+                        #check if the user has this weapon
+                        user_inventory = await db_manager.view_inventory(user_id)
+                        for i in user_inventory:
+                            if item_id in i:
+                                await ctx.send(f"You already have this weapon!")
+                                return
+                        #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
+                        if amount > 1:
+                            await ctx.send(f"You can only buy 1 of the same Weapon!")
+                            return
+                        
+                    if item_type == "Armor":
+                        #check if the user has this armor on their inventory
+                        user_inventory = await db_manager.view_inventory(user_id)
+                        for i in user_inventory:
+                            if item_id in i:
+                                await ctx.send(f"You already have this armor!")
+                                return
+                        #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
+                        if amount > 1:
+                            await ctx.send(f"You can only buy 1 of the same Armor!")
+                            return
                     item_name = await db_manager.get_basic_item_name(item_id)
                     item_price = await db_manager.get_shop_item_price(item_id)
                     item_emoji = await db_manager.get_shop_item_emoji(item_id)
@@ -329,16 +379,17 @@ class Template(commands.Cog, name="template"):
                     item_rarity = await db_manager.get_basic_item_rarity(item_id)
                     item_type = await db_manager.get_basic_item_type(item_id)
                     item_damage = await db_manager.get_basic_item_damage(item_id)
+                    item_name = await db_manager.get_basic_item_name(item_id)
                     #remove the item from the shop
                     await db_manager.remove_shop_item_amount(item_id, amount)
                     #add the item to the users inventory
                     await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, amount, item_type, item_damage, False)
                     #remove the price from the users money
                     await db_manager.remove_money(user_id, total_price)
-                    await ctx.send(f"You bought `{amount}` of `{i[1]}` for `{total_price}` bucks.")
+                    await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
                     return
                 else:
-                    await ctx.send(f"You don't have enough bucks to buy `{amount}` of `{i[1]}`.")
+                    await ctx.send(f"You don't have enough bucks to buy `{amount}` of `{item_name}`.")
                     return
         await ctx.send(f"Item doesn't exist in the shop.")
 
@@ -355,6 +406,7 @@ class Template(commands.Cog, name="template"):
         """
         user_id = ctx.message.author.id
         user_profile = await db_manager.profile(user_id)
+        print(user_profile)
         user_id = user_profile[0]
         user_money = user_profile[1]
         user_health = user_profile[2]
@@ -416,9 +468,69 @@ class Template(commands.Cog, name="template"):
         """
         await db_manager.add_money(user.id, amount)
         await ctx.send(f"You gave {user.mention} `{amount}` bucks.")
+        
+    #a command to equip an item using the equip_item function from helpers\db_manager.py, check if the item has isEquippable set to true, if there are mutiple items of the same type, remove the old one and equip the new one, if there are mutliples of the same item, equip the first one, if the item is already equipped, say that it is already equipped, check that only one of the weapon and armor item type is equipped at a time
+    @commands.hybrid_command(
+        name="equip",
+        description="This command will equip an item.",
+    )
+    async def equip(self, ctx: Context, item_id: str):
+        """
+        This command will equip an item.
+
+        :param ctx: The context in which the command was called.
+        :param item: The item that should be equipped.
+        """
+        user_id = ctx.message.author.id
+        item_name = await db_manager.get_basic_item_name(item_id)
+        item_type = await db_manager.get_basic_item_type(item_id)
+        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+        print(item_equipped_id)
+        print(item_type)
+        if item_equipped_id == item_id:
+            await ctx.send(f"`{item_name}` is already equipped.")
+            return
+        if item_type == "Weapon":
+            weapon_equipped = await db_manager.is_weapon_equipped(user_id)
+            if weapon_equipped == True:
+                await ctx.send(f"You already have a weapon equipped.")
+                return
+        elif item_type == "Armor":
+            armor_equipped = await db_manager.is_armor_equipped(user_id)
+            if armor_equipped == True:
+                await ctx.send(f"You already have armor equipped.")
+                return
+        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+        if isEquippable == 1:
+            await db_manager.equip_item(user_id, item_id)
+            await ctx.send(f"You equipped `{item_name}`")
+        else:
+            await ctx.send(f"{item_name} is not equippable.")
+            
+    #a command to unequip an item using the unequip_item function from helpers\db_manager.py, check if the item is equipped, if it is, unequip it, if it isn't, say that it isn't equipped
+    @commands.hybrid_command(
+        name="unequip",
+        description="This command will unequip an item.",
+    )
+    async def unequip(self, ctx: Context, item_id: str):
+        """
+        This command will unequip an item.
+
+        :param ctx: The context in which the command was called.
+        :param item: The item that should be unequipped.
+        """
+        user_id = ctx.message.author.id
+        item_name = await db_manager.get_basic_item_name(item_id)
+        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+        if item_equipped_id == item_id:
+            await db_manager.unequip_item(user_id, item_id)
+            await ctx.send(f"You unequipped `{item_name}`")
+        else:
+            await ctx.send(f"`{item_name}` is not equipped.")
+    
 
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
-    await bot.add_cog(Template(bot))
+    await bot.add_cog(Items(bot))
