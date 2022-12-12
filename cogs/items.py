@@ -12,6 +12,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 import random
+import aiohttp
 
 from helpers import checks
 from helpers import db_manager
@@ -198,7 +199,7 @@ class Items(commands.Cog, name="template"):
         description="This command will create a new item in the database.",
     )
     @checks.is_streamer()
-    async def create_item(self, ctx: Context, item_name: str, item_price: int, item_emote: discord.Emoji):
+    async def create_item(self, ctx: Context, item_name: str, item_price: int, item_emote: discord.PartialEmoji):
         """
         This command will create a new item in the database.
 
@@ -316,6 +317,8 @@ class Items(commands.Cog, name="template"):
             #grab the int out of the coroutine=
             if item_type == "Weapon":
                 embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+            if item_type == "Armor":
+                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             else:
                 embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
         await ctx.send(embed=embed)
@@ -560,6 +563,115 @@ class Items(commands.Cog, name="template"):
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
+    #command to get info about an item
+    @commands.hybrid_command(
+        name="iteminfo",
+        description="This command will get info about an item.",
+    )
+    async def iteminfo(self, ctx: Context, item_id: str):
+        #get the item info from the database
+        item_info = await db_manager.get_basic_item_name(item_id)
+        #if the item doesn't exist, send a message
+        if item_info == None:
+            await ctx.send(f"Item doesn't exist.")
+            return
+        #get the item rarity
+        item_rarity = await db_manager.get_basic_item_rarity(item_id)
+        #get the item emoji
+        is_item_basic = await db_manager.check_basic_item(item_id)
+        is_item_streamer = await db_manager.check_streamer_item(item_id)
+        if is_item_basic == 1:
+            basic_item_emote = await db_manager.get_basic_item_emote(item_id)
+            emoji_unicode = ('{:X}'.format(ord(basic_item_emote)))
+            emoji_unicode = emoji_unicode.lower()
+            #make a web request to get the emoji name
+            emoji_url = f"https://images.emojiterra.com/google/noto-emoji/v2.034/128px/{emoji_unicode}.png"
+            #get the emoji object
+            #convert emoji unicode to image url
+            #get the image url of the unicode emoji
+            #get the item damage
+            item_damage = await db_manager.get_basic_item_damage(item_id)
+            #get the item type
+            item_type = await db_manager.get_basic_item_type(item_id)
+            #get the item price
+            item_price = await db_manager.get_basic_item_price(item_id)
+            #get the item description
+            item_description = await db_manager.get_basic_item_description(item_id)
+            #get the item name
+            item_name = await db_manager.get_basic_item_name(item_id)
+            #create an embed
+            embed = discord.Embed(
+                title=f"{item_name}",
+                description=f"{item_description}",
+                color=discord.Color.from_rgb(255, 255, 255),
+            )
+            #add the rarity to the embed
+            #set the thumbnail to the item emoji
+            print(emoji_url)
+            embed.set_thumbnail(url=emoji_url)
+            embed.add_field(name="Rarity", value=f"{item_rarity}")
+            #if the item is a weapon, add the damage
+            if item_type == "Weapon":
+                embed.add_field(name="Damage", value=f"{item_damage}")
+            #if the item is armor, add the Defence
+            elif item_type == "Armor":
+                embed.add_field(name="Defence", value=f"{item_damage}")
+            #add the price to the embed
+            embed.add_field(name="Price", value=f"{item_price}")
+            #send the embed
+            await ctx.send(embed=embed)
+            return
+        elif is_item_streamer == 1:
+            streamer_item_emote = await db_manager.get_streamer_item_emote(item_id)
+            print(streamer_item_emote)
+            #strip the item emoji of : and <> and numbers
+            #remove the < and > from the string
+            streamer_item_emote = streamer_item_emote.replace("<", "")
+            streamer_item_emote = streamer_item_emote.replace(">", "")
+            colon_index = streamer_item_emote.index(":")
+            colon_index = streamer_item_emote.index(":", colon_index + 1)
+            # Create a new string starting from the character after the second colon
+            new_s = streamer_item_emote[colon_index + 1:]
+            #remove evrything from the string, after the second :, then itll work :)
+            print(new_s)
+            emoji_url = f"https://cdn.discordapp.com/emojis/{new_s}.png"
+            #convert the unicode emoji to a string
+            print(emoji_url)
+                    #get the emoji object
+            #convert emoji unicode to image url
+            #get the image url of the unicode emoji
+            #get the item damage
+            #get the item type
+            item_type = await db_manager.get_streamer_item_type(item_id)
+            #get the item price
+            item_price = await db_manager.get_streamer_item_price(item_id)
+            #get the item description
+            #get the item name
+            item_rarity = await db_manager.get_streamer_item_rarity(item_id)
+            item_name = await db_manager.get_streamer_item_name(item_id)
+            #create an embed
+            embed = discord.Embed(
+                title=f"{item_name}",
+                description=f"An item from a streamer, very rare. :)",
+                color=discord.Color.from_rgb(255, 255, 255),
+            )
+            #add the rarity to the embed
+            #set the thumbnail to the item emoji
+            print(emoji_url)
+            embed.set_thumbnail(url=emoji_url)
+            #add type to the embed
+            embed.add_field(name="Type", value=f"{item_type}")
+            embed.add_field(name="Rarity", value=f"{item_rarity}")
+            #if the item is a weapon, add the damage
+            #if the item is armor, add the Defence
+            #add the price to the embed
+            embed.add_field(name="Price", value=f"{item_price}")
+            #send the embed
+            await ctx.send(embed=embed)
+
+
+    
+            
     #a command to attack a user using the remove_health function from helpers\db_manager.py, check if the user has a weapon equipped, if they do, get the damage of the weapon, if they don't, say that they don't have a weapon equipped, check if the user has enough health to attack, if they do, attack the user, if they don't, say that they don't have enough health to attack
     @commands.hybrid_command(
         name="attack",
@@ -578,6 +690,11 @@ class Items(commands.Cog, name="template"):
         weapon_equipped = await db_manager.is_weapon_equipped(user_id)
         item_id = await db_manager.id_of_weapon_equipped(user_id)
         item_rarity = await db_manager.get_basic_item_rarity(item_id)
+        #get the armor of the user
+        does_user_have_armor_equipped = await db_manager.is_armor_equipped(user.id)
+        if does_user_have_armor_equipped == True:
+            armor_id = await db_manager.id_of_armor_equipped(user.id)
+            protection = await db_manager.get_basic_item_damage(armor_id)
         if weapon_equipped == True:
             weapon_damage = await db_manager.get_basic_item_damage(user_id)
         else:
@@ -589,13 +706,29 @@ class Items(commands.Cog, name="template"):
             if item_rarity == "Common":
                 crit_chance = random.randint(1, 200)
                 if crit_chance == 1:
+                    if does_user_have_armor_equipped == True:
+                        total_weapon_damage = weapon_damage - protection
+                        if total_weapon_damage <= 0:
+                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
+                            return
+                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
+                        await db_manager.remove_health(user.id, total_weapon_damage)
+                        return
                     weapon_damage = weapon_damage * 2
                     await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user_id, weapon_damage)
+                    await db_manager.remove_health(user.id, weapon_damage)
                     return
             elif item_rarity == "Uncommon":
                 crit_chance = random.randint(1, 150)
                 if crit_chance == 1:
+                    if does_user_have_armor_equipped == True:
+                        total_weapon_damage = weapon_damage - protection
+                        if total_weapon_damage <= 0:
+                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
+                            return
+                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
+                        await db_manager.remove_health(user.id, total_weapon_damage)
+                        return
                     weapon_damage = weapon_damage * 2
                     await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
                     await db_manager.remove_health(user_id, weapon_damage)
@@ -603,30 +736,53 @@ class Items(commands.Cog, name="template"):
             elif item_rarity == "Rare":
                 crit_chance = random.randint(1, 100)
                 if crit_chance == 1:
+                    if does_user_have_armor_equipped == True:
+                        total_weapon_damage = weapon_damage - protection
+                        if total_weapon_damage <= 0:
+                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
+                            return
+                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
+                        await db_manager.remove_health(user.id, total_weapon_damage)
+                        return
                     weapon_damage = weapon_damage * 2
                     await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user_id, weapon_damage)
+                    await db_manager.remove_health(user.id, weapon_damage)
                     return
             elif item_rarity == "Epic":
                 crit_chance = random.randint(1, 50)
                 if crit_chance == 1:
+                    if does_user_have_armor_equipped == True:
+                        total_weapon_damage = weapon_damage - protection
+                        if total_weapon_damage <= 0:
+                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
+                            return
+                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
+                        await db_manager.remove_health(user.id, total_weapon_damage)
+                        return
                     weapon_damage = weapon_damage * 2
                     await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user_id, weapon_damage)
+                    await db_manager.remove_health(user.id, weapon_damage)
                     return
             elif item_rarity == "Legendary":
                 crit_chance = random.randint(1, 25)
                 if crit_chance == 1:
+                    if does_user_have_armor_equipped == True:
+                        total_weapon_damage = weapon_damage - protection
+                        if total_weapon_damage <= 0:
+                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
+                            return
+                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
+                        await db_manager.remove_health(user.id, total_weapon_damage)
+                        return
                     weapon_damage = weapon_damage * 2
                     await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user_id, weapon_damage)
+                    await db_manager.remove_health(user.id, weapon_damage)
                     return
             
             await ctx.send(f"You attacked {user.mention} for `{weapon_damage}` damage.")
             await db_manager.remove_health(user.id, weapon_damage)
         else:
             await ctx.send(f"You don't have enough health to attack.")
-        
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

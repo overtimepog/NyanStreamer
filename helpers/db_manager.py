@@ -37,7 +37,8 @@ basic_items = [
         "item_damage": 10,
         "isUsable": False,
         "inShop": True,
-        "isEquippable": True
+        "isEquippable": True,
+        "item_description": "A basic wooden sword. It's not very strong, but it's better than nothing."
     },
     {
         "item_id": "SmallHealthPotion",
@@ -49,7 +50,8 @@ basic_items = [
         "item_damage": 0,
         "isUsable": True,
         "inShop": True,
-        "isEquippable": False
+        "isEquippable": False,
+        "item_description": "A small health potion. It's not very strong, but it's better than nothing."
     },
     {
         "item_id": "MediumHealthPotion",
@@ -61,7 +63,8 @@ basic_items = [
         "item_damage": 0,
         "isUsable": True,
         "inShop": True,
-        "isEquippable": False
+        "isEquippable": False,
+        "item_description": "A medium health potion. Nice to have in a pinch"
     },
     {
         "item_id": "LargeHealthPotion",
@@ -73,7 +76,8 @@ basic_items = [
         "item_damage": 0,
         "isUsable": True,
         "inShop": True,
-        "isEquippable": False
+        "isEquippable": False,
+        "item_description": "A large health potion. Bigger is better, right?"
     },
     {
         "item_id": "nuggetbiscuit",
@@ -85,7 +89,8 @@ basic_items = [
         "item_damage": 0,
         "isUsable": True,
         "inShop": True,
-        "isEquippable": False
+        "isEquippable": False,
+        "item_description": "A biscuit with a nugget in it. It's not very good, but it's better than nothing."
     },
     {
         "item_id": "IronArmor",
@@ -94,10 +99,12 @@ basic_items = [
         "item_emoji": "🛡️",
         "item_rarity": "Uncommon",
         "item_type": "Armor",
-        "item_damage": 0,
+        "item_damage": 25,
+        #item damage on Armor is the amount of damage it reduces when equipped
         "isUsable": False,
         "inShop": True,
-        "isEquippable": True
+        "isEquippable": True,
+        "item_description": "A basic iron armor. It's not very strong, but it's better than nothing."
     }
 ]
 
@@ -212,7 +219,7 @@ async def add_basic_items() -> None:
             print(f"|{item['item_name']}| is already in the database")
             pass
         else:
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description']))
             print(f"Added |{item['item_name']}| to the database")
 
 #function to add all the items with inShop = True to the shop table and then add a random int between 1 and 10 to the amount column
@@ -312,6 +319,24 @@ async def check_item_equipped(user_id: int, item_id: str) -> int:
                 return 1
             else:
                 return None
+        else:
+            return None
+        
+#check if the item ID is a streamer item
+async def check_streamer_item(item_id: str) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `streamer_items` WHERE item_id = ?", (item_id,), fetch="one")
+        if data is not None:
+            return 1
+        else:
+            return None
+
+#check if the item ID is a basic item
+async def check_basic_item(item_id: str) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
+        if data is not None:
+            return 1
         else:
             return None
         
@@ -814,6 +839,19 @@ async def get_basic_item_damage(item_id: str) -> int:
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
             return result[6] if result is not None else 0
+        
+#get basic items description via its id
+async def get_basic_item_description(item_id: str) -> str:
+    """
+    This function will get the description of an item.
+
+    :param item_id: The ID of the item that the description should be gotten from.
+    :return: The description of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[10] if result is not None else 0
         
 #check if a baic item is usable
 async def is_basic_item_usable(item_id: str) -> bool:

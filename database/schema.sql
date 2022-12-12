@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `item_damage` int(11) NOT NULL,
   `isUsable` boolean NOT NULL,
   `inShop` boolean NOT NULL,
-  `isEquippable` boolean NOT NULL
+  `isEquippable` boolean NOT NULL,
+  `item_description` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `shop` (
