@@ -840,10 +840,10 @@ class Items(commands.Cog, name="template"):
                 return
     #hybrid command to battle another player
     @commands.hybrid_command(
-        name="battle",
+        name="deathbattle",
         description="Battle another player",
     )
-    async def battle(self, ctx: Context, user: discord.Member):
+    async def deathbattle(self, ctx: Context, user: discord.Member):
         #run the battle function from helper/battle.py
         enemy_id = user.id
         user_id = ctx.author.id
@@ -869,7 +869,7 @@ class Items(commands.Cog, name="template"):
             await ctx.send("The enemy is already in a battle!")
             return
         
-        await battle.deathBattle(ctx, user_id, enemy_id)
+        await battle.deathbattle(ctx, user_id, enemy_id)
 
 
 

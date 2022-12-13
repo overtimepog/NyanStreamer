@@ -8,14 +8,64 @@ import random
 from discord.ext import commands
 from discord.ext.commands import Bot, Context
 from helpers import db_manager
+from PIL import Image, ImageChops, ImageDraw, ImageFont
+import os
+from io import BytesIO
 
-async def deathBattle(ctx: Context, user1, user2):
+async def deathbattle(ctx: Context, user1, user2):
     turnCount = 0
     #set each users isInCombat to true
     await db_manager.set_in_combat(user1)
     await db_manager.set_in_combat(user2)
     embed = discord.Embed(title="Battle", description="Battle between <@" + str(user1) + "> and <@" + str(user2) + ">", color=0x00ff00)
     msg = await ctx.send(embed=embed)
+
+    #TODO: figure out how to get the path of this file without hardcoding it
+    path = r"C:\Users\truen\OneDrive\Desktop\Stuff\projects\DankStreamer\images\battle_backround.png"
+    background = Image.open(path)
+    #Q, how do I get the path of this file
+    #A, use os.path.dirname(__file__)
+
+    #User 1
+    user = discord.utils.get(ctx.guild.members, id=int(user1))
+    avatar = user.avatar.url
+    response = requests.get(avatar)
+    img = Image.open(BytesIO(response.content))
+    draw = ImageDraw.Draw(background)
+    font = ImageFont.truetype("fonts/arial.ttf", 20)
+    #draw the user's profile picture
+
+    #TODO: place the user's profile picture and name in the correct spots
+    background.paste(img, (50, 50))
+    #draw the user's name
+    draw.text((50, 150), user.name, (255, 255, 255), font=font)
+
+    #User 2
+    user = discord.utils.get(ctx.guild.members, id=int(user2))
+    avatar2url = user.avatar.url
+    draw = ImageDraw.Draw(background)
+    font = ImageFont.truetype("fonts/arial.ttf", 20)
+    #draw the user's profile picture
+    response = requests.get(avatar2url)
+    avatar2 = Image.open(BytesIO(response.content))
+
+    #TODO: place the user's profile picture and name in the correct spots
+    background.paste(avatar2, (650, 50))
+    #draw the user's name
+    draw.text((650, 150), user.name, (255, 255, 255), font=font)
+
+    #save the image
+    background.save("images/battle.png")
+    #send the image in chat
+    await ctx.send(file=discord.File("images/battle.png"))
+    #delete the image
+    os.remove("images/battle.png")
+
+
+
+
+
+
     while await db_manager.is_alive(user1) and await db_manager.is_alive(user2):
         # User 1
         #get the equipped weapon
@@ -128,3 +178,5 @@ async def deathBattle(ctx: Context, user1, user2):
         await db_manager.set_not_in_combat(user1)
         await db_manager.set_not_in_combat(user2)
         return user2
+    
+
