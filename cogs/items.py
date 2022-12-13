@@ -16,6 +16,7 @@ import aiohttp
 
 from helpers import checks
 from helpers import db_manager
+from helpers import battle
 
 
 # Here we name the cog and create a new class for the cog.
@@ -199,7 +200,7 @@ class Items(commands.Cog, name="template"):
         description="This command will create a new item in the database.",
     )
     @checks.is_streamer()
-    async def create_item(self, ctx: Context, item_name: str, item_price: int, item_emote: discord.PartialEmoji):
+    async def create_item(self, ctx: Context, item_name: str, item_emote: discord.PartialEmoji):
         """
         This command will create a new item in the database.
 
@@ -221,8 +222,68 @@ class Items(commands.Cog, name="template"):
             if item_name in i:
                 await ctx.send(f"`{item_name}` already exists in the database.")
                 return
-        await db_manager.add_item(streamerPrefix, item_name, item_price, "Legendary", emojiString, twitchID, "Collectable")
-        await ctx.send(f"Added `{item_name}` {emojiString} to the database, with the price `{item_price}`.")
+        presets = [
+            {
+        "item_price": 25,
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": 5
+            },
+            {
+        "item_price": 50,
+        "item_rarity": "Uncommon",
+        "item_type": "Weapon",
+        "item_damage": 10
+            },
+        ]   
+        #pick a random preset
+        preset = random.choice(presets)
+        item_price = preset['item_price']
+        item_rarity = preset['item_rarity']
+        item_type = preset['item_type']
+        item_damage = preset['item_damage']
+        #add the item to the database
+        #send an embed to the streamer with the item info
+        embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}{emojiString}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+        #create a button to confirm the item creation
+        class Buttons(discord.ui.View):
+            def __init__(self):
+                super().__init__()
+                self.value = None
+
+            @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
+            async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
+                await interaction.response.send_message("Item created.", ephemeral=True)
+                await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage)
+                self.value = True
+                self.stop()
+
+            #reroll button
+            @discord.ui.button(label="Reroll", style=discord.ButtonStyle.grey)
+            async def reroll(self, button: discord.ui.Button, interaction: discord.Interaction):
+                await interaction.response.send_message("Rerolling item.", ephemeral=True)
+                #reroll the item
+                #pick a random preset
+                preset = random.choice(presets)
+                item_price = preset['item_price']
+                item_rarity = preset['item_rarity']
+                item_type = preset['item_type']
+                item_damage = preset['item_damage']
+                #send an embed to the streamer with the item info
+                embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}{emojiString}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+                await interaction.response.edit_message(embed=embed, view=self)
+
+            @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red)
+            async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
+                await interaction.response.send_message("Item creation cancelled.", ephemeral=True)
+                self.value = False
+                self.stop()
+
+
+        view = Buttons()
+        await ctx.send("Here is your Item", embed=embed, view=view)
+
+        #await db_manager.add_item(streamerPrefix, item_name, item_rarity, emojiString, twitchID, item_type, item_damage)
 
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
     @commands.hybrid_command(
@@ -421,7 +482,10 @@ class Items(commands.Cog, name="template"):
         isStreamer = user_profile[3]
         user_items = await db_manager.view_inventory(user_id)
         embed = discord.Embed(title="Profile", description=f"{ctx.message.author.mention}'s Profile.", color=0x00ff00)
-        embed.add_field(name="Health", value=f"{user_health} / 100", inline=True)
+        if user_health == 0:
+            embed.add_field(name="Health", value=f"{user_health} / 100 (Dead)", inline=True)
+        else:
+            embed.add_field(name="Health", value=f"{user_health} / 100", inline=True)
         embed.add_field(name="Money", value=f"{user_money}", inline=True)
         for i in user_items:
             item_name = i[2]
@@ -774,118 +838,40 @@ class Items(commands.Cog, name="template"):
                 #send the embed
                 await ctx.send(embed=embed)
                 return
-
-    #a command to attack a user using the remove_health function from helpers\db_manager.py, check if the user has a weapon equipped, if they do, get the damage of the weapon, if they don't, say that they don't have a weapon equipped, check if the user has enough health to attack, if they do, attack the user, if they don't, say that they don't have enough health to attack
+    #hybrid command to battle another player
     @commands.hybrid_command(
-        name="attack",
-        description="This command will attack a user.",
+        name="battle",
+        description="Battle another player",
     )
-    async def attack(self, ctx: Context, user: discord.Member):
-        """
-        This command will attack a user.
+    async def battle(self, ctx: Context, user: discord.Member):
+        #run the battle function from helper/battle.py
+        enemy_id = user.id
+        user_id = ctx.author.id
 
-        :param ctx: The context in which the command was called.
-        :param user: The user that should be attacked.
-        """
-        user_id = ctx.message.author.id
-        user_name = ctx.message.author.name
-        user_health = await db_manager.get_health(user_id)
-        weapon_equipped = await db_manager.is_weapon_equipped(user_id)
-        item_id = await db_manager.id_of_weapon_equipped(user_id)
-        item_rarity = await db_manager.get_basic_item_rarity(item_id)
-        #get the armor of the user
-        does_user_have_armor_equipped = await db_manager.is_armor_equipped(user.id)
-        if does_user_have_armor_equipped == True:
-            armor_id = await db_manager.id_of_armor_equipped(user.id)
-            protection = await db_manager.get_basic_item_damage(armor_id)
-        if weapon_equipped == True:
-            weapon_damage = await db_manager.get_basic_item_damage(user_id)
-        else:
-            await ctx.send(f"You don't have a weapon equipped.")
+        #check if the user is in the database
+        user_in_db = await db_manager.check_if_user_in_db(user_id)
+        if user_in_db == False:
+            await ctx.send("You are not in the database yet, please use the start command to start your adventure!")
             return
-        if user_health >= 10:
-            #depending of the weapons rarety, up the crit chance
-            #crit chance is 1/200
-            if item_rarity == "Common":
-                crit_chance = random.randint(1, 200)
-                if crit_chance == 1:
-                    if does_user_have_armor_equipped == True:
-                        total_weapon_damage = weapon_damage - protection
-                        if total_weapon_damage <= 0:
-                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
-                            return
-                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
-                        await db_manager.remove_health(user.id, total_weapon_damage)
-                        return
-                    weapon_damage = weapon_damage * 2
-                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user.id, weapon_damage)
-                    return
-            elif item_rarity == "Uncommon":
-                crit_chance = random.randint(1, 150)
-                if crit_chance == 1:
-                    if does_user_have_armor_equipped == True:
-                        total_weapon_damage = weapon_damage - protection
-                        if total_weapon_damage <= 0:
-                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
-                            return
-                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
-                        await db_manager.remove_health(user.id, total_weapon_damage)
-                        return
-                    weapon_damage = weapon_damage * 2
-                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user_id, weapon_damage)
-                    return
-            elif item_rarity == "Rare":
-                crit_chance = random.randint(1, 100)
-                if crit_chance == 1:
-                    if does_user_have_armor_equipped == True:
-                        total_weapon_damage = weapon_damage - protection
-                        if total_weapon_damage <= 0:
-                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
-                            return
-                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
-                        await db_manager.remove_health(user.id, total_weapon_damage)
-                        return
-                    weapon_damage = weapon_damage * 2
-                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user.id, weapon_damage)
-                    return
-            elif item_rarity == "Epic":
-                crit_chance = random.randint(1, 50)
-                if crit_chance == 1:
-                    if does_user_have_armor_equipped == True:
-                        total_weapon_damage = weapon_damage - protection
-                        if total_weapon_damage <= 0:
-                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
-                            return
-                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
-                        await db_manager.remove_health(user.id, total_weapon_damage)
-                        return
-                    weapon_damage = weapon_damage * 2
-                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user.id, weapon_damage)
-                    return
-            elif item_rarity == "Legendary":
-                crit_chance = random.randint(1, 25)
-                if crit_chance == 1:
-                    if does_user_have_armor_equipped == True:
-                        total_weapon_damage = weapon_damage - protection
-                        if total_weapon_damage <= 0:
-                            await ctx.send(f"Your Attack was blocked by {user.mention}'s armor.")
-                            return
-                        await ctx.send(f"{user.mention}'s Armor blocked {protection} damage but they were still hit for {weapon_damage}.")
-                        await db_manager.remove_health(user.id, total_weapon_damage)
-                        return
-                    weapon_damage = weapon_damage * 2
-                    await ctx.send(f"You crit {user.mention} for `{weapon_damage}` damage.")
-                    await db_manager.remove_health(user.id, weapon_damage)
-                    return
-            
-            await ctx.send(f"You attacked {user.mention} for `{weapon_damage}` damage.")
-            await db_manager.remove_health(user.id, weapon_damage)
-        else:
-            await ctx.send(f"You don't have enough health to attack.")
+        #check if the enemy is in the database
+        enemy_in_db = await db_manager.check_if_user_in_db(enemy_id)
+        if enemy_in_db == False:
+            await ctx.send("The enemy is not in the database yet, they need to use the start command to start their adventure!")
+            return
+        #check if the user is in a battle
+        user_in_battle = await db_manager.is_in_combat(user_id)
+        if user_in_battle == True:
+            await ctx.send("You are already in a battle!")
+            return
+        #check if the enemy is in a battle
+        enemy_in_battle = await db_manager.is_in_combat(enemy_id)
+        if enemy_in_battle == True:
+            await ctx.send("The enemy is already in a battle!")
+            return
+        
+        await battle.deathBattle(ctx, user_id, enemy_id)
+
+
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

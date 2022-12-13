@@ -19,7 +19,9 @@ CREATE TABLE IF NOT EXISTS `streamer_items` (
   `item_emoji` varchar(255) NOT NULL,
   `item_rarity` varchar(255) NOT NULL,
   `twitch_id` varchar(255) NOT NULL,
-  `item_type` varchar(255) NOT NULL
+  `item_type` varchar(255) NOT NULL,
+  `item_damage` int(11) NOT NULL,
+  `item_sub_type` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `basic_items` (
@@ -33,7 +35,8 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `isUsable` boolean NOT NULL,
   `inShop` boolean NOT NULL,
   `isEquippable` boolean NOT NULL,
-  `item_description` varchar(255) NOT NULL
+  `item_description` varchar(255) NOT NULL,
+  `item_sub_type` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `shop` (
@@ -53,7 +56,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_id` varchar(20) NOT NULL,
   `money` int(11) NOT NULL,
   `health` int(11) NOT NULL,
-  `isStreamer` boolean NOT NULL
+  `isStreamer` boolean NOT NULL,
+  `isBurning` boolean NOT NULL,
+  `isPoisoned` boolean NOT NULL,
+  `isFrozen` boolean NOT NULL,
+  `isStunned` boolean NOT NULL,
+  `isBleeding` boolean NOT NULL,
+  `isDead` boolean NOT NULL,
+  `isInCombat` boolean NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `inventory` (
@@ -66,7 +76,8 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `item_amount` int(11) NOT NULL,
   `item_type` varchar(255) NOT NULL,
   `item_damage` int(11) NOT NULL,
-  `isEquipped` boolean NOT NULL
+  `isEquipped` boolean NOT NULL,
+  `item_sub_type` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `warns` (

@@ -38,60 +38,8 @@ basic_items = [
         "isUsable": False,
         "inShop": True,
         "isEquippable": True,
-        "item_description": "A wooden sword. It's not very strong, but it's better than nothing."
-    },
-    {
-        "item_id": "SmallHealthPotion",
-        "item_name": "Small Health Potion",
-        "item_price": 100,
-        "item_emoji": "🧪",
-        "item_rarity": "Common",
-        "item_type": "Consumable",
-        "item_damage": 10,
-        "isUsable": True,
-        "inShop": True,
-        "isEquippable": False,
-        "item_description": "A small health potion. It's not very strong, but it's better than nothing."
-    },
-    {
-        "item_id": "MediumHealthPotion",
-        "item_name": "Medium Health Potion",
-        "item_price": 250,
-        "item_emoji": "🧪",
-        "item_rarity": "Uncommon",
-        "item_type": "Consumable",
-        "item_damage": 20,
-        "isUsable": True,
-        "inShop": True,
-        "isEquippable": False,
-        "item_description": "A medium health potion. Nice to have in a pinch"
-    },
-    {
-        "item_id": "LargeHealthPotion",
-        "item_name": "Large Health Potion",
-        "item_price": 500,
-        "item_emoji": "🧪",
-        "item_rarity": "Rare",
-        "item_type": "Consumable",
-        "item_damage": 30,
-        "isUsable": True,
-        "inShop": True,
-        "isEquippable": False,
-        "item_description": "A large health potion. Bigger is better, right?"
-    },
-    {
-        "item_id": "IronArmor",
-        "item_name": "Iron Armor",
-        "item_price": 500,
-        "item_emoji": "🛡️",
-        "item_rarity": "Uncommon",
-        "item_type": "Armor",
-        "item_damage": 25,
-        #item damage on Armor is the amount of damage it reduces when equipped
-        "isUsable": False,
-        "inShop": True,
-        "isEquippable": True,
-        "item_description": "A basic iron armor. It's not very strong, but it's better than nothing."
+        "item_description": "A wooden sword. It's not very strong, but it's better than nothing.",
+        "item_sub_type": "Flame"
     }
 ]
 
@@ -192,7 +140,89 @@ async def get_user(user_id: int) -> None:
     if data is not None:
         return None
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, isStreamer) VALUES (?, ?, ?, ?)", (user_id, 0, 100, False))
+        #  `user_id` varchar(20) NOT NULL
+  #`money` int(11) NOT NULL,
+  #`health` int(11) NOT NULL,
+  #`isStreamer` boolean NOT NULL,
+  #`isBurning` boolean NOT NULL,
+  #`isPoisoned` boolean NOT NULL,
+  #`isFrozen` boolean NOT NULL,
+  #`isStunned` boolean NOT NULL,
+  #`isBleeding` boolean NOT NULL,
+  #`isDead` boolean NOT NULL,
+  #`isInCombat` boolean NOT NULL,
+    #`isInShop` boolean NOT NULL,
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+
+#check if a user is not dead
+async def is_alive(user_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `isDead` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if users[0] == 0:
+            return True
+        else:
+            return False
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        return True
+    
+#set a user's dead status to true
+async def set_dead(user_id: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
+
+async def check_if_user_in_db(user_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        return True
+    else:
+        return False
+
+#check if a user is in combat
+async def is_in_combat(user_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `isInCombat` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if users[0] == 0:
+            return False
+        else:
+            return True
+        
+#set a user's InCombat status to true
+async def set_in_combat(user_id: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (True, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+
+#set a user's InCombat status to false
+async def set_not_in_combat(user_id: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (False, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+
+#set a user's health
+async def set_health(user_id: int, health: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `health` = ? WHERE `user_id` = ?", (health, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
 
 #look at a user's profile, returns a list
 async def profile(user_id: int) -> list:
@@ -215,7 +245,7 @@ async def add_basic_items() -> None:
             print(f"|{item['item_name']}| is already in the database")
             pass
         else:
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type']))
             print(f"Added |{item['item_name']}| to the database")
 
 #function to add all the items with inShop = True to the shop table and then add a random int between 1 and 10 to the amount column
@@ -318,6 +348,96 @@ async def check_item_equipped(user_id: int, item_id: str) -> int:
         else:
             return None
         
+#get all the equipped items
+async def get_equipped_items(user_id: int) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1", (user_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+        
+#get all the equipped items with the item type "Weapon"
+async def get_equipped_weapon(user_id: int) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Weapon'", (user_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+        
+#get equipped weapon damage
+async def get_equipped_weapon_damage(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Weapon'", (user_id,), fetch="all")
+        if data is not None:
+            return data[8]
+        else:
+            return None
+        
+#get equipped weapon name
+async def get_equipped_weapon_name(user_id: int) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Weapon'", (user_id,), fetch="all")
+        if data is not None:
+            return data[3]
+        else:
+            return None
+
+#get equipped weapon emoji
+async def get_equipped_weapon_emoji(user_id: int) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Weapon'", (user_id,), fetch="all")
+        if data is not None:
+            return data[4]
+        else:
+            return None
+        
+#get equipped weapon ID
+async def get_equipped_weapon_id(user_id: int) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Weapon'", (user_id,), fetch="all")
+        if data is not None:
+            return data[2]
+        else:
+            return None
+        
+#get equipped armor
+async def get_equipped_armor(user_id: int) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Armor'", (user_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+
+#get equipped armor name
+async def get_equipped_armor_name(user_id: int) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Armor'", (user_id,), fetch="all")
+        if data is not None:
+            return data[3]
+        else:
+            return None
+        
+#get equipped armor emoji
+async def get_equipped_armor_emoji(user_id: int) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Armor'", (user_id,), fetch="all")
+        if data is not None:
+            return data[4]
+        else:
+            return None
+        
+#get equipped armor damage
+async def get_equipped_armor_damage(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Armor'", (user_id,), fetch="all")
+        if data is not None:
+            return data[8]
+        else:
+            return None
+        
 #check if the item ID is a streamer item
 async def check_streamer_item(item_id: str) -> int:
         db = DB()
@@ -361,6 +481,70 @@ async def check_emoji(emoji: str) -> int:
             return 1
         else:
             return 0
+        
+#set a users isBurning to 1
+async def set_user_burning(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `users` SET `isBurning` = 1 WHERE user_id = ?", (user_id,))
+            return 1
+        else:
+            return None
+        
+#set a users isBurning to 0
+async def set_user_not_burning(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `users` SET `isBurning` = 0 WHERE user_id = ?", (user_id,))
+            return 1
+        else:
+            return None
+
+#check if a user is burning
+async def check_user_burning(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            if data[4] == 1:
+                return 1
+            else:
+                return None
+        else:
+            return None
+        
+#set a users isPoisoned to 1
+async def set_user_poisoned(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `users` SET `isPoisoned` = 1 WHERE user_id = ?", (user_id,))
+            return 1
+        else:
+            return None
+
+#set a users isPoisoned to 0
+async def set_user_not_poisoned(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `users` SET `isPoisoned` = 0 WHERE user_id = ?", (user_id,))
+            return 1
+        else:
+            return None
+
+#check if a user is poisoned
+async def check_user_poisoned(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            if data[5] == 1:
+                return 1
+            else:
+                return None
+        else:
+            return None
 
 #make a request to the twitch api to get the twitch id of the streamer
 async def get_twitch_id(streamer_channel: str) -> int:
@@ -466,7 +650,7 @@ async def view_streamers() -> list:
             return result if result is not None else []
         
 #add an item to the streamer_items table, uses the streamersID from the streamer table and the item name and the item price
-async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str) -> int:
+async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str, item_damage) -> int:
     """
     This function will add an item to the streamer_items table.
 
@@ -480,7 +664,7 @@ async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarit
     item_id = item_id.replace(" ", "_")
     async with aiosqlite.connect("database/database.db") as db:
         #add all of it to the database
-        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type))
+        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type, item_damage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type, item_damage))
         await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM streamer_items")
         async with rows as cursor:
