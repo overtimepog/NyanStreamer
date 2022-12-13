@@ -28,31 +28,29 @@ async def deathbattle(ctx: Context, user1, user2):
 
     #User 1
     user = discord.utils.get(ctx.guild.members, id=int(user1))
-    avatar = user.avatar.url
-    response = requests.get(avatar)
-    img = Image.open(BytesIO(response.content))
+    avatar1url = user.avatar.url
+    response = requests.get(avatar1url)
+    avatar1 = Image.open(BytesIO(response.content))
     draw = ImageDraw.Draw(background)
-    font = ImageFont.truetype("fonts/arial.ttf", 20)
+    font = ImageFont.truetype("fonts/arial.ttf", 30)
     #draw the user's profile picture
-
-    #TODO: place the user's profile picture and name in the correct spots
-    background.paste(img, (50, 50))
+    avatar1 = avatar1.resize((500, 500))
+    background.paste(avatar1, (50, 320))
     #draw the user's name
-    draw.text((50, 150), user.name, (255, 255, 255), font=font)
+    draw.text((70, 860), user.name, (0, 0, 0), font=font)
 
     #User 2
     user = discord.utils.get(ctx.guild.members, id=int(user2))
     avatar2url = user.avatar.url
     draw = ImageDraw.Draw(background)
-    font = ImageFont.truetype("fonts/arial.ttf", 20)
+    font = ImageFont.truetype("fonts/arial.ttf", 30)
     #draw the user's profile picture
     response = requests.get(avatar2url)
     avatar2 = Image.open(BytesIO(response.content))
-
-    #TODO: place the user's profile picture and name in the correct spots
-    background.paste(avatar2, (650, 50))
+    avatar2 = avatar2.resize((500, 500))
+    background.paste(avatar2, (1300, 320))
     #draw the user's name
-    draw.text((650, 150), user.name, (255, 255, 255), font=font)
+    draw.text((1070, 860), user.name, (0, 0, 0), font=font)
 
     #save the image
     background.save("images/battle.png")

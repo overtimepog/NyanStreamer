@@ -868,6 +868,17 @@ class Items(commands.Cog, name="template"):
         if enemy_in_battle == True:
             await ctx.send("The enemy is already in a battle!")
             return
+        #check if the user is dead
+        user_is_alive = await db_manager.is_alive(user_id)
+        if user_is_alive == False:
+            await ctx.send("You are dead! wait to respawn! or use an item to revive!")
+            return
+        #check if the enemy is dead
+        enemy_is_alive = await db_manager.is_alive(enemy_id)
+        if enemy_is_alive == False:
+            await ctx.send("The enemy is dead! wait for them to respawn! or tell them to use an item to revive!")
+            return
+
         
         await battle.deathbattle(ctx, user_id, enemy_id)
 
