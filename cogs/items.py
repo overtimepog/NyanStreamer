@@ -879,8 +879,10 @@ class Items(commands.Cog, name="template"):
             await ctx.send("The enemy is dead! wait for them to respawn! or tell them to use an item to revive!")
             return
 
-        
-        await battle.deathbattle(ctx, user_id, enemy_id)
+        await ctx.send(f"{ctx.author.name} is challenging {user.name} to a death battle!")
+        author_name = ctx.author.name
+        enemy_name = user.name
+        await battle.deathbattle(ctx, user_id, enemy_id, author_name, enemy_name)
 
 
 

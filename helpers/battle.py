@@ -10,19 +10,19 @@ from discord.ext.commands import Bot, Context
 from helpers import db_manager
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 import os
+import asyncio
 from io import BytesIO
 
-async def deathbattle(ctx: Context, user1, user2):
+async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     turnCount = 0
     #set each users isInCombat to true
-    await db_manager.set_in_combat(user1)
-    await db_manager.set_in_combat(user2)
-    embed = discord.Embed(title="Battle", description="Battle between <@" + str(user1) + "> and <@" + str(user2) + ">", color=0x00ff00)
-    msg = await ctx.send(embed=embed)
-
     #TODO: figure out how to get the path of this file without hardcoding it
-    path = r"C:\Users\truen\OneDrive\Desktop\Stuff\projects\DankStreamer\images\battle_backround.png"
-    background = Image.open(path)
+    #get the background image path
+    imgpath = "images/battle_backround.png"
+    fontPath = "fonts/G_ari_bd.ttf"
+    
+    #open the background image
+    background = Image.open(imgpath)
     #Q, how do I get the path of this file
     #A, use os.path.dirname(__file__)
 
@@ -32,7 +32,7 @@ async def deathbattle(ctx: Context, user1, user2):
     response = requests.get(avatar1url)
     avatar1 = Image.open(BytesIO(response.content))
     draw = ImageDraw.Draw(background)
-    font = ImageFont.truetype("fonts/arial.ttf", 30)
+    font = ImageFont.truetype(fontPath, 30)
     #draw the user's profile picture
     avatar1 = avatar1.resize((500, 500))
     background.paste(avatar1, (50, 320))
@@ -43,7 +43,7 @@ async def deathbattle(ctx: Context, user1, user2):
     user = discord.utils.get(ctx.guild.members, id=int(user2))
     avatar2url = user.avatar.url
     draw = ImageDraw.Draw(background)
-    font = ImageFont.truetype("fonts/arial.ttf", 30)
+    font = ImageFont.truetype(fontPath, 30)
     #draw the user's profile picture
     response = requests.get(avatar2url)
     avatar2 = Image.open(BytesIO(response.content))
@@ -58,11 +58,25 @@ async def deathbattle(ctx: Context, user1, user2):
     await ctx.send(file=discord.File("images/battle.png"))
     #delete the image
     os.remove("images/battle.png")
-
-
-
-
-
+    
+    await db_manager.set_in_combat(user1)
+    await db_manager.set_in_combat(user2)
+    embed = discord.Embed(title="Battle", color=0x00ff00)
+    user1_health = await db_manager.get_health(user1)
+    user2_health = await db_manager.get_health(user2)
+    #remove the () and , from the health
+    user1_health = str(user1_health).replace("(", "")
+    user1_health = str(user1_health).replace(")", "")
+    user1_health = str(user1_health).replace(",", "")
+    user2_health = str(user2_health).replace("(", "")
+    user2_health = str(user2_health).replace(")", "")
+    user2_health = str(user2_health).replace(",", "")
+    embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
+    embed.add_field(name=user2_name, value="Health: " + user2_health, inline=True)
+    prev_desc = None
+    
+    #save the previous description
+    msg = await ctx.channel.send(embed=embed)
 
     while await db_manager.is_alive(user1) and await db_manager.is_alive(user2):
         # User 1
@@ -70,7 +84,7 @@ async def deathbattle(ctx: Context, user1, user2):
         user1_weapon = await db_manager.get_equipped_weapon(user1)
         if user1_weapon == None or user1_weapon == []:
             user1_weapon = "Fists"
-            user1_damage = 100
+            user1_damage = 2
         else:
             user1_damage = await db_manager.get_equipped_weapon_damage(user1)
         #get the equipped armor
@@ -111,18 +125,65 @@ async def deathbattle(ctx: Context, user1, user2):
         if turnCount % 2 == 0:
             #user 1 attacks
             await db_manager.remove_health(user2, user1_damage)
-            #send turn count
-            #generate embed with turn count and damage
-            embed = discord.Embed(title="Battle", description="Turn " + str(turnCount) + " | <@" + str(user1) + "> attacked <@" + str(user2) + "> for " + str(user1_damage) + " damage!", color=0x00ff00)
+            #make embed with the previous description plus the new description
+            if prev_desc == None:
+                prev_desc = ""
+            Newdescription = prev_desc + "\n" + "__" + user1_name + "__ attacked __" + user2_name + "__ with __" + user1_weapon + "__ for __" + str(user1_damage) + "__ damage"
+            #convert the embed to a string
+            Newdescription = str(Newdescription)
+            #if there are more than 4 lines in the embed, remove the first line
+            if Newdescription.count("\n") > 4:
+                Newdescription = Newdescription.split("\n", 1)[1]
+            embed = discord.Embed(title="Battle", description=f"`{Newdescription}`", color=0x00ff00)
+            #edit the embed feilds to include the new health
+            user1_health = await db_manager.get_health(user1)
+            user2_health = await db_manager.get_health(user2)
+            #remove the () and , from the health
+            user1_health = str(user1_health).replace("(", "")
+            user1_health = str(user1_health).replace(")", "")
+            user1_health = str(user1_health).replace(",", "")
+            user2_health = str(user2_health).replace("(", "")
+            user2_health = str(user2_health).replace(")", "")
+            user2_health = str(user2_health).replace(",", "")
+            
+            #edit the embed feilds to include the new health
+            embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
+            embed.add_field(name=user2_name, value="Health: " + user2_health, inline=True)
+            prev_desc = Newdescription
+            #Q, whats the hex color for green
+            #A, 0x00ff00
             await msg.edit(embed=embed)
 
         #set user 2's turns to any even number
         if turnCount % 2 == 1:
             #user 2 attacks
             await db_manager.remove_health(user1, user2_damage)
-            #send turn count
-            #generate embed with turn count and damage
-            embed = discord.Embed(title="Battle", description="Turn " + str(turnCount) + " | <@" + str(user2) + "> attacked <@" + str(user1) + "> for " + str(user2_damage) + " damage!", color=0x00ff00)
+            #make embed with the previous description plus the new description
+            if prev_desc == None:
+                prev_desc = ""
+            Newdescription = prev_desc + "\n" + "__" + user2_name + "__ attacked __" + user1_name + "__ with __" + user2_weapon + "__ for __" + str(user2_damage) + "__ damage"
+            Newdescription = str(Newdescription)
+            #if there are more than 4 lines in the embed, remove the first line
+            if Newdescription.count("\n") > 4:
+                Newdescription = Newdescription.split("\n", 1)[1]
+            embed = discord.Embed(title="Battle", description=f"`{Newdescription}`", color=0x00ff00)
+            #edit the embed feilds to include the new health
+            user1_health = await db_manager.get_health(user1)
+            user2_health = await db_manager.get_health(user2)
+            #remove the () and , from the health
+            user1_health = str(user1_health).replace("(", "")
+            user1_health = str(user1_health).replace(")", "")
+            user1_health = str(user1_health).replace(",", "")
+            user2_health = str(user2_health).replace("(", "")
+            user2_health = str(user2_health).replace(")", "")
+            user2_health = str(user2_health).replace(",", "")
+            
+            #edit the embed feilds to include the new health
+            embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
+            embed.add_field(name=user2_name, value="Health: " + user2_health, inline=True)
+            prev_desc = Newdescription
+            #Q, whats the hex color for green
+            #A, 0x00ff00
             await msg.edit(embed=embed)
 
         user2_health = await db_manager.get_health(user2)
@@ -159,18 +220,18 @@ async def deathbattle(ctx: Context, user1, user2):
             await db_manager.set_dead(user2)
 
         #add 1 to the turn count
+        #sleep for 2 seconds
+        await asyncio.sleep(2)
         turnCount += 1
 
     if await db_manager.is_alive(user1):
         print("User 1 won!")
-        embed = discord.Embed(title="Battle", description="<@" + str(user1) + "> won the battle!", color=0x00ff00)
         await msg.edit(embed=embed)
         await db_manager.set_not_in_combat(user1)
         await db_manager.set_not_in_combat(user2)
         return user1
     else:
         print("User 2 won!")
-        embed = discord.Embed(title="Battle", description="<@" + str(user2) + "> won the battle!", color=0x00ff00)
         await msg.edit(embed=embed)
         #set both users isInCombat to false
         await db_manager.set_not_in_combat(user1)
