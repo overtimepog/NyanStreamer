@@ -43,8 +43,23 @@ basic_items = [
         "item_crit_chance": "1%"
     },
     {
-        "item_id": "AdminSword",
-        "item_name": "Admin Sword",
+        "item_id": "CritSword",
+        "item_name": "Crit Sword",
+        "item_price": 25,
+        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": 4,
+        "isUsable": False,
+        "inShop": True,
+        "isEquippable": True,
+        "item_description": "A wooden blade for testing purposes.",
+        "item_sub_type": "None",
+        "item_crit_chance": "100%"
+    },
+    {
+        "item_id": "FireSword",
+        "item_name": "Fire Sword",
         "item_price": 25,
         "item_emoji": "<:Wooden_Sword:1051976486283919360>",
         "item_rarity": "Common",
@@ -55,7 +70,7 @@ basic_items = [
         "isEquippable": True,
         "item_description": "A wooden blade for testing purposes.",
         "item_sub_type": "Fire",
-        "item_crit_chance": "100%"
+        "item_crit_chance": "0%"
     },
 
 ]
