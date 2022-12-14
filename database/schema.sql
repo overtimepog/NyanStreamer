@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `isBurning` boolean NOT NULL,
   `isPoisoned` boolean NOT NULL,
   `isFrozen` boolean NOT NULL,
-  `isStunned` boolean NOT NULL,
+  `isParalyzed` boolean NOT NULL,
   `isBleeding` boolean NOT NULL,
   `isDead` boolean NOT NULL,
   `isInCombat` boolean NOT NULL

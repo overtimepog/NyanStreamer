@@ -78,6 +78,8 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     #before the loop starts, set the burn turn to 0 for each user
     user1_burn_turn = 0
     user2_burn_turn = 0
+    user1_poison_turn = 0
+    user2_poison_turn = 0
     
     while await db_manager.is_alive(user1) and await db_manager.is_alive(user2):
         # User 1
@@ -175,10 +177,19 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             if user1_burn_turn != None and turnCount - user1_burn_turn >= 2:
                 user1_burn_turn = None
                 db_manager.set_user_not_burning(user1)
+
+            #if its been 2 turns since the user was poisoned, remove the poisoned status
+            if user1_poison_turn != None and turnCount - user1_poison_turn >= 2:
+                user1_poison_turn = None
+                db_manager.set_user_not_poisoned(user1)
             #user 1 attacks
             await db_manager.remove_health(user2, user1_damage)
             #have the user have a 1/10 chance of being set on fire
             isSetONFire = random.randint(1, 10)
+            #have the user have a 1/10 chance of being paralyzed
+            isPoisoned = random.randint(1, 10)
+            #a 1/10 chance of being paralyzed
+            isParalyzed = random.randint(1, 10)
             #make embed with the previous description plus the new description
             if prev_desc == None:
                 prev_desc = ""
@@ -187,11 +198,29 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 Newdescription = prev_desc + "\n" + "__" + user1_name + "__ hit a crit on __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage (crit)"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user1_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + user2_name + "__ on fire with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + user2_name + "__ on fire <:Flame:1052619089127932044> with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user2)
                 #mark the turn the user was set on fire
                 user2_burn_turn = turnCount
+            #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
+            elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poison:1052619162528251965> __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 3 damage per turn (poisoned)"
+                #set the users poison status to true
+                await db_manager.set_user_poisoned(user2)
+                #mark the turn the user was poisoned
+                user2_poison_turn = turnCount
+
+            #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
+            elif user1_weapon_subtype == "Paralyze" and isParalyzed == 1:
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ paralyzed ⚡ __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ they wont be able to attack for a turn (paralyzed)"
+                #set the users poison status to true
+                await db_manager.set_user_paralyzed(user2)
+                #mark the turn the user was poisoned
+                user2_paralyze_turn = turnCount
+                #skip the users turn
+                turnCount += 1
+
                 
             else:
                 #import User2 promts from assets/user1Promts.json
@@ -256,6 +285,18 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 #add a (burning) to the users health
                 user2_health = user2_health + " (burning)"
                 #mark down the turn count when the user was set on fire
+
+            if await db_manager.check_user_poisoned(user1):
+                await db_manager.remove_health(user1, 3)
+                #add a (poisoned) to the users health
+                user1_health = user1_health + " (poisoned)"
+                #mark down the turn count when the user was set on fire
+            
+            if await db_manager.check_user_poisoned(user2):
+                await db_manager.remove_health(user2, 3)
+                #add a (poisoned) to the users health
+                user2_health = user2_health + " (poisoned)"
+                #mark down the turn count when the user was set on fire
             
             #edit the embed feilds to include the new health
             embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
@@ -271,10 +312,22 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             if user2_burn_turn != None and turnCount - user2_burn_turn >= 2:
                 user2_burn_turn = None
                 await db_manager.set_user_not_burning(user2)
+
+            if user2_poison_turn != None and turnCount - user2_poison_turn >= 2:
+                user2_poison_turn = None
+                await db_manager.set_user_not_poisoned(user2)
+            
+            #after 1 turn, remove the paralyzed status
+            if user2_paralyze_turn != None and turnCount - user2_paralyze_turn >= 1:
+                user2_paralyze_turn = None
+                await db_manager.set_user_not_paralyzed(user2)
+
             #user 2 attacks
             await db_manager.remove_health(user1, user2_damage)
             #roll a 1/10 chance for the user to be set on fire
             isSetONFire = random.randint(1, 10)
+            isPoisoned = random.randint(1, 10)
+            isParalyzed = random.randint(1, 10)
             #make embed with the previous description plus the new description
             if prev_desc == None:
                 prev_desc = ""
@@ -283,11 +336,29 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 Newdescription = prev_desc + "\n" + "__" + user2_name + "__ hit a crit on __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage (crit)"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user2_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ set __" + user1_name + "__ on fire with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ set __" + user1_name + "__ on fire <:Flame:1052619089127932044> with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user1)
                 #mark down the turn count when the user was set on fire
                 user1_burn_turn = turnCount
+            #if the sub type is Poison tell the user they were set on fire and add a (poisoned) to the end of the damage
+
+            elif user2_weapon_subtype == "Poison" and isPoisoned == 1:
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ poisoned <:poison:1052619162528251965> __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 3 damage per turn (poisoned)"
+                #set the users poison status to true
+                await db_manager.set_user_poisoned(user1)
+                #mark down the turn count when the user was set on fire
+                user1_poison_turn = turnCount
+            #if the sub type is paralysis tell the user they were set on paralyzed and add a (paralyzed) to the end of the damage
+
+            elif user2_weapon_subtype == "Paralysis" and isParalyzed == 1:
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ paralyzed ⚡ __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ they wont be able to attack for a turn (paralyzed)"
+                #set the users paralysis status to true
+                await db_manager.set_user_paralyzed(user1)
+                #skip the users turn
+                #save the turn count when the user was paralyzed
+                user1_paralyze_turn = turnCount
+                turnCount = turnCount + 1
             else:
                 #do the same thing as user 1 but with user 2
                 with open("assets/user2Promts.json") as f:
@@ -351,7 +422,18 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 #add a (burning) to the users health
                 user1_health = user1_health + " (burning)"
                 #mark down the turn count when the user was set on fire
+
+            if await db_manager.check_user_poisoned(user1):
+                await db_manager.remove_health(user1, 3)
+                #add a (poisoned) to the users health
+                user1_health = user1_health + " (poisoned)"
+                #mark down the turn count when the user was set on fire
             
+            if await db_manager.check_user_poisoned(user2):
+                await db_manager.remove_health(user2, 3)
+                #add a (poisoned) to the users health
+                user2_health = user2_health + " (poisoned)"
+                #mark down the turn count when the user was set on fire
             
             #edit the embed feilds to include the new health
             embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)

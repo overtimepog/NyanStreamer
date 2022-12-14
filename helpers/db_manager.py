@@ -587,6 +587,38 @@ async def check_user_poisoned(user_id: int) -> int:
                 return None
         else:
             return None
+        
+#make one for paralyzed
+async def set_user_paralyzed(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `users` SET `isParalyzed` = 1 WHERE user_id = ?", (user_id,))
+            return 1
+        else:
+            return None
+
+#set a users isParalyzed to 0
+async def set_user_not_paralyzed(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `users` SET `isParalyzed` = 0 WHERE user_id = ?", (user_id,))
+            return 1
+        else:
+            return None
+        
+#check if a user is paralyzed
+async def check_user_paralyzed(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if data is not None:
+            if data[7] == 1:
+                return 1
+            else:
+                return None
+        else:
+            return None
 
 #make a request to the twitch api to get the twitch id of the streamer
 async def get_twitch_id(streamer_channel: str) -> int:
