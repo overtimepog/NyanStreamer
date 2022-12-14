@@ -12,6 +12,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 import os
 import asyncio
 from io import BytesIO
+import json
 
 async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     turnCount = 0
@@ -161,9 +162,30 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 prev_desc = ""
             #if they crit, add a (crit) to the end of the damage
             if user1_roll <= user1_crit:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ attacked __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage (crit)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ hit a crit on __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage (crit)"
             else:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ attacked __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage"
+                #import User2 promts from assets/user1Promts.json
+                with open("assets/user1Promts.json") as f:
+                    user1Promts = json.load(f)
+                #get a random user1 promt
+                user1Promt = random.choice(user1Promts)
+                #convert the promt to a string
+                user1Promt = str(user1Promt)
+                #replace the {user2_name} with the user2 name
+                #convert both names to strings
+                user1_name = str(user1_name)
+                user2_name = str(user2_name)
+                user1Promt = user1Promt.replace("{user2_name}", "___" + user2_name + "__")
+                #replace {user1_name} with the user1 name
+                user1Promt = user1Promt.replace("{user1_name}", "__" + user1_name + "__")
+                #replace the {user2_weapon_name} with the user2 weapon
+                user1Promt = user1Promt.replace("{user1_weapon_name}", "__" + user1_weapon_name + "__")
+                #replace the {user2_damage} with the user2 damage
+                user1Promt = user1Promt.replace("{user1_weapon_damage}", "__" + str(user1_damage) + "__")
+                
+                #add the user2 promt to the new description
+                
+                Newdescription = prev_desc + "\n" + f"{user1Promt}"
             #convert the embed to a string
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
@@ -210,9 +232,27 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 prev_desc = ""
             #if they crit, add a (crit) to the end of the damage
             if user2_roll <= user2_crit:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ attacked __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage (crit)"
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ hit a crit on __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage (crit)"
             else:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ attacked __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage"
+                #do the same thing as user 1 but with user 2
+                with open("assets/user2Promts.json") as f:
+                    user2Promts = json.load(f)
+                #get a random user2 promt
+                user2Promt = random.choice(user2Promts)
+                #convert the promt to a string
+                user2Promt = str(user2Promt)
+                #replace the {user1_name} with the user1 name
+                #convert both names to strings
+                user1_name = str(user1_name)
+                user2_name = str(user2_name)
+                user2Promt = user2Promt.replace("{user1_name}", "__" + user1_name + "__")
+                #replace {user2_name} with the user2 name
+                user2Promt = user2Promt.replace("{user2_name}", "__" + user2_name + "__")
+                #replace the {user2_weapon_name} with the user1 weapon
+                user2Promt = user2Promt.replace("{user2_weapon_name}", "__" + user2_weapon_name + "__")
+                #replace the {user2_damage} with the user1 damage
+                user2Promt = user2Promt.replace("{user2_weapon_damage}", "__" + str(user2_damage) + "__")
+                Newdescription = prev_desc + "\n" + f"{user2Promt}"
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
             if Newdescription.count("\n") > 3:
