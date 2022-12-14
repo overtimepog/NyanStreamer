@@ -219,7 +219,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #convert the embed to a string
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
-            if Newdescription.count("\n") > 3:
+            if Newdescription.count("\n") >= 3:
                 Newdescription = Newdescription.split("\n", 1)[1]
             embed = discord.Embed(description=f"{Newdescription}", color=0x00ff00)
             #edit the embed feilds to include the new health
@@ -310,7 +310,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 Newdescription = prev_desc + "\n" + f"{user2Promt}"
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
-            if Newdescription.count("\n") > 3:
+            if Newdescription.count("\n") >= 3:
                 Newdescription = Newdescription.split("\n", 1)[1]
             embed = discord.Embed(description=f"{Newdescription}", color=0xff0000)
             #Q, whats the hex color for yellow
@@ -372,8 +372,8 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         #set new description to the previous description plus the winner
         Newdescription = prev_desc + "\n" + "__" + user1_name + "__ won!"
         Newdescription = str(Newdescription)
-        #if there are more than 4 lines in the embed, remove the first line
-        if Newdescription.count("\n") > 3:
+        #if there are more than or exactly 4 lines in the embed, remove the first line
+        if Newdescription.count("\n") >= 3:
             Newdescription = Newdescription.split("\n", 1)[1]
         embed = discord.Embed(description=f"{Newdescription}", color=0xffff00)
         #edit the embed feilds to include the new health
@@ -416,7 +416,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         Newdescription = prev_desc + "\n" + "__" + user2_name + "__ won!"
         Newdescription = str(Newdescription)
         #if there are more than 4 lines in the embed, remove the first line
-        if Newdescription.count("\n") > 3:
+        if Newdescription.count("\n") >= 3:
             Newdescription = Newdescription.split("\n", 1)[1]
         embed = discord.Embed(description=f"{Newdescription}", color=0xffff00)
         #edit the embed feilds to include the new health
