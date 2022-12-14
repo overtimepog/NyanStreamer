@@ -370,7 +370,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         #once a user wins, set both users isInCombat to false, and edit the embed to show who won
         print("User 1 won!")
         #set new description to the previous description plus the winner
-        Newdescription = prev_desc + "\n" + "__" + user1_name + "__ won!"
+        Newdescription = prev_desc + "\n" + "🏆" + user1_name + " won!"
         Newdescription = str(Newdescription)
         #if there are more than or exactly 4 lines in the embed, remove the first line
         if Newdescription.count("\n") >= 3:
@@ -413,7 +413,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     else:
         print("User 2 won!")
         #set new description to the previous description plus the winner
-        Newdescription = prev_desc + "\n" + "__" + user2_name + "__ won!"
+        Newdescription = prev_desc + "\n" + "🏆" + user2_name + " won!"
         Newdescription = str(Newdescription)
         #if there are more than 4 lines in the embed, remove the first line
         if Newdescription.count("\n") >= 3:
