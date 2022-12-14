@@ -1,5 +1,8 @@
 [
     "{user2_name} stabbed {user1_name} in the back with {user2_weapon_name} dealing {user2_weapon_damage} damage.",
     "{user2_name} swung at {user1_name} with {user2_weapon_name} dealing {user2_weapon_damage} damage.",
-    "{user2_name} shanked {user1_name} with {user2_weapon_name} dealing {user2_weapon_damage} damage."
+    "{user2_name} shanked {user1_name} with {user2_weapon_name} dealing {user2_weapon_damage} damage.",
+    "{user2_name} sliced {user1_name} with {user2_weapon_name} dealing {user2_weapon_damage} damage.",
+    "{user2_name} smacked {user1_name} with {user2_weapon_name} dealing {user2_weapon_damage} damage.",
+    "{user2_name} smacked {user1_name} across the face with {user2_weapon_name} dealing {user2_weapon_damage} damage."
 ]
