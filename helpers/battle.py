@@ -451,5 +451,3 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         await db_manager.set_not_in_combat(user1)
         await db_manager.set_not_in_combat(user2)
         return user2
-    
-
