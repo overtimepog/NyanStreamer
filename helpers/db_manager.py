@@ -39,8 +39,25 @@ basic_items = [
         "inShop": True,
         "isEquippable": True,
         "item_description": "A wooden sword. It's not very strong, but it's better than nothing.",
-        "item_sub_type": "Flame"
-    }
+        "item_sub_type": "None",
+        "item_crit_chance": "1%"
+    },
+    {
+        "item_id": "AdminSword",
+        "item_name": "Admin Sword",
+        "item_price": 25,
+        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": 4,
+        "isUsable": False,
+        "inShop": True,
+        "isEquippable": True,
+        "item_description": "A wooden blade for testing purposes.",
+        "item_sub_type": "Fire",
+        "item_crit_chance": "100%"
+    },
+
 ]
 
 class Database:
@@ -245,7 +262,8 @@ async def add_basic_items() -> None:
             print(f"|{item['item_name']}| is already in the database")
             pass
         else:
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, item_crit_chance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance']))
+            #insert crit chance
             print(f"Added |{item['item_name']}| to the database")
 
 #function to add all the items with inShop = True to the shop table and then add a random int between 1 and 10 to the amount column
@@ -399,6 +417,15 @@ async def get_equipped_weapon_id(user_id: int) -> str:
         data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Weapon'", (user_id,), fetch="all")
         if data is not None:
             return data[2]
+        else:
+            return None
+        
+#get equipped weapon crit chance
+async def get_equipped_weapon_crit_chance(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Weapon'", (user_id,), fetch="all")
+        if data is not None:
+            return data[7]
         else:
             return None
         
@@ -650,7 +677,7 @@ async def view_streamers() -> list:
             return result if result is not None else []
         
 #add an item to the streamer_items table, uses the streamersID from the streamer table and the item name and the item price
-async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str, item_damage) -> int:
+async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str, item_damage: int, item_sub_type: str, item_crit_chance: str) -> int:
     """
     This function will add an item to the streamer_items table.
 
@@ -664,7 +691,7 @@ async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarit
     item_id = item_id.replace(" ", "_")
     async with aiosqlite.connect("database/database.db") as db:
         #add all of it to the database
-        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type, item_damage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type, item_damage))
+        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type, item_damage, item_sub_type, item_crit_chance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type, item_damage, item_sub_type, item_crit_chance))
         await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM streamer_items")
         async with rows as cursor:
@@ -789,7 +816,7 @@ async def view_inventory(user_id: int) -> list:
         return []
         
 #add an item to the inventory table, uses the usersID from the users table and the item ID from the streamer_items table, if the item already exists in the inventory table, it will add 1 to the item_amount
-async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item_price: int, item_emoji: str, item_rarity: str, item_amount: int, item_type: str, item_damage: int, isEquipped: bool) -> int:
+async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item_price: int, item_emoji: str, item_rarity: str, item_amount: int, item_type: str, item_damage: int, isEquipped: bool, item_sub_type: str, item_crit_chance: str) -> int:
     """
     This function will add an item to the inventory table.
 
@@ -812,7 +839,19 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item
                 return 1
             else:
                 #if the item does not exist in the inventory table, add it to the inventory table
-                await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped))
+                  #`user_id` varchar(20) NOT NULL,
+  #`item_id` varchar(20) NOT NULL,
+  #`item_name` varchar(255) NOT NULL,
+  #`item_price` varchar(255) NOT NULL,
+  #`item_emoji` varchar(255) NOT NULL,
+  #`item_rarity` varchar(255) NOT NULL,
+  #`item_amount` int(11) NOT NULL,
+  #`item_type` varchar(255) NOT NULL,
+  #`item_damage` int(11) NOT NULL,
+  #`isEquipped` boolean NOT NULL,
+  #`item_sub_type` varchar(255) NOT NULL,
+  #`item_crit_chance` int(11) NOT NULL
+                await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_sub_type, item_crit_chance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_sub_type, item_crit_chance))
                 await db.commit()
                 rows = await db.execute("SELECT COUNT(*) FROM inventory")
                 async with rows as cursor:
@@ -944,6 +983,45 @@ async def get_streamer_item_type(item_id: str) -> str:
             result = await cursor.fetchone()
             return result[7] if result is not None else 0
         
+#get streamer item sub type via its id
+async def get_streamer_item_sub_type(item_id: str) -> str:
+    """
+    This function will get the sub type of an item.
+
+    :param item_id: The ID of the item that the sub type should be gotten from.
+    :return: The sub type of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[9] if result is not None else 0
+        
+#get streamer item crit chance via its id
+async def get_streamer_item_crit_chance(item_id: str) -> str:
+    """
+    This function will get the crit chance of an item.
+
+    :param item_id: The ID of the item that the crit chance should be gotten from.
+    :return: The crit chance of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[10] if result is not None else 0
+        
+#get streamer item damage via its id
+async def get_streamer_item_damage(item_id: str) -> int:
+    """
+    This function will get the damage of an item.
+
+    :param item_id: The ID of the item that the damage should be gotten from.
+    :return: The damage of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[8] if result is not None else 0
+        
 #get items basic items damage via its id
 async def get_basic_item_damage(item_id: str) -> int:
     """
@@ -1021,6 +1099,32 @@ async def get_basic_item_type(item_id: str) -> str:
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
             return result[5] if result is not None else 0
+        
+#get basic item sub type via its id
+async def get_basic_item_sub_type(item_id: str) -> str:
+    """
+    This function will get the sub type of an item.
+
+    :param item_id: The ID of the item that the sub type should be gotten from.
+    :return: The sub type of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[11] if result is not None else 0
+        
+#get basic items crit chance via its id
+async def get_basic_item_crit_chance(item_id: str) -> str:
+    """
+    This function will get the crit chance of an item.
+
+    :param item_id: The ID of the item that the crit chance should be gotten from.
+    :return: The crit chance of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[12] if result is not None else 0
         
 #get items basic items damage via its id
 async def get_basic_item_damage(item_id: str) -> int:

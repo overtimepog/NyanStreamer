@@ -223,18 +223,22 @@ class Items(commands.Cog, name="template"):
             if item_name in i:
                 await ctx.send(f"`{item_name}`already exists in the database.")
                 return
+        critChances = ['1%','2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%', '11%', '12%', '13%', '14%', '15%', '16%', '17%', '18%', '19%', '20%', '21%', '22%', '23%', '24%', '25%']
+
         presets = [
             {
         "item_price": 25,
         "item_rarity": "Common",
         "item_type": "Weapon",
-        "item_damage": 5
+        "item_damage": 5,
+        "item_sub_type": "Fire"
             },
             {
         "item_price": 50,
         "item_rarity": "Uncommon",
         "item_type": "Weapon",
-        "item_damage": 10
+        "item_damage": 10,
+        "item_sub_type": "Fire"
             },
         ]   
         #pick a random preset
@@ -243,9 +247,25 @@ class Items(commands.Cog, name="template"):
         item_rarity = preset['item_rarity']
         item_type = preset['item_type']
         item_damage = preset['item_damage']
+        item_sub_type = preset['item_sub_type']
+        if item_type == "Common":
+            #pic a random crit chance from the first 5 crit chances
+            item_crit_chance = random.choice(critChances[:5])
+        elif item_type == "Uncommon":
+            #pic a random crit chance from the first 10 crit chances but not the first 5
+            item_crit_chance = random.choice(critChances[5:10])
+        elif item_type == "Rare":
+            #pick a random crit chance after 10 but not after 15
+            item_crit_chance = random.choice(critChances[10:15])
+        elif item_type == "Epic":
+            #pic a random crit chance from the first 20 crit chances but not the first 15
+            item_crit_chance = random.choice(critChances[15:20])
+        elif item_type == "Legendary":
+            #pic a random crit chance from the first 20 crit chances but not the first 15
+            item_crit_chance = random.choice(critChances[20:25])
         #add the item to the database
         #send an embed to the streamer with the item info
-        embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+        embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}\n Item Crit Chance: {item_crit_chance}\n Item Sub Type: {item_sub_type}", color=0x00ff00)
         #set the embed thumbnail to the emoji url
         embed.set_thumbnail(url=item_emote_url)
         #create a button to confirm the item creation
@@ -258,7 +278,7 @@ class Items(commands.Cog, name="template"):
             async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button ):
                 await interaction.response.send_message("Item created.")
                 await interaction.message.delete()
-                await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage)
+                await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage, item_sub_type, item_crit_chance)
                 self.value = True
                 self.stop()
 
@@ -456,10 +476,12 @@ class Items(commands.Cog, name="template"):
                     item_type = await db_manager.get_basic_item_type(item_id)
                     item_damage = await db_manager.get_basic_item_damage(item_id)
                     item_name = await db_manager.get_basic_item_name(item_id)
+                    item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
+                    item_crit_chance = await db_manager.get_basic_item_crit_chance(item_id)
                     #remove the item from the shop
                     await db_manager.remove_shop_item_amount(item_id, amount)
                     #add the item to the users inventory
-                    await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, amount, item_type, item_damage, False)
+                    await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, amount, item_type, item_damage, False, item_sub_type, item_crit_chance)
                     #remove the price from the users money
                     await db_manager.remove_money(user_id, total_price)
                     await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
@@ -584,7 +606,7 @@ class Items(commands.Cog, name="template"):
             await db_manager.equip_item(user_id, item_id)
             await ctx.send(f"You equipped `{item_name}`")
         else:
-            await ctx.send(f"{item_name} is not equippable.")
+            await ctx.send(f"that is not equippable.")
             
     #a command to unequip an item using the unequip_item function from helpers\db_manager.py, check if the item is equipped, if it is, unequip it, if it isn't, say that it isn't equipped
     @commands.hybrid_command(
@@ -688,6 +710,9 @@ class Items(commands.Cog, name="template"):
                 item_damage = await db_manager.get_basic_item_damage(item_id)
                 #get the item type
                 item_type = await db_manager.get_basic_item_type(item_id)
+                item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
+                print(item_sub_type)
+                item_crit_chance = await db_manager.get_basic_item_crit_chance(item_id)
                 #get the item price
                 item_price = await db_manager.get_basic_item_price(item_id)
                 #get the item description
@@ -708,11 +733,21 @@ class Items(commands.Cog, name="template"):
                 #if the item is a weapon, add the damage
                 if item_type == "Weapon":
                     embed.add_field(name="Damage", value=f"{item_damage}")
+                    embed.add_field(name="Crit Chance", value=f"{item_crit_chance}")
                 #if the item is armor, add the Defence
                 elif item_type == "Armor":
                     embed.add_field(name="Defence", value=f"{item_damage}")
                 #add the price to the embed
                 embed.add_field(name="Price", value=f"{item_price}")
+                #add the crit chance to the embed
+                embed.add_field(name="Type", value=f"{item_type}")
+                if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                    pass
+                else:
+                    embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                
+
+                embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
                 await ctx.send(embed=embed)
                 return
@@ -731,6 +766,8 @@ class Items(commands.Cog, name="template"):
                 #get the item description
                 #get the item name
                 item_name = await db_manager.get_streamer_item_name(item_id)
+                item_crit_chance = await db_manager.get_streamer_item_crit_chance(item_id)
+                item_damage = await db_manager.get_streamer_item_damage(item_id)
                 #create an embed
                 embed = discord.Embed(
                     title=f"{item_name}",
@@ -741,13 +778,25 @@ class Items(commands.Cog, name="template"):
                 #set the thumbnail to the item emoji
                 print(emoji_url)
                 embed.set_thumbnail(url=emoji_url)
-                #add type to the embed
-                embed.add_field(name="Type", value=f"{item_type}")
                 embed.add_field(name="Rarity", value=f"{item_rarity}")
                 #if the item is a weapon, add the damage
+                if item_type == "Weapon":
+                    embed.add_field(name="Damage", value=f"{item_damage}")
+                    embed.add_field(name="Crit Chance", value=f"{item_crit_chance}")
                 #if the item is armor, add the Defence
+                elif item_type == "Armor":
+                    embed.add_field(name="Defence", value=f"{item_damage}")
                 #add the price to the embed
                 embed.add_field(name="Price", value=f"{item_price}")
+                #add the crit chance to the embed
+                embed.add_field(name="Type", value=f"{item_type}")
+                if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                    pass
+                else:
+                    embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                
+
+                embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
                 await ctx.send(embed=embed)
                 return
@@ -769,6 +818,9 @@ class Items(commands.Cog, name="template"):
                 item_damage = await db_manager.get_basic_item_damage(item_id)
                 #get the item type
                 item_type = await db_manager.get_basic_item_type(item_id)
+                item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
+                print(item_sub_type)
+                item_crit_chance = await db_manager.get_basic_item_crit_chance(item_id)
                 #get the item price
                 item_price = await db_manager.get_basic_item_price(item_id)
                 #get the item description
@@ -783,16 +835,25 @@ class Items(commands.Cog, name="template"):
                 )
                 #add the rarity to the embed
                 #set the thumbnail to the item emoji
+                print(emoji_url)
                 embed.set_thumbnail(url=emoji_url)
                 embed.add_field(name="Rarity", value=f"{item_rarity}")
                 #if the item is a weapon, add the damage
                 if item_type == "Weapon":
                     embed.add_field(name="Damage", value=f"{item_damage}")
+                    embed.add_field(name="Crit Chance", value=f"{item_crit_chance}")
                 #if the item is armor, add the Defence
                 elif item_type == "Armor":
                     embed.add_field(name="Defence", value=f"{item_damage}")
                 #add the price to the embed
                 embed.add_field(name="Price", value=f"{item_price}")
+                #add the crit chance to the embed
+                embed.add_field(name="Type", value=f"{item_type}")
+                if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                    pass
+                else:
+                    embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
                 await ctx.send(embed=embed)
                 return
@@ -813,7 +874,7 @@ class Items(commands.Cog, name="template"):
                 emoji_url = f"https://cdn.discordapp.com/emojis/{new_s}.png"
                 #convert the unicode emoji to a string
                 print(emoji_url)
-                        #get the emoji object
+                #get the emoji object
                 #convert emoji unicode to image url
                 #get the image url of the unicode emoji
                 #get the item damage
@@ -823,8 +884,9 @@ class Items(commands.Cog, name="template"):
                 item_price = await db_manager.get_streamer_item_price(item_id)
                 #get the item description
                 #get the item name
-                item_rarity = await db_manager.get_streamer_item_rarity(item_id)
                 item_name = await db_manager.get_streamer_item_name(item_id)
+                item_crit_chance = await db_manager.get_streamer_item_crit_chance(item_id)
+                item_damage = await db_manager.get_streamer_item_damage(item_id)
                 #create an embed
                 embed = discord.Embed(
                     title=f"{item_name}",
@@ -833,18 +895,26 @@ class Items(commands.Cog, name="template"):
                 )
                 #add the rarity to the embed
                 #set the thumbnail to the item emoji
-                print(emoji_url)
                 embed.set_thumbnail(url=emoji_url)
-                #add type to the embed
-                embed.add_field(name="Type", value=f"{item_type}")
                 embed.add_field(name="Rarity", value=f"{item_rarity}")
                 #if the item is a weapon, add the damage
+                if item_type == "Weapon":
+                    embed.add_field(name="Damage", value=f"{item_damage}")
+                    embed.add_field(name="Crit Chance", value=f"{item_crit_chance}")
                 #if the item is armor, add the Defence
+                elif item_type == "Armor":
+                    embed.add_field(name="Defence", value=f"{item_damage}")
                 #add the price to the embed
                 embed.add_field(name="Price", value=f"{item_price}")
+                #add the crit chance to the embed
+                embed.add_field(name="Type", value=f"{item_type}")
+                if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                    pass
+                else:
+                    embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
                 await ctx.send(embed=embed)
-                return
     #hybrid command to battle another player
     @commands.hybrid_command(
         name="deathbattle",

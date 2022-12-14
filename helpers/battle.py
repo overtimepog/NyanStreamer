@@ -78,38 +78,73 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         # User 1
         #get the equipped weapon
         user1_weapon = await db_manager.get_equipped_weapon(user1)
+        print(user1_weapon)
         if user1_weapon == None or user1_weapon == []:
-            user1_weapon = "Fists"
+            user1_weapon_name = "Fists"
             user1_damage = 35
         else:
-            user1_damage = await db_manager.get_equipped_weapon_damage(user1)
+            user1_weapon_name = user1_weapon[0][2]
+            #convert it to str
+            user1_weapon_name = str(user1_weapon_name)
+            user1_damage = user1_weapon[0][8]
         #get the equipped armor
         user1_armor = await db_manager.get_equipped_armor(user1)
         if user1_armor == None or user1_armor == []:
-            user1_armor = "Clothes"
+            user1_armor_name = "Clothes"
             user1_defense = 1
         else:
-            user1_defense = await db_manager.get_equipped_armor_damage(user1)
+            user1_armor_name = user1_armor[0][2]
+            user1_defense = user1_armor[0][8]
 
         # User 2
         #get the equipped weapon
         user2_weapon = await db_manager.get_equipped_weapon(user2)
         if user2_weapon == None or user2_weapon == []:
-            user2_weapon = "Fists"
+            user2_weapon_name = "Fists"
             user2_damage = 2
         else:
-            user2_damage = await db_manager.get_equipped_weapon_damage(user2)
+            user2_weapon_name = user2_weapon[0][2]
+            #convert it to str
+            user2_weapon_name = str(user2_weapon_name)
+            user2_damage = user2_weapon[0][8]
         #get the equipped armor
         user2_armor = await db_manager.get_equipped_armor(user2)
         if user2_armor == None or user2_armor == []:
-            user2_armor = "Clothes"
+            user2_armor_name = "Clothes"
             user2_defense = 1
         else:
-            user2_defense = await db_manager.get_equipped_armor_damage(user2)
+            user2_armor_name = user2_armor[0][2]
+            user2_defense = user2_armor[0][8]
 
-        # Calculate damage eah user will do
+        # Calculate damage each user will do
         user1_damage = user1_damage - user2_defense
         user2_damage = user2_damage - user1_defense
+
+        #grab the crit chance of each user and roll a random number between 1 and 100 to see if they crit
+        if user1_weapon_name == "Fists":
+            user1_crit = "0%"
+        else:
+            user1_crit = user1_weapon[0][11]
+
+        if user2_weapon_name == "Fists":
+            user2_crit = "0%"
+        else:
+            user2_crit = user2_weapon[0][11]
+
+        #remove the % from the crit chance
+        user1_crit = str(user1_crit).replace("%", "")
+        user2_crit = str(user2_crit).replace("%", "")
+        #convert the crit chance to an int
+        user1_crit = int(user1_crit)
+        user2_crit = int(user2_crit)
+        user1_roll = random.randint(1, 100)
+        user2_roll = random.randint(1, 100)
+        #if the roll is equal to the crit chance, double the damage\
+        if user1_roll <= user1_crit:
+            user1_damage = user1_damage * 2
+        if user2_roll <= user2_crit:
+            user2_damage = user2_damage * 2
+
 
         #if the damage is less than 0, set it to 0
         if user1_damage < 0:
@@ -124,7 +159,11 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #make embed with the previous description plus the new description
             if prev_desc == None:
                 prev_desc = ""
-            Newdescription = prev_desc + "\n" + "__" + user1_name + "__ attacked __" + user2_name + "__ with __" + user1_weapon + "__ for __" + str(user1_damage) + "__ damage"
+            #if they crit, add a (crit) to the end of the damage
+            if user1_roll <= user1_crit:
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ attacked __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage (crit)"
+            else:
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ attacked __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage"
             #convert the embed to a string
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
@@ -169,7 +208,11 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #make embed with the previous description plus the new description
             if prev_desc == None:
                 prev_desc = ""
-            Newdescription = prev_desc + "\n" + "__" + user2_name + "__ attacked __" + user1_name + "__ with __" + user2_weapon + "__ for __" + str(user2_damage) + "__ damage"
+            #if they crit, add a (crit) to the end of the damage
+            if user2_roll <= user2_crit:
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ attacked __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage (crit)"
+            else:
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ attacked __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage"
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
             if Newdescription.count("\n") > 3:
