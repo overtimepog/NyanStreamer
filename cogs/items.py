@@ -216,11 +216,12 @@ class Items(commands.Cog, name="template"):
         twitchID = await db_manager.get_twitchID(user_id)
         twitchID = int(twitchID)
         items = await db_manager.view_streamer_items(streamerChannel)
+        item_emote_url = item_emote.url
         emojiString = f'<:{item_emote.name}:{item_emote.id}>'
         print(items)
         for i in items:
             if item_name in i:
-                await ctx.send(f"`{item_name}` already exists in the database.")
+                await ctx.send(f"`{item_name}`already exists in the database.")
                 return
         presets = [
             {
@@ -244,7 +245,9 @@ class Items(commands.Cog, name="template"):
         item_damage = preset['item_damage']
         #add the item to the database
         #send an embed to the streamer with the item info
-        embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}{emojiString}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+        embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+        #set the embed thumbnail to the emoji url
+        embed.set_thumbnail(url=item_emote_url)
         #create a button to confirm the item creation
         class Buttons(discord.ui.View):
             def __init__(self):
@@ -252,16 +255,16 @@ class Items(commands.Cog, name="template"):
                 self.value = None
 
             @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
-            async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
-                await interaction.response.send_message("Item created.", ephemeral=True)
+            async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button ):
+                await interaction.response.send_message("Item created.")
+                await interaction.message.delete()
                 await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage)
                 self.value = True
                 self.stop()
 
             #reroll button
             @discord.ui.button(label="Reroll", style=discord.ButtonStyle.grey)
-            async def reroll(self, button: discord.ui.Button, interaction: discord.Interaction):
-                await interaction.response.send_message("Rerolling item.", ephemeral=True)
+            async def reroll(self, interaction: discord.Interaction, button: discord.ui.Button):
                 #reroll the item
                 #pick a random preset
                 preset = random.choice(presets)
@@ -270,12 +273,16 @@ class Items(commands.Cog, name="template"):
                 item_type = preset['item_type']
                 item_damage = preset['item_damage']
                 #send an embed to the streamer with the item info
-                embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}{emojiString}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+                embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+                #set the embed thumbnail to the emoji url
+                embed.set_thumbnail(url=item_emote_url)
                 await interaction.response.edit_message(embed=embed, view=self)
 
             @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red)
-            async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
-                await interaction.response.send_message("Item creation cancelled.", ephemeral=True)
+            async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+                await interaction.response.send_message("Item creation cancelled.")
+                #delete the message
+                await interaction.message.delete()
                 self.value = False
                 self.stop()
 

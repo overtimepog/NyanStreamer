@@ -50,18 +50,10 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     avatar2 = avatar2.resize((500, 500))
     background.paste(avatar2, (1300, 320))
     #draw the user's name
-    draw.text((1070, 860), user.name, (0, 0, 0), font=font)
-
-    #save the image
-    background.save("images/battle.png")
-    #send the image in chat
-    await ctx.send(file=discord.File("images/battle.png"))
-    #delete the image
-    os.remove("images/battle.png")
-    
+    draw.text((1070, 860), user.name, (0, 0, 0), font=font)    
     await db_manager.set_in_combat(user1)
     await db_manager.set_in_combat(user2)
-    embed = discord.Embed(title="Battle", color=0x00ff00)
+    embed = discord.Embed(color=0x00ff00)
     user1_health = await db_manager.get_health(user1)
     user2_health = await db_manager.get_health(user2)
     #remove the () and , from the health
@@ -74,17 +66,21 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
     embed.add_field(name=user2_name, value="Health: " + user2_health, inline=True)
     prev_desc = None
-    
-    #save the previous description
-    msg = await ctx.channel.send(embed=embed)
 
+    #save the image
+    background.save("images/battle.png")
+    #send the image in chat
+    msg = await ctx.channel.send(file=discord.File("images/battle.png"), embed=embed)
+    #delete the image
+    os.remove("images/battle.png")
+    
     while await db_manager.is_alive(user1) and await db_manager.is_alive(user2):
         # User 1
         #get the equipped weapon
         user1_weapon = await db_manager.get_equipped_weapon(user1)
         if user1_weapon == None or user1_weapon == []:
             user1_weapon = "Fists"
-            user1_damage = 2
+            user1_damage = 35
         else:
             user1_damage = await db_manager.get_equipped_weapon_damage(user1)
         #get the equipped armor
@@ -132,9 +128,9 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #convert the embed to a string
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
-            if Newdescription.count("\n") > 4:
+            if Newdescription.count("\n") > 3:
                 Newdescription = Newdescription.split("\n", 1)[1]
-            embed = discord.Embed(title="Battle", description=f"`{Newdescription}`", color=0x00ff00)
+            embed = discord.Embed(description=f"{Newdescription}", color=0x00ff00)
             #edit the embed feilds to include the new health
             user1_health = await db_manager.get_health(user1)
             user2_health = await db_manager.get_health(user2)
@@ -145,6 +141,18 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user2_health = str(user2_health).replace("(", "")
             user2_health = str(user2_health).replace(")", "")
             user2_health = str(user2_health).replace(",", "")
+
+            #comvert the health to an int
+            user1_health = int(user1_health)
+            user2_health = int(user2_health)
+
+            if user1_health < 0:
+                user1_health = 0
+            if user2_health < 0:
+                user2_health = 0
+
+            user1_health = str(user1_health)
+            user2_health = str(user2_health)
             
             #edit the embed feilds to include the new health
             embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
@@ -164,9 +172,11 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             Newdescription = prev_desc + "\n" + "__" + user2_name + "__ attacked __" + user1_name + "__ with __" + user2_weapon + "__ for __" + str(user2_damage) + "__ damage"
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
-            if Newdescription.count("\n") > 4:
+            if Newdescription.count("\n") > 3:
                 Newdescription = Newdescription.split("\n", 1)[1]
-            embed = discord.Embed(title="Battle", description=f"`{Newdescription}`", color=0x00ff00)
+            embed = discord.Embed(description=f"{Newdescription}", color=0xff0000)
+            #Q, whats the hex color for yellow
+            #A, 0xffff00
             #edit the embed feilds to include the new health
             user1_health = await db_manager.get_health(user1)
             user2_health = await db_manager.get_health(user2)
@@ -177,6 +187,20 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user2_health = str(user2_health).replace("(", "")
             user2_health = str(user2_health).replace(")", "")
             user2_health = str(user2_health).replace(",", "")
+
+            #comvert the health to an int
+            user1_health = int(user1_health)
+            user2_health = int(user2_health)
+            #if the health is less than 0 or 0, set it to 0 and break the loop
+            if user1_health <= 0:
+                user1_health = 0
+                break
+            if user2_health <= 0:
+                user2_health = 0
+                break
+
+            user1_health = str(user1_health)
+            user2_health = str(user2_health)
             
             #edit the embed feilds to include the new health
             embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
@@ -186,54 +210,93 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #A, 0x00ff00
             await msg.edit(embed=embed)
 
-        user2_health = await db_manager.get_health(user2)
-        user1_health = await db_manager.get_health(user1)
-        #convert health to int
-        #Q, how do I conert tuple to int?
-        #A, you can't, you have to convert it to a string first
-        user2_health = str(user2_health)
-        user1_health = str(user1_health)
-
-        #remove the () and , from the string
-        user2_health = user2_health.replace("(", "")
-        user2_health = user2_health.replace(")", "")
-        user2_health = user2_health.replace(",", "")
-        user1_health = user1_health.replace("(", "")
-        user1_health = user1_health.replace(")", "")
-        user1_health = user1_health.replace(",", "")
-
-        #convert to int
-        user2_health = int(user2_health)
-        user1_health = int(user1_health)
-
-        print("User 1 health: " + str(user1_health))
-        print("User 2 health: " + str(user2_health))
-
-        if user1_health <= 0:
-            #set the users health to 0
-            await db_manager.set_health(user1, 0)
-            await db_manager.set_dead(user1)
-
-        if user2_health <= 0:
-            #set the users health to 0
-            await db_manager.set_health(user2, 0)
-            await db_manager.set_dead(user2)
-
         #add 1 to the turn count
         #sleep for 2 seconds
-        await asyncio.sleep(2)
         turnCount += 1
+        await asyncio.sleep(2)
 
     if await db_manager.is_alive(user1):
+        #once a user wins, set both users isInCombat to false, and edit the embed to show who won
         print("User 1 won!")
-        await msg.edit(embed=embed)
+        #set new description to the previous description plus the winner
+        Newdescription = prev_desc + "\n" + "__" + user1_name + "__ won!"
+        Newdescription = str(Newdescription)
+        #if there are more than 4 lines in the embed, remove the first line
+        if Newdescription.count("\n") > 3:
+            Newdescription = Newdescription.split("\n", 1)[1]
+        embed = discord.Embed(description=f"{Newdescription}", color=0xffff00)
+        #edit the embed feilds to include the new health
+        user1_health = await db_manager.get_health(user1)
+        user2_health = await db_manager.get_health(user2)
+        #remove the () and , from the health
+        user1_health = str(user1_health).replace("(", "")
+        user1_health = str(user1_health).replace(")", "")
+        user1_health = str(user1_health).replace(",", "")
+        user2_health = str(user2_health).replace("(", "")
+        user2_health = str(user2_health).replace(")", "")
+        user2_health = str(user2_health).replace(",", "")
+        #convert to int
+        user1_health = int(user1_health)
+        user2_health = int(user2_health)
+        #if the user is dead, set their health to 0
+        if user1_health <= 0:
+            user1_health = 0
+        if user2_health <= 0:
+            user2_health = 0
+
+        #convert back to string
+        user1_health = str(user1_health)
+        user2_health = str(user2_health)
+        
+        #edit the embed feilds to include the new health
+        embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
+        embed.add_field(name=user2_name, value="Health: " + user2_health, inline=True)
+
         await db_manager.set_not_in_combat(user1)
         await db_manager.set_not_in_combat(user2)
+
+
+        await msg.edit(embed=embed)
+
         return user1
     else:
         print("User 2 won!")
+        #set new description to the previous description plus the winner
+        Newdescription = prev_desc + "\n" + "__" + user2_name + "__ won!"
+        Newdescription = str(Newdescription)
+        #if there are more than 4 lines in the embed, remove the first line
+        if Newdescription.count("\n") > 3:
+            Newdescription = Newdescription.split("\n", 1)[1]
+        embed = discord.Embed(description=f"{Newdescription}", color=0xffff00)
+        #edit the embed feilds to include the new health
+        user1_health = await db_manager.get_health(user1)
+        user2_health = await db_manager.get_health(user2)
+        #remove the () and , from the health
+        user1_health = str(user1_health).replace("(", "")
+        user1_health = str(user1_health).replace(")", "")
+        user1_health = str(user1_health).replace(",", "")
+        user2_health = str(user2_health).replace("(", "")
+        user2_health = str(user2_health).replace(")", "")
+        user2_health = str(user2_health).replace(",", "")
+        #convert to int
+        user1_health = int(user1_health)
+        user2_health = int(user2_health)
+        #if the user is dead, set their health to 0
+        if user1_health <= 0:
+            user1_health = 0
+        if user2_health <= 0:
+            user2_health = 0
+
+        #convert back to string
+        user1_health = str(user1_health)
+        user2_health = str(user2_health)
+        
+        #edit the embed feilds to include the new health
+        embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
+        embed.add_field(name=user2_name, value="Health: " + user2_health, inline=True)
+
         await msg.edit(embed=embed)
-        #set both users isInCombat to false
+
         await db_manager.set_not_in_combat(user1)
         await db_manager.set_not_in_combat(user2)
         return user2

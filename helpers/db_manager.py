@@ -232,7 +232,7 @@ async def profile(user_id: int) -> list:
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, isStreamer) VALUES (?, ?, ?, ?)", (user_id, 0, 100, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
 
@@ -600,7 +600,7 @@ async def get_broadcaster_type(streamer_channel: str) -> str:
 #update the isStreamer column in the user table to True
 async def update_is_streamer(user_id: int) -> int:
     db = DB()
-    await db.execute(f"UPDATE `user` SET `isStreamer` = 1 WHERE user_id = ?", (user_id,))
+    await db.execute(f"UPDATE `users` SET `isStreamer` = 1 WHERE user_id = ?", (user_id,))
     return 1
 
              
