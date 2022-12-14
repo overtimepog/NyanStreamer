@@ -152,48 +152,6 @@ class Items(commands.Cog, name="template"):
                 return
         await ctx.send(f"You do not exist in the database.")
 
-        #command to add an item to a users inventory by its item_id
-    @commands.hybrid_command(
-        name="additem",
-        description="This command will add an item to a users inventory.",
-    )
-    @checks.is_streamer()
-    async def add_item(self, ctx: Context, user: discord.User, item_id: str, item_amount: int):
-        """
-        This command will add an item to a users inventory.
-
-        :param ctx: The context in which the command was called.
-        :param user: The user that should get the item.
-        :param item_id: The id of the item that should be added.
-        :param item_amount: The amount of the item that should be added.
-        """
-        user_id = user.id
-        #check if the user exists in the database
-        users = await db_manager.view_users()
-        for i in users:
-            isStreamer = i[3]
-            isStreamer = bool(isStreamer)
-            if isStreamer == True:
-
-                item_name = await db_manager.get_streamer_item_name(item_id)
-                item_price = await db_manager.get_streamer_item_price(item_id)
-                item_emote = await db_manager.get_streamer_item_emote(item_id)
-                item_rarity = await db_manager.get_streamer_item_rarity(item_id)
-                item_amount = item_amount
-                item_type = await db_manager.get_streamer_item_type(item_id)
-                item_damage = await db_manager.get_basic_item_damage(item_id)
-
-
-                if item_type == 'Collectable':
-                    #set item damage to 0
-                    item_damage = 0
-                    #add the item to the users inventory
-                    await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emote, item_rarity, item_amount, item_type, item_damage, False)
-                else:
-
-                    await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emote, item_rarity, item_amount, item_type, item_damage, False)
-                await ctx.send(f"Added {item_name}{item_emote} x{item_amount} to {user.mention}'s inventory.")
-
     #command to create a new item in the database item table, using the add_item function from helpers\db_manager.py
     @commands.hybrid_command(
         name="createitem",

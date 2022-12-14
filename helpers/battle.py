@@ -187,7 +187,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 Newdescription = prev_desc + "\n" + "__" + user1_name + "__ hit a crit on __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage (crit)"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user1_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + user2_name + "__ on fire with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage (burning) ends in 2 turns"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + user2_name + "__ on fire with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user2)
                 #mark the turn the user was set on fire
@@ -246,13 +246,13 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user2_health = str(user2_health)
             
             if await db_manager.check_user_burning(user1):
-                await db_manager.remove_health(user1, 5)
+                await db_manager.remove_health(user1, 1)
                 #add a (burning) to the users health
                 user1_health = user1_health + " (burning)"
                 #mark down the turn count when the user was set on fire
                 
             if await db_manager.check_user_burning(user2):
-                await db_manager.remove_health(user2, 5)
+                await db_manager.remove_health(user2, 1)
                 #add a (burning) to the users health
                 user2_health = user2_health + " (burning)"
                 #mark down the turn count when the user was set on fire
@@ -283,7 +283,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 Newdescription = prev_desc + "\n" + "__" + user2_name + "__ hit a crit on __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage (crit)"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user2_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ set __" + user1_name + "__ on fire with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage (burning) ends in 2 turns"
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ set __" + user1_name + "__ on fire with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user1)
                 #mark down the turn count when the user was set on fire
@@ -341,13 +341,13 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user2_health = str(user2_health)
             
             if await db_manager.check_user_burning(user2):
-                await db_manager.remove_health(user2, 5)
+                await db_manager.remove_health(user2, 1)
                 #add a (burning) to the users health
                 user2_health = user2_health + " (burning)"
                 #mark down the turn count when the user was set on fire
                 
             if await db_manager.check_user_burning(user1):
-                await db_manager.remove_health(user1, 5)
+                await db_manager.remove_health(user1, 1)
                 #add a (burning) to the users health
                 user1_health = user1_health + " (burning)"
                 #mark down the turn count when the user was set on fire
