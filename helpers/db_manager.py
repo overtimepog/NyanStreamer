@@ -72,7 +72,36 @@ basic_items = [
         "item_sub_type": "Fire",
         "item_crit_chance": "0%"
     },
-
+    {
+        "item_id": "PoisonSword",
+        "item_name": "Poison Sword",
+        "item_price": 25,
+        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": 4,
+        "isUsable": False,
+        "inShop": True,
+        "isEquippable": True,
+        "item_description": "A wooden blade for testing purposes.",
+        "item_sub_type": "Poison",
+        "item_crit_chance": "0%"
+    },
+    {
+        "item_id": "ParalyzeSword",
+        "item_name": "Paralyze Sword",
+        "item_price": 25,
+        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": 4,
+        "isUsable": False,
+        "inShop": True,
+        "isEquippable": True,
+        "item_description": "A wooden blade for testing purposes.",
+        "item_sub_type": "Paralyze",
+        "item_crit_chance": "0%"
+    },
 ]
 
 class Database:
