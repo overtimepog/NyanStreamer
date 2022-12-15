@@ -70,6 +70,19 @@ CREATE TABLE IF NOT EXISTS `users` (
   `player_level` int(11) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS `enemies` (
+  `enemy_id` varchar(20) NOT NULL,
+  `enemy_name` varchar(255) NOT NULL,
+  `enemy_health` int(11) NOT NULL,
+  `enemy_damage` int(11) NOT NULL,
+  `enemy_emoji` varchar(255) NOT NULL,
+  `enemy_description` varchar(255) NOT NULL,
+  `enemy_rarity` varchar(255) NOT NULL,
+  `enemy_type` varchar(255) NOT NULL,
+  `enemy_xp` int(11) NOT NULL,
+  `enemy_money` int(11) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS `inventory` (
   `user_id` varchar(20) NOT NULL,
   `item_id` varchar(20) NOT NULL,

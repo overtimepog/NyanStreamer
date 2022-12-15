@@ -585,3 +585,139 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             new_level = await db_manager.get_level(user2)
             await ctx.send(user2_name + " has leveled up! They are now level " + str(new_level) + "!")
         return user2
+    
+
+
+
+
+
+
+#a deathbattle between a user and a monster
+async def deathbattle_monster(ctx: Context, userID, userName, monsterID):
+    #set the turn to 0
+    turnCount = 0
+    #while both the user and the monster are alive
+    while await db_manager.get_health(userID) > 0 and await db_manager.get_health(monsterID) > 0:
+        #users turn
+        if turnCount % 2 == 0:
+            user1_weapon = await db_manager.get_equipped_weapon(userID)
+            print(user1_weapon)
+            if user1_weapon == None or user1_weapon == []:
+                user1_weapon_name = "Fists"
+                user1_damage = 35
+                user1_weapon_subtype = "None"
+                #convert subtype to str
+                user1_weapon_subtype = str(user1_weapon_subtype)
+            else:
+                user1_weapon_name = user1_weapon[0][2]
+                #convert it to str
+                user1_weapon_name = str(user1_weapon_name)
+                user1_damage = user1_weapon[0][8]
+                user1_weapon_subtype = user1_weapon[0][10]
+                #convert subtype to str
+                user1_weapon_subtype = str(user1_weapon_subtype)
+            #get the equipped armor
+            user1_armor = await db_manager.get_equipped_armor(userID)
+            if user1_armor == None or user1_armor == []:
+                user1_armor_name = "Clothes"
+                user1_defense = 1
+            else:
+                user1_armor_name = user1_armor[0][2]
+                user1_defense = user1_armor[0][8]
+                
+            #get the monsters attack
+            monster_attack = await db_manager.get_enemy_damage(monsterID)
+            #monsters defence is half of their health
+            monster_defence = await db_manager.get_enemy_health(monsterID) / 2
+            
+            #get the enemies name and convert it to str
+            monster_name = await db_manager.get_enemy_name(monsterID)
+            #get the users attack
+            #calculate the damage
+            damage = user1_damage - monster_defence
+            #if the damage is less than 0, set it to 0
+            if damage < 0:
+                damage = 0
+            #remove the damage from the monsters health
+            await db_manager.remove_enemy_health(monsterID, damage)
+            #send a message to the channel saying the damage done
+            await ctx.send("You did " + str(damage) + " damage to the " + monster_name + "!")
+            #add 1 to the turn count
+            turnCount += 1
+            #if the monster is dead, give the user xp and coins and end the fight
+            if await db_manager.get_health(monsterID) <= 0:
+                #get the users name
+                #convert the name to str
+                user1_name = str(userName)
+                #get the users xp and coins
+                user1_xp = await db_manager.get_xp(userID)
+                user1_coins = await db_manager.get_money(userID)
+                #convert the xp and coins to str
+                user1_xp = str(user1_xp)
+                user1_coins = str(user1_coins)
+                #send a message to the channel saying the users xp and coins
+                await ctx.send(user1_name + " has won the fight and has been granted " + user1_xp + " xp and " + user1_coins + " coins!")
+                #check if the user has leveled up by checking if the users xp is greater than or equal to the xp needed to level up 
+                if await db_manager.can_level_up(userID):
+                    #if the user can level up, level them up
+                    await db_manager.add_level(userID, 1)
+                    #set the users xp to 0
+                    await db_manager.set_xp(userID, 0)
+                    #send a message to the channel saying the user has leveled up
+                    #get the users new level
+                    new_level = await db_manager.get_level(userID)
+                    await ctx.send(user1_name + " has leveled up! They are now level " + str(new_level) + "!")
+                return userID
+        #monsters turn
+        if turnCount % 2 == 1:
+            #get the monsters attack
+            monster_attack = await db_manager.get_enemy_damage(monsterID)
+            #monsters defence is half of their health
+            monster_defence = await db_manager.get_enemy_health(monsterID) / 2
+            #get the users attack
+            user1_weapon = await db_manager.get_equipped_weapon(userID)
+            if user1_weapon == None or user1_weapon == []:
+                user1_weapon_name = "Fists"
+                user1_damage = 35
+                user1_weapon_subtype = "None"
+                #convert subtype to str
+                user1_weapon_subtype = str(user1_weapon_subtype)
+            else:
+                user1_weapon_name = user1_weapon[0][2]
+                #convert it to str
+                user1_weapon_name = str(user1_weapon_name)
+                user1_damage = user1_weapon[0][8]
+                user1_weapon_subtype = user1_weapon[0][10]
+                #convert subtype to str
+                user1_weapon_subtype = str(user1_weapon_subtype)
+            #get the equipped armor
+            user1_armor = await db_manager.get_equipped_armor(userID)
+            if user1_armor == None or user1_armor == []:
+                user1_armor_name = "Clothes"
+                user1_defense = 1
+            else:
+                user1_armor_name = user1_armor[0][2]
+                user1_defense = user1_armor[0][8]
+            #calculate the damage
+            damage = monster_attack - user1_defense
+            #if the damage is less than 0, set it to 0
+            if damage < 0:
+                damage = 0
+            #remove the damage from the users health
+            await db_manager.remove_health(userID, damage)
+            #send a message to the channel saying the damage done
+            await ctx.send("The " + monster_name + " did " + str(damage) + " damage to you!")
+            #add 1 to the turn count
+            turnCount += 1
+            #if the user is dead, end the fight
+            if await db_manager.get_health(userID) <= 0:
+                #get the users name
+                #convert the name to str
+                user1_name = str(userName)
+                #send a message to the channel saying the users xp and coins
+                await ctx.send(user1_name + " has died in battle!")
+                return userID
+            
+                
+                
+        
