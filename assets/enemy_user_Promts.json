@@ -1,0 +1,4 @@
+[
+    "{monster_name} hit {user1_name} for {monster_damage}.",
+    "{monster_name} threw a rock at {user1_name} for {monster_damage}."
+]

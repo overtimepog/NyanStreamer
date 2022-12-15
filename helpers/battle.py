@@ -593,9 +593,17 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
 
 
 #a deathbattle between a user and a monster
-async def deathbattle_monster(ctx: Context, userID, userName, monsterID):
+async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monsterName):
     #set the turn to 0
     turnCount = 0
+    
+    #create the embed and send it
+    embed = discord.Embed(title="Deathbattle", description="Fight!", color=0xffff00)
+    embed.add_field(name=userName, value="Health: 100", inline=True)
+    embed.add_field(name=monsterName, value="Health: 100", inline=True)
+    msg = await ctx.send(embed=embed)
+    #set the prev_desc to blank
+    prev_desc = ""
     #while both the user and the monster are alive
     while await db_manager.get_health(userID) > 0 and await db_manager.get_health(monsterID) > 0:
         #users turn
@@ -640,8 +648,37 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID):
                 damage = 0
             #remove the damage from the monsters health
             await db_manager.remove_enemy_health(monsterID, damage)
+            
+            #import the json of the user1Promts
+            with open("assets/user_enemy_Promts.json") as f:
+                user1Promts = json.load(f)
+            #get a random user1 promt
+            user1Promt = random.choice(user1Promts)
+            #convert the promt to a string
+            user1Promt = str(user1Promt)
+            #replace the {user2_name} with the user2 name
+            #convert both names to strings
+            user1_name = str(user1_name)
+            monster_name = str(monster_name)
+            user1Promt = user1Promt.replace("{monster_name}", "__" + monster_name + "__")
+            #replace {user1_name} with the user1 name
+            user1Promt = user1Promt.replace("{user1_name}", "__" + user1_name + "__")
+            #replace the {user2_weapon_name} with the user2 weapon
+            user1Promt = user1Promt.replace("{user1_weapon_name}", "__" + user1_weapon_name + "__")
+            #replace the {user2_damage} with the user2 damage
+            user1Promt = user1Promt.replace("{user1_weapon_damage}", "__" + str(user1_damage) + "__")
+            
+            #add the user2 promt to the new description
+            
+            Newdescription = prev_desc + "\n" + f"{user1Promt}"
+            #convert the embed to a string
+            Newdescription = str(Newdescription)
+            #if there are more than 4 lines in the embed, remove the first line
+            if Newdescription.count("\n") >= 3:
+                Newdescription = Newdescription.split("\n", 1)[1]
             #send a message to the channel saying the damage done
-            await ctx.send("You did " + str(damage) + " damage to the " + monster_name + "!")
+            #edit the embed
+            embed = discord.Embed(title="Deathbattle", description=Newdescription, color=0xffff00)
             #add 1 to the turn count
             turnCount += 1
             #if the monster is dead, give the user xp and coins and end the fight
@@ -669,56 +706,6 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID):
                     await ctx.send(user1_name + " has leveled up! They are now level " + str(new_level) + "!")
                 return userID
         #monsters turn
-        if turnCount % 2 == 1:
-            #get the monsters attack
-            monster_attack = await db_manager.get_enemy_damage(monsterID)
-            #monsters defence is half of their health
-            monster_defence = await db_manager.get_enemy_health(monsterID) / 2
-            #get the users attack
-            user1_weapon = await db_manager.get_equipped_weapon(userID)
-            if user1_weapon == None or user1_weapon == []:
-                user1_weapon_name = "Fists"
-                user1_damage = 35
-                user1_weapon_subtype = "None"
-                #convert subtype to str
-                user1_weapon_subtype = str(user1_weapon_subtype)
-            else:
-                user1_weapon_name = user1_weapon[0][2]
-                #convert it to str
-                user1_weapon_name = str(user1_weapon_name)
-                user1_damage = user1_weapon[0][8]
-                user1_weapon_subtype = user1_weapon[0][10]
-                #convert subtype to str
-                user1_weapon_subtype = str(user1_weapon_subtype)
-            #get the equipped armor
-            user1_armor = await db_manager.get_equipped_armor(userID)
-            if user1_armor == None or user1_armor == []:
-                user1_armor_name = "Clothes"
-                user1_defense = 1
-            else:
-                user1_armor_name = user1_armor[0][2]
-                user1_defense = user1_armor[0][8]
-            #calculate the damage
-            damage = monster_attack - user1_defense
-            #if the damage is less than 0, set it to 0
-            if damage < 0:
-                damage = 0
-            #remove the damage from the users health
-            await db_manager.remove_health(userID, damage)
-            #send a message to the channel saying the damage done
-            await ctx.send("The " + monster_name + " did " + str(damage) + " damage to you!")
-            #add 1 to the turn count
-            turnCount += 1
-            #if the user is dead, end the fight
-            if await db_manager.get_health(userID) <= 0:
-                #get the users name
-                #convert the name to str
-                user1_name = str(userName)
-                #send a message to the channel saying the users xp and coins
-                await ctx.send(user1_name + " has died in battle!")
-                #set the users isDead to 1
-                await db_manager.set_dead(userID)
-                return userID
             
                 
                 
