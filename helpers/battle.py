@@ -209,6 +209,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 await db_manager.set_user_burning(user2)
                 #mark the turn the user was set on fire
                 user2_burn_turn = turnCount
+                
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
                 Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poison:1052619162528251965> __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 3 damage per turn (poisoned)"
