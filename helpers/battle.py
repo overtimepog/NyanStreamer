@@ -716,6 +716,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID):
                 user1_name = str(userName)
                 #send a message to the channel saying the users xp and coins
                 await ctx.send(user1_name + " has died in battle!")
+                #set the users isDead to 1
+                await db_manager.set_dead(userID)
                 return userID
             
                 
