@@ -391,6 +391,9 @@ class Items(commands.Cog, name="template"):
         user_money = int(user_money)
         user_health = user_profile[2]
         isStreamer = user_profile[3]
+        #get the users xp and level
+        user_xp = user_profile[11]
+        user_level = user_profile[12]
         #check if the item exists in the shop
         shop = await db_manager.display_shop_items()
         for i in shop:
@@ -467,6 +470,9 @@ class Items(commands.Cog, name="template"):
         user_money = user_profile[1]
         user_health = user_profile[2]
         isStreamer = user_profile[3]
+        #get the users xp and level
+        user_xp = user_profile[11]
+        user_level = user_profile[12]
         user_items = await db_manager.view_inventory(user_id)
         embed = discord.Embed(title="Profile", description=f"{ctx.message.author.mention}'s Profile.", color=0x00ff00)
         if user_health == 0:
@@ -474,6 +480,10 @@ class Items(commands.Cog, name="template"):
         else:
             embed.add_field(name="Health", value=f"{user_health} / 100", inline=True)
         embed.add_field(name="Money", value=f"{user_money}", inline=True)
+        #add xp and level
+        embed.add_field(name = chr(173), value = chr(173))
+        embed.add_field(name="XP", value=f"{user_xp}", inline=True)
+        embed.add_field(name="Level", value=f"{user_level}", inline=True)
         for i in user_items:
             item_name = i[2]
             item_emote = i[4]

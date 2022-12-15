@@ -65,7 +65,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `isParalyzed` boolean NOT NULL,
   `isBleeding` boolean NOT NULL,
   `isDead` boolean NOT NULL,
-  `isInCombat` boolean NOT NULL
+  `isInCombat` boolean NOT NULL,
+  `player_xp` int(11) NOT NULL,
+  `player_level` int(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `inventory` (

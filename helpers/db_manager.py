@@ -194,6 +194,67 @@ async def get_health(user_id: int) -> int:
         users = await db.execute(f"SELECT `health` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     
+    
+#get the users xp 
+async def get_xp(user_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_xp`) VALUES (?, ?)", (user_id, 0))
+        users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users
+    
+#add xp to a user
+async def add_xp(user_id: int, amount: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `player_xp` = `player_xp` + ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_xp`) VALUES (?, ?)", (user_id, amount))
+        
+#remove xp from a user
+async def remove_xp(user_id: int, amount: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `player_xp` = `player_xp` - ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_xp`) VALUES (?, ?)", (user_id, 0))
+        
+#get the users level player_level
+async def get_level(user_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_level`) VALUES (?, ?)", (user_id, 0))
+        users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users
+    
+#add level to a user
+async def add_level(user_id: int, amount: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `player_level` = `player_level` + ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_level`) VALUES (?, ?)", (user_id, amount))
+        
+#remove level from a user
+async def remove_level(user_id: int, amount: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `player_level` = `player_level` - ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_level`) VALUES (?, ?)", (user_id, 0))
+    
 #get user, if they don't exist, create them
 async def get_user(user_id: int) -> None:
     db = DB()
@@ -201,19 +262,7 @@ async def get_user(user_id: int) -> None:
     if data is not None:
         return None
     else:
-        #  `user_id` varchar(20) NOT NULL
-  #`money` int(11) NOT NULL,
-  #`health` int(11) NOT NULL,
-  #`isStreamer` boolean NOT NULL,
-  #`isBurning` boolean NOT NULL,
-  #`isPoisoned` boolean NOT NULL,
-  #`isFrozen` boolean NOT NULL,
-  #`isStunned` boolean NOT NULL,
-  #`isBleeding` boolean NOT NULL,
-  #`isDead` boolean NOT NULL,
-  #`isInCombat` boolean NOT NULL,
-    #`isInShop` boolean NOT NULL,
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1))
 
 #check if a user is not dead
 async def is_alive(user_id: int) -> bool:
@@ -226,7 +275,7 @@ async def is_alive(user_id: int) -> bool:
         else:
             return False
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1))
         return True
     
 #set a user's dead status to true
@@ -236,7 +285,7 @@ async def set_dead(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1))
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
 
 async def check_if_user_in_db(user_id: int) -> bool:
@@ -265,7 +314,7 @@ async def set_in_combat(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (True, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1))
 
 #set a user's InCombat status to false
 async def set_not_in_combat(user_id: int) -> None:
@@ -274,7 +323,7 @@ async def set_not_in_combat(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (False, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1))
 
 #set a user's health
 async def set_health(user_id: int, health: int) -> None:
@@ -283,7 +332,7 @@ async def set_health(user_id: int, health: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `health` = ? WHERE `user_id` = ?", (health, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1))
 
 #look at a user's profile, returns a list
 async def profile(user_id: int) -> list:
@@ -293,7 +342,7 @@ async def profile(user_id: int) -> list:
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isStunned`, `isBleeding`, `isDead`, `isInCombat`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1))
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
 
