@@ -225,6 +225,15 @@ async def remove_xp(user_id: int, amount: int) -> None:
     else:
         await db.execute(f"INSERT INTO `users` (`user_id`, `player_xp`) VALUES (?, ?)", (user_id, 0))
         
+#set the users xp
+async def set_xp(user_id: int, amount: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `player_xp` = ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_xp`) VALUES (?, ?)", (user_id, amount))
+        
 #get the users level player_level
 async def get_level(user_id: int) -> int:
     db = DB()
@@ -254,6 +263,36 @@ async def remove_level(user_id: int, amount: int) -> None:
         await db.execute(f"UPDATE `users` SET `player_level` = `player_level` - ? WHERE `user_id` = ?", (amount, user_id))
     else:
         await db.execute(f"INSERT INTO `users` (`user_id`, `player_level`) VALUES (?, ?)", (user_id, 0))
+    
+#calculate the amount of xp needed to level up
+async def xp_needed(user_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users * 20
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_level`) VALUES (?, ?)", (user_id, 0))
+        users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users * 20
+    
+#check if a user can level up
+async def can_level_up(user_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if users >= await xp_needed(user_id):
+            return True
+        else:
+            return False
+    else:
+        await db.execute(f"INSERT INTO `users` (`user_id`, `player_xp`) VALUES (?, ?)", (user_id, 0))
+        users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if users >= await xp_needed(user_id):
+            return True
+        else:
+            return False
     
 #get user, if they don't exist, create them
 async def get_user(user_id: int) -> None:

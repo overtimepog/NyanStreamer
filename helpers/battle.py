@@ -494,9 +494,32 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
 
         await db_manager.set_not_in_combat(user1)
         await db_manager.set_not_in_combat(user2)
-
-
         await msg.edit(embed=embed)
+        
+        #do the same thing for the other user
+        xp_granted = random.randint(10, 20)
+        coins_granted = random.randint(10, 20)
+        #grant the user a random amount of xp between 10 and 20
+        await db_manager.add_xp(user1, xp_granted)
+        #grant the user a random amount of coins between 10 and 20
+        await db_manager.add_money(user1, coins_granted)
+        #send a message to the channel saying the users xp and coins
+        #convert the xp and coins to strings
+        xp_granted = str(xp_granted)
+        coins_granted = str(coins_granted)
+        await ctx.send(user1_name + " has won the fight and has been granted " + coins_granted + " xp and " + coins_granted + " coins!")
+        
+        #check if the user has leveled up by checking if the users xp is greater than or equal to the xp needed to level up
+        if await db_manager.can_level_up(user1):
+            #if the user can level up, level them up
+            await db_manager.add_level(user1, 1)
+            #set the users xp to 0
+            await db_manager.set_xp(user1, 0)
+            #send a message to the channel saying the user has leveled up
+            #get the users new level
+            new_level = await db_manager.get_level(user1)
+            await ctx.send(user1_name + " has leveled up! They are now level " + str(new_level) + "!")
+            
 
         return user1
     else:
@@ -539,4 +562,26 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
 
         await db_manager.set_not_in_combat(user1)
         await db_manager.set_not_in_combat(user2)
+        xp_granted = random.randint(10, 20)
+        coins_granted = random.randint(10, 20)
+        #grant the user a random amount of xp between 10 and 20
+        await db_manager.add_xp(user2, xp_granted)
+        #grant the user a random amount of coins between 10 and 20
+        await db_manager.add_money(user2, coins_granted)
+        #send a message to the channel saying the users xp and coins
+        #convert the xp and coins to strings
+        xp_granted = str(xp_granted)
+        coins_granted = str(coins_granted)
+        await ctx.send(user2_name + " has won the fight and has been granted " + coins_granted + " xp and " + coins_granted + " coins!")
+        
+        #check if the user has leveled up by checking if the users xp is greater than or equal to the xp needed to level up 
+        if await db_manager.can_level_up(user2):
+            #if the user can level up, level them up
+            await db_manager.add_level(user2, 1)
+            #set the users xp to 0
+            await db_manager.set_xp(user2, 0)
+            #send a message to the channel saying the user has leveled up
+            #get the users new level
+            new_level = await db_manager.get_level(user2)
+            await ctx.send(user2_name + " has leveled up! They are now level " + str(new_level) + "!")
         return user2
