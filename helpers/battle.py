@@ -182,6 +182,12 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             if user1_poison_turn != None and turnCount - user1_poison_turn >= 2:
                 user1_poison_turn = None
                 db_manager.set_user_not_poisoned(user1)
+
+            #if its been 1 turn since the user was paralyzed, remove the paralyzed status
+            if user1_paralyze_turn != None and turnCount - user1_paralyze_turn >= 1:
+                user1_paralyze_turn = None
+                db_manager.set_user_not_paralyzed(user1)
+    
             #user 1 attacks
             await db_manager.remove_health(user2, user1_damage)
             #have the user have a 1/10 chance of being set on fire
