@@ -75,11 +75,14 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     #delete the image
     os.remove("images/battle.png")
     
-    #before the loop starts, set the burn turn to 0 for each user
+    #before the loop starts, set the burn turn, poison turn, paralyze turn, and freeze turn to 0
     user1_burn_turn = 0
     user2_burn_turn = 0
     user1_poison_turn = 0
     user2_poison_turn = 0
+    user1_paralyze_turn = 0
+    user2_paralyze_turn = 0
+    
     
     while await db_manager.is_alive(user1) and await db_manager.is_alive(user2):
         # User 1
@@ -92,6 +95,23 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user1_weapon_subtype = "None"
             #convert subtype to str
             user1_weapon_subtype = str(user1_weapon_subtype)
+            user1_weapon_projectile = user1_weapon[0][12]
+            #convert projectile to str
+            user1_weapon_projectile = str(user1_weapon_projectile)
+            if user1_weapon_projectile == "Arrow":
+                user1_arrows = await db_manager.get_arrows(user1)
+                if user1_arrows == None or user1_arrows == [] or user1_arrows == 0:
+                    #if the user doesn't have arrows, set the weapon to fists, and tell the user they don't have arrows
+                    await ctx.channel.send(user1_name + " you don't have any arrows!")
+                    user1_weapon_name = "Fists"
+                    user1_damage = 2
+                    user1_weapon_subtype = "None"
+                    #convert subtype to str
+                    user1_weapon_subtype = str(user1_weapon_subtype)
+                else:
+                    #if the user has arrows, tell the user how many they have
+                    await ctx.channel.send(user1_name + " you have " + str(user1_arrows) + " arrows!")
+            
         else:
             user1_weapon_name = user1_weapon[0][2]
             #convert it to str
@@ -126,6 +146,26 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user2_weapon_subtype = user2_weapon[0][10]
             #convert subtype to str
             user2_weapon_subtype = str(user2_weapon_subtype)
+            #if the users weapon has the item_projectile arrow, make sure the user has arrows
+            user2_weapon_projectile = user2_weapon[0][12]
+            #convert projectile to str
+            user2_weapon_projectile = str(user2_weapon_projectile)
+            if user2_weapon_projectile == "Arrow":
+                user2_arrows = await db_manager.get_arrows(user2)
+                if user2_arrows == None or user2_arrows == [] or user2_arrows == 0:
+                    #if the user doesn't have arrows, set the weapon to fists, and tell the user they don't have arrows
+                    await ctx.channel.send(user2_name + " you don't have any arrows!")
+                    user2_weapon_name = "Fists"
+                    user2_damage = 2
+                    user2_weapon_subtype = "None"
+                    #convert subtype to str
+                    user2_weapon_subtype = str(user2_weapon_subtype)
+                else:
+                    #if the user has arrows, tell the user how many they have
+                    await ctx.channel.send(user2_name + " you have " + str(user2_arrows) + " arrows!")
+
+                
+            #if the users weapon 
         #get the equipped armor
         user2_armor = await db_manager.get_equipped_armor(user2)
         if user2_armor == None or user2_armor == []:
@@ -189,6 +229,10 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 db_manager.set_user_not_paralyzed(user1)
     
             #user 1 attacks
+            
+            #if the user is using a projectile weapon, remove an arrow
+            if user1_weapon_projectile == "Arrow":
+                await db_manager.remove_item_from_inventory(user1, "Arrow", 1)
             await db_manager.remove_health(user2, user1_damage)
             #have the user have a 1/10 chance of being set on fire
             isSetONFire = random.randint(1, 10)
@@ -227,12 +271,17 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 user2_paralyze_turn = turnCount
                 #skip the users turn
                 turnCount += 1
-
                 
             else:
                 #import User2 promts from assets/user1Promts.json
                 with open("assets/user1Promts.json") as f:
                     user1Promts = json.load(f)
+                    
+                #if the user is using a projectile weapon use the projectile promts
+                if user1_weapon_projectile == "Arrow":
+                    #import User2 promts from assets/user1Promts.json
+                    with open("assets/user1ProjectilePromts.json") as f:
+                        user1Promts = json.load(f)
                 #get a random user1 promt
                 user1Promt = random.choice(user1Promts)
                 #convert the promt to a string
@@ -249,6 +298,10 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 #replace the {user2_damage} with the user2 damage
                 user1Promt = user1Promt.replace("{user1_weapon_damage}", "__" + str(user1_damage) + "__")
                 
+                #if the user is using a projectile weapon, replace the {user1_projectile} with the projectile
+                if user1_weapon_projectile == "Arrow":
+                    user1Promt = user1Promt.replace("{user1_projectile}", "__" + user1_weapon_projectile + "__")
+                    
                 #add the user2 promt to the new description
                 
                 Newdescription = prev_desc + "\n" + f"{user1Promt}"
@@ -304,6 +357,14 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 #add a (poisoned) to the users health
                 user2_health = user2_health + " (poisoned)"
                 #mark down the turn count when the user was set on fire
+                
+            if await db_manager.check_user_paralyzed(user1):
+                #add a (paralyzed) to the users health
+                user1_health = user1_health + " (paralyzed)"
+                
+            if await db_manager.check_user_paralyzed(user2):
+                #add a (paralyzed) to the users health
+                user2_health = user2_health + " (paralyzed)"
             
             #edit the embed feilds to include the new health
             embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
@@ -356,8 +417,8 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 await db_manager.set_user_poisoned(user1)
                 #mark down the turn count when the user was set on fire
                 user1_poison_turn = turnCount
+                
             #if the sub type is paralysis tell the user they were set on paralyzed and add a (paralyzed) to the end of the damage
-
             elif user2_weapon_subtype == "Paralysis" and isParalyzed == 1:
                 Newdescription = prev_desc + "\n" + "__" + user2_name + "__ paralyzed ⚡ __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ they wont be able to attack for a turn (paralyzed)"
                 #set the users paralysis status to true
@@ -370,6 +431,12 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 #do the same thing as user 1 but with user 2
                 with open("assets/user2Promts.json") as f:
                     user2Promts = json.load(f)
+                    
+                if user2_weapon_projectile == "Arrow":
+                    #import User2 promts from assets/user1Promts.json
+                    with open("assets/user2ProjectilePromts.json") as f:
+                        user1Promts = json.load(f)
+                    
                 #get a random user2 promt
                 user2Promt = random.choice(user2Promts)
                 #convert the promt to a string
@@ -385,6 +452,12 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 user2Promt = user2Promt.replace("{user2_weapon_name}", "__" + user2_weapon_name + "__")
                 #replace the {user2_damage} with the user1 damage
                 user2Promt = user2Promt.replace("{user2_weapon_damage}", "__" + str(user2_damage) + "__")
+                
+                #if the user is using a projectile weapon, replace the {user1_projectile} with the projectile
+                if user2_weapon_projectile == "Arrow":
+                    user2Promt = user2Promt.replace("{user2_projectile}", "__" + user2_weapon_projectile + "__")
+                    
+                    
                 Newdescription = prev_desc + "\n" + f"{user2Promt}"
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
@@ -441,6 +514,12 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 #add a (poisoned) to the users health
                 user2_health = user2_health + " (poisoned)"
                 #mark down the turn count when the user was set on fire
+                
+            if await db_manager.check_user_paralyzed(user1):
+                user1_health = user1_health + " (paralyzed)"
+            
+            if await db_manager.check_user_paralyzed(user2):
+                user2_health = user2_health + " (paralyzed)"
             
             #edit the embed feilds to include the new health
             embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)

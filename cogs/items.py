@@ -451,6 +451,50 @@ class Items(commands.Cog, name="template"):
                     await ctx.send(f"You don't have enough bucks to buy `{amount}` of `{item_name}`.")
                     return
         await ctx.send(f"Item doesn't exist in the shop.")
+        
+    #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
+    @commands.hybrid_command(
+        name="sell",
+        description="This command will sell an item from your inventory.",
+    )
+    async def sell(self, ctx: Context, item_id: str, amount: int):
+        """
+        This command will sell an item from your inventory.
+
+        :param ctx: The context in which the command was called.
+        :param item_id: The ID of the item that should be sold.
+        :param amount: The amount of the item that should be sold.
+        """
+        user_id = ctx.message.author.id
+        user_profile = await db_manager.profile(user_id)
+        user_money = user_profile[1]
+        user_money = int(user_money)
+        user_health = user_profile[2]
+        isStreamer = user_profile[3]
+        #get the users xp and level
+        user_xp = user_profile[11]
+        user_level = user_profile[12]
+        #check if the item exists in the users inventory
+        user_inventory = await db_manager.view_inventory(user_id)
+        for i in user_inventory:
+            if item_id in i:
+                #check if the user has enough of the item
+                item_amount = i[7]
+                item_amount = int(item_amount)
+                if item_amount >= amount:
+                    item_price = i[3]
+                    item_price = int(item_price)
+                    total_price = item_price * amount
+                    #remove the item from the users inventory
+                    await db_manager.remove_item_from_inventory(user_id, item_id, amount)
+                    #add the price to the users money
+                    await db_manager.add_money(user_id, total_price)
+                    await ctx.send(f"You sold `{amount}` of `{i[2]}` for `{total_price}` bucks.")
+                    return
+                else:
+                    await ctx.send(f"You don't have enough `{i[2]}` to sell `{amount}`.")
+                    return
+        await ctx.send(f"Item doesn't exist in your inventory.")
 
 #view a users profile using the view_profile function from helpers\db_manager.py
     @commands.hybrid_command(

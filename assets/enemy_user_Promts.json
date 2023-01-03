@@ -1,4 +1,14 @@
 [
     "{monster_name} hit {user1_name} for {monster_damage}.",
-    "{monster_name} threw a rock at {user1_name} for {monster_damage}."
+    "{monster_name} threw a rock at {user1_name} for {monster_damage}.",
+    "{monster_name} attacked with a venomous bite, causing {monster_damage} damage to {user1_name}.",
+    "{monster_name} lashes out with its tentacles, dealing {monster_damage} damage to {user1_name}.",
+    "{monster_name} slams {user1_name} with its tail, causing {monster_damage} damage.",
+    "{monster_name} charges at {user1_name} and gores them for {monster_damage} damage.",
+    "{monster_name} releases a toxic gas, inflicting {monster_damage} damage on {user1_name}.",
+    "{monster_name} casts a fire spell at {user1_name}, causing {monster_damage} damage.",
+    "{monster_name} unleashes a barrage of thorns, dealing {monster_damage} damage to {user1_name}.",
+    "{monster_name} shoots a bolt of lightning at {user1_name}, causing {monster_damage} damage.",
+    "{monster_name} uses its psychic powers to attack {user1_name}, dealing {monster_damage} damage.",
+    "{monster_name} grabs {user1_name} in its jaws and shakes them violently, causing {monster_damage} damage."
 ]

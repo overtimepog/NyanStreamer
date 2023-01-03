@@ -1,8 +1,12 @@
 [
-    "{user1_name} stabbed {user2_name} in the back with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} swung at {user2_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} shanked {user2_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} sliced {user2_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} smacked {user2_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} smacked {user2_name} across the face with {user1_weapon_name} dealing {user1_weapon_damage} damage."
+    "{user1_name} attacked {user2_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
+    "{user1_name} charges at {user2_name} with their {user1_weapon_name}, dealing {user1_weapon_damage} points of damage.",
+    "{user1_name} unleashes a powerful strike on {user2_name} with their {user1_weapon_name}, causing {user1_weapon_damage} points of damage.",
+    "{user2_name} takes a hit from {user1_name}'s {user1_weapon_name} and suffers {user1_weapon_damage} points of damage.",
+    "{user2_name} is no match for {user1_name}'s {user1_weapon_name}, taking {user1_weapon_damage} points of damage from the attack.",
+    "{user1_name} attacks {user2_name} with their {user1_weapon_name}, causing {user1_weapon_damage} points of damage.",
+    "{user1_name} swings their {user1_weapon_name} at {user2_name}, dealing {user1_weapon_damage} points of damage.",
+    "{user2_name} is hit by {user1_name}'s {user1_weapon_name}, taking {user1_weapon_damage} points of damage.",
+    "{user1_name}'s attack with their {user1_weapon_name} deals {user1_weapon_damage} points of damage to {user2_name}.",
+    "{user1_name}'s {user1_weapon_name} connects with {user2_name}, dealing {user1_weapon_damage} points of damage."
 ]

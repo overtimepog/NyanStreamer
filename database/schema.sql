@@ -96,7 +96,8 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `item_damage` int(11) NOT NULL,
   `isEquipped` boolean NOT NULL,
   `item_sub_type` varchar(255) NOT NULL,
-  `item_crit_chance` int(11) NOT NULL
+  `item_crit_chance` int(11) NOT NULL,
+  `item_projectile` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `warns` (

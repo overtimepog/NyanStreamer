@@ -1,8 +1,6 @@
 [
-    "{user1_name} stabbed {monster_name} in the back with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} swung at {monster_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} shanked {monster_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} sliced {monster_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} smacked {monster_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
-    "{user1_name} smacked {monster_name} across the face with {user1_weapon_name} dealing {user1_weapon_damage} damage."
+    "{user1_name} attacked {monster_name} with {user1_weapon_name} dealing {user1_weapon_damage} damage.",
+    "{user1_name} charges at the {monster_name} with their {user1_weapon_name} and deals {user1_weapon_damage} points of damage.",
+    "{user1_name} swings their {user1_weapon_name} at the {monster_name} and deals {user1_weapon_damage} points of damage.",
+    "The {monster_name} takes a hit from {user1_name}'s {user1_weapon_name} and suffers {user1_weapon_damage} points of damage."
 ]

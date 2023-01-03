@@ -28,6 +28,40 @@ import random
 #STUB - Basic items
 
 basic_items = [
+    #make an arrow item
+    {
+        "item_id": "Arrow",
+        "item_name": "Arrow",
+        "item_price": 25,
+        "item_emoji": "<:Arrow:1051976486283919360>",
+        "item_rarity": "Common",
+        "item_type": "Projectile",
+        "item_damage": 4,
+        "isUsable": False,
+        "inShop": True,
+        "isEquippable": True,
+        "item_description": "A wooden blade for testing purposes.",
+        "item_sub_type": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "Arrow"
+    },
+    #make a bow
+    {
+        "item_id": "Bow",
+        "item_name": "Bow",
+        "item_price": 25,
+        "item_emoji": "<:Bow:1051976486283919360>",
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": 4,
+        "isUsable": False,
+        "inShop": True,
+        "isEquippable": True,
+        "item_description": "A wooden blade for testing purposes.",
+        "item_sub_type": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "Arrow"
+    },
     {
         "item_id": "WoodenSword",
         "item_name": "Wooden Sword",
@@ -41,7 +75,8 @@ basic_items = [
         "isEquippable": True,
         "item_description": "A wooden sword. It's not very strong, but it's better than nothing.",
         "item_sub_type": "None",
-        "item_crit_chance": "1%"
+        "item_crit_chance": "1%",
+        "item_projectile": "None"
     },
     {
         "item_id": "CritSword",
@@ -56,7 +91,8 @@ basic_items = [
         "isEquippable": True,
         "item_description": "A wooden blade for testing purposes.",
         "item_sub_type": "None",
-        "item_crit_chance": "100%"
+        "item_crit_chance": "100%",
+        "item_projectile": "None"
     },
     {
         "item_id": "FireSword",
@@ -71,7 +107,8 @@ basic_items = [
         "isEquippable": True,
         "item_description": "A wooden blade for testing purposes.",
         "item_sub_type": "Fire",
-        "item_crit_chance": "0%"
+        "item_crit_chance": "0%",
+        "item_projectile": "None"
     },
     {
         "item_id": "PoisonSword",
@@ -86,7 +123,8 @@ basic_items = [
         "isEquippable": True,
         "item_description": "A wooden blade for testing purposes.",
         "item_sub_type": "Poison",
-        "item_crit_chance": "0%"
+        "item_crit_chance": "0%",
+        "item_projectile": "None"
     },
     {
         "item_id": "ParalyzeSword",
@@ -101,7 +139,8 @@ basic_items = [
         "isEquippable": True,
         "item_description": "A wooden blade for testing purposes.",
         "item_sub_type": "Paralyze",
-        "item_crit_chance": "0%"
+        "item_crit_chance": "0%",
+        "item_projectile": "None"
     },
 ]
 #STUB -  Basic items
@@ -489,7 +528,7 @@ async def add_basic_items() -> None:
             print(f"|{item['item_name']}| is already in the database")
             pass
         else:
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, item_crit_chance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile']))
             #insert crit chance
             print(f"Added |{item['item_name']}| to the database")
 
@@ -602,6 +641,15 @@ async def check_item_equipped(user_id: int, item_id: str) -> int:
                 return 1
             else:
                 return None
+        else:
+            return None
+        
+#get a users arrows 
+async def get_arrows(user_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_id = 'Arrow'", (user_id,), fetch="one")
+        if data is not None:
+            return data[8]
         else:
             return None
         
@@ -731,6 +779,7 @@ async def check_user(user_id: int) -> int:
             return 1
         else:
             return None
+        
         
 #get a streamers name from an item ID
 async def get_streamer_name_from_item(item_id: str) -> str:
