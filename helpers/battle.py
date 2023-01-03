@@ -588,10 +588,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     
 
 
-
-
-
-
 #a deathbattle between a user and a monster
 async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monsterName):
     #set the turn to 0

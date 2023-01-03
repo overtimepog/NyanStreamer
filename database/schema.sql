@@ -67,7 +67,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `isDead` boolean NOT NULL,
   `isInCombat` boolean NOT NULL,
   `player_xp` int(11) NOT NULL,
-  `player_level` int(11) NOT NULL
+  `player_level` int(11) NOT NULL,
+  `isAdventuring` boolean NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `enemies` (
