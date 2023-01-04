@@ -517,6 +517,11 @@ class Items(commands.Cog, name="template"):
         #get the users xp and level
         user_xp = user_profile[11]
         user_level = user_profile[12]
+        #get the xp needed for the next level
+        xp_needed = await db_manager.xp_needed(user_id)
+        #convert the xp needed to a string
+        xp_needed = str(xp_needed)
+        
         user_items = await db_manager.view_inventory(user_id)
         embed = discord.Embed(title="Profile", description=f"{ctx.message.author.mention}'s Profile.", color=0x00ff00)
         if user_health == 0:
@@ -526,7 +531,7 @@ class Items(commands.Cog, name="template"):
         embed.add_field(name="Money", value=f"{user_money}", inline=True)
         #add xp and level
         embed.add_field(name = chr(173), value = chr(173))
-        embed.add_field(name="XP", value=f"{user_xp}", inline=True)
+        embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
         embed.add_field(name="Level", value=f"{user_level}", inline=True)
         for i in user_items:
             item_name = i[2]
@@ -541,6 +546,30 @@ class Items(commands.Cog, name="template"):
         embed.set_footer(text=f"User ID: {user_id} | Streamer: {isStreamer}")
 
         await ctx.send(embed=embed)
+        
+    #hybrid command to start the user on their journy, this will create a profile for the user using the profile function from helpers\db_manager.py and give them 200 bucks
+    @commands.hybrid_command(
+        name="start",
+        description="This command will start your journey.",
+    )
+    async def start(self, ctx: Context):
+        """
+        This command will start your journey.
+
+        :param ctx: The context in which the command was called.
+        """
+        user_id = ctx.message.author.id
+        #check if the user is in the database
+        userExist = await db_manager.check_user(user_id)
+        if userExist == None or userExist == []:
+            await db_manager.profile(user_id)
+            await db_manager.add_money(user_id, 200)
+            await ctx.send("You have started your journey. Welcome to the world of **Dank Streamer**.")
+        else:
+            await ctx.send("You have already started your journey.")
+    
+        
+
 
 
 #a command to give a user money using the add_money function from helpers\db_manager.py
@@ -972,6 +1001,44 @@ class Items(commands.Cog, name="template"):
         author_name = ctx.author.name
         enemy_name = user.name
         await battle.deathbattle(ctx, user_id, enemy_id, author_name, enemy_name)
+        
+    #hybrid command to battle a monster
+    @commands.hybrid_command(
+        name="battle",
+        description="Battle a monster",
+    )
+    async def battle(self, ctx: Context, monsterid: str):
+        #run the battle function from helper/battle.py
+        user_id = ctx.author.id
+        #check if the user is in the database
+        user_in_db = await db_manager.check_if_user_in_db(user_id)
+        if user_in_db == False:
+            await ctx.send("You are not in the database yet, please use the start command to start your adventure!")
+            return
+        #check if the user is in a battle
+        user_in_battle = await db_manager.is_in_combat(user_id)
+        if user_in_battle == True:
+            await ctx.send("You are already in a battle!")
+            return
+        #check if the user is dead
+        user_is_alive = await db_manager.is_alive(user_id)
+        if user_is_alive == False:
+            await ctx.send("You are dead! wait to respawn! or use an item to revive!")
+            return
+        #check if the monster is in the database
+        monster_in_db = await db_manager.check_enemy(monsterid)
+        if monster_in_db == False:
+            await ctx.send("This monster does not exist!")
+            return
+        
+        #get the monster name from its ID
+        monsterName = await db_manager.get_enemy_name(monsterid)
+        
+        #check if the monster is alive
+        #check if the monster is in a battle
+        await ctx.send(f"{ctx.author.name} is challenging {monsterid} to a battle!")
+        author_name = ctx.author.name
+        await battle.deathbattle_monster(ctx, user_id, author_name, monsterid, monsterName)
 
 
 

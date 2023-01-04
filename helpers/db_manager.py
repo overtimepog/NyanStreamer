@@ -307,6 +307,18 @@ async def get_enemy_xp(enemy_id: str) -> int:
         users = await db.execute(f"SELECT `enemy_xp` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
         return users
     
+#get an enemy's money
+async def get_enemy_money(enemy_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `enemy_money` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        return users
+    else:
+        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_money`) VALUES (?, ?)", (enemy_id, 0))
+        users = await db.execute(f"SELECT `enemy_money` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        return users
+    
 #get the enemy's name
 async def get_enemy_name(enemy_id: str) -> str:
     db = DB()
@@ -394,11 +406,19 @@ async def xp_needed(user_id: int) -> int:
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
         users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        return users * 20
+        #times the users level by 6 to get the amount of xp needed to level up
+        #convert users to int
+        users = int(users[0])
+        xp_needed = (users * 6)
+        print(xp_needed)
+        return xp_needed
     else:
         await db.execute(f"INSERT INTO `users` (`user_id`, `player_level`) VALUES (?, ?)", (user_id, 0))
         users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        return users * 20
+        users = int(users[0])
+        xp_needed = (users * 6)
+        print(xp_needed)
+        return xp_needed
     
 #check if a user can level up
 async def can_level_up(user_id: int) -> bool:
@@ -406,14 +426,14 @@ async def can_level_up(user_id: int) -> bool:
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
         users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        if users >= await xp_needed(user_id):
+        if users[0] >= await xp_needed(user_id):
             return True
         else:
             return False
     else:
         await db.execute(f"INSERT INTO `users` (`user_id`, `player_xp`) VALUES (?, ?)", (user_id, 0))
         users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        if users >= await xp_needed(user_id):
+        if users[0] >= await xp_needed(user_id):
             return True
         else:
             return False
@@ -554,6 +574,24 @@ async def add_enemies() -> None:
         else:
             await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money']))
             print(f"Added |{enemy['enemy_name']}| to the database")
+            
+#check if the enemy is in the database
+async def check_enemy(enemy_id: str) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return True
+    else:
+        return False
+
+#get the monster name from its ID
+async def get_enemy_name(enemy_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return data[1]
+    else:
+        return None
 
 #function to display the shop items
 async def display_shop_items() -> list:

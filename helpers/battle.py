@@ -88,10 +88,10 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         # User 1
         #get the equipped weapon
         user1_weapon = await db_manager.get_equipped_weapon(user1)
-        print(user1_weapon)
+        #print(user1_weapon)
         if user1_weapon == None or user1_weapon == []:
             user1_weapon_name = "Fists"
-            user1_damage = 35
+            user1_damage = 1
             user1_weapon_subtype = "None"
             #convert subtype to str
             user1_weapon_subtype = str(user1_weapon_subtype)
@@ -680,14 +680,22 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
     #set the prev_desc to blank
     prev_desc = ""
     #while both the user and the monster are alive
-    while await db_manager.get_health(userID) > 0 and await db_manager.get_health(monsterID) > 0:
+    #get the health of the user
+    user_health = await db_manager.get_health(userID)
+    #get the health of the monster
+    monster_health = await db_manager.get_enemy_health(monsterID)
+    #convert the health to str
+    user_health = str(user_health)
+    monster_health = str(monster_health)
+    #while the user and monster are alive
+    while user_health != "0" and monster_health != "0":
         #users turn
         if turnCount % 2 == 0:
             user1_weapon = await db_manager.get_equipped_weapon(userID)
-            print(user1_weapon)
+            #print(user1_weapon)
             if user1_weapon == None or user1_weapon == []:
                 user1_weapon_name = "Fists"
-                user1_damage = 35
+                user1_damage = 1
                 user1_weapon_subtype = "None"
                 #convert subtype to str
                 user1_weapon_subtype = str(user1_weapon_subtype)
@@ -711,16 +719,45 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #get the monsters attack
             monster_attack = await db_manager.get_enemy_damage(monsterID)
             #monsters defence is half of their health
-            monster_defence = await db_manager.get_enemy_health(monsterID) / 2
+            monster_defence = await db_manager.get_enemy_health(monsterID)
+            #convert the defence to int
+            monster_defence = int(monster_defence[0])
+            #divide the defence by 2
+            monster_defence = monster_defence / 2
             
             #get the enemies name and convert it to str
             monster_name = await db_manager.get_enemy_name(monsterID)
             #get the users attack
             #calculate the damage
             damage = user1_damage - monster_defence
+            #convert the damage to int
+            damage = int(damage)
             #if the damage is less than 0, set it to 0
             if damage < 0:
                 damage = 0
+                
+            #if the monsters defense is higher than the users attack, set the damage to 0, and say the monster blocked the attack
+            if monster_defence > user1_damage:
+                damage = 0
+                #tell the user the monster is too powerful and they ran away
+                await ctx.send("The monster is too powerful and you ran away!")
+                #replace the embed description with "You ran away!"
+                embed.description = "You ran away!"
+                #set the embed color to red
+                embed.color = 0xff0000
+                #edit the embed
+                await msg.edit(embed=embed)
+                return None
+        
+            #if the damage is more than the monsters health, set the damage to the monsters health
+            #convert the monsters health to int
+            monster_health = str(monster_health).replace("(", "")
+            monster_health = str(monster_health).replace(")", "")
+            monster_health = str(monster_health).replace(",", "")
+            #convert to int
+            monster_health = int(monster_health)
+            if damage > monster_health:
+                damage = monster_health
             #remove the damage from the monsters health
             await db_manager.remove_enemy_health(monsterID, damage)
             
@@ -733,7 +770,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             user1Promt = str(user1Promt)
             #replace the {user2_name} with the user2 name
             #convert both names to strings
-            user1_name = str(user1_name)
+            user1_name = str(userName)
             monster_name = str(monster_name)
             user1Promt = user1Promt.replace("{monster_name}", "__" + monster_name + "__")
             #replace {user1_name} with the user1 name
@@ -751,25 +788,81 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #if there are more than 4 lines in the embed, remove the first line
             if Newdescription.count("\n") >= 3:
                 Newdescription = Newdescription.split("\n", 1)[1]
-            #send a message to the channel saying the damage done
-            #edit the embed
-            embed = discord.Embed(title="Deathbattle", description=Newdescription, color=0xffff00)
+            embed = discord.Embed(description=f"{Newdescription}", color=0xffff00)
+            #edit the embed feilds to include the new health
+            user1_health = await db_manager.get_health(userID)
+            enemyHealth = await db_manager.get_enemy_health(monsterID)
+            #remove the () and , from the health
+            user1_health = str(user1_health).replace("(", "")
+            user1_health = str(user1_health).replace(")", "")
+            user1_health = str(user1_health).replace(",", "")
+            enemyHealth = str(enemyHealth).replace("(", "")
+            enemyHealth = str(enemyHealth).replace(")", "")
+            enemyHealth = str(enemyHealth).replace(",", "")
+            #convert to int
+            user1_health = int(user1_health)
+            enemyHealth = int(enemyHealth)
+            #if the user is dead, set their health to 0
+            if user1_health <= 0:
+                user1_health = 0
+            if enemyHealth <= 0:
+                enemyHealth = 0
+
+            #convert back to string
+            user1_health = str(user1_health)
+            enemyHealth = str(enemyHealth)
+                
+            embed = discord.Embed(description=f"{Newdescription}")
+            #set the embed color to green
+            embed.color = 0x00ff00
+            embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
+            embed.add_field(name=monster_name, value="Health: " + enemyHealth, inline=True)
+            prev_desc = Newdescription
+            #Q, whats the hex color for green
+            #A, 0x00ff00
+            await msg.edit(embed=embed)
+
             #add 1 to the turn count
+            #sleep for 2 seconds
             turnCount += 1
+            await asyncio.sleep(2)
+            
+            #add 1 to the turn count
             #if the monster is dead, give the user xp and coins and end the fight
-            if await db_manager.get_health(monsterID) <= 0:
+            #get the monsters health
+            monster_health = await db_manager.get_enemy_health(monsterID)
+            #convert the health to int
+            monster_health = int(monster_health[0])
+            #if the health is less than or equal to 0
+            if monster_health <= 0:
                 #get the users name
                 #convert the name to str
                 user1_name = str(userName)
-                #get the users xp and coins
-                user1_xp = await db_manager.get_xp(userID)
-                user1_coins = await db_manager.get_money(userID)
+                #get the enemies xp and coins to give to the user
+                monster_xp = await db_manager.get_enemy_xp(monsterID)
+                monster_coins = await db_manager.get_enemy_money(monsterID)
                 #convert the xp and coins to str
-                user1_xp = str(user1_xp)
-                user1_coins = str(user1_coins)
+                monster_xp = str(monster_xp)
+                monster_coins = str(monster_coins)
+                #remove the () and , from the xp and coins
+                monster_xp = monster_xp.replace("(", "")
+                monster_xp = monster_xp.replace(")", "")
+                monster_xp = monster_xp.replace(",", "")
+                monster_coins = monster_coins.replace("(", "")
+                monster_coins = monster_coins.replace(")", "")
+                monster_coins = monster_coins.replace(",", "")
+                #convert the xp and coins to str
+                monster_xp = str(monster_xp)
+                monster_coins = str(monster_coins)
                 #send a message to the channel saying the users xp and coins
-                await ctx.send(user1_name + " has won the fight and has been granted " + user1_xp + " xp and " + user1_coins + " coins!")
+                await ctx.send(user1_name + " has won the fight and has been granted " + monster_xp + " xp and " + monster_coins + " coins!")
                 #check if the user has leveled up by checking if the users xp is greater than or equal to the xp needed to level up 
+                #reconvert them back to int
+                monster_xp = int(monster_xp)
+                monster_coins = int(monster_coins)
+                #give the user their xp and coins
+                await db_manager.add_xp(userID, monster_xp)
+                await db_manager.add_money(userID, monster_coins)
                 if await db_manager.can_level_up(userID):
                     #if the user can level up, level them up
                     await db_manager.add_level(userID, 1)
@@ -778,9 +871,139 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                     #send a message to the channel saying the user has leveled up
                     #get the users new level
                     new_level = await db_manager.get_level(userID)
+                    #remove the () and , from the level
+                    new_level = str(new_level)
+                    new_level = new_level.replace("(", "")
+                    new_level = new_level.replace(")", "")
+                    new_level = new_level.replace(",", "")
+                    #convert the level to int
+                    new_level = int(new_level)
                     await ctx.send(user1_name + " has leveled up! They are now level " + str(new_level) + "!")
                 return userID
-        #monsters turn
+        #monsters turn to attack
+        if turnCount % 2 == 1:
+            #get the monsters attack
+            monster_attack = await db_manager.get_enemy_damage(monsterID)
+            #convert the attack to int
+            monster_attack = int(monster_attack[0])
+            #monsters defence is half of their health
+            monster_defence = await db_manager.get_enemy_health(monsterID)
+            #convert the defence to int
+            monster_defence = int(monster_defence[0])
+            #divide the defence by 2
+            monster_defence = monster_defence / 2
+            
+            #get the users armor
+            user1_armor = await db_manager.get_equipped_armor(userID)
+            if user1_armor == None or user1_armor == []:
+                user1_armor_name = "Clothes"
+                user1_defense = 1
+            else:
+                user1_armor_name = user1_armor[0][2]
+                user1_defense = user1_armor[0][8]
+                #convert the defense to int
+                user1_defense = int(user1_defense)
+            #get the users equipped weapon
+            user1_weapon = await db_manager.get_equipped_weapon(userID)
+            if user1_weapon == None or user1_weapon == []:
+                user1_weapon_name = "Fists"
+                user1_damage = 1
+            else:
+                user1_weapon_name = user1_weapon[0][2]
+                user1_damage = user1_weapon[0][8]
+            #get the users name and convert it to str
+            
+            #calculate the damage
+            damage = monster_attack - user1_defense
+            #if the damage is less than 0, set it to 0
+            if damage < 0:
+                damage = 0
+            #if the monsters attack is less than the users defense, set the damage to 0
+            if monster_attack < user1_defense:
+                damage = 0
+            #if the damage is greater than the users health, set the damage to the users health
+            if damage > user1_health:
+                damage = user1_health
+            #remove the damage from the users health
+            await db_manager.remove_health(userID, damage)
+            
+            #import the json of the enemyPromts
+            with open("assets/enemy_user_Promts.json") as f:
+                enemyPromts = json.load(f)
+            #get a random user2 promt
+            enemyPromts = random.choice(enemyPromts)
+            #convert the promt to a string
+            enemyPromts = str(enemyPromts)
+            #replace the {user2_name} with the user2 name
+            #convert both names to strings
+            user1_name = str(user1_name)
+            monster_name = str(monster_name)
+            enemyPromts = enemyPromts.replace("{monster_name}", "__" + monster_name + "__")
+            #replace {user1_name} with the user1 name
+            enemyPromts = enemyPromts.replace("{user1_name}", "__" + user1_name + "__")
+            #replace {monster_damage} with the monster damage
+            enemyPromts = enemyPromts.replace("{monster_damage}", "__" + str(monster_attack) + "__")
+            Newdescription = prev_desc + "\n" + f"{enemyPromts}"
+            #convert the embed to a string
+            Newdescription = str(Newdescription)
+            #if there are more than 4 lines in the embed, remove the first line
+            if Newdescription.count("\n") >= 3:
+                Newdescription = Newdescription.split("\n", 1)[1]
+            embed = discord.Embed(description=f"{Newdescription}", color=0xffff00)
+            #edit the embed feilds to include the new health
+            user1_health = await db_manager.get_health(userID)
+            enemyHealth = await db_manager.get_enemy_health(monsterID)
+            #remove the () and , from the health
+            user1_health = str(user1_health).replace("(", "")
+            user1_health = str(user1_health).replace(")", "")
+            user1_health = str(user1_health).replace(",", "")
+            enemyHealth = str(enemyHealth).replace("(", "")
+            enemyHealth = str(enemyHealth).replace(")", "")
+            enemyHealth = str(enemyHealth).replace(",", "")
+            #convert to int
+            user1_health = int(user1_health)
+            enemyHealth = int(enemyHealth)
+            #if the user is dead, set their health to 0
+            if user1_health <= 0:
+                user1_health = 0
+            if enemyHealth <= 0:
+                enemyHealth = 0
+
+            #convert back to string
+            user1_health = str(user1_health)
+            enemyHealth = str(enemyHealth)
+                
+            embed = discord.Embed(description=f"{Newdescription}")
+            #set the embed color to red
+            embed.color = 0xff0000
+            embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
+            embed.add_field(name=monster_name, value="Health: " + enemyHealth, inline=True)
+            prev_desc = Newdescription
+            #Q, whats the hex color for green
+            #A, 0x00ff00
+            await msg.edit(embed=embed)
+
+            #add 1 to the turn count
+            #sleep for 2 seconds
+            turnCount += 1
+            await asyncio.sleep(2)
+            #send a message to the channel saying the damage done
+            #add 1 to the turn count
+            #if the user is dead, end the fight
+            #get the users health
+            
+            userHealth = await db_manager.get_health(userID)
+            #convert it to int 
+            userHealth = int(userHealth[0])
+            #if the users health is less than or equal to 0, end the fight
+            if userHealth <= 0:
+                #get the monsters name
+                #convert the name to str
+                monster_name = str(monster_name)
+                #send a message to the channel saying the user has died
+                await ctx.send(user1_name + " has died!")
+                return userID
+            
             
                 
                 
