@@ -1,0 +1,100 @@
+[{
+    "item_id": "rattail",
+    "item_name": "Rat Tail",
+    "item_price": 25,
+    "item_emoji": "<:Rattail:1051976486283919360>",
+    "item_rarity": "Common",
+    "item_type": "Material",
+    "item_damage": 0,
+    "isUsable": false,
+    "inShop": false,
+    "isEquippable": false,
+    "item_description": "A rat tail, dropped from a rat and used to craft.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [{}]
+}, {
+    "item_id": "stick",
+    "item_name": "Stick",
+    "item_price": 25,
+    "item_emoji": "<:Stick:1051976486283919360>",
+    "item_rarity": "Common",
+    "item_type": "Material",
+    "item_damage": 0,
+    "isUsable": false,
+    "inShop": false,
+    "isEquippable": false,
+    "item_description": "A stick, dropped from a tree and used to craft.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [{}]
+}, 
+{
+    "item_id": "string",
+    "item_name": "String",
+    "item_price": 25,
+    "item_emoji": "<:String:1051976486283919360>",
+    "item_rarity": "Common",
+    "item_type": "Material",
+    "item_damage": 0,
+    "isUsable": false,
+    "inShop": false,
+    "isEquippable": false,
+    "item_description": "A string, dropped from a spider and used to craft.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [{}]
+},
+{
+    "item_id": "arrow",
+    "item_name": "Arrow",
+    "item_price": 25,
+    "item_emoji": "<:Arrow:1060261563522633750>",
+    "item_rarity": "Common",
+    "item_type": "Projectile",
+    "item_damage": 4,
+    "isUsable": false,
+    "inShop": true,
+    "isEquippable": true,
+    "item_description": "An Arrow, used to shoot from a bow.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "Arrow",
+    "recipe_id": "arrow",
+    "item_recipe": [{
+        "ingredient_id": "stick",
+        "ingredient_amount": 1
+    }, {
+        "ingredient_id": "rattail",
+        "ingredient_amount": 1
+    }]
+}, {
+    "item_id": "bow",
+    "item_name": "Bow",
+    "item_price": 25,
+    "item_emoji": "<:Bow:1051976486283919360>",
+    "item_rarity": "Common",
+    "item_type": "Weapon",
+    "item_damage": 4,
+    "isUsable": false,
+    "inShop": true,
+    "isEquippable": true,
+    "item_description": "A wooden blade for testing purposes.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "Arrow",
+    "recipe_id": "bow",
+    "item_recipe": [{
+        "ingredient_id": "stick",
+        "ingredient_amount": 2
+    }, {
+        "ingredient_id": "string",
+        "ingredient_amount": 1
+    }]
+}]

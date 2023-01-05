@@ -9,10 +9,12 @@ Version: 5.4
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 import discord
+from discord import Embed
 from discord import app_commands
 from discord.ext import commands
 import random
 import aiohttp
+import re
 
 from helpers import checks
 from helpers import db_manager
@@ -718,7 +720,14 @@ class Items(commands.Cog, name="template"):
         name="iteminfo",
         description="This command will get info about an item.",
     )
-    async def iteminfo(self, ctx: Context, item_id: str):
+    async def iteminfo(self, ctx: Context, item: str):
+        #convert the item to an item id
+        #if the item has a space in it, remove it 
+        if " " in item:
+            item_id = item.replace(" ", "")
+        else:
+            item_id = item
+        #if the item is lowercase, make it uppercase
         #get the item info from the database
         item_info = await db_manager.get_basic_item_name(item_id)
         print(item_info)
@@ -760,6 +769,10 @@ class Items(commands.Cog, name="template"):
                 item_description = await db_manager.get_basic_item_description(item_id)
                 #get the item name
                 item_name = await db_manager.get_basic_item_name(item_id)
+                #check if the item has a recipe
+                hasRecipe = await db_manager.check_item_recipe(item_id)
+                if hasRecipe == 1:
+                    item_recipe = await db_manager.get_item_recipe(item_id)
                 #create an embed
                 embed = discord.Embed(
                     title=f"{item_name}",
@@ -780,14 +793,56 @@ class Items(commands.Cog, name="template"):
                     embed.add_field(name="Defence", value=f"{item_damage}")
                 #add the price to the embed
                 embed.add_field(name="Price", value=f"{item_price}")
+                if hasRecipe == 1:
+                    embed.add_field(name="Recipe", value="Yes")
+                    print(item_recipe)
+                #if the item has a recipe, add the recipe to the embed
+                if hasRecipe == 0:
+                    pass
+                else:
+                    for feild in embed.fields:
+                        for item in item_recipe:
+                            if feild.name == "Recipe":
+                            #convert the item to a string
+                                item = str(item)
+                                #remove the item_id from the string 
+                                item = item.replace("(", "")
+                                item = item.replace(")", "")
+                                item = item.replace(",", "")
+                                item = item.replace("'", "")
+                                item = item.replace(item_id, "")
+                                itemNumber = re.sub(r'\D', '', item)
+                                print(itemNumber)
+                                itemId = re.sub(r'\d', '', item)
+                                print(itemId)
+                                #remove any spaces from the string
+                                itemId = itemId.replace(" ", "")
+                                #get the item name from the item id
+                                itemName = await db_manager.get_basic_item_name(itemId)
+                                #convert it to a string
+                                itemName = str(itemName)
+                                #remove the item id from the string
+                                itemName = itemName.replace("(", "")
+                                itemName = itemName.replace(")", "")
+                                itemName = itemName.replace(",", "")
+                                itemName = itemName.replace("'", "")
+                                #itemName = itemName.replace(itemId, "")
+                                #remove any spaces from the string
+                                print(itemName)
+                                #remove any numbers from the string
+                                #add each item to the feild
+                                #remove Yes from the feild
+                                feild.value = feild.value.replace("Yes", "")
+                                feild.value = feild.value + "\n" + f"{itemName} x{itemNumber}"
+                                #remove yes from the feild
+                                index = embed.fields.index(feild)
+                                embed.set_field_at(index, name=feild.name, value=feild.value)
                 #add the crit chance to the embed
                 embed.add_field(name="Type", value=f"{item_type}")
                 if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
                     pass
                 else:
                     embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
-                
-
                 embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
                 await ctx.send(embed=embed)
@@ -868,6 +923,10 @@ class Items(commands.Cog, name="template"):
                 item_description = await db_manager.get_basic_item_description(item_id)
                 #get the item name
                 item_name = await db_manager.get_basic_item_name(item_id)
+                #check if the item has a recipe
+                hasRecipe = await db_manager.check_item_recipe(item_id)
+                if hasRecipe == 1:
+                    item_recipe = await db_manager.get_item_recipe(item_id)
                 #create an embed
                 embed = discord.Embed(
                     title=f"{item_name}",
@@ -888,6 +947,50 @@ class Items(commands.Cog, name="template"):
                     embed.add_field(name="Defence", value=f"{item_damage}")
                 #add the price to the embed
                 embed.add_field(name="Price", value=f"{item_price}")
+                if hasRecipe == 1:
+                    embed.add_field(name="Recipe", value="Yes")
+                    print(item_recipe)
+                #if the item has a recipe, add the recipe to the embed
+                if hasRecipe == 0:
+                    pass
+                else:
+                    for feild in embed.fields:
+                        for item in item_recipe:
+                            if feild.name == "Recipe":
+                            #convert the item to a string
+                                item = str(item)
+                                #remove the item_id from the string 
+                                item = item.replace("(", "")
+                                item = item.replace(")", "")
+                                item = item.replace(",", "")
+                                item = item.replace("'", "")
+                                item = item.replace(item_id, "")
+                                itemNumber = re.sub(r'\D', '', item)
+                                print(itemNumber)
+                                itemId = re.sub(r'\d', '', item)
+                                print(itemId)
+                                #remove any spaces from the string
+                                itemId = itemId.replace(" ", "")
+                                #get the item name from the item id
+                                itemName = await db_manager.get_basic_item_name(itemId)
+                                #convert it to a string
+                                itemName = str(itemName)
+                                #remove the item id from the string
+                                itemName = itemName.replace("(", "")
+                                itemName = itemName.replace(")", "")
+                                itemName = itemName.replace(",", "")
+                                itemName = itemName.replace("'", "")
+                                #itemName = itemName.replace(itemId, "")
+                                #remove any spaces from the string
+                                print(itemName)
+                                #remove any numbers from the string
+                                #add each item to the feild
+                                #remove Yes from the feild
+                                feild.value = feild.value.replace("Yes", "")
+                                feild.value = feild.value + "\n" + f"{itemName} x{itemNumber}"
+                                #remove yes from the feild
+                                index = embed.fields.index(feild)
+                                embed.set_field_at(index, name=feild.name, value=feild.value)
                 #add the crit chance to the embed
                 embed.add_field(name="Type", value=f"{item_type}")
                 if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:

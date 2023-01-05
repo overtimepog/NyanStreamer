@@ -667,6 +667,25 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #a deathbattle between a user and a monster
 async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monsterName):
     #set the turn to 0
@@ -676,6 +695,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
     embed = discord.Embed(title="Deathbattle", description="Fight!", color=0xffff00)
     embed.add_field(name=userName, value="Health: 100", inline=True)
     embed.add_field(name=monsterName, value="Health: 100", inline=True)
+    #set the user in combat
+    await db_manager.set_in_combat(userID)
     msg = await ctx.send(embed=embed)
     #set the prev_desc to blank
     prev_desc = ""
@@ -691,6 +712,21 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
     while user_health != "0" and monster_health != "0":
         #users turn
         if turnCount % 2 == 0:
+            #if its been two turns since the user was set on fire, remove the burning status
+            if user_burn_turn != None and turnCount - user_burn_turn >= 2:
+                user_burn_turn = None
+                db_manager.set_user_not_burning(userID)
+
+            #if its been 2 turns since the user was poisoned, remove the poisoned status
+            if user_poison_turn != None and turnCount - user_poison_turn >= 2:
+                user_poison_turn = None
+                db_manager.set_user_not_poisoned(userID)
+
+            #if its been 1 turn since the user was paralyzed, remove the paralyzed status
+            if user_paralyze_turn != None and turnCount - user_paralyze_turn >= 1:
+                user_paralyze_turn = None
+                db_manager.set_user_not_paralyzed(userID)
+                
             user1_weapon = await db_manager.get_equipped_weapon(userID)
             #print(user1_weapon)
             if user1_weapon == None or user1_weapon == []:
@@ -747,6 +783,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 embed.color = 0xff0000
                 #edit the embed
                 await msg.edit(embed=embed)
+                #set the user not in combat
+                await db_manager.set_not_in_combat(userID)
                 return None
         
             #if the damage is more than the monsters health, set the damage to the monsters health
@@ -760,6 +798,31 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 damage = monster_health
             #remove the damage from the monsters health
             await db_manager.remove_enemy_health(monsterID, damage)
+            
+            if user1_weapon_subtype == "Fire" and isSetONFire == 1:
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ set __" + user1_name + "__ on fire <:Flame:1052619089127932044> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
+                #set the users burn status to true
+                await db_manager.set_user_burning(userID)
+                #mark the turn the user was set on fire
+                enemy_burn_turn = turnCount
+                
+            #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
+            elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ poisoned <:poison:1052619162528251965> __" + user1_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
+                #set the users poison status to true
+                await db_manager.set_user_poisoned(userID)
+                #mark the turn the user was poisoned
+                enemy_poison_turn = turnCount
+
+            #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
+            elif user1_weapon_subtype == "Paralyze" and isParalyzed == 1:
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ paralyzed ⚡ __" + user1_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
+                #set the users poison status to true
+                await db_manager.set_user_paralyzed(userID)
+                #mark the turn the user was poisoned
+                enemy_paralyze_turn = turnCount
+                #skip the users turn
+                turnCount += 1
             
             #import the json of the user1Promts
             with open("assets/user_enemy_Promts.json") as f:
@@ -841,6 +904,14 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #get the enemies xp and coins to give to the user
                 monster_xp = await db_manager.get_enemy_xp(monsterID)
                 monster_coins = await db_manager.get_enemy_money(monsterID)
+                
+                #get the enemys drop and drop min and max 
+                monster_drop = await db_manager.get_enemy_drop(monsterID)
+                monster_drop_chance = await db_manager.get_enemy_drop_chance(monsterID)
+                monster_drop_min = await db_manager.get_enemy_drop_amount_min(monsterID)
+                monster_drop_max = await db_manager.get_enemy_drop_amount_max(monsterID)
+                
+                
                 #convert the xp and coins to str
                 monster_xp = str(monster_xp)
                 monster_coins = str(monster_coins)
@@ -863,6 +934,41 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #give the user their xp and coins
                 await db_manager.add_xp(userID, monster_xp)
                 await db_manager.add_money(userID, monster_coins)
+                
+                #get all the info on the drop item
+                item_name = await db_manager.get_basic_item_name(monster_drop)
+                item_price = await db_manager.get_basic_item_price(monster_drop)
+                item_type = await db_manager.get_basic_item_type(monster_drop)
+                item_emoji = await db_manager.get_basic_item_emote(monster_drop)
+                item_rarity = await db_manager.get_basic_item_rarity(monster_drop)
+                #convert the item name to str
+                item_name = str(item_name[0])
+                #convert the item price to int
+                item_price = int(item_price[0])
+                #convert the item type to str
+                item_type = str(item_type[0])
+                #convert the item emoji to str
+                item_emoji = str(item_emoji[0])
+                #convert the item rarity to str
+                item_rarity = str(item_rarity[0])
+                
+                
+                #calculate the how many items the user will get
+                #get the drop chance
+                monster_drop_chance = int(monster_drop_chance[0])
+                #get the drop min and max
+                monster_drop_min = int(monster_drop_min[0])
+                monster_drop_max = int(monster_drop_max[0])
+                #get a random number between the min and max
+                drop_amount = random.randint(monster_drop_min, monster_drop_max)
+                #get a random number between 1 and 100
+                drop_chance = random.randint(1, 100)
+                #if the drop chance is less than or equal to the monsters drop chance
+                if drop_chance <= monster_drop_chance:
+                    #give the user the drop
+                    await db_manager.add_item_to_inventory(userID, monster_drop, item_name, item_price, item_emoji, item_rarity, drop_amount, item_type, 0, False, "None", "0", "None")
+                    #send a message to the channel saying the user got the drop
+                    await ctx.send(user1_name + " has gotten " + str(drop_amount) + " " + monster_drop + "!")
                 if await db_manager.can_level_up(userID):
                     #if the user can level up, level them up
                     await db_manager.add_level(userID, 1)
@@ -882,6 +988,20 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 return userID
         #monsters turn to attack
         if turnCount % 2 == 1:
+        #if its been two turns since the user was set on fire, remove the burning status
+            if enemy_burn_turn != None and turnCount - enemy_burn_turn >= 2:
+                enemy_burn_turn = None
+                db_manager.set_enemy_not_burning(monsterID)
+
+            #if its been 2 turns since the user was poisoned, remove the poisoned status
+            if enemy_poison_turn != None and turnCount - enemy_poison_turn >= 2:
+                enemy_poison_turn = None
+                db_manager.set_enemy_not_poisoned(monsterID)
+
+            #if its been 1 turn since the user was paralyzed, remove the paralyzed status
+            if enemy_paralyze_turn != None and turnCount - enemy_paralyze_turn >= 1:
+                enemy_paralyze_turn = None
+                db_manager.set_enemy_not_paralyzed(monsterID)
             #get the monsters attack
             monster_attack = await db_manager.get_enemy_damage(monsterID)
             #convert the attack to int
@@ -913,8 +1033,57 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 user1_damage = user1_weapon[0][8]
             #get the users name and convert it to str
             
+            user1_name = str(user1_name)
             #calculate the damage
             damage = monster_attack - user1_defense
+            isSetONFire = random.randint(1, 10)
+            #have the user have a 1/10 chance of being paralyzed
+            isPoisoned = random.randint(1, 10)
+            #a 1/10 chance of being paralyzed
+            isParalyzed = random.randint(1, 10)
+            #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
+            monster_element = await db_manager.get_enemy_element(monsterID)
+            if monster_element == "Fire" and isSetONFire == 1:
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ set __" + user1_name + "__ on fire <:Flame:1052619089127932044> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
+                #set the users burn status to true
+                await db_manager.set_user_burning(userID)
+                #mark the turn the user was set on fire
+                user_burn_turn = turnCount
+                
+            #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
+            elif monster_element == "Poison" and isPoisoned == 1:
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ poisoned <:poison:1052619162528251965> __" + user1_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
+                #set the users poison status to true
+                await db_manager.set_user_poisoned(userID)
+                #mark the turn the user was poisoned
+                user_poison_turn = turnCount
+
+            #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
+            elif monster_element == "Paralyze" and isParalyzed == 1:
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ paralyzed ⚡ __" + user1_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
+                #set the users poison status to true
+                await db_manager.set_user_paralyzed(userID)
+                #mark the turn the user was poisoned
+                user_paralyze_turn = turnCount
+                #skip the users turn
+                turnCount += 1
+
+            #get the crit chance of the monster
+            monster_crit_chance = await db_manager.get_enemy_crit_chance(monsterID)
+            #remove the % from the crit chance
+            #get the monsters element
+
+            
+            #convert the crit chance to int
+            monster_crit_chance = int(monster_crit_chance[0])
+            #get a random number between 1 and 100
+            crit_chance = random.randint(1, 100)
+            #if the crit chance is less than or equal to the monsters crit chance
+            if crit_chance <= monster_crit_chance:
+                #double the damage
+                damage = damage * 2
+                #set newdriscription to the crit message
+                Newdescription = "__" + monster_name + "__ has crit __" + user1_name + "__ for __" + str(damage) + "__ damage!"  
             #if the damage is less than 0, set it to 0
             if damage < 0:
                 damage = 0
@@ -936,7 +1105,6 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             enemyPromts = str(enemyPromts)
             #replace the {user2_name} with the user2 name
             #convert both names to strings
-            user1_name = str(user1_name)
             monster_name = str(monster_name)
             enemyPromts = enemyPromts.replace("{monster_name}", "__" + monster_name + "__")
             #replace {user1_name} with the user1 name
@@ -1002,6 +1170,12 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 monster_name = str(monster_name)
                 #send a message to the channel saying the user has died
                 await ctx.send(user1_name + " has died!")
+                #set the users health to 0
+                await db_manager.set_health(userID, 0)
+                #set the user as dead 
+                await db_manager.set_dead(userID)
+                #set the user not in combat
+                await db_manager.set_not_in_combat(userID)
                 return userID
             
             

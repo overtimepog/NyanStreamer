@@ -12,6 +12,7 @@ import aiohttp
 import discord
 from typing import Tuple, Any, Optional, Union
 import random
+import json
 
 
 #`item_id` varchar(20) NOT NULL,
@@ -26,141 +27,17 @@ import random
       
       
 #STUB - Basic items
+#read the basic_items.json file and load it into an array named basic_items
+with open("assets/basic_items.json", "r") as f:
+    basic_items = json.load(f)
+    
+with open("assets/enemies.json", "r") as f:
+    enemies = json.load(f)
 
-basic_items = [
-    #make an arrow item
-    {
-        "item_id": "Arrow",
-        "item_name": "Arrow",
-        "item_price": 25,
-        "item_emoji": "<:Arrow:1051976486283919360>",
-        "item_rarity": "Common",
-        "item_type": "Projectile",
-        "item_damage": 4,
-        "isUsable": False,
-        "inShop": True,
-        "isEquippable": True,
-        "item_description": "A wooden blade for testing purposes.",
-        "item_sub_type": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "Arrow"
-    },
-    #make a bow
-    {
-        "item_id": "Bow",
-        "item_name": "Bow",
-        "item_price": 25,
-        "item_emoji": "<:Bow:1051976486283919360>",
-        "item_rarity": "Common",
-        "item_type": "Weapon",
-        "item_damage": 4,
-        "isUsable": False,
-        "inShop": True,
-        "isEquippable": True,
-        "item_description": "A wooden blade for testing purposes.",
-        "item_sub_type": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "Arrow"
-    },
-    {
-        "item_id": "WoodenSword",
-        "item_name": "Wooden Sword",
-        "item_price": 25,
-        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
-        "item_rarity": "Common",
-        "item_type": "Weapon",
-        "item_damage": 5,
-        "isUsable": False,
-        "inShop": True,
-        "isEquippable": True,
-        "item_description": "A wooden sword. It's not very strong, but it's better than nothing.",
-        "item_sub_type": "None",
-        "item_crit_chance": "1%",
-        "item_projectile": "None"
-    },
-    {
-        "item_id": "CritSword",
-        "item_name": "Crit Sword",
-        "item_price": 25,
-        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
-        "item_rarity": "Common",
-        "item_type": "Weapon",
-        "item_damage": 4,
-        "isUsable": False,
-        "inShop": True,
-        "isEquippable": True,
-        "item_description": "A wooden blade for testing purposes.",
-        "item_sub_type": "None",
-        "item_crit_chance": "100%",
-        "item_projectile": "None"
-    },
-    {
-        "item_id": "FireSword",
-        "item_name": "Fire Sword",
-        "item_price": 25,
-        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
-        "item_rarity": "Common",
-        "item_type": "Weapon",
-        "item_damage": 4,
-        "isUsable": False,
-        "inShop": True,
-        "isEquippable": True,
-        "item_description": "A wooden blade for testing purposes.",
-        "item_sub_type": "Fire",
-        "item_crit_chance": "0%",
-        "item_projectile": "None"
-    },
-    {
-        "item_id": "PoisonSword",
-        "item_name": "Poison Sword",
-        "item_price": 25,
-        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
-        "item_rarity": "Common",
-        "item_type": "Weapon",
-        "item_damage": 4,
-        "isUsable": False,
-        "inShop": True,
-        "isEquippable": True,
-        "item_description": "A wooden blade for testing purposes.",
-        "item_sub_type": "Poison",
-        "item_crit_chance": "0%",
-        "item_projectile": "None"
-    },
-    {
-        "item_id": "ParalyzeSword",
-        "item_name": "Paralyze Sword",
-        "item_price": 25,
-        "item_emoji": "<:Wooden_Sword:1051976486283919360>",
-        "item_rarity": "Common",
-        "item_type": "Weapon",
-        "item_damage": 4,
-        "isUsable": False,
-        "inShop": True,
-        "isEquippable": True,
-        "item_description": "A wooden blade for testing purposes.",
-        "item_sub_type": "Paralyze",
-        "item_crit_chance": "0%",
-        "item_projectile": "None"
-    },
-]
 #STUB -  Basic items
 
 #add enemies list
 #(`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money']))
-enemies = [
-    {
-        "enemy_id": "Rat",
-        "enemy_name": "Rat",
-        "enemy_health": 10,
-        "enemy_damage": 3,
-        "enemy_emoji": "🐀",
-        "enemy_description": "A rat. It's not very strong, but it's annoying as hell.",
-        "enemy_rarity": "Common",
-        "enemy_type": "Animal",
-        "enemy_xp": 5,
-        "enemy_money": 5
-    },
-]
 
 class Database:
     @staticmethod
@@ -548,9 +425,41 @@ async def add_basic_items() -> None:
             print(f"|{item['item_name']}| is already in the database")
             pass
         else:
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile']))
-            #insert crit chance
+            # `item_id` varchar(20) NOT NULL,
+            #`item_name` varchar(255) NOT NULL,
+            #`item_price` varchar(255) NOT NULL,
+            #`item_emoji` varchar(255) NOT NULL,
+            #`item_rarity` varchar(255) NOT NULL,
+            #`item_type` varchar(255) NOT NULL,
+            #`item_damage` int(11) NOT NULL,
+            #`isUsable` boolean NOT NULL,
+            #`inShop` boolean NOT NULL,
+            #`isEquippable` boolean NOT NULL,
+            #`item_description` varchar(255) NOT NULL,
+            #`item_sub_type` varchar(255) NOT NULL,
+            #`item_crit_chance` int(11) NOT NULL,
+            #`item_projectile` varchar(255) NOT NULL,
+            #`recipe_id` varchar(255) NOT NULL,
+            
+            #add the item to the database
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, `item_crit_chance`, `item_projectile`, `recipe_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile'], item['recipe_id']))
             print(f"Added |{item['item_name']}| to the database")
+            
+            #add the items recipe to the database
+            #CREATE TABLE IF NOT EXISTS recipes (
+            # item_id VARCHAR(255) NOT NULL,
+            # ingredient_id VARCHAR(255) NOT NULL,
+            # ingredient_amount INTEGER NOT NULL
+            
+            
+
+            if item['recipe_id'] != "None":
+                #for each item in the recipe add it to the database with the item_id being the recipe_id
+                for ingredient in item['item_recipe']:
+                    await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (item['recipe_id'], ingredient['ingredient_id'], ingredient['ingredient_amount']))
+                    print(f"Added |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
+                print(f"Added |{item['item_name']}|'s recipe to the database")
+            
 
 #function to add all the items with inShop = True to the shop table and then add a random int between 1 and 10 to the amount column
 async def add_shop_items() -> None:
@@ -572,7 +481,31 @@ async def add_enemies() -> None:
             print(f"|{enemy['enemy_name']}| is already in the database")
             pass
         else:
-            await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money']))
+            #`enemy_id` varchar(20) NOT NULL,
+            #`enemy_name` varchar(255) NOT NULL,
+            #`enemy_health` int(11) NOT NULL,
+            #`enemy_damage` int(11) NOT NULL,
+            #`enemy_emoji` varchar(255) NOT NULL,
+            #`enemy_description` varchar(255) NOT NULL,
+            #`enemy_rarity` varchar(255) NOT NULL,
+            #`enemy_type` varchar(255) NOT NULL,
+            #`enemy_xp` int(11) NOT NULL,
+            #`enemy_money` int(11) NOT NULL,
+            #`enemy_crit_chance` int(11) NOT NULL,
+            #`enemy_drop` varchar(255) NOT NULL,
+            #`enemy_drop_chance` int(11) NOT NULL,
+            #`enemy_drop_amount` varchar(255) NOT NULL,
+            #`enemy_drop_amount_max` int(11) NOT NULL,
+            #`enemy_drop_amount_min` int(11) NOT NULL,
+            #`enemy_drop_rarity` varchar(255) NOT NULL,
+            #`enemy_element` varchar(255) NOT NULL,
+            #`isFrozen ` boolean NOT NULL,
+            #`isBurning` boolean NOT NULL,
+            #`isPoisoned` boolean NOT NULL,
+            #`isParalyzed` boolean NOT NULL
+            
+            #add the enemys properties to the database
+            await db.execute("INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`, `enemy_crit_chance`, `enemy_drop`, `enemy_drop_chance`, `enemy_drop_amount`, `enemy_drop_amount_max`, `enemy_drop_amount_min`, `enemy_drop_rarity`, `enemy_element`, `isFrozen`, `isBurning`, `isPoisoned`, `isParalyzed`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money'], enemy['enemy_crit_chance'], enemy['enemy_drop'], enemy['enemy_drop_chance'], enemy['enemy_drop_amount'], enemy['enemy_drop_amount_max'], enemy['enemy_drop_amount_min'], enemy['enemy_drop_rarity'], enemy['enemy_element'], False, False, False, False))
             print(f"Added |{enemy['enemy_name']}| to the database")
             
 #check if the enemy is in the database
@@ -592,6 +525,60 @@ async def get_enemy_name(enemy_id: str) -> str:
         return data[1]
     else:
         return None
+    
+#get the enemy drop from its ID
+async def get_enemy_drop(enemy_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return data[11]
+    else:
+        return None
+    
+#get the enemy drop chance from its ID
+async def get_enemy_drop_chance(enemy_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return data[12]
+    else:
+        return None
+    
+#get the enemy drop amount min from its ID
+async def get_enemy_drop_amount_min(enemy_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return data[14]
+    else:
+        return None
+
+#get the enemy drop amount max from its ID
+async def get_enemy_drop_amount_max(enemy_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return data[15]
+    else:
+        return None
+    
+#get the drop chance from its ID
+async def get_enemy_drop_rarity(enemy_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return data[16]
+    else:
+        return None
+    
+#check if an item has a recipe
+async def check_item_recipe(item_id: str) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `recipes` WHERE item_id = ?", (item_id,), fetch="one")
+    if data is not None:
+        return True
+    else:
+        return False
 
 #function to display the shop items
 async def display_shop_items() -> list:
@@ -930,6 +917,112 @@ async def check_user_paralyzed(user_id: int) -> int:
                 return None
         else:
             return None
+        
+#do all of the above for enimies
+async def set_enemy_burning(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `enemies` SET `isBurning` = 1 WHERE enemy_id = ?", (enemy_id,))
+            return 1
+        else:
+            return None
+
+async def set_enemy_not_burning(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `enemies` SET `isBurning` = 0 WHERE enemy_id = ?", (enemy_id,))
+            return 1
+        else:
+            return None
+
+async def check_enemy_burning(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            if data[4] == 1:
+                return 1
+            else:
+                return None
+        else:
+            return None
+    
+async def set_enemy_poisoned(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `enemies` SET `isPoisoned` = 1 WHERE enemy_id = ?", (enemy_id,))
+            return 1
+        else:
+            return None
+
+async def set_enemy_not_poisoned(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `enemies` SET `isPoisoned` = 0 WHERE enemy_id = ?", (enemy_id,))
+            return 1
+        else:
+            return None
+        
+async def check_enemy_poisoned(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            if data[5] == 1:
+                return 1
+            else:
+                return None
+        else:
+            return None
+
+async def set_enemy_paralyzed(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `enemies` SET `isParalyzed` = 1 WHERE enemy_id = ?", (enemy_id,))
+            return 1
+        else:
+            return None
+
+async def set_enemy_not_paralyzed(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `enemies` SET `isParalyzed` = 0 WHERE enemy_id = ?", (enemy_id,))
+            return 1
+        else:
+            return None
+
+async def check_enemy_paralyzed(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            if data[6] == 1:
+                return 1
+            else:
+                return None
+        else:
+            return None
+        
+#get enemy crit chance
+async def get_enemy_crit_chance(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            return data[3]
+        else:
+            return None
+        
+#get enemy element
+async def get_enemy_element(enemy_id: int) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        if data is not None:
+            return data[2]
+        else:
+            return None
 
 #make a request to the twitch api to get the twitch id of the streamer
 async def get_twitch_id(streamer_channel: str) -> int:
@@ -1174,7 +1267,7 @@ async def view_inventory(user_id: int) -> list:
         return []
         
 #add an item to the inventory table, uses the usersID from the users table and the item ID from the streamer_items table, if the item already exists in the inventory table, it will add 1 to the item_amount
-async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item_price: int, item_emoji: str, item_rarity: str, item_amount: int, item_type: str, item_damage: int, isEquipped: bool, item_sub_type: str, item_crit_chance: str) -> int:
+async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item_price: int, item_emoji: str, item_rarity: str, item_amount: int, item_type: str, item_damage: int, isEquipped: bool, item_sub_type: str, item_crit_chance: str, item_projectile: str) -> int:
     """
     This function will add an item to the inventory table.
 
@@ -1197,19 +1290,22 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item
                 return 1
             else:
                 #if the item does not exist in the inventory table, add it to the inventory table
-                  #`user_id` varchar(20) NOT NULL,
-  #`item_id` varchar(20) NOT NULL,
-  #`item_name` varchar(255) NOT NULL,
-  #`item_price` varchar(255) NOT NULL,
-  #`item_emoji` varchar(255) NOT NULL,
-  #`item_rarity` varchar(255) NOT NULL,
-  #`item_amount` int(11) NOT NULL,
-  #`item_type` varchar(255) NOT NULL,
-  #`item_damage` int(11) NOT NULL,
-  #`isEquipped` boolean NOT NULL,
-  #`item_sub_type` varchar(255) NOT NULL,
-  #`item_crit_chance` int(11) NOT NULL
-                await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_sub_type, item_crit_chance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_sub_type, item_crit_chance))
+                #CREATE TABLE IF NOT EXISTS `basic_items` (
+                #`item_id` varchar(20) NOT NULL,
+                #`item_name` varchar(255) NOT NULL,
+                #`item_price` varchar(255) NOT NULL,
+                #`item_emoji` varchar(255) NOT NULL,
+                #`item_rarity` varchar(255) NOT NULL,
+                #`item_type` varchar(255) NOT NULL,
+                #`item_damage` int(11) NOT NULL,
+                #`isUsable` boolean NOT NULL,
+                #`inShop` boolean NOT NULL,
+                #`isEquippable` boolean NOT NULL,
+                #`item_description` varchar(255) NOT NULL,
+                #`item_sub_type` varchar(255) NOT NULL,
+                #`item_crit_chance` int(11) NOT NULL,
+                #`item_projectile` varchar(255) NOT NULL
+                await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_sub_type, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_sub_type, item_crit_chance, item_projectile))
                 await db.commit()
                 rows = await db.execute("SELECT COUNT(*) FROM inventory")
                 async with rows as cursor:
@@ -1405,6 +1501,7 @@ async def get_basic_item_name(item_id: str) -> str:
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
+        
 
 #get items basic items price via its id
 async def get_basic_item_price(item_id: str) -> int:
@@ -1510,7 +1607,7 @@ async def get_basic_item_description(item_id: str) -> str:
             result = await cursor.fetchone()
             return result[10] if result is not None else 0
         
-#check if a baic item is usable
+#check if a basic item is usable
 async def is_basic_item_usable(item_id: str) -> bool:
     """
     This function will check if a basic item is usable.
@@ -1548,6 +1645,19 @@ async def is_basic_item_equipable(item_id: str) -> bool:
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
             return result[9] if result is not None else 0
+        
+#get an items recipe by getting all the entries with the same item_id
+async def get_item_recipe(item_id: str) -> list:
+    """
+    This function will get the recipe of an item.
+
+    :param item_id: The ID of the item that the recipe should be gotten from.
+    :return: The recipe of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM recipes WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else 0
         
 #check the inventory of a user for any items with the item_type Armor and if they are equiped with the item_type Armor
 async def is_armor_equipped(user_id: int) -> bool:

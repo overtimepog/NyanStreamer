@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `streamer_items` (
 );
 
 CREATE TABLE IF NOT EXISTS `basic_items` (
-  `item_id` varchar(20) NOT NULL,
+  `item_id` varchar(255) PRIMARY KEY,
   `item_name` varchar(255) NOT NULL,
   `item_price` varchar(255) NOT NULL,
   `item_emoji` varchar(255) NOT NULL,
@@ -39,7 +39,15 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `item_description` varchar(255) NOT NULL,
   `item_sub_type` varchar(255) NOT NULL,
   `item_crit_chance` int(11) NOT NULL,
-  `item_projectile` varchar(255) NOT NULL
+  `item_projectile` varchar(255) NOT NULL,
+  `recipe_id` varchar(255) NOT NULL,
+  FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)
+);
+
+CREATE TABLE IF NOT EXISTS recipes (
+  item_id VARCHAR(255) NOT NULL,
+  ingredient_id VARCHAR(255) NOT NULL,
+  ingredient_amount INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `shop` (
@@ -82,7 +90,19 @@ CREATE TABLE IF NOT EXISTS `enemies` (
   `enemy_rarity` varchar(255) NOT NULL,
   `enemy_type` varchar(255) NOT NULL,
   `enemy_xp` int(11) NOT NULL,
-  `enemy_money` int(11) NOT NULL
+  `enemy_money` int(11) NOT NULL,
+  `enemy_crit_chance` int(11) NOT NULL,
+  `enemy_drop` varchar(255) NOT NULL,
+  `enemy_drop_chance` int(11) NOT NULL,
+  `enemy_drop_amount` varchar(255) NOT NULL,
+  `enemy_drop_amount_max` int(11) NOT NULL,
+  `enemy_drop_amount_min` int(11) NOT NULL,
+  `enemy_drop_rarity` varchar(255) NOT NULL,
+  `enemy_element` varchar(255) NOT NULL,
+  `isFrozen` boolean NOT NULL,
+  `isBurning` boolean NOT NULL,
+  `isPoisoned` boolean NOT NULL,
+  `isParalyzed` boolean NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `inventory` (
