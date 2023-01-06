@@ -6,14 +6,14 @@ This is a template to create your own discord bot in python.
 Version: 5.4
 """
 
-import aiosqlite
-import requests
-import aiohttp
-import discord
-from typing import Tuple, Any, Optional, Union
-import random
 import json
+import random
+from typing import Any, Optional, Tuple, Union
 
+import aiohttp
+import aiosqlite
+import discord
+import requests
 
 #`item_id` varchar(20) NOT NULL,
 #`item_name` varchar(255) NOT NULL,

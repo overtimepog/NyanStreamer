@@ -6,20 +6,17 @@ This is a template to create your own discord bot in python.
 Version: 5.4
 """
 
+import json
+import random
+import re
+
+import aiohttp
+import discord
+from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
-import discord
-from discord import Embed
-from discord import app_commands
-from discord.ext import commands
-import random
-import aiohttp
-import re
-import json
 
-from helpers import checks
-from helpers import db_manager
-from helpers import battle
+from helpers import battle, checks, db_manager
 
 
 # Here we name the cog and create a new class for the cog.
@@ -358,14 +355,18 @@ class Items(commands.Cog, name="template"):
             item_type = str(item_type)
             item_damage = i[6]
             #get the item effect
+            item_effect = await db_manager.get_item_effect(item_id)
             item_amount = await db_manager.get_shop_item_amount(item_id)
             #grab the int out of the coroutine=
             if item_type == "Weapon":
                 embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             if item_type == "Armor":
                 embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
-            if item_type == "Consumable":
+
+            #if its a consumable, and the item effect has the word heal in it, then display the heal amount
+            if item_type == "Consumable" and "heal" in item_effect:
                 embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Heal**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+            #if its a consumable, and the item effect has the word damage in it, then display the damage amount
             else:
                 if item_damage == 0:
                     embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
