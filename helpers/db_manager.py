@@ -581,9 +581,9 @@ async def check_item_recipe(item_id: str) -> bool:
         return False
     
 #get the items effect from its ID
-async def get_item_effect(item_id: str) -> str:
+async def get_basic_item_effect(item_id: str) -> str:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `items` WHERE item_id = ?", (item_id,), fetch="one")
+    data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
     if data is not None:
         return data[5]
     else:

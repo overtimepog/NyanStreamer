@@ -355,7 +355,7 @@ class Items(commands.Cog, name="template"):
             item_type = str(item_type)
             item_damage = i[6]
             #get the item effect
-            item_effect = await db_manager.get_item_effect(item_id)
+            item_effect = await db_manager.get_basic_item_effect(item_id)
             item_amount = await db_manager.get_shop_item_amount(item_id)
             #grab the int out of the coroutine=
             if item_type == "Weapon":
@@ -687,7 +687,7 @@ class Items(commands.Cog, name="template"):
         item_damage = await db_manager.get_basic_item_damage(item_id)
         isUsable = await db_manager.is_basic_item_usable(item_id)
         #get the items effect
-        item_effect = await db_manager.get_item_effect(item_id)
+        item_effect = await db_manager.get_basic_item_effect(item_id)
         #get streamer item effect
         #check if the item is a streamer item
         isStreamerItem = await db_manager.check_streamer_item(item_id)

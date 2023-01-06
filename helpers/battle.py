@@ -1,18 +1,20 @@
-import aiosqlite
-import requests
-import aiohttp
-import discord
-from typing import Tuple, Any, Optional, Union
+import asyncio
+import json
+import os
 import random
+from io import BytesIO
+from typing import Any, Optional, Tuple, Union
 
+import aiohttp
+import aiosqlite
+import discord
+import requests
 from discord.ext import commands
 from discord.ext.commands import Bot, Context
-from helpers import db_manager
 from PIL import Image, ImageChops, ImageDraw, ImageFont
-import os
-import asyncio
-from io import BytesIO
-import json
+
+from helpers import db_manager
+
 
 async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     turnCount = 0

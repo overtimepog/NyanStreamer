@@ -12,7 +12,6 @@ import os
 import platform
 import random
 import sys
-from helpers import db_manager
 
 import aiosqlite
 import discord
@@ -20,6 +19,7 @@ from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
 
 import exceptions
+from helpers import db_manager
 
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
