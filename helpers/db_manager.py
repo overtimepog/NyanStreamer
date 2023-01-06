@@ -425,7 +425,7 @@ async def add_basic_items() -> None:
             print(f"|{item['item_name']}| is already in the database")
             pass
         else:
-            # `item_id` varchar(20) NOT NULL,
+            #`item_id` varchar(20) NOT NULL,
             #`item_name` varchar(255) NOT NULL,
             #`item_price` varchar(255) NOT NULL,
             #`item_emoji` varchar(255) NOT NULL,
@@ -440,9 +440,12 @@ async def add_basic_items() -> None:
             #`item_crit_chance` int(11) NOT NULL,
             #`item_projectile` varchar(255) NOT NULL,
             #`recipe_id` varchar(255) NOT NULL,
+            #`isHuntable` boolean NOT NULL,
+            #`item_hunt_chance` int(11) NOT NULL,
+            #`item_effect` varchar(255) NOT NULL,
             
             #add the item to the database
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, `item_crit_chance`, `item_projectile`, `recipe_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile'], item['recipe_id']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect']))
             print(f"Added |{item['item_name']}| to the database")
             
             #add the items recipe to the database
@@ -450,9 +453,6 @@ async def add_basic_items() -> None:
             # item_id VARCHAR(255) NOT NULL,
             # ingredient_id VARCHAR(255) NOT NULL,
             # ingredient_amount INTEGER NOT NULL
-            
-            
-
             if item['recipe_id'] != "None":
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for ingredient in item['item_recipe']:
@@ -579,6 +579,25 @@ async def check_item_recipe(item_id: str) -> bool:
         return True
     else:
         return False
+    
+#get the items effect from its ID
+async def get_item_effect(item_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `items` WHERE item_id = ?", (item_id,), fetch="one")
+    if data is not None:
+        return data[5]
+    else:
+        return None
+    
+#get streamer item effect from its ID
+async def get_streamer_item_effect(item_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `streamer_items` WHERE item_id = ?", (item_id,), fetch="one")
+    if data is not None:
+        return data[5]
+    else:
+        return None
+    
 
 #function to display the shop items
 async def display_shop_items() -> list:
@@ -1128,7 +1147,7 @@ async def view_streamers() -> list:
             return result if result is not None else []
         
 #add an item to the streamer_items table, uses the streamersID from the streamer table and the item name and the item price
-async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str, item_damage: int, item_sub_type: str, item_crit_chance: str) -> int:
+async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str, item_damage: int, item_sub_type: str, item_crit_chance: str, item_effect: str, isUsable: bool, isEquippable: bool) -> int:
     """
     This function will add an item to the streamer_items table.
 
@@ -1142,7 +1161,7 @@ async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarit
     item_id = item_id.replace(" ", "_")
     async with aiosqlite.connect("database/database.db") as db:
         #add all of it to the database
-        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type, item_damage, item_sub_type, item_crit_chance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type, item_damage, item_sub_type, item_crit_chance))
+        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type, item_damage, item_sub_type, item_crit_chance, item_effect, isUsable, isEquippable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type, item_damage, item_sub_type, item_crit_chance, item_effect, isUsable, isEquippable))
         await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM streamer_items")
         async with rows as cursor:
@@ -1475,6 +1494,32 @@ async def get_streamer_item_damage(item_id: str) -> int:
         async with db.execute("SELECT * FROM streamer_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
             return result[8] if result is not None else 0
+        
+#get if a streamer item is usable via its id
+async def get_streamer_item_usable(item_id: str) -> bool:
+    """
+    This function will get if an item is usable.
+
+    :param item_id: The ID of the item that the usable should be gotten from.
+    :return: If the item is usable.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[12] if result is not None else False
+        
+#get if a streamer item is equipable via its id
+async def get_streamer_item_equipable(item_id: str) -> bool:
+    """
+    This function will get if an item is equipable.
+
+    :param item_id: The ID of the item that the equipable should be gotten from.
+    :return: If the item is equipable.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[13] if result is not None else False
         
 #get items basic items damage via its id
 async def get_basic_item_damage(item_id: str) -> int:

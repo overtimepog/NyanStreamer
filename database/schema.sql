@@ -22,7 +22,10 @@ CREATE TABLE IF NOT EXISTS `streamer_items` (
   `item_type` varchar(255) NOT NULL,
   `item_damage` int(11) NOT NULL,
   `item_sub_type` varchar(255) NOT NULL,
-  `item_crit_chance` int(11) NOT NULL
+  `item_crit_chance` int(11) NOT NULL,
+  `item_effect` varchar(255) NOT NULL,
+  `isUsable` boolean NOT NULL,
+  `isEquippable` boolean NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `basic_items` (
@@ -41,6 +44,9 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `item_crit_chance` int(11) NOT NULL,
   `item_projectile` varchar(255) NOT NULL,
   `recipe_id` varchar(255) NOT NULL,
+  `isHuntable` boolean NOT NULL,
+  `item_hunt_chance` int(11) NOT NULL,
+  `item_effect` varchar(255) NOT NULL,
   FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)
 );
 

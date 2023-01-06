@@ -14,7 +14,10 @@
     "item_crit_chance": "0%",
     "item_projectile": "None",
     "recipe_id": "None",
-    "item_recipe": [{}]
+    "item_recipe": [{}],
+    "isHuntable": true,
+    "item_hunt_chance": 0.5,
+    "item_effect": "None"
 }, {
     "item_id": "stick",
     "item_name": "Stick",
@@ -31,7 +34,10 @@
     "item_crit_chance": "0%",
     "item_projectile": "None",
     "recipe_id": "None",
-    "item_recipe": [{}]
+    "item_recipe": [{}],
+    "isHuntable": true,
+    "item_hunt_chance": 0.5,
+    "item_effect": "None"
 }, 
 {
     "item_id": "string",
@@ -49,7 +55,73 @@
     "item_crit_chance": "0%",
     "item_projectile": "None",
     "recipe_id": "None",
-    "item_recipe": [{}]
+    "item_recipe": [{}],
+    "isHuntable": true,
+    "item_hunt_chance": 0.5,
+    "item_effect": "None"
+},
+{
+    "item_id": "redmushroom",
+    "item_name": "Red Mushroom",
+    "item_price": 25,
+    "item_emoji": "<:Redmushroom:1051976486283919360>",
+    "item_rarity": "Common",
+    "item_type": "Material",
+    "item_damage": 0,
+    "isUsable": false,
+    "inShop": false,
+    "isEquippable": false,
+    "item_description": "A red mushroom, can be found when hunting and used to craft.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [{}],
+    "isHuntable": true,
+    "item_hunt_chance": 0.5,
+    "item_effect": "None"
+},
+{
+    "item_id": "diamond",
+    "item_name": "Diamond",
+    "item_price": 1000,
+    "item_emoji": "<:Diamond:1051976486283919362>",
+    "item_rarity": "Rare",
+    "item_type": "Material",
+    "item_damage": 0,
+    "isUsable": false,
+    "inShop": true,
+    "isEquippable": false,
+    "item_description": "A rare and valuable gemstone.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [],
+    "isHuntable": true,
+    "item_hunt_chance": 0.1,
+    "item_effect": "None"
+},
+{
+    "item_id": "goldenflower",
+    "item_name": "Golden Flower",
+    "item_price": 500,
+    "item_emoji": "<:Goldenflower:1051976486283919363>",
+    "item_rarity": "Uncommon",
+    "item_type": "Material",
+    "item_damage": 0,
+    "isUsable": false,
+    "inShop": true,
+    "isEquippable": false,
+    "item_description": "A rare and valuable flower with a golden hue.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [],
+    "isHuntable": true,
+    "item_hunt_chance": 0.3,
+    "item_effect": "None"
 },
 {
     "item_id": "arrow",
@@ -61,7 +133,7 @@
     "item_damage": 4,
     "isUsable": false,
     "inShop": true,
-    "isEquippable": true,
+    "isEquippable": false,
     "item_description": "An Arrow, used to shoot from a bow.",
     "item_sub_type": "None",
     "item_crit_chance": "0%",
@@ -73,7 +145,10 @@
     }, {
         "ingredient_id": "rattail",
         "ingredient_amount": 1
-    }]
+    }],
+    "isHuntable": false,
+    "item_hunt_chance": 0,
+    "item_effect": "None"
 }, {
     "item_id": "bow",
     "item_name": "Bow",
@@ -96,5 +171,62 @@
     }, {
         "ingredient_id": "string",
         "ingredient_amount": 1
-    }]
-}]
+    }],
+    "isHuntable": false,
+    "item_hunt_chance": 0,
+    "item_effect": "None"
+}, {
+    "item_id": "healthpotion",
+    "item_name": "Health Potion",
+    "item_price": 25,
+    "item_emoji": "<:Healsmall:1051976486283919360>",
+    "item_rarity": "Common",
+    "item_type": "Consumable",
+    "item_damage": 10,
+    "isUsable": true,
+    "inShop": true,
+    "isEquippable": false,
+    "item_description": "A basic health potion, used to heal.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "healsmall",
+    "item_recipe": [{
+        "ingredient_id": "redmushroom",
+        "ingredient_amount": 2
+    }, {
+        "ingredient_id": "string",
+        "ingredient_amount": 1
+    }],
+    "isHuntable": false,
+    "item_hunt_chance": 0,
+    "item_effect": "heal 10"
+},
+{
+    "item_id": "revivepotion",
+    "item_name": "Revive Potion",
+    "item_price": 100,
+    "item_emoji": "<:Revive:1051976486283919361>",
+    "item_rarity": "Rare",
+    "item_type": "Consumable",
+    "item_damage": 100,
+    "isUsable": true,
+    "inShop": true,
+    "isEquippable": false,
+    "item_description": "A potion that revives the player when used.",
+    "item_sub_type": "None",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "revive",
+    "item_recipe": [{
+        "ingredient_id": "diamond",
+        "ingredient_amount": 1
+    },{
+        "ingredient_id": "goldenflower",
+        "ingredient_amount": 1
+    }],
+    "isHuntable": false,
+    "item_hunt_chance": 0,
+    "item_effect": "revive"
+}
+]

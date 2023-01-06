@@ -800,25 +800,25 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             await db_manager.remove_enemy_health(monsterID, damage)
             
             if user1_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ set __" + user1_name + "__ on fire <:Flame:1052619089127932044> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + monster_name + "__ on fire <:Flame:1052619089127932044> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
-                await db_manager.set_user_burning(userID)
+                await db_manager.set_enemy_burning(monsterID)
                 #mark the turn the user was set on fire
                 enemy_burn_turn = turnCount
                 
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ poisoned <:poison:1052619162528251965> __" + user1_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poison:1052619162528251965> __" + monster_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
                 #set the users poison status to true
-                await db_manager.set_user_poisoned(userID)
+                await db_manager.set_enemy_poisoned(monsterID)
                 #mark the turn the user was poisoned
                 enemy_poison_turn = turnCount
 
             #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
             elif user1_weapon_subtype == "Paralyze" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ paralyzed ⚡ __" + user1_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ paralyzed ⚡ __" + monster_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
                 #set the users poison status to true
-                await db_manager.set_user_paralyzed(userID)
+                await db_manager.set_enemy_paralyzed(monsterID)
                 #mark the turn the user was poisoned
                 enemy_paralyze_turn = turnCount
                 #skip the users turn
@@ -874,6 +874,36 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #convert back to string
             user1_health = str(user1_health)
             enemyHealth = str(enemyHealth)
+            
+            if await db_manager.check_user_burning(userID):
+                await db_manager.remove_health(userID, 1)
+                #add a (burning) to the users health
+                user1_health = user1_health + " (burning)"
+                #mark down the turn count when the user was set on fire
+                
+            if await db_manager.check_enemy_burning(monsterID):
+                await db_manager.remove_enemy_health(monsterID, 1)
+                #add a (burning) to the users health
+                monster_health = monster_health + " (burning)"
+                #mark down the turn count when the user was set on fire
+
+            if await db_manager.check_user_poisoned(userID):
+                await db_manager.remove_health(userID, 3)
+                #add a (poisoned) to the users health
+                user1_health = user1_health + " (poisoned)"
+                #mark down the turn count when the user was set on fire
+            
+            if await db_manager.check_enemy_poisoned(monsterID):
+                await db_manager.remove_enemy_health(monsterID, 3)
+                #add a (poisoned) to the users health
+                monster_health = monster_health + " (poisoned)"
+                #mark down the turn count when the user was set on fire
+                
+            if await db_manager.check_user_paralyzed(userID):
+                user1_health = user1_health + " (paralyzed)"
+            
+            if await db_manager.check_enemy_paralyzed(monsterID):
+                monster_health = monster_health + " (paralyzed)"
                 
             embed = discord.Embed(description=f"{Newdescription}")
             #set the embed color to green
@@ -1002,6 +1032,13 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             if enemy_paralyze_turn != None and turnCount - enemy_paralyze_turn >= 1:
                 enemy_paralyze_turn = None
                 db_manager.set_enemy_not_paralyzed(monsterID)
+                
+            #if the enemy is on fire, deal 3 damage to them
+            isBurning = await db_manager.check_enemy_burning(monsterID)
+            if isBurning:
+                await db_manager.deal_enemy_damage(monsterID, 3)
+            
+                
             #get the monsters attack
             monster_attack = await db_manager.get_enemy_damage(monsterID)
             #convert the attack to int
@@ -1131,6 +1168,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #convert to int
             user1_health = int(user1_health)
             enemyHealth = int(enemyHealth)
+            
             #if the user is dead, set their health to 0
             if user1_health <= 0:
                 user1_health = 0
@@ -1140,6 +1178,36 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #convert back to string
             user1_health = str(user1_health)
             enemyHealth = str(enemyHealth)
+            
+            if await db_manager.check_user_burning(userID):
+                await db_manager.remove_health(userID, 1)
+                #add a (burning) to the users health
+                user1_health = user1_health + " (burning)"
+                #mark down the turn count when the user was set on fire
+                
+            if await db_manager.check_enemy_burning(monsterID):
+                await db_manager.remove_enemy_health(monsterID, 1)
+                #add a (burning) to the users health
+                monster_health = monster_health + " (burning)"
+                #mark down the turn count when the user was set on fire
+
+            if await db_manager.check_user_poisoned(userID):
+                await db_manager.remove_health(userID, 3)
+                #add a (poisoned) to the users health
+                user1_health = user1_health + " (poisoned)"
+                #mark down the turn count when the user was set on fire
+            
+            if await db_manager.check_enemy_poisoned(monsterID):
+                await db_manager.remove_enemy_health(monsterID, 3)
+                #add a (poisoned) to the users health
+                monster_health = monster_health + " (poisoned)"
+                #mark down the turn count when the user was set on fire
+                
+            if await db_manager.check_user_paralyzed(userID):
+                user1_health = user1_health + " (paralyzed)"
+            
+            if await db_manager.check_enemy_paralyzed(monsterID):
+                monster_health = monster_health + " (paralyzed)"
                 
             embed = discord.Embed(description=f"{Newdescription}")
             #set the embed color to red

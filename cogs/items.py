@@ -15,6 +15,7 @@ from discord.ext import commands
 import random
 import aiohttp
 import re
+import json
 
 from helpers import checks
 from helpers import db_manager
@@ -184,23 +185,9 @@ class Items(commands.Cog, name="template"):
                 await ctx.send(f"`{item_name}`already exists in the database.")
                 return
         critChances = ['1%','2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%', '11%', '12%', '13%', '14%', '15%', '16%', '17%', '18%', '19%', '20%', '21%', '22%', '23%', '24%', '25%']
-
-        presets = [
-            {
-        "item_price": 25,
-        "item_rarity": "Common",
-        "item_type": "Weapon",
-        "item_damage": 5,
-        "item_sub_type": "Fire"
-            },
-            {
-        "item_price": 50,
-        "item_rarity": "Uncommon",
-        "item_type": "Weapon",
-        "item_damage": 10,
-        "item_sub_type": "Fire"
-            },
-        ]   
+        #get the presets from the json file
+        with open('assets/streamer_item_presets.json') as f:
+            presets = json.load(f)
         #pick a random preset
         preset = random.choice(presets)
         item_price = preset['item_price']
@@ -208,6 +195,9 @@ class Items(commands.Cog, name="template"):
         item_type = preset['item_type']
         item_damage = preset['item_damage']
         item_sub_type = preset['item_sub_type']
+        item_effect = preset['item_effect']
+        isUsable = preset['isUsable']
+        isEquippable = preset['isEquippable']
         if item_type == "Common":
             #pic a random crit chance from the first 5 crit chances
             item_crit_chance = random.choice(critChances[:5])
@@ -225,8 +215,14 @@ class Items(commands.Cog, name="template"):
             item_crit_chance = random.choice(critChances[20:25])
         #add the item to the database
         #send an embed to the streamer with the item info
-        embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}\n Item Crit Chance: {item_crit_chance}\n Item Sub Type: {item_sub_type}", color=0x00ff00)
+        if item_type == "Weapon":
+            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+        elif item_type == "Armor":
+            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Defence: {item_damage}", color=0x00ff00)
+        elif item_type == "Consumable":
+            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Effect: {item_effect}", color=0x00ff00)
         #set the embed thumbnail to the emoji url
+        
         embed.set_thumbnail(url=item_emote_url)
         #create a button to confirm the item creation
         class Buttons(discord.ui.View):
@@ -238,7 +234,7 @@ class Items(commands.Cog, name="template"):
             async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button ):
                 await interaction.response.send_message("Item created.")
                 await interaction.message.delete()
-                await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage, item_sub_type, item_crit_chance)
+                await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage, item_sub_type, item_crit_chance, item_effect, isUsable, isEquippable)
                 self.value = True
                 self.stop()
 
@@ -253,7 +249,7 @@ class Items(commands.Cog, name="template"):
                 item_type = preset['item_type']
                 item_damage = preset['item_damage']
                 #send an embed to the streamer with the item info
-                embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+                embed = discord.Embed(title=f"Item Preset", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
                 #set the embed thumbnail to the emoji url
                 embed.set_thumbnail(url=item_emote_url)
                 await interaction.response.edit_message(embed=embed, view=self)
@@ -361,6 +357,7 @@ class Items(commands.Cog, name="template"):
             item_type = i[5]
             item_type = str(item_type)
             item_damage = i[6]
+            #get the item effect
             item_amount = await db_manager.get_shop_item_amount(item_id)
             #grab the int out of the coroutine=
             if item_type == "Weapon":
@@ -688,30 +685,56 @@ class Items(commands.Cog, name="template"):
         item_name = await db_manager.get_basic_item_name(item_id)
         item_damage = await db_manager.get_basic_item_damage(item_id)
         isUsable = await db_manager.is_basic_item_usable(item_id)
+        #get the items effect
+        item_effect = await db_manager.get_item_effect(item_id)
+        #get streamer item effect
+        #check if the item is a streamer item
+        isStreamerItem = await db_manager.check_streamer_item(item_id)
+        isStreamerItemUsable = await db_manager.get_streamer_item_usable(item_id)
+        if isStreamerItem == 1:
+            if isStreamerItemUsable == True or isStreamerItemUsable == 1:
+                streamer_item_effect = await db_manager.get_streamer_item_effect(item_id)
+                if "heal" in streamer_item_effect:
+                    #get the amount to heal the user by
+                    heal_amount = int(streamer_item_effect[5:])
+                    #heal the user
+                    await db_manager.add_health(user_id, heal_amount)
+                    #remove the item from the users inventory
+                    await db_manager.remove_item_from_inventory(user_id, item_id)
+                    await ctx.send(f"You used `{item_name}` and healed `{heal_amount}` health.")
+                    return
+            else:
+                await ctx.send(f"`{item_name}` is not usable.")
+                return
+            
         if isUsable == 1:
             #remove item from inventory
             #before removing the item, check if the users health is full, if it is, don't remove the item
             user_health = await db_manager.get_health(user_id)
             user_max_health = 100
-            if user_health == user_max_health and (item_name == "Small Health Potion" or item_name == "Medium Health Potion" or item_name == "Large Health Potion"): 
-                await ctx.send(f"You cannot use `{item_name}` because your health is full.")
+            if user_health == user_max_health:
+                await ctx.send(f"You are already at full health.")
                 return
-            await db_manager.remove_item_from_inventory(user_id, item_id)
-            #STUB - item effects
-            #if the item's name is "Potion", add 10 health to the user
-            if item_name == "Small Health Potion":
-                await db_manager.add_health(user_id, item_damage)
-                ctx.send(f"You used `{item_name}` and healed {item_damage} health.")
-                return
-            elif item_name == "Medium Health Potion":
-                await db_manager.add_health(user_id, item_damage)
-                ctx.send(f"You used `{item_name}` and healed {item_damage} health.")
-                return
-            elif item_name == "Large Health Potion":
-                await db_manager.add_health(user_id, item_damage)
-                ctx.send(f"You used `{item_name}` and healed {item_damage} health.")
-                return
-            await ctx.send(f"You used `{item_name}`")
+            print(item_effect)
+            #if item effect has the word heal in it then heal the user
+            if "heal" in item_effect:
+                #get the amount to heal the user by
+                heal_amount = int(item_effect[5:])
+                #heal the user
+                await db_manager.add_health(user_id, heal_amount)
+                #remove the item from the users inventory
+                await db_manager.remove_item_from_inventory(user_id, item_id)
+                #send a message
+                await ctx.send(f"You used `{item_name}` and healed {heal_amount} health.")
+            elif "revive" in item_effect:
+                #revive the user
+                await db_manager.set_alive(user_id)
+                #heal the user to full health
+                await db_manager.set_health(user_id, 100)
+                #remove the item from the users inventory
+                await db_manager.remove_item_from_inventory(user_id, item_id)
+                #send a message
+                await ctx.send(f"You used `{item_name}` and revived.")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
@@ -835,8 +858,14 @@ class Items(commands.Cog, name="template"):
                                 feild.value = feild.value.replace("Yes", "")
                                 feild.value = feild.value + "\n" + f"{itemName} x{itemNumber}"
                                 #remove yes from the feild
-                                index = embed.fields.index(feild)
-                                embed.set_field_at(index, name=feild.name, value=feild.value)
+                                embed_dict = embed.to_dict()
+                                for field in embed_dict['fields']:
+                                    if field['name'] == 'Recipe':
+                                        field['value'] = feild.value
+                                        
+                                # Converting the embed to a `discord.Embed` obj
+                                edited_embed = discord.Embed.from_dict(embed_dict)
+                                
                 #add the crit chance to the embed
                 embed.add_field(name="Type", value=f"{item_type}")
                 if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
@@ -845,8 +874,18 @@ class Items(commands.Cog, name="template"):
                     embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
                 embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
-                await ctx.send(embed=embed)
-                return
+                if hasRecipe == 1 or hasRecipe == True:
+                    edited_embed.add_field(name="Type", value=f"{item_type}")
+                    if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                        pass
+                    else:
+                        edited_embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                        edited_embed.set_footer(text="Item ID: " + item_id)
+                    await ctx.send(embed=edited_embed)
+                    return
+                else:
+                    await ctx.send(embed=embed)
+                    return
             elif is_item_streamer == 1:
                 streamer_item_emote = await db_manager.get_streamer_item_emote(item_id)
                 streamer_name = await db_manager.get_streamer_name_from_item(item_id)
@@ -947,11 +986,11 @@ class Items(commands.Cog, name="template"):
                     embed.add_field(name="Defence", value=f"{item_damage}")
                 #add the price to the embed
                 embed.add_field(name="Price", value=f"{item_price}")
-                if hasRecipe == 1:
+                if hasRecipe == 1 or hasRecipe == True:
                     embed.add_field(name="Recipe", value="Yes")
                     print(item_recipe)
                 #if the item has a recipe, add the recipe to the embed
-                if hasRecipe == 0:
+                if hasRecipe == 0 or hasRecipe == False:
                     pass
                 else:
                     for feild in embed.fields:
@@ -989,8 +1028,14 @@ class Items(commands.Cog, name="template"):
                                 feild.value = feild.value.replace("Yes", "")
                                 feild.value = feild.value + "\n" + f"{itemName} x{itemNumber}"
                                 #remove yes from the feild
-                                index = embed.fields.index(feild)
-                                embed.set_field_at(index, name=feild.name, value=feild.value)
+                                #get the index of the Recipe feild
+                                embed_dict = embed.to_dict()
+                                for field in embed_dict['fields']:
+                                    if field['name'] == 'Recipe':
+                                        field['value'] = feild.value
+                                        
+                                # Converting the embed to a `discord.Embed` obj
+                                edited_embed = discord.Embed.from_dict(embed_dict)
                 #add the crit chance to the embed
                 embed.add_field(name="Type", value=f"{item_type}")
                 if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
@@ -999,8 +1044,18 @@ class Items(commands.Cog, name="template"):
                     embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
                 embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
-                await ctx.send(embed=embed)
-                return
+                if hasRecipe == 1 or hasRecipe == True:
+                    edited_embed.add_field(name="Type", value=f"{item_type}")
+                    if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                        pass
+                    else:
+                        edited_embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                        edited_embed.set_footer(text="Item ID: " + item_id)
+                    await ctx.send(embed=edited_embed)
+                    return
+                else:
+                    await ctx.send(embed=embed)
+                    return
             elif is_item_streamer == 1:
                 streamer_item_emote = await db_manager.get_streamer_item_emote(item_id)
                 streamer_name = await db_manager.get_streamer_name_from_item(item_id)
