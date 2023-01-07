@@ -362,25 +362,27 @@ class Items(commands.Cog, name="template"):
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
 
             #grab the int out of the coroutine=
             if item_type == "Weapon" or item_type == "Projectile":
                 #for each item in the item 
                 #create an embed for this item type
-                weaponembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+                weaponembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             if item_type == "Armor" or item_type == "Shield" or item_type == "Cosmetic":
                 #create an embed for this item type
-                armorembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+                armorembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             #if its a consumable, and the item effect has the word heal in it, then display the heal amount
             #check if the word heal is in the item effect
             if item_type == "Consumable" and ("heal" in item_effect or "revive" in item_effect):
                 #create an embed for this item type
-                heals.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Heal**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+                heals.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Heal**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             #if its a consumable, and the item effect has the word damage in it, then display the damage amount
             else:
                 if item_damage == 0:
                     #create an embed for this item type whitch is misc
-                    misc.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
+                    misc.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
         #await ctx.send(embed=embed)
 
         #create buttons to switch between the different embeds

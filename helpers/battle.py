@@ -250,7 +250,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 Newdescription = prev_desc + "\n" + "__" + user1_name + "__ hit a crit on __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage (crit)"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user1_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + user2_name + "__ on fire <:Flame:1052619089127932044> with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + user2_name + "__ on fire <:flame1:1061287587395948634> with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user2)
                 #mark the turn the user was set on fire
@@ -258,7 +258,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poison:1052619162528251965> __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poisoned:1061287780652691466> __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 3 damage per turn (poisoned)"
                 #set the users poison status to true
                 await db_manager.set_user_poisoned(user2)
                 #mark the turn the user was poisoned
@@ -266,7 +266,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
 
             #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
             elif user1_weapon_subtype == "Paralyze" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ paralyzed ⚡ __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ they wont be able to attack for a turn (paralyzed)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ paralyzed <:paralyzed:1061287659722510419> __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ they wont be able to attack for a turn (paralyzed)"
                 #set the users poison status to true
                 await db_manager.set_user_paralyzed(user2)
                 #mark the turn the user was poisoned
@@ -406,7 +406,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 Newdescription = prev_desc + "\n" + "__" + user2_name + "__ hit a crit on __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage (crit)"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user2_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ set __" + user1_name + "__ on fire <:Flame:1052619089127932044> with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ set __" + user1_name + "__ on fire <:flame1:1061287587395948634> with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user1)
                 #mark down the turn count when the user was set on fire
@@ -414,7 +414,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #if the sub type is Poison tell the user they were set on fire and add a (poisoned) to the end of the damage
 
             elif user2_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ poisoned <:poison:1052619162528251965> __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ poisoned <:poisoned:1061287780652691466> __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 3 damage per turn (poisoned)"
                 #set the users poison status to true
                 await db_manager.set_user_poisoned(user1)
                 #mark down the turn count when the user was set on fire
@@ -422,7 +422,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 
             #if the sub type is paralysis tell the user they were set on paralyzed and add a (paralyzed) to the end of the damage
             elif user2_weapon_subtype == "Paralysis" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ paralyzed ⚡ __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ they wont be able to attack for a turn (paralyzed)"
+                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ paralyzed <:paralyzed:1061287659722510419> __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ they wont be able to attack for a turn (paralyzed)"
                 #set the users paralysis status to true
                 await db_manager.set_user_paralyzed(user1)
                 #skip the users turn
@@ -802,7 +802,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             await db_manager.remove_enemy_health(monsterID, damage)
             
             if user1_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + monster_name + "__ on fire <:Flame:1052619089127932044> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + monster_name + "__ on fire <:flame1:1061287587395948634> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
                 await db_manager.set_enemy_burning(monsterID)
                 #mark the turn the user was set on fire
@@ -810,7 +810,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poison:1052619162528251965> __" + monster_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poisoned:1061287780652691466> __" + monster_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
                 #set the users poison status to true
                 await db_manager.set_enemy_poisoned(monsterID)
                 #mark the turn the user was poisoned
@@ -818,7 +818,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
 
             #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
             elif user1_weapon_subtype == "Paralyze" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ paralyzed ⚡ __" + monster_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
+                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ paralyzed <:paralyzed:1061287659722510419> __" + monster_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
                 #set the users poison status to true
                 await db_manager.set_enemy_paralyzed(monsterID)
                 #mark the turn the user was poisoned
@@ -1083,7 +1083,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             monster_element = await db_manager.get_enemy_element(monsterID)
             if monster_element == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ set __" + user1_name + "__ on fire <:Flame:1052619089127932044> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ set __" + user1_name + "__ on fire <:flame1:1061287587395948634> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
                 #set the users burn status to true
                 await db_manager.set_user_burning(userID)
                 #mark the turn the user was set on fire
@@ -1091,7 +1091,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif monster_element == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ poisoned <:poison:1052619162528251965> __" + user1_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ poisoned <:poisoned:1061287780652691466> __" + user1_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
                 #set the users poison status to true
                 await db_manager.set_user_poisoned(userID)
                 #mark the turn the user was poisoned
@@ -1099,7 +1099,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
 
             #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
             elif monster_element == "Paralyze" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ paralyzed ⚡ __" + user1_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
+                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ paralyzed <:paralyzed:1061287659722510419> __" + user1_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
                 #set the users poison status to true
                 await db_manager.set_user_paralyzed(userID)
                 #mark the turn the user was poisoned
