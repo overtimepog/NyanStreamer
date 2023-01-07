@@ -585,7 +585,7 @@ async def get_basic_item_effect(item_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
     if data is not None:
-        return data[5]
+        return data[17]
     else:
         return None
     
@@ -594,7 +594,7 @@ async def get_streamer_item_effect(item_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `streamer_items` WHERE item_id = ?", (item_id,), fetch="one")
     if data is not None:
-        return data[5]
+        return data[11]
     else:
         return None
     

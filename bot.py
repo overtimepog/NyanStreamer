@@ -91,6 +91,8 @@ The config is available using the following code:
 bot.config = config
 
 
+
+
 @bot.event
 async def on_ready() -> None:
     """
@@ -256,7 +258,6 @@ async def load_cogs() -> None:
             except Exception as e:
                 exception = f"{type(e).__name__}: {e}"
                 print(f"Failed to load extension {extension}\n{exception}")
-
 
 asyncio.run(init_db())
 asyncio.run(load_cogs())

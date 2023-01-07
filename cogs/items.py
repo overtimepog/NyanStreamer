@@ -6,6 +6,7 @@ This is a template to create your own discord bot in python.
 Version: 5.4
 """
 
+import asyncio
 import json
 import random
 import re
@@ -16,7 +17,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager
+from helpers import battle, buy, checks, db_manager
 
 
 # Here we name the cog and create a new class for the cog.
@@ -344,8 +345,12 @@ class Items(commands.Cog, name="template"):
         """
         shop = await db_manager.display_shop_items()
         embed = discord.Embed(title="Shop", description="All of the items in the shop.", color=0x00ff00)
+        weaponembed = discord.Embed(title="Weapons", description="All of the weapons in the shop.", color=0x00ff00)
+        armorembed = discord.Embed(title="Armor", description="All of the armor in the shop.", color=0x00ff00)
+        heals = discord.Embed(title="Heals", description="All of the healing items in the shop.", color=0x00ff00)
+        misc = discord.Embed(title="Misc", description="All of the misc items in the shop.", color=0x00ff00)
+        #create a separate embed for each item type
         for i in shop:
-            print(i)
             item_id = i[0]
             item_name = i[1]
             item_price = i[2]
@@ -357,20 +362,73 @@ class Items(commands.Cog, name="template"):
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             item_amount = await db_manager.get_shop_item_amount(item_id)
-            #grab the int out of the coroutine=
-            if item_type == "Weapon":
-                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
-            if item_type == "Armor":
-                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
 
+            #grab the int out of the coroutine=
+            if item_type == "Weapon" or item_type == "Projectile":
+                #for each item in the item 
+                #create an embed for this item type
+                weaponembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+            if item_type == "Armor" or item_type == "Shield" or item_type == "Cosmetic":
+                #create an embed for this item type
+                armorembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             #if its a consumable, and the item effect has the word heal in it, then display the heal amount
-            if item_type == "Consumable" and "heal" in item_effect:
-                embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Heal**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+            #check if the word heal is in the item effect
+            if item_type == "Consumable" and ("heal" in item_effect or "revive" in item_effect):
+                #create an embed for this item type
+                heals.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Heal**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
             #if its a consumable, and the item effect has the word damage in it, then display the damage amount
             else:
                 if item_damage == 0:
-                    embed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
-        await ctx.send(embed=embed)
+                    #create an embed for this item type whitch is misc
+                    misc.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
+        #await ctx.send(embed=embed)
+
+        #create buttons to switch between the different embeds
+        #create a list of all the embeds
+        #make sure the emebds exist before adding them to the list
+        embeds = []
+        #add the embeds to the list
+        if weaponembed.fields:
+            embeds.append(weaponembed)
+        if armorembed.fields:
+            embeds.append(armorembed)
+        if heals.fields:
+            embeds.append(heals)
+        if misc.fields:
+            embeds.append(misc)
+
+
+        #send the first embed, and add reactions to it to switch between the different embeds
+        message = await ctx.send(embed=embeds[0])
+        await message.add_reaction("⬅️")
+        await message.add_reaction("➡️")
+
+
+
+
+
+
+        #create a function to check if the reaction is the one we want
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in ["⬅️", "➡️"]
+        
+        #switch between the different embeds
+        i = 0
+        reaction = None
+        while True:
+            if str(reaction) == "⬅️":
+                if i > 0:
+                    i -= 1
+                    await message.edit(embed=embeds[i])
+            elif str(reaction) == "➡️":
+                if i < len(embeds)-1:
+                    i += 1
+                    await message.edit(embed=embeds[i])
+            try:
+                reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+                await message.remove_reaction(reaction, user)                
+            except asyncio.TimeoutError:
+                break
 
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
     @commands.hybrid_command(
@@ -440,14 +498,69 @@ class Items(commands.Cog, name="template"):
                     item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
                     item_crit_chance = await db_manager.get_basic_item_crit_chance(item_id)
                     #remove the item from the shop
-                    await db_manager.remove_shop_item_amount(item_id, amount)
-                    #add the item to the users inventory
-                    await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, amount, item_type, item_damage, False, item_sub_type, item_crit_chance)
-                    #remove the price from the users money
-                    await db_manager.remove_money(user_id, total_price)
-                    await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
-                    return
+                    #send a message asking the user if they are sure they want to buy the item, and add reactions to the message to confirm or cancel the purchase
+                    message = await ctx.send(f"Are you sure you want to buy `{amount}` of `{item_name}` for `{total_price}` bucks?")
+                    await message.add_reaction("✅")
+                    await message.add_reaction("❌")
+                    #create a function to check if the reaction is the one we want
+                    def check(reaction, user):
+                        return user == ctx.author and str(reaction.emoji) in ["✅", "❌"]
+                    #wait for the reaction
+                    try:
+                        reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+                    except asyncio.TimeoutError:
+                        await ctx.send("You took too long to respond.")
+                        return
+                    #if the user reacted with ❌, cancel the purchase
+                    if str(reaction) == "❌":
+                        await ctx.send("Purchase cancelled.")
+                        return
+                    #if the user reacted with ✅, continue with the purchase
+                    if str(reaction) == "✅":
+                        #make sure they have enough money to buy the item
+                            #if the item type is a weapon, check if the user has already has this weapon
+                        item_type = await db_manager.get_basic_item_type(item_id)
+                        if item_type == "Weapon":
+                            #check if the user has this weapon
+                            user_inventory = await db_manager.view_inventory(user_id)
+                            for i in user_inventory:
+                                if item_id in i:
+                                    await ctx.send(f"You already have this weapon!")
+                                    return
+                            #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
+                            if amount > 1:
+                                await ctx.send(f"You can only buy 1 of the same Weapon!")
+                                return
+                        
+                        if item_type == "Armor":
+                            #check if the user has this armor on their inventory
+                            user_inventory = await db_manager.view_inventory(user_id)
+                            for i in user_inventory:
+                                if item_id in i:
+                                    await ctx.send(f"You already have this armor!")
+                                    return
+                            #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
+                            if amount > 1:
+                                await ctx.send(f"You can only buy 1 of the same Armor!")
+                                return
+                            
+                        #if the user doesnt have enough money, tell them
+                        if user_money < total_price:
+                            await ctx.send(f"You don't have enough money to buy `{amount}` of `{item_name}`.")
+                            return
+                        #if the user has enough money, continue with the purchase
+                        else:
+                            ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
+                            #remove the item from the shop
+                            await db_manager.remove_shop_item_amount(item_id, amount)
+                            #add the item to the users inventory
+                            await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, amount, item_type, item_damage, False, item_sub_type, item_crit_chance)
+                            #remove the price from the users money
+                            await db_manager.remove_money(user_id, total_price)
+                            await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
+                        return
                 else:
+                    item_name = await db_manager.get_basic_item_name(item_id)
                     await ctx.send(f"You don't have enough bucks to buy `{amount}` of `{item_name}`.")
                     return
         await ctx.send(f"Item doesn't exist in the shop.")
