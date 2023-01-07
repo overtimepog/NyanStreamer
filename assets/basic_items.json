@@ -177,6 +177,27 @@
     "item_effect": "None"
 }, 
 {
+    "item_id": "netherbane",
+    "item_name": "Netherbane",
+    "item_price": 1000,
+    "item_emoji": "<:netherbane:1061296884045582337>",
+    "item_rarity": "Legendary",
+    "item_type": "Weapon",
+    "item_damage": 100,
+    "isUsable": false,
+    "inShop": false,
+    "isEquippable": true,
+    "item_description": "A legendary sword, forged in the depths of the nether.",
+    "item_sub_type": "Fire",
+    "item_crit_chance": "0%",
+    "item_projectile": "None",
+    "recipe_id": "netherbane",
+    "item_recipe": [{}],
+    "isHuntable": false,
+    "item_hunt_chance": 0,
+    "item_effect": "None"
+},
+{
     "item_id": "ironarmor",
     "item_name": "Iron Armor",
     "item_price": 100,
