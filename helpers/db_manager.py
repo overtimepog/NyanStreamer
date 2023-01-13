@@ -443,9 +443,11 @@ async def add_basic_items() -> None:
             #`isHuntable` boolean NOT NULL,
             #`item_hunt_chance` int(11) NOT NULL,
             #`item_effect` varchar(255) NOT NULL,
+            #`isMineable` boolean NOT NULL,
+            #`item_mine_chance` int(11) NOT NULL,
             
             #add the item to the database
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect']))
+            db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance']))
             print(f"Added |{item['item_name']}| to the database")
             
             #add the items recipe to the database
@@ -1651,6 +1653,58 @@ async def get_basic_item_description(item_id: str) -> str:
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
             return result[10] if result is not None else 0
+        
+#get if a basic item is huntable via its id
+async def get_basic_item_huntable(item_id: str) -> bool:
+    """
+    This function will get if a basic item is huntable.
+
+    :param item_id: The ID of the item that should be checked.
+    :return: True if the item is huntable, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[15] if result is not None else 0
+        
+#get an items hunt chance via its id
+async def get_basic_item_hunt_chance(item_id: str) -> int:
+    """
+    This function will get the hunt chance of an item.
+
+    :param item_id: The ID of the item that the hunt chance should be gotten from.
+    :return: The hunt chance of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[16] if result is not None else 0
+        
+#get if a basic item is mineable via its id
+async def get_basic_item_mineable(item_id: str) -> bool:
+    """
+    This function will get if a basic item is mineable.
+
+    :param item_id: The ID of the item that should be checked.
+    :return: True if the item is mineable, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[18] if result is not None else 0
+        
+#get an items mine chance via its id
+async def get_basic_item_mine_chance(item_id: str) -> int:
+    """
+    This function will get the mine chance of an item.
+
+    :param item_id: The ID of the item that the mine chance should be gotten from.
+    :return: The mine chance of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[19] if result is not None else 0
         
 #check if a basic item is usable
 async def is_basic_item_usable(item_id: str) -> bool:

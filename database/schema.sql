@@ -47,6 +47,8 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `isHuntable` boolean NOT NULL,
   `item_hunt_chance` int(11) NOT NULL,
   `item_effect` varchar(255) NOT NULL,
+  `isMineable` boolean NOT NULL,
+  `item_mine_chance` int(11) NOT NULL,
   FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)
 );
 
