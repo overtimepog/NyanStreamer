@@ -25,9 +25,7 @@ import requests
 #`isUsable` boolean NOT NULL,
 #`isEquippable` boolean NOT NULL    
       
-      
-#STUB - Basic items
-#read the files and combine them into one array
+#Items
 with open("assets/items/weapons.json", "r") as f:
     weapons = json.load(f)
 with open("assets/items/materials.json", "r") as f:
@@ -38,25 +36,23 @@ with open("assets/items/armor.json", "r") as f:
     armor = json.load(f)
 with open("assets/items/consumables.json", "r") as f:
     consumables = json.load(f)
-
 basic_items = weapons + materials + tools + armor + consumables
     
-    
-    
-
+#Enemies
 with open("assets/enemies/enemies.json", "r") as f:
     enemies = json.load(f)
 with open("assets/enemies/creatures.json", "r") as f:
     creatures = json.load(f)
 with open("assets/enemies/bosses.json", "r") as f:
     bosses = json.load(f)
-    
 enemies = enemies + creatures + bosses
 
-#STUB -  Basic items
+#Quests
+with open("assets/quests/early_game.json", "r") as f:
+    early_game = json.load(f)
+    
+quests = early_game
 
-#add enemies list
-#(`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money']))
 
 class Database:
     @staticmethod
@@ -341,7 +337,27 @@ async def get_user(user_id: int) -> None:
     if data is not None:
         return None
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `isAdventuring`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, False))
+        
+        #`user_id` varchar(20) NOT NULL,
+        #`money` int(11) NOT NULL,
+        #`health` int(11) NOT NULL,
+        #`isStreamer` boolean NOT NULL,
+        #`isBurning` boolean NOT NULL,
+        #`isPoisoned` boolean NOT NULL,
+        #`isFrozen` boolean NOT NULL,
+        #`isParalyzed` boolean NOT NULL,
+        #`isBleeding` boolean NOT NULL,
+        #`isDead` boolean NOT NULL,
+        #`isInCombat` boolean NOT NULL,
+        #`player_xp` int(11) NOT NULL,
+        #`player_level` int(11) NOT NULL,
+        #`quest1_id` varchar(255) NOT NULL,
+        #`quest2_id` varchar(255) NOT NULL,
+        #`quest3_id` varchar(255) NOT NULL
+        
+        #add the user to the database with all the data from above + the new quest data
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+        
 
 #check if a user is not dead
 async def is_alive(user_id: int) -> bool:
@@ -354,7 +370,7 @@ async def is_alive(user_id: int) -> bool:
         else:
             return False
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `isAdventuring`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
         return True
     
 #set a user's dead status to true
@@ -364,7 +380,7 @@ async def set_dead(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `isAdventuring`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
         
 #set a user's dead status to false
@@ -374,7 +390,7 @@ async def set_alive(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (False, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `isAdventuring`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (False, user_id))
 
 async def check_if_user_in_db(user_id: int) -> bool:
@@ -403,7 +419,7 @@ async def set_in_combat(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (True, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `isAdventuring`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
 
 #set a user's InCombat status to false
 async def set_not_in_combat(user_id: int) -> None:
@@ -412,7 +428,7 @@ async def set_not_in_combat(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (False, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `isAdventuring`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
 
 #set a user's health
 async def set_health(user_id: int, health: int) -> None:
@@ -421,7 +437,7 @@ async def set_health(user_id: int, health: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `health` = ? WHERE `user_id` = ?", (health, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `isAdventuring`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
 
 #look at a user's profile, returns a list
 async def profile(user_id: int) -> list:
@@ -431,7 +447,7 @@ async def profile(user_id: int) -> list:
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `isAdventuring`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, False))
+        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
 
@@ -529,6 +545,26 @@ async def add_enemies() -> None:
             #add the enemys properties to the database
             await db.execute("INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`, `enemy_crit_chance`, `enemy_drop`, `enemy_drop_chance`, `enemy_drop_amount`, `enemy_drop_amount_max`, `enemy_drop_amount_min`, `enemy_drop_rarity`, `enemy_element`, `isFrozen`, `isBurning`, `isPoisoned`, `isParalyzed`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money'], enemy['enemy_crit_chance'], enemy['enemy_drop'], enemy['enemy_drop_chance'], enemy['enemy_drop_amount'], enemy['enemy_drop_amount_max'], enemy['enemy_drop_amount_min'], enemy['enemy_drop_rarity'], enemy['enemy_element'], False, False, False, False))
             print(f"Added |{enemy['enemy_name']}| to the database")
+            
+#add quests to the database
+async def add_quests() -> None:
+  #`quest_id` varchar(20) NOT NULL,
+  #`quest_name` varchar(255) NOT NULL,
+  #`quest_description` varchar(255) NOT NULL,
+  #`quest_xp_reward` int(11) NOT NULL,
+  #`quest_reward` varchar(255) NOT NULL,
+  #`quest_reward_amount` int(11) NOT NULL,
+  #`quest_level_required` int(11) NOT NULL,
+  #`quest_type` varchar(255) NOT NULL,
+  #`quest` varchar(255) NOT NULL,
+  #`OnBoard` boolean NOT NULL,
+  
+  #add the quests to the database
+    db = DB()
+    for quest in quests:
+        await db.execute("INSERT INTO `quests` (`quest_id`, `quest_name`, `quest_description`, `quest_xp_reward`, `quest_reward`, `quest_reward_amount`, `quest_level_required`, `quest_type`, `quest`, `OnBoard`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (quest['quest_id'], quest['quest_name'], quest['quest_description'], quest['quest_xp_reward'], quest['quest_reward'], quest['quest_reward_amount'], quest['quest_level_required'], quest['quest_type'], quest['quest'], quest['OnBoard']))
+
+    
             
 #check if the enemy is in the database
 async def check_enemy(enemy_id: str) -> bool:

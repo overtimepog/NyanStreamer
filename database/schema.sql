@@ -85,7 +85,34 @@ CREATE TABLE IF NOT EXISTS `users` (
   `isInCombat` boolean NOT NULL,
   `player_xp` int(11) NOT NULL,
   `player_level` int(11) NOT NULL,
-  `isAdventuring` boolean NOT NULL
+  `quest1_id` varchar(255) NOT NULL,
+  `quest2_id` varchar(255) NOT NULL,
+  `quest3_id` varchar(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `quests` (
+  `quest_id` varchar(20) NOT NULL,
+  `quest_name` varchar(255) NOT NULL,
+  `quest_description` varchar(255) NOT NULL,
+  `quest_xp_reward` int(11) NOT NULL,
+  `quest_reward` varchar(255) NOT NULL,
+  `quest_reward_amount` int(11) NOT NULL,
+  `quest_level_required` int(11) NOT NULL,
+  `quest_type` varchar(255) NOT NULL,
+  `quest` varchar(255) NOT NULL,
+  `onBoard` boolean NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `questBoard` (
+  `quest_id` varchar(20) NOT NULL,
+  `quest_name` varchar(255) NOT NULL,
+  `quest_description` varchar(255) NOT NULL,
+  `quest_xp_reward` int(11) NOT NULL,
+  `quest_reward` varchar(255) NOT NULL,
+  `quest_reward_amount` int(11) NOT NULL,
+  `quest_level_required` int(11) NOT NULL,
+  `quest_type` varchar(255) NOT NULL,
+  `quest` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `enemies` (

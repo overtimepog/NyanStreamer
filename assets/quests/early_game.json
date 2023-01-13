@@ -1,0 +1,15 @@
+[
+    {
+        "quest_id": "slaying_rats",
+        "quest_name": "Slaying Rats",
+        "quest_description": "The village is plagued by an infestation of rats. Help us by slaying 10 of them.",
+        "quest_xp_reward": 100,
+        "quest_reward": "gold",
+        "quest_reward_amount": 50,
+        "quest_level_required": 1,
+        "quest_type": "slaying",
+        "quest": "10 rats",
+        "OnBoard": true
+    }
+        
+]
