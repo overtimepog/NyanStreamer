@@ -1,0 +1,22 @@
+[
+    {
+        "enemy_id": "cow",
+        "enemy_name": "Cow",
+        "enemy_health": 50,
+        "enemy_damage": 10,
+        "enemy_emoji": "\ud83d\udc2e",
+        "enemy_description": "A peaceful cow grazing in the fields.",
+        "enemy_rarity": "Common",
+        "enemy_type": "Animal",
+        "enemy_xp": 20,
+        "enemy_money": 20,
+        "enemy_crit_chance": 0,
+        "enemy_drop": "leather",
+        "enemy_drop_chance": 100,
+        "enemy_drop_amount": 1,
+        "enemy_drop_amount_max": 2,
+        "enemy_drop_amount_min": 1,
+        "enemy_drop_rarity": "Common",
+        "enemy_element": "None"
+    }        
+]

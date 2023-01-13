@@ -1,0 +1,42 @@
+[
+    {
+        "enemy_id": "Rat",
+        "enemy_name": "Rat",
+        "enemy_health": 10,
+        "enemy_damage": 3,
+        "enemy_emoji": "\ud83d\udc00",
+        "enemy_description": "A rat. It's not very strong, but it's annoying as hell.",
+        "enemy_rarity": "Common",
+        "enemy_type": "Animal",
+        "enemy_xp": 5,
+        "enemy_money": 5,
+        "enemy_crit_chance": 0,
+        "enemy_drop": "rattail",
+        "enemy_drop_chance": 100,
+        "enemy_drop_amount": 1,
+        "enemy_drop_amount_max": 2,
+        "enemy_drop_amount_min": 1,
+        "enemy_drop_rarity": "Common",
+        "enemy_element": "None"
+    },
+    {
+        "enemy_id": "spider",
+        "enemy_name": "Spider",
+        "enemy_health": 15,
+        "enemy_damage": 5,
+        "enemy_emoji": "\ud83d\udc7e",
+        "enemy_description": "A spider. It's not very strong, but it's annoying as hell.",
+        "enemy_rarity": "Common",
+        "enemy_type": "Animal",
+        "enemy_xp": 10,
+        "enemy_money": 10,
+        "enemy_crit_chance": 0,
+        "enemy_drop": "string",
+        "enemy_drop_chance": 100,
+        "enemy_drop_amount": 1,
+        "enemy_drop_amount_max": 2,
+        "enemy_drop_amount_min": 1,
+        "enemy_drop_rarity": "Common",
+        "enemy_element": "Poison"
+    }
+]

@@ -27,12 +27,31 @@ import requests
       
       
 #STUB - Basic items
-#read the basic_items.json file and load it into an array named basic_items
-with open("assets/basic_items.json", "r") as f:
-    basic_items = json.load(f)
+#read the files and combine them into one array
+with open("assets/items/weapons.json", "r") as f:
+    weapons = json.load(f)
+with open("assets/items/materials.json", "r") as f:
+    materials = json.load(f)
+with open("assets/items/tools.json", "r") as f:
+    tools = json.load(f)
+with open("assets/items/armor.json", "r") as f:
+    armor = json.load(f)
+with open("assets/items/consumables.json", "r") as f:
+    consumables = json.load(f)
+
+basic_items = weapons + materials + tools + armor + consumables
     
-with open("assets/enemies.json", "r") as f:
+    
+    
+
+with open("assets/enemies/enemies.json", "r") as f:
     enemies = json.load(f)
+with open("assets/enemies/creatures.json", "r") as f:
+    creatures = json.load(f)
+with open("assets/enemies/bosses.json", "r") as f:
+    bosses = json.load(f)
+    
+enemies = enemies + creatures + bosses
 
 #STUB -  Basic items
 
@@ -425,7 +444,8 @@ async def add_basic_items() -> None:
             print(f"|{item['item_name']}| is already in the database")
             pass
         else:
-            #`item_id` varchar(20) NOT NULL,
+            #CREATE TABLE IF NOT EXISTS `basic_items` (
+            #`item_id` varchar(255) PRIMARY KEY,
             #`item_name` varchar(255) NOT NULL,
             #`item_price` varchar(255) NOT NULL,
             #`item_emoji` varchar(255) NOT NULL,
@@ -447,7 +467,7 @@ async def add_basic_items() -> None:
             #`item_mine_chance` int(11) NOT NULL,
             
             #add the item to the database
-            db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance']))
             print(f"Added |{item['item_name']}| to the database")
             
             #add the items recipe to the database
