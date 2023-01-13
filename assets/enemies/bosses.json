@@ -14,7 +14,7 @@
         "enemy_drop": "dragon_scale",
         "enemy_drop_chance": 75,
         "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
+        "enemy_drop_amount_max": 10,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Legendary",
         "enemy_element": "Fire"

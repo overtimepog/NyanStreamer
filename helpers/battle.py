@@ -15,7 +15,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from helpers import db_manager
 
-
+#-------------------Death Battle-------------------#
 async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     turnCount = 0
     #set each users isInCombat to true
@@ -675,19 +675,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#----------------------------------deathbattle_monster----------------------------------#
 #a deathbattle between a user and a monster
 async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monsterName):
     #set the turn to 0
@@ -1038,8 +1026,12 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #if the enemy is on fire, deal 3 damage to them
             isBurning = await db_manager.check_enemy_burning(monsterID)
             if isBurning:
-                await db_manager.deal_enemy_damage(monsterID, 3)
-            
+                await db_manager.remove_enemy_health(monsterID, 3)
+                
+            #if the enemy is poisoned, deal 1 damage to them
+            isPoisoned = await db_manager.check_enemy_poisoned(monsterID)
+            if isPoisoned:
+                await db_manager.remove_enemy_health(monsterID, 1)
                 
             #get the monsters attack
             monster_attack = await db_manager.get_enemy_damage(monsterID)
@@ -1247,8 +1239,3 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #set the user not in combat
                 await db_manager.set_not_in_combat(userID)
                 return userID
-            
-            
-                
-                
-        
