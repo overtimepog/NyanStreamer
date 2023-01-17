@@ -10,6 +10,18 @@
         "quest_type": "slaying",
         "quest": "10 rats",
         "OnBoard": true
+    },
+    {
+        "quest_id": "gathering_herbs",
+        "quest_name": "Gathering Herbs",
+        "quest_description": "The local apothecary is in need of rare herbs for their potions. Help by gathering 10 of them.",
+        "quest_xp_reward": 150,
+        "quest_reward": "herbs",
+        "quest_reward_amount": 20,
+        "quest_level_required": 2,
+        "quest_type": "gathering",
+        "quest": "10 herbs",
+        "OnBoard": true
     }
         
 ]

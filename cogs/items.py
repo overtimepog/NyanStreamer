@@ -432,6 +432,120 @@ class Items(commands.Cog, name="template"):
             except asyncio.TimeoutError:
                 break
 
+
+
+    #command to see the quest board
+    
+    @commands.hybrid_command(
+        name="questboard",
+        description="This command will show the quest board.",
+    )
+    async def questboard(self, ctx: Context):
+        """
+        This command will show the quest board.
+
+        :param ctx: The context in which the command was called.
+        """
+        #get all the quests from the database
+        quests = await db_manager.get_quests_on_board()
+        embeds = []
+        #create an embed to show the quests
+        #for each quest in the quests, create a page for it
+        for i in quests:
+            #create an embed for the specific quest
+            questembed = discord.Embed(title=f"{i[1]}")
+            #get the quest id
+            quest_id = i[0]
+            quest_id = str(quest_id)
+            #get the quest name
+            quest_name = i[1]
+            quest_name = str(quest_name)
+            #get the quest description
+            quest_description = i[2]
+            quest_description = str(quest_description)
+            #get the quest xp
+            quest_xp = i[3]
+            quest_xp = str(quest_xp)
+            #get the quest reward
+            quest_reward = i[4]
+            quest_reward = str(quest_reward)
+            #get the quest reward amount
+            quest_reward_amount = i[5]
+            quest_reward_amount = str(quest_reward_amount)
+            #get the quest level requirement
+            quest_level_req = i[6]
+            quest_level_req = str(quest_level_req)
+            #get the quest type
+            quest_type = i[7]
+            quest_type = str(quest_type)
+            #get the quest itself
+            quest = i[8]
+            quest = str(quest)
+            #add a field to the embed for this quest
+            questembed.add_field(name=f"**{quest_name}**", value=f"`ID:{quest_id}` \n **Description**: `{quest_description}` \n **XP**: `{quest_xp}` \n **Reward**: `{quest_reward}` \n **Reward Amount**: `{quest_reward_amount}` \n **Level Requirement**: `{quest_level_req}` \n **Quest**: `{quest_type} {quest}` ", inline=False)
+            
+            #save the embed to a list
+            embeds.append(questembed)
+        
+        #send the first embed, and add reactions to it to switch between the different embeds
+        message = await ctx.send(embed=embeds[0])
+        await message.add_reaction("⬅️")
+        await message.add_reaction("➡️")
+        await message.add_reaction("✅")
+        #create a function to check if the reaction is the one we want
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in ["⬅️", "➡️" , "✅"]
+        #create a function that whenever the user clicks the check mark, it will add the quest to the users quest list
+        
+        #switch between the different embeds
+        i = 0
+        reaction = None
+        while True:
+            if str(reaction) == "⬅️":
+                if i > 0:
+                    i -= 1
+                    await message.edit(embed=embeds[i])
+            elif str(reaction) == "➡️":
+                if i < len(embeds)-1:
+                    i += 1
+                    await message.edit(embed=embeds[i])
+            elif str(reaction) == "✅":
+                #get the quest id from the embed
+                quest_name = embeds[i].title
+                #get the quest id from the database
+                quest_id = await db_manager.get_quest_id_from_quest_name(quest_name)
+                print(quest_id)
+                quest_id = str(quest_id)
+                #get the user id
+                user_id = ctx.message.author.id
+                user_id = str(user_id)
+                #check if the user already has the quest
+                user_has_quest = await db_manager.check_user_has_quest(user_id, quest_id)
+                isCompleted = await db_manager.check_quest_completed(user_id, quest_id)
+                #if the user already has the quest, tell them they already have it
+                if user_has_quest == True:
+                    await ctx.send("You already have this quest!")
+                #if the user already completed the quest, tell them they already completed it
+                elif isCompleted == True:
+                    await ctx.send("You already completed this quest!")
+                #if the user doesnt have the quest, add it to their quest list
+                else:
+                    #get a quest slot for the user
+                    await db_manager.give_user_quest(user_id, quest_id)
+                    await db_manager.create_quest_progress(user_id, quest_id)
+                    await ctx.send("Quest added to your quest list!")
+                    #remove the quest from the quest board
+                    #await db_manager.remove_quest_from_board(quest_id)
+                    break
+            try:
+                reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+                await message.remove_reaction(reaction, user)                
+            except asyncio.TimeoutError:
+                break
+            
+        #when the user clicks the check mark, add the quest to the users quest list, remove the quest from the quest board, check if the user already has the quest, and if they do, tell them they already have it, and if they dont, add it to their quest list
+            
+            
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
     @commands.hybrid_command(
         name="buy",
@@ -632,6 +746,7 @@ class Items(commands.Cog, name="template"):
         #get the users xp and level
         user_xp = user_profile[11]
         user_level = user_profile[12]
+        user_quest = user_profile[13]
         #get the xp needed for the next level
         xp_needed = await db_manager.xp_needed(user_id)
         #convert the xp needed to a string
@@ -653,6 +768,17 @@ class Items(commands.Cog, name="template"):
             item_emote = i[4]
             item_amount = i[6]
             embed.add_field(name=f"{item_name}{item_emote}", value=f"{item_amount}", inline=False)
+            
+        #create a section for the users current quest
+        if user_quest == 0:
+            embed.add_field(name="Current Quest", value="None", inline=False)
+        else:
+            quest_name = await db_manager.get_quest_name_from_quest_id(user_quest)
+            quest_description = await db_manager.get_quest_description_from_quest_id(user_quest)
+            questTotal = await db_manager.get_quest_total_from_id(user_quest)
+            quest_progress = await db_manager.get_quest_progress(user_id, user_quest)
+            quest_progress = str(quest_progress)
+            embed.add_field(name="Current Quest", value=f"{quest_name} - {quest_progress}/{questTotal}", inline=False)
         embed.set_thumbnail(url=ctx.message.author.avatar.url)
         if isStreamer == 1:
             isStreamer = "Yes"

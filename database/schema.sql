@@ -85,9 +85,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   `isInCombat` boolean NOT NULL,
   `player_xp` int(11) NOT NULL,
   `player_level` int(11) NOT NULL,
-  `quest1_id` varchar(255) NOT NULL,
-  `quest2_id` varchar(255) NOT NULL,
-  `quest3_id` varchar(255) NOT NULL
+  `quest_id` varchar(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `questProgress` (
+  `user_id` varchar(20) NOT NULL,
+  `quest_id` varchar(20) NOT NULL,
+  `quest_progress` int(11) NOT NULL,
+  `quest_completed` boolean NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `quests` (

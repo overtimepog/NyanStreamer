@@ -351,13 +351,10 @@ async def get_user(user_id: int) -> None:
         #`isInCombat` boolean NOT NULL,
         #`player_xp` int(11) NOT NULL,
         #`player_level` int(11) NOT NULL,
-        #`quest1_id` varchar(255) NOT NULL,
-        #`quest2_id` varchar(255) NOT NULL,
-        #`quest3_id` varchar(255) NOT NULL
+        #`quest_id` varchar(255) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
-        
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
 
 #check if a user is not dead
 async def is_alive(user_id: int) -> bool:
@@ -370,7 +367,7 @@ async def is_alive(user_id: int) -> bool:
         else:
             return False
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
         return True
     
 #set a user's dead status to true
@@ -380,7 +377,7 @@ async def set_dead(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
         
 #set a user's dead status to false
@@ -390,7 +387,7 @@ async def set_alive(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (False, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (False, user_id))
 
 async def check_if_user_in_db(user_id: int) -> bool:
@@ -419,7 +416,7 @@ async def set_in_combat(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (True, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
 
 #set a user's InCombat status to false
 async def set_not_in_combat(user_id: int) -> None:
@@ -428,7 +425,7 @@ async def set_not_in_combat(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (False, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
 
 #set a user's health
 async def set_health(user_id: int, health: int) -> None:
@@ -437,7 +434,7 @@ async def set_health(user_id: int, health: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `health` = ? WHERE `user_id` = ?", (health, user_id))
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
 
 #look at a user's profile, returns a list
 async def profile(user_id: int) -> list:
@@ -447,7 +444,7 @@ async def profile(user_id: int) -> list:
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await db.execute(f"INSERT INTO `users` (`user_id`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest1_id`, `quest2_id`, `quest3_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
 
@@ -559,13 +556,143 @@ async def add_quests() -> None:
   #`quest` varchar(255) NOT NULL,
   #`OnBoard` boolean NOT NULL,
   
-  #add the quests to the database
+  #add the quests to the database, check if they are already in the database
     db = DB()
     for quest in quests:
-        await db.execute("INSERT INTO `quests` (`quest_id`, `quest_name`, `quest_description`, `quest_xp_reward`, `quest_reward`, `quest_reward_amount`, `quest_level_required`, `quest_type`, `quest`, `OnBoard`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (quest['quest_id'], quest['quest_name'], quest['quest_description'], quest['quest_xp_reward'], quest['quest_reward'], quest['quest_reward_amount'], quest['quest_level_required'], quest['quest_type'], quest['quest'], quest['OnBoard']))
-
+        data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest['quest_id'],), fetch="one")
+        if data is not None:
+            print(f"|{quest['quest_name']}| is already in the database")
+            pass
+        else:
+            await db.execute("INSERT INTO `quests` (`quest_id`, `quest_name`, `quest_description`, `quest_xp_reward`, `quest_reward`, `quest_reward_amount`, `quest_level_required`, `quest_type`, `quest`, `OnBoard`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (quest['quest_id'], quest['quest_name'], quest['quest_description'], quest['quest_xp_reward'], quest['quest_reward'], quest['quest_reward_amount'], quest['quest_level_required'], quest['quest_type'], quest['quest'], quest['OnBoard']))
+            print(f"Added |{quest['quest_name']}| to the database")
+        
     
+#add the quests to the board if they have the OnBoard property set to True, check if they are already on the board
+async def add_quests_to_board() -> None:
+    db = DB()
+    for quest in quests:
+        data = await db.execute(f"SELECT * FROM `questBoard` WHERE quest_id = ?", (quest['quest_id'],), fetch="one")
+        if data is not None:
+            print(f"|{quest['quest_name']}| is already on the board")
+            pass
+        else:
+            if quest['OnBoard'] == True:
+                await db.execute("INSERT INTO `questBoard` (`quest_id`, `quest_name`, `quest_description`, `quest_xp_reward`, `quest_reward`, `quest_reward_amount`, `quest_level_required`, `quest_type`, `quest`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (quest['quest_id'], quest['quest_name'], quest['quest_description'], quest['quest_xp_reward'], quest['quest_reward'], quest['quest_reward_amount'], quest['quest_level_required'], quest['quest_type'], quest['quest']))
+                print(f"Added |{quest['quest_name']}| to the board")
+                
+#create an entry in questProgress for a user and a quest
+async def create_quest_progress(user_id: int, quest_id: str) -> None:
+    db = DB()
+    await db.execute("INSERT INTO `questProgress` (`user_id`, `quest_id`, `quest_progress`, `quest_completed`) VALUES (?, ?, 0, False)", (user_id, quest_id))
+
+#get the quest progress of a user
+async def get_quest_progress(user_id: int, quest_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `questProgress` WHERE user_id = ? AND quest_id = ?", (user_id, quest_id), fetch="one")
+    if data is not None:
+        return data[2]
+    else:
+        return 0
+    
+#get quest from quest ID
+async def get_quest_from_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[8]
+    else:
+        return 0
+    
+#get quest total from quest ID
+async def get_quest_total_from_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        #get data[8] and remove all letters and spaces from it
+        quest = data[8]
+        quest = str(quest)
+        quest = quest.replace(" ", "")
+        #remove all letters
+        quest = ''.join(filter(str.isdigit, quest))
+        return quest
+    else:
+        return 0
+#update the progress of a quest for a user
+async def update_quest_progress(user_id: int, quest_id: str, quest_progress: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `questProgress` SET quest_progress = ? WHERE user_id = ? AND quest_id = ?", (quest_progress, user_id, quest_id))
+    
+#mark a quest as completed for a user
+async def mark_quest_completed(user_id: int, quest_id: str) -> None:
+    db = DB()
+    await db.execute("UPDATE `questProgress` SET quest_completed = ? WHERE user_id = ? AND quest_id = ?", (True, user_id, quest_id))
+
+#check if a user has completed a quest
+async def check_quest_completed(user_id: int, quest_id: str) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `questProgress` WHERE user_id = ? AND quest_id = ? AND quest_completed = ?", (user_id, quest_id, True), fetch="one")
+    if data is not None:
+        return True
+    else:
+        return False
+    
+#get a quests name from the Id
+async def get_quest_name_from_quest_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[1]
+    else:
+        return None
+    
+#get a quests description from the Id
+async def get_quest_description_from_quest_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[2]
+    else:
+        return None
             
+#get quests on the board
+async def get_quests_on_board() -> list:
+    db = DB()
+    data = await db.execute("SELECT * FROM `questBoard`", fetch="all")
+    if data is not None:
+        return data
+    else:
+        return None
+
+#get quest id from quest name
+async def get_quest_id_from_quest_name(quest_name: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_name = ?", (quest_name,), fetch="one")
+    if data is not None:
+        return data[0]
+    else:
+        return None
+    
+    
+#check if a user has a specific quest in their quest slots
+async def check_user_has_quest(user_id: int, quest_id: str) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ? AND quest_id = ?", (user_id, quest_id), fetch="one")
+    if data is not None:
+        return True
+    else:
+        return False
+    
+#give a user a specific quest
+async def give_user_quest(user_id: int, quest_id: str) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET quest_id = ? WHERE user_id = ?", (quest_id, user_id))
+    
+#remove a quest from a user
+async def remove_quest_from_user(user_id: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET quest_id = ? WHERE user_id = ?", (None, user_id))
+    
 #check if the enemy is in the database
 async def check_enemy(enemy_id: str) -> bool:
     db = DB()
