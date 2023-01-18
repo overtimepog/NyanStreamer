@@ -812,6 +812,15 @@ async def display_shop_items() -> list:
         else:
             return None
         
+#get a list of all items in a specific item_type from the shop table
+async def get_all_shop_items_off_one_type(item_type: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `shop` WHERE item_type = ?", (item_type,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+        
 #remove an amount of an item from the shop, if the amount is 0 then remove the item from the shop
 async def remove_shop_item_amount(item_id: str, amount: int) -> None:
         db = DB()

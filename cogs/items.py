@@ -432,7 +432,284 @@ class Items(commands.Cog, name="template"):
             except asyncio.TimeoutError:
                 break
 
+#shop 2 command for testing
+    @commands.hybrid_command(
+        name="shop2",
+        description="This command will show the shop.",
+    )
+    async def shop2(self, ctx: Context):
+        #get all the shop items
+        shop = await db_manager.display_shop_items()
+        allWeapons = await db_manager.get_all_shop_items_off_one_type("Weapon")
+        weapons = []
+        allArmor = await db_manager.get_all_shop_items_off_one_type("Armor")
+        armor = []
+        allConsumables = await db_manager.get_all_shop_items_off_one_type("Consumable")
+        consumables = []
+        allMisc = await db_manager.get_all_shop_items_off_one_type("Misc")
+        misc = []
+        allProjectiles = await db_manager.get_all_shop_items_off_one_type("Projectile")
+        projectiles = []
+        allShields = await db_manager.get_all_shop_items_off_one_type("Shield")
+        shields = []
+        allCosmetics = await db_manager.get_all_shop_items_off_one_type("Cosmetic")
+        cosmetics = []
+        
+        #for each item in each type of item, create an embed of the item and add it to a list named the item type
+        #weapons
+        for i in allWeapons:
+            item_id = i[0]
+            item_name = i[1]
+            item_price = i[2]
+            item_emote = i[3]
+            item_rarity = i[4]
+            item_type = i[5]
+            item_type = str(item_type)
+            item_damage = i[6]
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
+            #create an embed for this item
+            item = discord.Embed(
+                title=f"{item_name}{item_emote} x{item_amount}",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
+                color=discord.Color.blurple()
+            )
+            #add the embed to the list
+            weapons.append(item)
+        #armor
+        for i in allArmor:
+            item_id = i[0]
+            item_name = i[1]
+            item_price = i[2]
+            item_emote = i[3]
+            item_rarity = i[4]
+            item_type = i[5]
+            item_type = str(item_type)
+            item_damage = i[6]
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
+            #create an embed for this item
+            item = discord.Embed(
+                title=f"{item_name}{item_emote} x{item_amount}",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
+                color=discord.Color.blurple()
+            )
+            #add the embed to the list
+            armor.append(item)
+        #consumables
+        for i in allConsumables:
+            item_id = i[0]
+            item_name = i[1]
+            item_price = i[2]
+            item_emote = i[3]
+            item_rarity = i[4]
+            item_type = i[5]
+            item_type = str(item_type)
+            item_damage = i[6]
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
+            #create an embed for this item
+            item = discord.Embed(
+                title=f"{item_name}{item_emote} x{item_amount}",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
+                color=discord.Color.blurple()
+            )
+            #add the embed to the list
+            consumables.append(item)
+        #misc
+        for i in allMisc:
+            item_id = i[0]
+            item_name = i[1]
+            item_price = i[2]
+            item_emote = i[3]
+            item_rarity = i[4]
+            item_type = i[5]
+            item_type = str(item_type)
+            item_damage = i[6]
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
+            #create an embed for this item
+            item = discord.Embed(
+                title=f"{item_name}{item_emote} x{item_amount}",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
+                color=discord.Color.blurple()
+            )
+            #add the embed to the list
+            misc.append(item)
+            
+        #create a shop embed to send in the beginning
+        shopembed = discord.Embed(
+            title="Shop",
+            description="Welcome to the shop! Here you can buy items to help you on your journey. \n The shop is in",
+            color=discord.Color.blurple()
+        )
+        #react to the shop embed with, sword, shield, potion, and house
+        message = await ctx.send(embed=shopembed)
+        await message.add_reaction("⚔️")
+        await message.add_reaction("🛡️")
+        await message.add_reaction("🧪")
+        await message.add_reaction("💎")
+        await message.add_reaction("🏠")
+        await message.add_reaction("⏪")
+        await message.add_reaction("⏩")
+        await message.add_reaction("✅")
+        await message.add_reaction("❌")
+        
+        #switch between the different embeds based on the reaction
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in ["⚔️", "🛡️", "🧪", "💎", "🏠", "⏪", "⏩", "✅", "❌"]
+        page = 0
+        i = 0
+        reaction = None
+        while True:
+            if str(reaction) == "⚔️":
+                page = 1
+                await message.edit(embed=weapons[i])
+                await message.remove_reaction("⚔️", ctx.author)
+            elif str(reaction) == "🛡️":
+                page = 2
+                await message.edit(embed=armor[i])
+                await message.remove_reaction("🛡️", ctx.author)
+            elif str(reaction) == "🧪":
+                page = 3
+                await message.edit(embed=consumables[i])
+                await message.remove_reaction("🧪", ctx.author)
+            elif str(reaction) == "💎":
+                page = 4
+                await message.edit(embed=misc[i])
+                await message.remove_reaction("💎", ctx.author)
+            elif str(reaction) == "🏠":
+                page = 0
+                await message.edit(embed=shopembed)
+                await message.remove_reaction("🏠", ctx.author)
+            try: 
+                reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+                #if the page is 1 (weapons) and the reaction is the arrow forward, go to the item in the list of weapons
+                if page == 1 and str(reaction) == "⏩":
+                    if i < len(weapons)-1:
+                        i += 1
+                        await message.edit(embed=weapons[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                    else:
+                        i = 0
+                        await message.edit(embed=weapons[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                #if the page is 1 (weapons) and the reaction is the arrow backward, go to the previous item in the list of weapons
+                elif page == 1 and str(reaction) == "⏪":
+                    if i > 0:
+                        i -= 1
+                        await message.edit(embed=weapons[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                    else:
+                        i = len(weapons)-1
+                        await message.edit(embed=weapons[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                        
+                #if the page is 2 (armor) and the reaction is the arrow forward, go to the item in the list of armor
+                elif page == 2 and str(reaction) == "⏩":
+                    if i < len(armor)-1:
+                        i += 1
+                        await message.edit(embed=armor[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                    else:
+                        i = 0
+                        await message.edit(embed=armor[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                #if the page is 2 (armor) and the reaction is the arrow backward, go to the previous item in the list of armor
+                elif page == 2 and str(reaction) == "⏪":
+                    if i > 0:
+                        i -= 1
+                        await message.edit(embed=armor[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                    else:
+                        i = len(armor)-1
+                        await message.edit(embed=armor[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                        
+                #if the page is 3 (consumables) and the reaction is the arrow forward, go to the item in the list of consumables
+                elif page == 3 and str(reaction) == "⏩":
+                    if i < len(consumables)-1:
+                        i += 1
+                        await message.edit(embed=consumables[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                    else:
+                        i = 0
+                        await message.edit(embed=consumables[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                #if the page is 3 (consumables) and the reaction is the arrow backward, go to the previous item in the list of consumables
+                elif page == 3 and str(reaction) == "⏪":
+                    if i > 0:
+                        i -= 1
+                        await message.edit(embed=consumables[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                    else:
+                        i = len(consumables)-1
+                        await message.edit(embed=consumables[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                #if the page is 4 (misc) and the reaction is the arrow forward, go to the item in the list of misc
+                elif page == 4 and str(reaction) == "⏩":
+                    if i < len(misc)-1:
+                        i += 1
+                        await message.edit(embed=misc[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                    else:
+                        i = 0
+                        await message.edit(embed=misc[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                #if the page is 4 (misc) and the reaction is the arrow backward, go to the previous item in the list of misc
+                elif page == 4 and str(reaction) == "⏪":
+                    if i > 0:
+                        i -= 1
+                        await message.edit(embed=misc[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                    else:
+                        i = len(misc)-1
+                        await message.edit(embed=misc[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                #if the reaction is the check mark, buy the item
+                elif str(reaction) == "✅":
+                    #if the page is 1 (weapons), check if the user already has the weapon, if not, add it to their inventory, otherwise tell them they already have it
+                    user_weapons = await db_manager.view_inventory(ctx.author.id)
+                    if page == 1:
+                        #sort the users inventory by weapon
+                        user_weapons = [x for x in user_weapons if x.type == "weapon"]
+                        #get the item name from the weapon list
+                        print(weapons[i])
+                        #check if the user can afford to buy the item
+                        user_cash = await db_manager.get_money(ctx.author.id)
+                        #convert it to a int
+                        user_cash = int(user_cash[0])
+                        if weapons[i] not in user_weapons:
+                            #promt the user to confirm the purchase
+                            await message.edit(embed=weapons[i])
+                            #remove the cost of the weapon from the inventory
+                            await db_manager.remove_money(ctx.author.id, )
+                            await db_manager.add_item_to_inventory(ctx.author.id, weapons[i].title)
+                            await ctx.send(f"You bought a {weapons[i].title}!")
+                        else:
+                            await ctx.send("You already have this item!")
+                            
+            except Exception as e:
+                print(e)
+                    
 
+            
+            
+            
+            
+        
 
     #command to see the quest board
     
