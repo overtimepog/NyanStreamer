@@ -637,6 +637,25 @@ async def check_quest_completed(user_id: int, quest_id: str) -> bool:
     else:
         return False
     
+#get quest level requirements
+async def get_quest_level_required(quest_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[6]
+    else:
+        return 0
+    
+#get the quest type
+async def get_quest_type(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[7]
+    else:
+        return None
+    
+    
 #get a quests name from the Id
 async def get_quest_name_from_quest_id(quest_id: str) -> str:
     db = DB()

@@ -522,12 +522,25 @@ class Items(commands.Cog, name="template"):
                 #check if the user already has the quest
                 user_has_quest = await db_manager.check_user_has_quest(user_id, quest_id)
                 isCompleted = await db_manager.check_quest_completed(user_id, quest_id)
+                #check if the user meets the level requirements
+                user_level = await db_manager.get_level(user_id)
+                level_req = await db_manager.get_quest_level_required(quest_id)
+                #convert them to integers
+                user_level = int(user_level[0])
+                level_req = int(level_req)
+                if user_level < level_req:
+                    await ctx.send("You do not meet the level requirements for this quest!")
+                    break
                 #if the user already has the quest, tell them they already have it
-                if user_has_quest == True:
-                    await ctx.send("You already have this quest!")
-                #if the user already completed the quest, tell them they already completed it
                 elif isCompleted == True:
                     await ctx.send("You already completed this quest!")
+                    break
+                
+                elif user_has_quest == True:
+                    await ctx.send("You already have this quest!")
+                    break
+                #if the user already completed the quest, tell them they already completed it
+
                 #if the user doesnt have the quest, add it to their quest list
                 else:
                     #get a quest slot for the user
@@ -770,15 +783,15 @@ class Items(commands.Cog, name="template"):
             embed.add_field(name=f"{item_name}{item_emote}", value=f"{item_amount}", inline=False)
             
         #create a section for the users current quest
-        if user_quest == 0:
-            embed.add_field(name="Current Quest", value="None", inline=False)
+        if user_quest == 0 or user_quest == None or user_quest == "" or user_quest == "None":
+            embed.add_field(name="Current Quest", value="`No Current Quest, Check the Quest Board to get one`", inline=False)
         else:
             quest_name = await db_manager.get_quest_name_from_quest_id(user_quest)
             quest_description = await db_manager.get_quest_description_from_quest_id(user_quest)
             questTotal = await db_manager.get_quest_total_from_id(user_quest)
             quest_progress = await db_manager.get_quest_progress(user_id, user_quest)
             quest_progress = str(quest_progress)
-            embed.add_field(name="Current Quest", value=f"{quest_name} - {quest_progress}/{questTotal}", inline=False)
+            embed.add_field(name="Current Quest", value=f"`{quest_name} - {quest_progress}/{questTotal}`", inline=False)
         embed.set_thumbnail(url=ctx.message.author.avatar.url)
         if isStreamer == 1:
             isStreamer = "Yes"
