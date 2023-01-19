@@ -455,11 +455,13 @@ class Items(commands.Cog, name="template"):
         cosmetics = []
         allMaterals = await db_manager.get_all_shop_items_off_one_type("Material")
         materals = []
+        allTools = await db_manager.get_all_shop_items_off_one_type("Tools")
+        tools = []
         
         #for each item in each type of item, create an embed of the item and add it to a list named the item type
         #weapons
         #combine allProjectiles and allWeapon 
-        allWeapons = allWeapons + allProjectiles
+        allWeapons = allWeapons + allProjectiles + allTools
         for i in allWeapons:
             item_id = i[0]
             item_name = i[1]
