@@ -793,6 +793,16 @@ async def get_basic_item_effect(item_id: str) -> str:
     else:
         return None
     
+#get the projectile of a basic item
+async def get_basic_item_projectile(item_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
+    if data is not None:
+        return data[13]
+    else:
+        return None
+    
+    
 #get streamer item effect from its ID
 async def get_streamer_item_effect(item_id: str) -> str:
     db = DB()
@@ -820,7 +830,7 @@ async def get_all_shop_items_off_one_type(item_type: str) -> list:
             return data
         else:
             return None
-        
+    
 #remove an amount of an item from the shop, if the amount is 0 then remove the item from the shop
 async def remove_shop_item_amount(item_id: str, amount: int) -> None:
         db = DB()

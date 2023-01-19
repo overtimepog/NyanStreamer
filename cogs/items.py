@@ -332,112 +332,111 @@ class Items(commands.Cog, name="template"):
         await ctx.send(f"Streamer doesn't exist in the database.")
 
 #shop command to view the shop using the display_shop function from helpers\db_manager.py
+#    @commands.hybrid_command(
+#        name="shop",
+#        description="This command will display the shop.",
+#    )
+#    async def shop(self, ctx: Context):
+#        """
+#        This command will display the shop.
+#
+#        :param ctx: The context in which the command was called.
+#        """
+#        shop = await db_manager.display_shop_items()
+#        embed = discord.Embed(title="Shop", description="All of the items in the shop.", color=0x00ff00)
+#        weaponembed = discord.Embed(title="Weapons", description="All of the weapons in the shop.", color=0x00ff00)
+#        armorembed = discord.Embed(title="Armor", description="All of the armor in the shop.", color=0x00ff00)
+#        heals = discord.Embed(title="Heals", description="All of the healing items in the shop.", color=0x00ff00)
+#        misc = discord.Embed(title="Misc", description="All of the misc items in the shop.", color=0x00ff00)
+#        #create a separate embed for each item type
+#        for i in shop:
+#            item_id = i[0]
+#            item_name = i[1]
+#            item_price = i[2]
+#            item_emote = i[3]
+#            item_rarity = i[4]
+#            item_type = i[5]
+#            item_type = str(item_type)
+#            item_damage = i[6]
+#            #get the item effect
+#            item_effect = await db_manager.get_basic_item_effect(item_id)
+#            item_amount = await db_manager.get_shop_item_amount(item_id)
+#            item_info = await db_manager.get_basic_item_description(item_id)
+#            item_info = str(item_info)
+#
+#            #grab the int out of the coroutine=
+#            if item_type == "Weapon" or item_type == "Projectile":
+#                #for each item in the item 
+#                #create an embed for this item type
+#                weaponembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+#            if item_type == "Armor" or item_type == "Shield" or item_type == "Cosmetic":
+#                #create an embed for this item type
+#                armorembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+#            #if its a consumable, and the item effect has the word heal in it, then display the heal amount
+#            #check if the word heal is in the item effect
+#            if item_type == "Consumable" and ("heal" in item_effect or "revive" in item_effect):
+#                #create an embed for this item type
+#                heals.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Heal**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
+#            #if its a consumable, and the item effect has the word damage in it, then display the damage amount
+#            else:
+#                if item_damage == 0:
+#                    #create an embed for this item type whitch is misc
+#                    misc.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
+#        #await ctx.send(embed=embed)
+#
+#        #create buttons to switch between the different embeds
+#        #create a list of all the embeds
+#        #make sure the emebds exist before adding them to the list
+#        embeds = []
+#        #add the embeds to the list
+#        if weaponembed.fields:
+#            embeds.append(weaponembed)
+#        if armorembed.fields:
+#            embeds.append(armorembed)
+#        if heals.fields:
+#            embeds.append(heals)
+#        if misc.fields:
+#            embeds.append(misc)
+#
+#
+#        #send the first embed, and add reactions to it to switch between the different embeds
+#        message = await ctx.send(embed=embeds[0])
+#        await message.add_reaction("⬅️")
+#        await message.add_reaction("➡️")
+#
+#
+#
+#
+#
+#
+#        #create a function to check if the reaction is the one we want
+#        def check(reaction, user):
+#            return user == ctx.author and str(reaction.emoji) in ["⬅️", "➡️"]
+#        
+#        #switch between the different embeds
+#        i = 0
+#        reaction = None
+#        while True:
+#            if str(reaction) == "⬅️":
+#                if i > 0:
+#                    i -= 1
+#                    await message.edit(embed=embeds[i])
+#            elif str(reaction) == "➡️":
+#                if i < len(embeds)-1:
+#                    i += 1
+#                    await message.edit(embed=embeds[i])
+#            try:
+#                reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+#                await message.remove_reaction(reaction, user)                
+#            except asyncio.TimeoutError:
+#                break
+
 #STUB - shop command
     @commands.hybrid_command(
         name="shop",
-        description="This command will display the shop.",
-    )
-    async def shop(self, ctx: Context):
-        """
-        This command will display the shop.
-
-        :param ctx: The context in which the command was called.
-        """
-        shop = await db_manager.display_shop_items()
-        embed = discord.Embed(title="Shop", description="All of the items in the shop.", color=0x00ff00)
-        weaponembed = discord.Embed(title="Weapons", description="All of the weapons in the shop.", color=0x00ff00)
-        armorembed = discord.Embed(title="Armor", description="All of the armor in the shop.", color=0x00ff00)
-        heals = discord.Embed(title="Heals", description="All of the healing items in the shop.", color=0x00ff00)
-        misc = discord.Embed(title="Misc", description="All of the misc items in the shop.", color=0x00ff00)
-        #create a separate embed for each item type
-        for i in shop:
-            item_id = i[0]
-            item_name = i[1]
-            item_price = i[2]
-            item_emote = i[3]
-            item_rarity = i[4]
-            item_type = i[5]
-            item_type = str(item_type)
-            item_damage = i[6]
-            #get the item effect
-            item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_shop_item_amount(item_id)
-            item_info = await db_manager.get_basic_item_description(item_id)
-            item_info = str(item_info)
-
-            #grab the int out of the coroutine=
-            if item_type == "Weapon" or item_type == "Projectile":
-                #for each item in the item 
-                #create an embed for this item type
-                weaponembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
-            if item_type == "Armor" or item_type == "Shield" or item_type == "Cosmetic":
-                #create an embed for this item type
-                armorembed.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Defence**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
-            #if its a consumable, and the item effect has the word heal in it, then display the heal amount
-            #check if the word heal is in the item effect
-            if item_type == "Consumable" and ("heal" in item_effect or "revive" in item_effect):
-                #create an embed for this item type
-                heals.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Heal**: `{item_damage}` \n **Rarity**: `{item_rarity}` ", inline=True)
-            #if its a consumable, and the item effect has the word damage in it, then display the damage amount
-            else:
-                if item_damage == 0:
-                    #create an embed for this item type whitch is misc
-                    misc.add_field(name=f"{item_name}{item_emote} x{item_amount}", value=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Rarity**: `{item_rarity}` ", inline=True)
-        #await ctx.send(embed=embed)
-
-        #create buttons to switch between the different embeds
-        #create a list of all the embeds
-        #make sure the emebds exist before adding them to the list
-        embeds = []
-        #add the embeds to the list
-        if weaponembed.fields:
-            embeds.append(weaponembed)
-        if armorembed.fields:
-            embeds.append(armorembed)
-        if heals.fields:
-            embeds.append(heals)
-        if misc.fields:
-            embeds.append(misc)
-
-
-        #send the first embed, and add reactions to it to switch between the different embeds
-        message = await ctx.send(embed=embeds[0])
-        await message.add_reaction("⬅️")
-        await message.add_reaction("➡️")
-
-
-
-
-
-
-        #create a function to check if the reaction is the one we want
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in ["⬅️", "➡️"]
-        
-        #switch between the different embeds
-        i = 0
-        reaction = None
-        while True:
-            if str(reaction) == "⬅️":
-                if i > 0:
-                    i -= 1
-                    await message.edit(embed=embeds[i])
-            elif str(reaction) == "➡️":
-                if i < len(embeds)-1:
-                    i += 1
-                    await message.edit(embed=embeds[i])
-            try:
-                reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
-                await message.remove_reaction(reaction, user)                
-            except asyncio.TimeoutError:
-                break
-
-#shop 2 command for testing
-    @commands.hybrid_command(
-        name="shop2",
         description="This command will show the shop.",
     )
-    async def shop2(self, ctx: Context):
+    async def shop(self, ctx: Context):
         #get all the shop items
         shop = await db_manager.display_shop_items()
         allWeapons = await db_manager.get_all_shop_items_off_one_type("Weapon")
@@ -454,9 +453,13 @@ class Items(commands.Cog, name="template"):
         shields = []
         allCosmetics = await db_manager.get_all_shop_items_off_one_type("Cosmetic")
         cosmetics = []
+        allMaterals = await db_manager.get_all_shop_items_off_one_type("Material")
+        materals = []
         
         #for each item in each type of item, create an embed of the item and add it to a list named the item type
         #weapons
+        #combine allProjectiles and allWeapon 
+        allWeapons = allWeapons + allProjectiles
         for i in allWeapons:
             item_id = i[0]
             item_name = i[1]
@@ -526,6 +529,7 @@ class Items(commands.Cog, name="template"):
             #add the embed to the list
             consumables.append(item)
         #misc
+        allMisc = allMisc + allMaterals
         for i in allMisc:
             item_id = i[0]
             item_name = i[1]
@@ -595,7 +599,7 @@ class Items(commands.Cog, name="template"):
                 await message.edit(embed=shopembed)
                 await message.remove_reaction("🏠", ctx.author)
             try: 
-                reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+                reaction, user = await self.bot.wait_for("reaction_add", timeout=200.0, check=check)
                 #if the page is 1 (weapons) and the reaction is the arrow forward, go to the item in the list of weapons
                 if page == 1 and str(reaction) == "⏩":
                     if i < len(weapons)-1:
@@ -616,7 +620,7 @@ class Items(commands.Cog, name="template"):
                         i = len(weapons)-1
                         await message.edit(embed=weapons[i])
                         await message.remove_reaction("⏪", ctx.author)
-                        
+        
                 #if the page is 2 (armor) and the reaction is the arrow forward, go to the item in the list of armor
                 elif page == 2 and str(reaction) == "⏩":
                     if i < len(armor)-1:
@@ -636,7 +640,7 @@ class Items(commands.Cog, name="template"):
                     else:
                         i = len(armor)-1
                         await message.edit(embed=armor[i])
-                        await message.remove_reaction("⏪", ctx.author)
+                        await message.remove_reaction("⏪", ctx.author)   
                         
                 #if the page is 3 (consumables) and the reaction is the arrow forward, go to the item in the list of consumables
                 elif page == 3 and str(reaction) == "⏩":
@@ -657,7 +661,8 @@ class Items(commands.Cog, name="template"):
                     else:
                         i = len(consumables)-1
                         await message.edit(embed=consumables[i])
-                        await message.remove_reaction("⏪", ctx.author)
+                        await message.remove_reaction("⏪", ctx.author)                        
+
                 #if the page is 4 (misc) and the reaction is the arrow forward, go to the item in the list of misc
                 elif page == 4 and str(reaction) == "⏩":
                     if i < len(misc)-1:
@@ -679,37 +684,178 @@ class Items(commands.Cog, name="template"):
                         await message.edit(embed=misc[i])
                         await message.remove_reaction("⏪", ctx.author)
                 #if the reaction is the check mark, buy the item
+                
+                #BUY PROCESSING
                 elif str(reaction) == "✅":
+                    #remove the reaction
+                    await message.remove_reaction("✅", ctx.author)
                     #if the page is 1 (weapons), check if the user already has the weapon, if not, add it to their inventory, otherwise tell them they already have it
-                    user_weapons = await db_manager.view_inventory(ctx.author.id)
                     if page == 1:
-                        #sort the users inventory by weapon
-                        user_weapons = [x for x in user_weapons if x.type == "weapon"]
-                        #get the item name from the weapon list
-                        print(weapons[i])
-                        #check if the user can afford to buy the item
-                        user_cash = await db_manager.get_money(ctx.author.id)
-                        #convert it to a int
-                        user_cash = int(user_cash[0])
-                        if weapons[i] not in user_weapons:
-                            #promt the user to confirm the purchase
-                            await message.edit(embed=weapons[i])
-                            #remove the cost of the weapon from the inventory
-                            await db_manager.remove_money(ctx.author.id, )
-                            await db_manager.add_item_to_inventory(ctx.author.id, weapons[i].title)
-                            await ctx.send(f"You bought a {weapons[i].title}!")
-                        else:
-                            await ctx.send("You already have this item!")
-                            
+                         user_items = await db_manager.view_inventory(ctx.author.id)
+                         print(user_items)
+                         #get shop items 
+                         shop_items = allWeapons
+                         print(shop_items[i])
+                         shop_item_type = shop_items[i][5]
+                         print(shop_item_type)
+                         #check if the users inventory is empty
+                         if user_items == []:
+                             user_weapons = []
+                         else:
+                             user_weapons = user_items[i][0]
+                         #sort the users inventory by weapon
+                         shop_item_id = shop_items[i][0]
+                         shop_item_name = shop_items[i][1]
+                         shop_item_price = shop_items[i][2]
+                         shop_item_price = int(shop_item_price)
+                         shop_item_emoji = shop_items[i][3]
+                         shop_item_rarity = shop_items[i][4]
+                         shop_item_type = shop_items[i][5]
+                         shop_item_damage = shop_items[i][6]
+                         shop_item_sub_type = await db_manager.get_basic_item_sub_type(shop_item_id)
+                         shop_item_crit_chance = await db_manager.get_basic_item_crit_chance(shop_item_id)
+                         shop_item_projectile = await db_manager.get_basic_item_projectile(shop_item_id)
+                         #get all the rwquirmenst for the add_item_to_inventory command
+                         #check if 
+
+                         #get the item name from the weapon list
+                         print(shop_item_id)
+                         #check if the user can afford to buy the item
+                         user_cash = await db_manager.get_money(ctx.author.id)
+                         #convert it to a int
+                         user_cash = int(user_cash[0])
+                         #check if the item is a weapon or armor, and see if the user already has it
+                         if shop_item_type == 'Weapon' or shop_item_type == 'Armor':
+                             #check if the user already has this item
+                             for item in user_items:
+                                 if item[0] == shop_item_id:
+                                     await ctx.send("You already have this item")
+                                     return
+                         #check if the user can afford this item
+                         if user_cash < shop_item_price:
+                             await ctx.send("You can't afford this item")
+                             #send the user back to the homepage of the shop
+                         else:
+                             await db_manager.remove_money(ctx.author.id, shop_item_price)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_sub_type, shop_item_crit_chance, shop_item_projectile)
+                             await ctx.send(f"You bought a {shop_item_name}!")
+
+                    if page == 2:
+                         user_items = await db_manager.view_inventory(ctx.author.id)
+                         print(user_items)
+                         shop_items = allArmor
+                         print(shop_items[i])
+                         shop_item_type = shop_items[i][5]
+                         print(shop_item_type)
+                         if user_items == []:
+                             user_armor = []
+                         else:
+                             user_armor = user_items[i][0]
+                         shop_item_id = shop_items[i][0]
+                         shop_item_name = shop_items[i][1]
+                         shop_item_price = shop_items[i][2]
+                         shop_item_price = int(shop_item_price)
+                         shop_item_emoji = shop_items[i][3]
+                         shop_item_rarity = shop_items[i][4]
+                         shop_item_type = shop_items[i][5]
+                         shop_item_protection = shop_items[i][6]
+                         shop_item_sub_type = await db_manager.get_basic_item_sub_type(shop_item_id)
+                         shop_item_crit_chance = await db_manager.get_basic_item_crit_chance(shop_item_id)
+                         shop_item_projectile = await db_manager.get_basic_item_projectile(shop_item_id)
+                         print(shop_item_id)
+                         user_cash = await db_manager.get_money(ctx.author.id)
+                         user_cash = int(user_cash[0])
+                         if shop_item_type == 'Weapon' or shop_item_type == 'Armor':
+                             for item in user_items:
+                                 if item[0] == shop_item_id:
+                                     await ctx.send("You already have this item")
+                                     return
+                         if user_cash < shop_item_price:
+                             await ctx.send("You can't afford this item")
+                             #send the user back to the homepage of the shop
+                         else:
+                             await db_manager.remove_money(ctx.author.id, shop_item_price)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_sub_type, shop_item_crit_chance, shop_item_projectile)
+                             await ctx.send(f"You bought a {shop_item_name}!")
+
+                    if page == 3:
+                         user_items = await db_manager.view_inventory(ctx.author.id)
+                         print(user_items)
+                         shop_items = allConsumables
+                         print(shop_items[i])
+                         shop_item_type = shop_items[i][5]
+                         print(shop_item_type)
+                         if user_items == []:
+                             user_consumables = []
+                         else:
+                             user_consumables = user_items[i][0]
+                         shop_item_id = shop_items[i][0]
+                         shop_item_name = shop_items[i][1]
+                         shop_item_price = shop_items[i][2]
+                         shop_item_price = int(shop_item_price)
+                         shop_item_emoji = shop_items[i][3]
+                         shop_item_rarity = shop_items[i][4]
+                         shop_item_type = shop_items[i][5]
+                         shop_item_effect = shop_items[i][6]
+                         shop_item_sub_type = await db_manager.get_basic_item_sub_type(shop_item_id)
+                         shop_item_crit_chance = await db_manager.get_basic_item_crit_chance(shop_item_id)
+                         shop_item_projectile = await db_manager.get_basic_item_projectile(shop_item_id)
+                         print(shop_item_id)
+                         user_cash = await db_manager.get_money(ctx.author.id)
+                         user_cash = int(user_cash[0])
+                         if shop_item_type == 'Weapon' or shop_item_type == 'Armor':
+                             for item in user_items:
+                                 if item[0] == shop_item_id:
+                                     await ctx.send("You already have this item")
+                                     return
+                         if user_cash < shop_item_price:
+                             await ctx.send("You can't afford this item")
+                             #send the user back to the homepage of the shop
+                         else:
+                             await db_manager.remove_money(ctx.author.id, shop_item_price)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_sub_type, shop_item_crit_chance, shop_item_projectile)
+                             await ctx.send(f"You bought a {shop_item_name}!")
+
+                    if page == 4:
+                         user_items = await db_manager.view_inventory(ctx.author.id)
+                         print(user_items)
+                         shop_items = allMisc
+                         print(shop_items[i])
+                         shop_item_type = shop_items[i][5]
+                         print(shop_item_type)
+                         if user_items == []:
+                             user_misc = []
+                         else:
+                             user_misc = user_items[i][0]
+                         shop_item_id = shop_items[i][0]
+                         shop_item_name = shop_items[i][1]
+                         shop_item_price = shop_items[i][2]
+                         shop_item_price = int(shop_item_price)
+                         shop_item_emoji = shop_items[i][3]
+                         shop_item_rarity = shop_items[i][4]
+                         shop_item_type = shop_items[i][5]
+                         shop_item_description = shop_items[i][6]
+                         shop_item_sub_type = await db_manager.get_basic_item_sub_type(shop_item_id)
+                         shop_item_crit_chance = await db_manager.get_basic_item_crit_chance(shop_item_id)
+                         shop_item_projectile = await db_manager.get_basic_item_projectile(shop_item_id)
+                         print(shop_item_id)
+                         user_cash = await db_manager.get_money(ctx.author.id)
+                         user_cash = int(user_cash[0])
+                         if shop_item_type == 'Weapon' or shop_item_type == 'Armor' or shop_item_type == 'Consumable':
+                             for item in user_items:
+                                 if item[0] == shop_item_id:
+                                     await ctx.send("You already have this item")
+                                     return
+                         if user_cash < shop_item_price:
+                             await ctx.send("You can't afford this item")
+                             #send the user back to the homepage of the shop
+                         else:
+                             await db_manager.remove_money(ctx.author.id, shop_item_price)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_sub_type, shop_item_crit_chance, shop_item_projectile)
+                             await ctx.send(f"You bought a {shop_item_name}!")
             except Exception as e:
                 print(e)
                     
-
-            
-            
-            
-            
-        
 
     #command to see the quest board
     
