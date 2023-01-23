@@ -710,7 +710,7 @@ async def give_user_quest(user_id: int, quest_id: str) -> None:
 #remove a quest from a user
 async def remove_quest_from_user(user_id: int) -> None:
     db = DB()
-    await db.execute("UPDATE `users` SET quest_id = ? WHERE user_id = ?", (None, user_id))
+    await db.execute("UPDATE `users` SET quest_id = ? WHERE user_id = ?", ("None", user_id))
     
 #check if the enemy is in the database
 async def check_enemy(enemy_id: str) -> bool:

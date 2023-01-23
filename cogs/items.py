@@ -914,23 +914,23 @@ class Items(commands.Cog, name="template"):
         
         #send the first embed, and add reactions to it to switch between the different embeds
         message = await ctx.send(embed=embeds[0])
-        await message.add_reaction("⬅️")
+        await message.add_reaction("⏪")
         await message.add_reaction("➡️")
         await message.add_reaction("✅")
         #create a function to check if the reaction is the one we want
         def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in ["⬅️", "➡️" , "✅"]
+            return user == ctx.author and str(reaction.emoji) in ["⏪", "⏩" , "✅"]
         #create a function that whenever the user clicks the check mark, it will add the quest to the users quest list
         
         #switch between the different embeds
         i = 0
         reaction = None
         while True:
-            if str(reaction) == "⬅️":
+            if str(reaction) == "⏪":
                 if i > 0:
                     i -= 1
                     await message.edit(embed=embeds[i])
-            elif str(reaction) == "➡️":
+            elif str(reaction) == "⏩":
                 if i < len(embeds)-1:
                     i += 1
                     await message.edit(embed=embeds[i])
@@ -982,7 +982,15 @@ class Items(commands.Cog, name="template"):
                 break
             
         #when the user clicks the check mark, add the quest to the users quest list, remove the quest from the quest board, check if the user already has the quest, and if they do, tell them they already have it, and if they dont, add it to their quest list
-            
+    #abandon quest hybrid command 
+    @commands.hybrid_command(
+        name="abandonquest",
+        description="Abandon your current quest",
+    )
+    async def abandonquest(self, ctx: Context):
+        await db_manager.remove_quest_from_user(ctx.author.id)
+        await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
+        
             
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
     @commands.hybrid_command(
