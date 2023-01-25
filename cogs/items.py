@@ -476,11 +476,31 @@ class Items(commands.Cog, name="template"):
             item_amount = await db_manager.get_shop_item_amount(item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
+            rarity = str(item_rarity)
+            if rarity == "Common":
+                rarity_color="0x808080"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Uncommon":
+                rarity_color="0x00B300"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Rare":
+                rarity_color="0x0057C4"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Epic":
+                rarity_color="0xa335ee"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Legendary":
+                rarity_color="0xff8000"
+                rarity_color = int(rarity_color, 16)
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote} x{item_amount}",
                 description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
-                color=discord.Color.blurple()
+                color=rarity_color
             )
             #add the embed to the list
             weapons.append(item)
@@ -499,11 +519,31 @@ class Items(commands.Cog, name="template"):
             item_amount = await db_manager.get_shop_item_amount(item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
+            rarity = str(item_rarity)
+            if rarity == "Common":
+                rarity_color="0x808080"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Uncommon":
+                rarity_color="0x00B300"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Rare":
+                rarity_color="0x0057C4"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Epic":
+                rarity_color="0xa335ee"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Legendary":
+                rarity_color="0xff8000"
+                rarity_color = int(rarity_color, 16)
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote} x{item_amount}",
                 description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
-                color=discord.Color.blurple()
+                color=rarity_color
             )
             #add the embed to the list
             armor.append(item)
@@ -522,11 +562,31 @@ class Items(commands.Cog, name="template"):
             item_amount = await db_manager.get_shop_item_amount(item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
+            rarity = str(item_rarity)
+            if rarity == "Common":
+                rarity_color="0x808080"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Uncommon":
+                rarity_color="0x00B300"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Rare":
+                rarity_color="0x0057C4"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Epic":
+                rarity_color="0xa335ee"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Legendary":
+                rarity_color="0xff8000"
+                rarity_color = int(rarity_color, 16)
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote} x{item_amount}",
                 description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
-                color=discord.Color.blurple()
+                color=rarity_color
             )
             #add the embed to the list
             consumables.append(item)
@@ -546,11 +606,31 @@ class Items(commands.Cog, name="template"):
             item_amount = await db_manager.get_shop_item_amount(item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
+            rarity = str(item_rarity)
+            if rarity == "Common":
+                rarity_color="0x808080"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Uncommon":
+                rarity_color="0x00B300"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Rare":
+                rarity_color="0x0057C4"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Epic":
+                rarity_color="0xa335ee"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Legendary":
+                rarity_color="0xff8000"
+                rarity_color = int(rarity_color, 16)
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote} x{item_amount}",
                 description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
-                color=discord.Color.blurple()
+                color=rarity_color
             )
             #add the embed to the list
             misc.append(item)
