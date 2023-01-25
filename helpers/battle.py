@@ -100,20 +100,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user1_weapon_projectile = user1_weapon[0][12]
             #convert projectile to str
             user1_weapon_projectile = str(user1_weapon_projectile)
-            if user1_weapon_projectile == "Arrow":
-                user1_arrows = await db_manager.get_arrows(user1)
-                if user1_arrows == None or user1_arrows == [] or user1_arrows == 0:
-                    #if the user doesn't have arrows, set the weapon to fists, and tell the user they don't have arrows
-                    await ctx.channel.send(user1_name + " you don't have any arrows!")
-                    user1_weapon_name = "Fists"
-                    user1_damage = 2
-                    user1_weapon_subtype = "None"
-                    #convert subtype to str
-                    user1_weapon_subtype = str(user1_weapon_subtype)
-                else:
-                    #if the user has arrows, tell the user how many they have
-                    await ctx.channel.send(user1_name + " you have " + str(user1_arrows) + " arrows!")
-            
         else:
             user1_weapon_name = user1_weapon[0][2]
             #convert it to str
@@ -152,21 +138,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user2_weapon_projectile = user2_weapon[0][12]
             #convert projectile to str
             user2_weapon_projectile = str(user2_weapon_projectile)
-            if user2_weapon_projectile == "Arrow":
-                user2_arrows = await db_manager.get_arrows(user2)
-                if user2_arrows == None or user2_arrows == [] or user2_arrows == 0:
-                    #if the user doesn't have arrows, set the weapon to fists, and tell the user they don't have arrows
-                    await ctx.channel.send(user2_name + " you don't have any arrows!")
-                    user2_weapon_name = "Fists"
-                    user2_damage = 2
-                    user2_weapon_subtype = "None"
-                    #convert subtype to str
-                    user2_weapon_subtype = str(user2_weapon_subtype)
-                else:
-                    #if the user has arrows, tell the user how many they have
-                    await ctx.channel.send(user2_name + " you have " + str(user2_arrows) + " arrows!")
-
-                
             #if the users weapon 
         #get the equipped armor
         user2_armor = await db_manager.get_equipped_armor(user2)
@@ -233,8 +204,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #user 1 attacks
             
             #if the user is using a projectile weapon, remove an arrow
-            if user1_weapon_projectile == "Arrow":
-                await db_manager.remove_item_from_inventory(user1, "Arrow", 1)
             await db_manager.remove_health(user2, user1_damage)
             #have the user have a 1/10 chance of being set on fire
             isSetONFire = random.randint(1, 10)
@@ -280,7 +249,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                     user1Promts = json.load(f)
                     
                 #if the user is using a projectile weapon use the projectile promts
-                if user1_weapon_projectile == "Arrow":
+                if user1_weapon_projectile != "None":
                     #import User2 promts from assets/user1Promts.json
                     with open("assets/user1ProjectilePromts.json") as f:
                         user1Promts = json.load(f)
@@ -301,7 +270,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 user1Promt = user1Promt.replace("{user1_weapon_damage}", "__" + str(user1_damage) + "__")
                 
                 #if the user is using a projectile weapon, replace the {user1_projectile} with the projectile
-                if user1_weapon_projectile == "Arrow":
+                if user1_weapon_projectile != "None":
                     user1Promt = user1Promt.replace("{user1_projectile}", "__" + user1_weapon_projectile + "__")
                     
                 #add the user2 promt to the new description
@@ -434,7 +403,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 with open("assets/user2Promts.json") as f:
                     user2Promts = json.load(f)
                     
-                if user2_weapon_projectile == "Arrow":
+                if user2_weapon_projectile != "None":
                     #import User2 promts from assets/user1Promts.json
                     with open("assets/user2ProjectilePromts.json") as f:
                         user1Promts = json.load(f)
@@ -456,7 +425,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 user2Promt = user2Promt.replace("{user2_weapon_damage}", "__" + str(user2_damage) + "__")
                 
                 #if the user is using a projectile weapon, replace the {user1_projectile} with the projectile
-                if user2_weapon_projectile == "Arrow":
+                if user2_weapon_projectile != "None":
                     user2Promt = user2Promt.replace("{user2_projectile}", "__" + user2_weapon_projectile + "__")
                     
                     
