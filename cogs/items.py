@@ -17,7 +17,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, buy, checks, db_manager, randomEncounter
+from helpers import battle, buy, checks, db_manager, randomEncounter, start
 
 
 # Here we name the cog and create a new class for the cog.
@@ -1900,6 +1900,16 @@ class Items(commands.Cog, name="template"):
     )
     async def delete_channels(self, ctx: Context):
         await randomEncounter.delete_channels(ctx)
+        
+        
+    #command to start a user's adventure, gives them a starter weapon and armor
+    @commands.hybrid_command(
+        name="start",
+        description="Start your adventure!",
+    )
+    async def start(self, ctx: Context):
+        #run the start function from helper/start.py
+        await start.start(ctx)
     
         
 
