@@ -17,7 +17,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, buy, checks, db_manager
+from helpers import battle, buy, checks, db_manager, randomEncounter
 
 
 # Here we name the cog and create a new class for the cog.
@@ -1886,6 +1886,21 @@ class Items(commands.Cog, name="template"):
         author_name = ctx.author.name
         await battle.deathbattle_monster(ctx, user_id, author_name, monsterid, monsterName)
 
+    @commands.hybrid_command(
+        name="create_channels",
+        description="Create The channels for Random Encounters",
+    )
+    async def create_channels(self, ctx: Context):
+        await randomEncounter.generate_channels(ctx)
+        
+    @commands.hybrid_command(
+        name="delete_channels",
+        description="Delete The channels for Random Encounters",
+    )
+    async def delete_channels(self, ctx: Context):
+        await randomEncounter.delete_channels(ctx)
+    
+        
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.

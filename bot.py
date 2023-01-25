@@ -19,7 +19,7 @@ from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
 
 import exceptions
-from helpers import db_manager
+from helpers import db_manager, randomEncounter
 
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
