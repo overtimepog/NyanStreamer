@@ -7,8 +7,8 @@
         "quest_reward": "gold",
         "quest_reward_amount": 5,
         "quest_level_required": 1,
-        "quest_type": "slaying",
-        "quest": "10 rats",
+        "quest_type": "kill",
+        "quest": "10 rat",
         "OnBoard": true
     },
     {

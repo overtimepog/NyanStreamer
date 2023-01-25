@@ -618,6 +618,51 @@ async def get_quest_total_from_id(quest_id: str) -> str:
         return quest
     else:
         return 0
+#get what quest a user has 
+async def get_user_quest(user_id: int) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `questProgress` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        return data[1]
+    else:
+        return 0
+    
+#get the quest objective from its ID
+async def get_quest_objective_from_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[8]
+    else:
+        return 0
+    
+#get the quest reward type from its ID
+async def get_quest_reward_type_from_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[4]
+    else:
+        return 0
+
+#get the quest reward amount from its ID
+async def get_quest_reward_amount_from_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[5]
+    else:
+        return 0
+
+#get the quest xp reward from its ID
+async def get_quest_xp_reward_from_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[3]
+    else:
+        return 0
+
 #update the progress of a quest for a user
 async def update_quest_progress(user_id: int, quest_id: str, quest_progress: int) -> None:
     db = DB()

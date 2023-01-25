@@ -1892,6 +1892,7 @@ class Items(commands.Cog, name="template"):
     )
     async def create_channels(self, ctx: Context):
         await randomEncounter.generate_channels(ctx)
+        await randomEncounter.loop_random_encounters(ctx)
         
     @commands.hybrid_command(
         name="delete_channels",
