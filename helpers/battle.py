@@ -772,7 +772,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             if monster_defence > user1_damage:
                 damage = 0
                 #tell the user the monster is too powerful and they ran away
-                await ctx.send("The monster is too powerful and you ran away!")
+                await ctx.send("You are too weak to damage this monster, fleeing is the only option!")
                 #replace the embed description with "You ran away!"
                 embed.description = "You ran away!"
                 #set the embed color to red
