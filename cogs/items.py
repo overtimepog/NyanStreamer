@@ -1564,11 +1564,33 @@ class Items(commands.Cog, name="template"):
                 hasRecipe = await db_manager.check_item_recipe(item_id)
                 if hasRecipe == 1:
                     item_recipe = await db_manager.get_item_recipe(item_id)
+                #get the items rarity
+                rarity = await db_manager.get_basic_item_rarity(item_id)
+                rarity = str(rarity)
+                if rarity == "Common":
+                    rarity_color="0x808080"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Uncommon":
+                    rarity_color="0x00B300"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Rare":
+                    rarity_color="0x0057C4"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Epic":
+                    rarity_color="0xa335ee"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Legendary":
+                    rarity_color="0xff8000"
+                    rarity_color = int(rarity_color, 16)
                 #create an embed
                 embed = discord.Embed(
                     title=f"{item_name}",
                     description=f"{item_description}",
-                    color=discord.Color.from_rgb(255, 255, 255),
+                    color=rarity_color
                 )
                 #add the rarity to the embed
                 #set the thumbnail to the item emoji
@@ -1672,10 +1694,33 @@ class Items(commands.Cog, name="template"):
                 item_crit_chance = await db_manager.get_streamer_item_crit_chance(item_id)
                 item_damage = await db_manager.get_streamer_item_damage(item_id)
                 #create an embed
+                #get the items rarity
+                rarity = await db_manager.get_basic_item_rarity(item_id)
+                rarity = str(rarity)
+                if rarity == "Common":
+                    rarity_color="0x808080"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Uncommon":
+                    rarity_color="0x00B300"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Rare":
+                    rarity_color="0x0057C4"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Epic":
+                    rarity_color="0xa335ee"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Legendary":
+                    rarity_color="0xff8000"
+                    rarity_color = int(rarity_color, 16)
+                #create an embed
                 embed = discord.Embed(
                     title=f"{item_name}",
-                    description=f"An item from {streamer_name}, very rare. :)",
-                    color=discord.Color.from_rgb(255, 255, 255),
+                    description=f"{item_description}",
+                    color=rarity_color
                 )
                 #add the rarity to the embed
                 #set the thumbnail to the item emoji
@@ -1734,11 +1779,33 @@ class Items(commands.Cog, name="template"):
                 hasRecipe = await db_manager.check_item_recipe(item_id)
                 if hasRecipe == 1:
                     item_recipe = await db_manager.get_item_recipe(item_id)
+                #get the items rarity
+                rarity = await db_manager.get_basic_item_rarity(item_id)
+                rarity = str(rarity)
+                if rarity == "Common":
+                    rarity_color="0x808080"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Uncommon":
+                    rarity_color="0x00B300"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Rare":
+                    rarity_color="0x0057C4"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Epic":
+                    rarity_color="0xa335ee"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Legendary":
+                    rarity_color="0xff8000"
+                    rarity_color = int(rarity_color, 16)
                 #create an embed
                 embed = discord.Embed(
                     title=f"{item_name}",
                     description=f"{item_description}",
-                    color=discord.Color.from_rgb(255, 255, 255),
+                    color=rarity_color
                 )
                 #add the rarity to the embed
                 #set the thumbnail to the item emoji
@@ -1854,11 +1921,33 @@ class Items(commands.Cog, name="template"):
                 item_name = await db_manager.get_streamer_item_name(item_id)
                 item_crit_chance = await db_manager.get_streamer_item_crit_chance(item_id)
                 item_damage = await db_manager.get_streamer_item_damage(item_id)
+                 #get the items rarity
+                rarity = await db_manager.get_basic_item_rarity(item_id)
+                rarity = str(rarity)
+                if rarity == "Common":
+                    rarity_color="0x808080"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Uncommon":
+                    rarity_color="0x00B300"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Rare":
+                    rarity_color="0x0057C4"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Epic":
+                    rarity_color="0xa335ee"
+                    rarity_color = int(rarity_color, 16)
+
+                elif rarity == "Legendary":
+                    rarity_color="0xff8000"
+                    rarity_color = int(rarity_color, 16)
                 #create an embed
                 embed = discord.Embed(
                     title=f"{item_name}",
-                    description=f"An item from {streamer_name}, very rare. :)",
-                    color=discord.Color.from_rgb(255, 255, 255),
+                    description=f"{item_description}",
+                    color=rarity_color
                 )
                 #add the rarity to the embed
                 #set the thumbnail to the item emoji
