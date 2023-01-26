@@ -12,6 +12,7 @@ import os
 import platform
 import random
 import sys
+import subprocess
 
 import aiosqlite
 import discord
@@ -20,6 +21,7 @@ from discord.ext.commands import Bot, Context
 
 import exceptions
 from helpers import db_manager, randomEncounter
+import twitch
 
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
@@ -272,4 +274,6 @@ asyncio.run(db_manager.add_quests())
 print("\n" + "---------Quests to Board----------")
 asyncio.run(db_manager.add_quests_to_board())
 print("\n" + "------------------------")
+#run twitch bot file
 bot.run(config["token"])
+subprocess.Popen([sys.executable, r'twitch.py'])
