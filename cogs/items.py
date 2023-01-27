@@ -10,6 +10,7 @@ import asyncio
 import json
 import random
 import re
+import requests
 
 import aiohttp
 import discord
@@ -31,18 +32,18 @@ class Items(commands.Cog, name="template"):
         name="register",
         description="This command will add a new streamer to the database.",
     )
-    async def register(self, ctx: Context, streamer_channel: str, emoteprefix: str):
+    async def register(self, ctx: Context, channel_name: str, emoteprefix: str):
         """
         This command will add a new streamer to the database.
 
         :param ctx: The context in which the command was called.
-        :param streamer_channel: The streamer's twitch channel.
+        :param channel_name: The streamer's twitch channel.
         :param streamer_server: The streamer's server.
         :param streamer_id: The streamer's ID.
         """
 
-        twitch_id = await db_manager.get_twitch_id(streamer_channel)
-        broadcaster_cast_type = await db_manager.get_broadcaster_type(streamer_channel)
+        twitch_id = await db_manager.get_twitch_id(channel_name)
+        broadcaster_cast_type = await db_manager.get_broadcaster_type(channel_name)
         user_id = ctx.author.id
         #check if the streamer already exists in the database
         if await db_manager.is_streamer(user_id):
@@ -53,10 +54,10 @@ class Items(commands.Cog, name="template"):
             #if the user already exists in the database, update their streamer status to true
             if await db_manager.check_user(user_id):
                 await db_manager.update_is_streamer(user_id)
-                await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
+                await db_manager.add_streamer(channel_name, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
                 await ctx.send("You are now a streamer.")
                 return
-            await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
+            await db_manager.add_streamer(channel_name, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
             await db_manager.add_user(user_id, True)
             await ctx.send("Streamer added to the database.")
             return
@@ -64,16 +65,16 @@ class Items(commands.Cog, name="template"):
             #if the user already exists in the database, update their streamer status to true
             if await db_manager.check_user(user_id):
                 await db_manager.update_is_streamer(user_id)
-                await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
+                await db_manager.add_streamer(channel_name, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
                 await ctx.send("You are now a streamer.")
                 return
-            await db_manager.add_streamer(streamer_channel, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
+            await db_manager.add_streamer(channel_name, user_id, emoteprefix, twitch_id, broadcaster_cast_type)
             await db_manager.add_user(user_id, True)
             await ctx.send("Streamer added to the database.")
             return
         elif broadcaster_cast_type == "":
-            await db_manager.add_user(user_id, False)
-            await ctx.send("Streamer is not a Partner or Affiliate, added to database as user.")
+            #await db_manager.add_user(user_id, False)
+            await ctx.send("Streamer is not a Partner or Affiliate, please use the `connect` command instead.")
             return
 
 
@@ -2079,9 +2080,44 @@ class Items(commands.Cog, name="template"):
     async def start(self, ctx: Context):
         #run the start function from helper/start.py
         await start.start(ctx)
-    
         
-
+    #command to connect their discord account to their twitch account
+    @commands.hybrid_command(
+        name="connect",
+        description="Connect your twitch account to your discord account!",
+    )
+    async def connect(self, ctx: Context, twitch_name: str):
+        #create an embed to send to the user, then add a button to connect their twitch account
+        embed = discord.Embed(
+            title="Connect your twitch account to your discord account!",
+            description="Click the button below to connect your twitch account to your discord account!",
+            color=discord.Color.blurple()
+        )
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/881056455321487390/881056516333762580/unknown.png")
+        embed.add_field(name="Twitch Name", value=f"{twitch_name}", inline=False)
+        embed.set_footer(text="DankStreamer")
+        #make a discord.py button interaction
+        class MyView(discord.ui.View): # Create a class called MyView that subclasses discord.ui.View
+            discord.ui.button(label="Register With Twitch!", style=discord.ButtonStyle.primary, emoji="😎", url="https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://twitch.tv/overtimepog&scope=channel%3Amanage%3Apolls+channel%3Aread%3Apolls&state=c3ab8aa609ea11e793ae92361f002671") # Create a button with the label "😎 Click me!" with color Blurple
+            
+            #WATCH THIS VIDEO FOR HELP https://www.youtube.com/watch?v=Ip0M_yxUwfg&ab_channel=Glowstik
+            
+        await ctx.send(embed=embed, view=MyView()) # Send a message with our View class that contains the button
+        #put the twitch name in lowercase
+        twitch_name = twitch_name.lower()
+        #get the streamerID from the database
+        twitchID = await db_manager.get_twitch_id(twitch_name)
+        print(twitchID)
+        #are they already connected?
+        await db_manager.connect_twitch(ctx.author.id, twitchID)
+        isConnected = await db_manager.is_connected(ctx.author.id)
+        print(isConnected)
+        exists = await db_manager.twitch_exists(twitchID)
+        #check if the streamerID is in the database
+        if exists == True:
+            await ctx.send(f"This twitch account is already connected to a discord account, or does not exist!")
+        elif exists == False:
+            await ctx.send(f"Your twitch account is now connected to your discord account!, You can now earn items and money by watching streamers connected to DankStreamer!")
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

@@ -85,7 +85,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `isInCombat` boolean NOT NULL,
   `player_xp` int(11) NOT NULL,
   `player_level` int(11) NOT NULL,
-  `quest_id` varchar(255) NOT NULL
+  `quest_id` varchar(255) NOT NULL,
+  `twitch_id` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `questProgress` (

@@ -354,7 +354,48 @@ async def get_user(user_id: int) -> None:
         #`quest_id` varchar(255) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
+        
+#connect a twitch account to a discord account
+async def connect_twitch(user_id: int, twitch_id: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `twitch_id` = ? WHERE `user_id` = ?", (twitch_id, user_id))
+    else:
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
+        
+#check if a user is connected to a twitch account
+async def is_connected(user_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `twitch_id` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        if users[0] == "None" or users[0] == None:
+            return False
+        else:
+            return True
+    else:
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
+        return False
+    
+#check if a twitch_id already exists in the database
+async def twitch_exists(twitch_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE twitch_id = ?", (twitch_id,), fetch="one")
+    if data is not None:
+        return True
+    else:
+        return False
+
+#make sure no two users have the same twitch account
+async def is_unique(twitch_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE twitch_id = ?", (twitch_id,), fetch="one")
+    if data is not None:
+        return False
+    else:
+        return True
 
 #check if a user is not dead
 async def is_alive(user_id: int) -> bool:
@@ -367,7 +408,7 @@ async def is_alive(user_id: int) -> bool:
         else:
             return False
     else:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
         return True
     
 #set a user's dead status to true
@@ -377,7 +418,7 @@ async def set_dead(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
     else:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (True, user_id))
         
 #set a user's dead status to false
@@ -387,7 +428,7 @@ async def set_alive(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (False, user_id))
     else:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
         await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (False, user_id))
 
 async def check_if_user_in_db(user_id: int) -> bool:
@@ -416,7 +457,7 @@ async def set_in_combat(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (True, user_id))
     else:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
 
 #set a user's InCombat status to false
 async def set_not_in_combat(user_id: int) -> None:
@@ -425,7 +466,7 @@ async def set_not_in_combat(user_id: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `isInCombat` = ? WHERE `user_id` = ?", (False, user_id))
     else:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
 
 #set a user's health
 async def set_health(user_id: int, health: int) -> None:
@@ -434,7 +475,7 @@ async def set_health(user_id: int, health: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `health` = ? WHERE `user_id` = ?", (health, user_id))
     else:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
 
 #look at a user's profile, returns a list
 async def profile(user_id: int) -> list:
@@ -444,7 +485,7 @@ async def profile(user_id: int) -> list:
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None"))
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
 
@@ -1332,8 +1373,12 @@ async def get_twitch_id(streamer_channel: str) -> int:
             return text[len(prefix):]
         return text
 
-    streamer_channel = remove_prefix(streamer_channel, "https://www.twitch.tv/")
-
+    if streamer_channel.startswith("https://www.twitch.tv/"):
+        streamer_channel = remove_prefix(streamer_channel, "https://www.twitch.tv/")
+    elif streamer_channel.startswith("https://twitch.tv/"):
+        streamer_channel = remove_prefix(streamer_channel, "https://twitch.tv/")
+    else:
+        streamer_channel = streamer_channel
     params = {
         'login': f'{streamer_channel}',
     }
@@ -1358,7 +1403,12 @@ async def get_broadcaster_type(streamer_channel: str) -> str:
             return text[len(prefix):]
         return text
 
-    streamer_channel = remove_prefix(streamer_channel, "https://www.twitch.tv/")
+    if streamer_channel.startswith("https://www.twitch.tv/"):
+        streamer_channel = remove_prefix(streamer_channel, "https://www.twitch.tv/")
+    elif streamer_channel.startswith("https://twitch.tv/"):
+        streamer_channel = remove_prefix(streamer_channel, "https://twitch.tv/")
+    else:
+        streamer_channel = streamer_channel
 
     params = {
         'login': f'{streamer_channel}',
@@ -1376,6 +1426,7 @@ async def update_is_streamer(user_id: int) -> int:
     db = DB()
     await db.execute(f"UPDATE `users` SET `isStreamer` = 1 WHERE user_id = ?", (user_id,))
     return 1
+
 
              
 

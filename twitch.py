@@ -9,6 +9,8 @@ import sys
 
 import aiosqlite
 
+from helpers import db_manager, randomEncounter
+
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
 else:
@@ -19,7 +21,7 @@ class TwitchBot(commands.Bot):
 
     def __init__(self):
         # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
-        super().__init__(token=config["TOKEN"], prefix='?', initial_channels=[config["CHANNEL"]])
+        super().__init__(token=config["TOKEN"], prefix='/', initial_channels=[config["CHANNEL"]])
 
     async def event_ready(self):
         # We are logged in and ready to chat and use commands...
