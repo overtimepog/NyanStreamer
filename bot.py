@@ -275,5 +275,5 @@ print("\n" + "---------Quests to Board----------")
 asyncio.run(db_manager.add_quests_to_board())
 print("\n" + "------------------------")
 #run twitch bot file
-bot.run(config["token"])
 subprocess.Popen([sys.executable, r'twitch.py'])
+bot.run(config["token"])
