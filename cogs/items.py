@@ -76,6 +76,15 @@ class Items(commands.Cog, name="template"):
             #await db_manager.add_user(user_id, False)
             await ctx.send("Streamer is not a Partner or Affiliate, please use the `connect` command instead.")
             return
+    #if an error is raised, this will be called
+    @register.error
+    async def register_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Please enter a channel name and an emoteprefix.")
+            return
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("Please enter a valid channel name and an emoteprefix.")
+            return
 
 
     #command to remove a streamer from the database streamer table, using the remove_streamer function from helpers\db_manager.py
@@ -92,7 +101,9 @@ class Items(commands.Cog, name="template"):
         """
         user_id = ctx.author.id
         await db_manager.remove_streamer(user_id)
-        await db_manager.remove_user(user_id)
+        #set the user's streamer status to false
+        await db_manager.update_is_not_streamer(user_id)
+        #await db_manager.remove_user(user_id)
         await ctx.send("Streamer removed from the database.")   
 
     #command to veiw all streamers in the database streamer table, using the view_streamers function from helpers\db_manager.py

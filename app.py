@@ -1,6 +1,10 @@
 from flask import Flask, request
 app = Flask(__name__)
 
+@app.route('/')
+def index():
+    return "Hello, World!"
+
 @app.route('/callback')
 def callback():
     code = request.args.get("code")
@@ -12,4 +16,4 @@ def callback():
     return "Authentication Successful"
 
 if __name__ == '__main__':
-    app.run(ssl_context='adhoc')
+    app.run()

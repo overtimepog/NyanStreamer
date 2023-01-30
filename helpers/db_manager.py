@@ -1427,6 +1427,12 @@ async def update_is_streamer(user_id: int) -> int:
     await db.execute(f"UPDATE `users` SET `isStreamer` = 1 WHERE user_id = ?", (user_id,))
     return 1
 
+#update the isStreamer column in the user table to False
+async def update_is_not_streamer(user_id: int) -> int:
+    db = DB()
+    await db.execute(f"UPDATE `users` SET `isStreamer` = 0 WHERE user_id = ?", (user_id,))
+    return 1
+
 
              
 
@@ -1565,7 +1571,7 @@ async def add_user(user_id: int, isStreamer: bool) -> int:
     :param user_id: The ID of the user that should be added.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("INSERT INTO users(user_id, money, health, isStreamer) VALUES (?, ?, ?, ?)", (user_id, 0, 100, isStreamer))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, isStreamer, False, False, False, False, False, False, False, 0, 1, "None", "None"))
         await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM users")
         async with rows as cursor:
