@@ -2112,7 +2112,7 @@ class Items(commands.Cog, name="template"):
                 super().__init__()
                 self.url = url
                 self.add_item(discord.ui.Button(label="Register With Twitch!", url=self.url))        
-        await ctx.send(embed=embed, view=MyView(f"https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=http://127.0.0.1:5000/callback&response_type=code&scope=user:read:email")) # Send a message with our View class that contains the button
+        await ctx.send(embed=embed, view=MyView(f"https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://dankstreamer.lol/callback&response_type=code&scope=user:read:email")) # Send a message with our View class that contains the button
             
             #WATCH THIS VIDEO FOR HELP https://www.youtube.com/watch?v=Ip0M_yxUwfg&ab_channel=Glowstik
             
