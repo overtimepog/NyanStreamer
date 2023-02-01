@@ -1,6 +1,7 @@
 import requests
 from flask import Flask, redirect, request, jsonify
 from discord import Webhook, SyncWebhook
+from waitress import serve
 
 app = Flask(__name__)
 
@@ -49,4 +50,4 @@ def callback():
     webhook.send(data)
 
 if __name__ == "__main__":
-    app.run()
+    serve(app, host='0.0.0.0', port=8080, threads=1) #WAITRESS!
