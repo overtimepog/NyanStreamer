@@ -49,5 +49,3 @@ def callback():
     data = jsonify(user)
     webhook.send(data)
 
-if __name__ == "__main__":
-    serve(app, host='155.138.232.229') #WAITRESS!
