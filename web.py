@@ -1,7 +1,6 @@
 import requests
 from flask import Flask, redirect, request, jsonify
 from discord import Webhook, SyncWebhook
-from waitress import serve
 
 app = Flask(__name__)
 
@@ -43,6 +42,8 @@ def callback():
     # Step 7: Send the information to the Discord webhook
     webhook_url = "https://discord.com/api/webhooks/1069631304196436029/4kR9H23BJ5f14U1U3ZuTXEo9vhoBC5zBN9E1j1nz7etj1pHf2Vq14eiE1aWb50JpYDG3"
     webhook = SyncWebhook.from_url(webhook_url)
-    webhook.send(f"New user has logged in: Username: {user['login']}, Email: {user['email']}, ID: {user['id']}, Display Name: {user['display_name']}, Broadcaster Type: {user['broadcaster_type']}")
+    #webhook.send(f"New user has logged in: Username: {user['login']}, Email: {user['email']}, ID: {user['id']}, Display Name: {user['display_name']}, Broadcaster Type: {user['broadcaster_type']}")
+    webhook.send(f"TWITCH USERNAME: {user['login']}")
+    webhook.send(f"TWITCH ID: {user['id']}")
     
     return redirect("https://dankstreamer.lol")

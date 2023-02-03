@@ -11,7 +11,7 @@ import json
 import random
 import re
 import requests
-
+from discord import Webhook, SyncWebhook
 import aiohttp
 import discord
 from discord import Embed, app_commands
@@ -32,7 +32,7 @@ class Items(commands.Cog, name="template"):
         name="register",
         description="This command will add a new streamer to the database.",
     )
-    async def register(self, ctx: Context, channel_name: str, emoteprefix: str):
+    async def register(self, ctx: Context, emoteprefix: str):
         """
         This command will add a new streamer to the database.
 
@@ -1285,6 +1285,7 @@ class Items(commands.Cog, name="template"):
         user_xp = user_profile[11]
         user_level = user_profile[12]
         user_quest = user_profile[13]
+        user_twitch_id = user_profile[14]
         #get the xp needed for the next level
         xp_needed = await db_manager.xp_needed(user_id)
         #convert the xp needed to a string
@@ -1322,7 +1323,7 @@ class Items(commands.Cog, name="template"):
             isStreamer = "Yes"
         elif isStreamer == 0:
             isStreamer = "No"
-        embed.set_footer(text=f"User ID: {user_id} | Streamer: {isStreamer}")
+        embed.set_footer(text=f"User ID: {user_id} | Twitch ID: {user_twitch_id} | Streamer: {isStreamer}")
 
         await ctx.send(embed=embed)
         
@@ -2112,9 +2113,15 @@ class Items(commands.Cog, name="template"):
                 super().__init__()
                 self.url = url
                 self.add_item(discord.ui.Button(label="Register With Twitch!", url=self.url))
-        await ctx.send(embed=embed, view=MyView(f"https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://dankstreamer.lol/callback&response_type=code&scope=user:read:email")) # Send a message with our View class that contains the button
-            
-            #WATCH THIS VIDEO FOR HELP https://www.youtube.com/watch?v=Ip0M_yxUwfg&ab_channel=Glowstik
+        #send the embed to the user in DMs
+        await ctx.send("Check your DMs :)")
+        await ctx.author.send(embed=embed, view=MyView(f"https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://dankstreamer.lol/callback&response_type=code&scope=user:read:email")) # Send a message with our View class that contains the button
+        #send the users discord ID to the webhook 
+        webhook_url = "https://discord.com/api/webhooks/1069631304196436029/4kR9H23BJ5f14U1U3ZuTXEo9vhoBC5zBN9E1j1nz7etj1pHf2Vq14eiE1aWb50JpYDG3"
+        webhook = SyncWebhook.from_url(webhook_url)
+        webhook.send(f"DISCORD ID: {ctx.author.id}")
+
+        #WATCH THIS VIDEO FOR HELP https://www.youtube.com/watch?v=Ip0M_yxUwfg&ab_channel=Glowstik
             
         ##put the twitch name in lowercase
         #twitch_name = twitch_name.lower()
