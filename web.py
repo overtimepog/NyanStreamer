@@ -1,8 +1,11 @@
 import requests
-from flask import Flask, redirect, request, jsonify
+from flask import Flask, redirect, request, jsonify, session
 from discord import Webhook, SyncWebhook
-
+from flask_session import Session
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 # Step 1: Create a Twitch application
 # ...
@@ -14,8 +17,22 @@ app = Flask(__name__)
 def index():
     return "hello world"
 
+@app.route("/webhook")
+def webhook():
+    #get the args from the url
+    #get the webhook url
+    webhook_url = request.args.get("url")
+    #save the webhook to a session variable
+    session["webhook_url"] = webhook_url
+    print(webhook_url)
+    return redirect("https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://dankstreamer.lol/callback&response_type=code&scope=user:read:email")
+
+
 @app.route("/callback")
 def callback():
+    #get the webhook url from the session variable
+    webhook_url = session["webhook_url"]
+    print(webhook_url)
     # Step 4: Handle the authorization code
     code = request.args.get("code")
     client_id = "xulcmh65kzbfefzuvfuulnh7hzrfhj"
@@ -40,7 +57,6 @@ def callback():
     user = response.json()["data"][0]
 
     # Step 7: Send the information to the Discord webhook
-    webhook_url = "https://discord.com/api/webhooks/1069631304196436029/4kR9H23BJ5f14U1U3ZuTXEo9vhoBC5zBN9E1j1nz7etj1pHf2Vq14eiE1aWb50JpYDG3"
     webhook = SyncWebhook.from_url(webhook_url)
     #webhook.send(f"New user has logged in: Username: {user['login']}, Email: {user['email']}, ID: {user['id']}, Display Name: {user['display_name']}, Broadcaster Type: {user['broadcaster_type']}")
     webhook.send(f"TWITCH USERNAME: {user['login']}")

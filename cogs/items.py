@@ -1288,6 +1288,7 @@ class Items(commands.Cog, name="template"):
         user_level = user_profile[12]
         user_quest = user_profile[13]
         user_twitch_id = user_profile[14]
+        user_twitch_name = user_profile[15]
         #get the xp needed for the next level
         xp_needed = await db_manager.xp_needed(user_id)
         #convert the xp needed to a string
@@ -1325,7 +1326,9 @@ class Items(commands.Cog, name="template"):
             isStreamer = "Yes"
         elif isStreamer == 0:
             isStreamer = "No"
-        embed.set_footer(text=f"User ID: {user_id} | Twitch ID: {user_twitch_id} | Streamer: {isStreamer}")
+        if user_twitch_name == None or user_twitch_name == "" or user_twitch_name == "None":
+            user_twitch_name = "Not Connected"
+        embed.set_footer(text=f"User ID: {user_id} | Twitch: {user_twitch_name} | Streamer: {isStreamer}")
 
         await ctx.send(embed=embed)
         
@@ -2116,10 +2119,18 @@ class Items(commands.Cog, name="template"):
                 self.url = url
                 self.add_item(discord.ui.Button(label="Register With Twitch!", url=self.url))
         #send the embed to the user in DMs
+        #get the guild object from the guild ID
+        guild = self.bot.get_guild(1070882685855211641)
+        #create a new channel in the guild
+        channel = await guild.create_text_channel("twitch-auth")
+        #create a webhook in the channel
+        webhook = await channel.create_webhook(name="twitch-auth")
+        #get the webhook url
+        webhook_url = webhook.url
         await ctx.send("Check your DMs :)")
-        await ctx.author.send(embed=embed, view=MyView(f"https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://dankstreamer.lol/callback&response_type=code&scope=user:read:email")) # Send a message with our View class that contains the button
+        await ctx.author.send(embed=embed, view=MyView(f"https://dankstreamer.lol/webhook?url={webhook_url}")) # Send a message with our View class that contains the button
         #send the users discord ID to the webhook 
-        webhook_url = "https://discord.com/api/webhooks/1069631304196436029/4kR9H23BJ5f14U1U3ZuTXEo9vhoBC5zBN9E1j1nz7etj1pHf2Vq14eiE1aWb50JpYDG3"
+        #webhook_url = "https://discord.com/api/webhooks/1069631304196436029/4kR9H23BJ5f14U1U3ZuTXEo9vhoBC5zBN9E1j1nz7etj1pHf2Vq14eiE1aWb50JpYDG3"
         webhook = SyncWebhook.from_url(webhook_url)
         webhook.send(f"DISCORD ID: {ctx.author.id}")
 

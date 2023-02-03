@@ -147,47 +147,52 @@ async def on_message(message: discord.Message) -> None:
     :param message: The message that was sent.
     """
     #wait for a different message from the webhook
-    if message.webhook_id == 1069631304196436029:
-        print("Message was sent from the connections webhook")
-            #wait for the twitch ID
-        if message.content.startswith("TWITCH ID: "):
-            global twitch_id
-                #remove the TWITCH ID: from the message and then connect the two accounts together
-            twitch_id = message.content.replace("TWITCH ID: ", "")
-            print(twitch_id)
-            #create the boolean variable has_twitch
-            has_twitch = True
-            has_discord = True
-            has_twitch_user = True
-            #connect the two accounts
-            #if i is more than 2, break the loop
-        
-        if message.content.startswith("TWITCH USERNAME: "):
-            global twitch_username
-            twitch_username = message.content.replace("TWITCH USERNAME: ", "")
-            print(twitch_username)
-            has_twitch_user = True
-            has_twitch = False
-            has_discord = True
-            #connect the two accounts
-            #if i is more than 2, break the loop
-        
-        if message.content.startswith("DISCORD ID: "):
-            global discord_id
-            discord_id = message.content.replace("DISCORD ID: ", "")
-            has_discord = True
-            has_twitch = False
-            #create a global variable to store the discord ID
-            print(discord_id)
+    try:
+        if message.guild.id == 1070882685855211641:
+            print("Message was sent from the connections Server")
+                #wait for the twitch ID
+            if message.content.startswith("TWITCH ID: "):
+                global twitch_id
+                    #remove the TWITCH ID: from the message and then connect the two accounts together
+                twitch_id = message.content.replace("TWITCH ID: ", "")
+                print(twitch_id)
+                #create the boolean variable has_twitch
+                has_twitch = True
+                has_discord = True
+                has_twitch_user = True
+                #connect the two accounts
+                #if i is more than 2, break the loop
 
-        #only if both the discord ID and the twitch ID have been found, connect the two accounts
-        if has_twitch and has_discord and has_twitch_user:
-            await db_manager.connect_twitch_id(discord_id, twitch_id)
-            await db_manager.connect_twitch_name(discord_id, twitch_username)
-            #send a message to the user saying that the accounts have been connected
-            await message.channel.send(f"Connected {discord_id} to {twitch_id}!")
-            print(f"Connected {discord_id} to {twitch_id}!")
+            if message.content.startswith("TWITCH USERNAME: "):
+                global twitch_username
+                twitch_username = message.content.replace("TWITCH USERNAME: ", "")
+                print(twitch_username)
+                has_twitch_user = True
+                has_twitch = False
+                has_discord = True
+                #connect the two accounts
+                #if i is more than 2, break the loop
 
+            if message.content.startswith("DISCORD ID: "):
+                global discord_id
+                discord_id = message.content.replace("DISCORD ID: ", "")
+                has_discord = True
+                has_twitch = False
+                #create a global variable to store the discord ID
+                print(discord_id)
+
+            #only if both the discord ID and the twitch ID have been found, connect the two accounts
+            if has_twitch and has_discord and has_twitch_user:
+                await db_manager.connect_twitch_id(discord_id, twitch_id)
+                await db_manager.connect_twitch_name(discord_id, twitch_username)
+                #send a message to the user saying that the accounts have been connected
+                await message.channel.send(f"Connected {discord_id} to {twitch_id}!")
+                print(f"Connected {discord_id} to {twitch_id}!")
+                #delete the channel
+                await message.channel.delete()
+    #on AttributeError, the message was not sent from the connections server, so ignore it
+    except AttributeError:
+        pass
     if message.author == bot.user or message.author.bot:
         return
     await bot.process_commands(message)
