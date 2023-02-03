@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, redirect, request, jsonify, session
+from flask import Flask, redirect, render_template, request, jsonify, session
 from discord import Webhook, SyncWebhook
 from flask_session import Session
 app = Flask(__name__)
@@ -15,7 +15,7 @@ Session(app)
 
 @app.route("/")
 def index():
-    return "hello world"
+    return render_template('home.html')
 
 @app.route("/webhook")
 def webhook():
