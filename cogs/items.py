@@ -32,7 +32,7 @@ class Items(commands.Cog, name="template"):
         name="register",
         description="This command will add a new streamer to the database.",
     )
-    async def register(self, ctx: Context, emoteprefix: str):
+    async def register(self, ctx: Context, emoteprefix: str, channel_name: str):
         """
         This command will add a new streamer to the database.
 
@@ -41,6 +41,8 @@ class Items(commands.Cog, name="template"):
         :param streamer_server: The streamer's server.
         :param streamer_id: The streamer's ID.
         """
+
+#TODO, fix this so it works with the the users connected twitch account
 
         twitch_id = await db_manager.get_twitch_id(channel_name)
         broadcaster_cast_type = await db_manager.get_broadcaster_type(channel_name)
