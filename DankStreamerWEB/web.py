@@ -63,3 +63,6 @@ def callback():
     webhook.send(f"TWITCH ID: {user['id']}")
     
     return redirect("https://dankstreamer.lol")
+
+if __name__ == "__main__":
+    app.run(debug=True)
