@@ -17,6 +17,11 @@ Session(app)
 def index():
     return render_template('home.html')
 
+@app.route("/thanks")
+def thanks():
+    return render_template('thanks.html')
+
+
 @app.route("/webhook")
 def webhook():
     #get the args from the url
@@ -26,7 +31,6 @@ def webhook():
     session["webhook_url"] = webhook_url
     print(webhook_url)
     return redirect("https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://dankstreamer.lol/callback&response_type=code&scope=user:read:email")
-
 
 @app.route("/callback")
 def callback():
@@ -62,7 +66,7 @@ def callback():
     webhook.send(f"TWITCH USERNAME: {user['login']}")
     webhook.send(f"TWITCH ID: {user['id']}")
     
-    return redirect("https://dankstreamer.lol")
+    return redirect("https://dankstreamer.lol/thanks")
 
 if __name__ == "__main__":
     app.run(debug=True)

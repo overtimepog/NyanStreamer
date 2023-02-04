@@ -374,6 +374,24 @@ async def connect_twitch_name(user_id: int, twitch_name: str) -> None:
     else:
         await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
 
+#disconnect a twitch account from a discord account
+async def disconnect_twitch_id(user_id: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `twitch_id` = ? WHERE `user_id` = ?", ("None", user_id))
+    else:
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+    
+#disconnect a twitch account from a discord account
+async def disconnect_twitch_name(user_id: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `twitch_name` = ? WHERE `user_id` = ?", ("None", user_id))
+    else:
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
+
 #check if a user is connected to a twitch account
 async def is_connected(user_id: int) -> bool:
     db = DB()
