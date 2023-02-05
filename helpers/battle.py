@@ -968,7 +968,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                                 item_emoji = await db_manager.get_basic_item_emote(quest_reward_amount)
                                 item_rarity = await db_manager.get_basic_item_rarity(quest_reward_amount)
                                 item_damage = await db_manager.get_basic_item_damage(quest_reward_amount)
-                                item_sub_type = await db_manager.get_basic_item_sub_type(quest_reward_amount)
+                                item_element = await db_manager.get_basic_item_element(quest_reward_amount)
                                 item_crit_chance = await db_manager.get_basic_item_crit_chance(quest_reward_amount)
                                 item_projectile = await db_manager.get_basic_item_projectile(quest_reward_amount)
                                 #convert the item name to str
@@ -984,13 +984,13 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                                 #convert the item damage to int
                                 item_damage = int(item_damage[0])
                                 #convert the item sub type to str
-                                item_sub_type = str(item_sub_type[0])
+                                item_element = str(item_element[0])
                                 #convert the item crit chance to int
                                 item_crit_chance = int(item_crit_chance[0])
                                 #convert the item projectile to str
                                 item_projectile = str(item_projectile[0])
                                 #add the item to the users inventory, with all the info needed for the function
-                                await db_manager.add_item_to_inventory(userID, item_name, item_price, item_type, item_emoji, item_rarity, 1, item_type, item_damage, False, item_sub_type, item_crit_chance, item_projectile)
+                                await db_manager.add_item_to_inventory(userID, item_name, item_price, item_type, item_emoji, item_rarity, 1, item_type, item_damage, False, item_element, item_crit_chance, item_projectile)
                                 await ctx.send(f"You have completed the quest and been rewarded with {item_name}!, and {quest_xp_reward} xp!")
                             #mark the quest as complete
                             await db_manager.mark_quest_completed(userID, quest_id)

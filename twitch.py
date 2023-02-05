@@ -109,7 +109,7 @@ class TwitchBot(commands.Bot):
                     #`twitch_id` varchar(255) NOT NULL,
                     #`item_type` varchar(255) NOT NULL,
                     #`item_damage` int(11) NOT NULL,
-                    #`item_sub_type` varchar(255) NOT NULL,
+                    #`item_element` varchar(255) NOT NULL,
                     #`item_crit_chance` int(11) NOT NULL,
                     #`item_effect` varchar(255) NOT NULL,
                     #`isUsable` boolean NOT NULL,

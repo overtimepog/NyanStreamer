@@ -210,7 +210,7 @@ class Items(commands.Cog, name="template"):
         item_rarity = preset['item_rarity']
         item_type = preset['item_type']
         item_damage = preset['item_damage']
-        item_sub_type = preset['item_sub_type']
+        item_element = preset['item_element']
         item_crit_chance = preset['item_crit_chance']
         item_effect = preset['item_effect']
         isUsable = preset['isUsable']
@@ -264,7 +264,7 @@ class Items(commands.Cog, name="template"):
             async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button ):
                 await interaction.response.send_message("Item created.")
                 await interaction.message.delete()
-                await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage, item_sub_type, item_crit_chance, item_effect, isUsable, isEquippable)
+                await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage, item_element, item_crit_chance, item_effect, isUsable, isEquippable)
                 self.value = True
                 self.stop()
 
@@ -847,7 +847,7 @@ class Items(commands.Cog, name="template"):
                          shop_item_rarity = shop_items[i][4]
                          shop_item_type = shop_items[i][5]
                          shop_item_damage = shop_items[i][6]
-                         shop_item_sub_type = await db_manager.get_basic_item_sub_type(shop_item_id)
+                         shop_item_element = await db_manager.get_basic_item_element(shop_item_id)
                          shop_item_crit_chance = await db_manager.get_basic_item_crit_chance(shop_item_id)
                          shop_item_projectile = await db_manager.get_basic_item_projectile(shop_item_id)
                          #get all the rwquirmenst for the add_item_to_inventory command
@@ -872,7 +872,7 @@ class Items(commands.Cog, name="template"):
                              #send the user back to the homepage of the shop
                          else:
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
-                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_sub_type, shop_item_crit_chance, shop_item_projectile)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_element, shop_item_crit_chance, shop_item_projectile)
                              await ctx.send(f"You bought a {shop_item_name}!")
 
                     if page == 2:
@@ -894,7 +894,7 @@ class Items(commands.Cog, name="template"):
                          shop_item_rarity = shop_items[i][4]
                          shop_item_type = shop_items[i][5]
                          shop_item_protection = shop_items[i][6]
-                         shop_item_sub_type = await db_manager.get_basic_item_sub_type(shop_item_id)
+                         shop_item_element = await db_manager.get_basic_item_element(shop_item_id)
                          shop_item_crit_chance = await db_manager.get_basic_item_crit_chance(shop_item_id)
                          shop_item_projectile = await db_manager.get_basic_item_projectile(shop_item_id)
                          print(shop_item_id)
@@ -910,7 +910,7 @@ class Items(commands.Cog, name="template"):
                              #send the user back to the homepage of the shop
                          else:
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
-                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_sub_type, shop_item_crit_chance, shop_item_projectile)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_element, shop_item_crit_chance, shop_item_projectile)
                              await ctx.send(f"You bought a {shop_item_name}!")
 
                     if page == 3:
@@ -932,7 +932,7 @@ class Items(commands.Cog, name="template"):
                          shop_item_rarity = shop_items[i][4]
                          shop_item_type = shop_items[i][5]
                          shop_item_effect = shop_items[i][6]
-                         shop_item_sub_type = await db_manager.get_basic_item_sub_type(shop_item_id)
+                         shop_item_element = await db_manager.get_basic_item_element(shop_item_id)
                          shop_item_crit_chance = await db_manager.get_basic_item_crit_chance(shop_item_id)
                          shop_item_projectile = await db_manager.get_basic_item_projectile(shop_item_id)
                          print(shop_item_id)
@@ -948,7 +948,7 @@ class Items(commands.Cog, name="template"):
                              #send the user back to the homepage of the shop
                          else:
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
-                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_sub_type, shop_item_crit_chance, shop_item_projectile)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_element, shop_item_crit_chance, shop_item_projectile)
                              await ctx.send(f"You bought a {shop_item_name}!")
 
                     if page == 4:
@@ -970,7 +970,7 @@ class Items(commands.Cog, name="template"):
                          shop_item_rarity = shop_items[i][4]
                          shop_item_type = shop_items[i][5]
                          shop_item_description = shop_items[i][6]
-                         shop_item_sub_type = await db_manager.get_basic_item_sub_type(shop_item_id)
+                         shop_item_element = await db_manager.get_basic_item_element(shop_item_id)
                          shop_item_crit_chance = await db_manager.get_basic_item_crit_chance(shop_item_id)
                          shop_item_projectile = await db_manager.get_basic_item_projectile(shop_item_id)
                          print(shop_item_id)
@@ -986,7 +986,7 @@ class Items(commands.Cog, name="template"):
                              #send the user back to the homepage of the shop
                          else:
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
-                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_sub_type, shop_item_crit_chance, shop_item_projectile)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_element, shop_item_crit_chance, shop_item_projectile)
                              await ctx.send(f"You bought a {shop_item_name}!")
             except Exception as e:
                 print(e)
@@ -1190,7 +1190,7 @@ class Items(commands.Cog, name="template"):
                     item_type = await db_manager.get_basic_item_type(item_id)
                     item_damage = await db_manager.get_basic_item_damage(item_id)
                     item_name = await db_manager.get_basic_item_name(item_id)
-                    item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
+                    item_element = await db_manager.get_basic_item_element(item_id)
                     item_crit_chance = await db_manager.get_basic_item_crit_chance(item_id)
                     #remove the item from the shop
                     #send a message asking the user if they are sure they want to buy the item, and add reactions to the message to confirm or cancel the purchase
@@ -1249,7 +1249,7 @@ class Items(commands.Cog, name="template"):
                             #remove the item from the shop
                             await db_manager.remove_shop_item_amount(item_id, amount)
                             #add the item to the users inventory
-                            await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, amount, item_type, item_damage, False, item_sub_type, item_crit_chance)
+                            await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, amount, item_type, item_damage, False, item_element, item_crit_chance)
                             #remove the price from the users money
                             await db_manager.remove_money(user_id, total_price)
                             await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
@@ -1608,8 +1608,8 @@ class Items(commands.Cog, name="template"):
                 item_damage = await db_manager.get_basic_item_damage(item_id)
                 #get the item type
                 item_type = await db_manager.get_basic_item_type(item_id)
-                item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
-                print(item_sub_type)
+                item_element = await db_manager.get_basic_item_element(item_id)
+                print(item_element)
                 item_crit_chance = await db_manager.get_basic_item_crit_chance(item_id)
                 #get the item price
                 item_price = await db_manager.get_basic_item_price(item_id)
@@ -1715,18 +1715,18 @@ class Items(commands.Cog, name="template"):
                                 
                 #add the crit chance to the embed
                 embed.add_field(name="Type", value=f"{item_type}")
-                if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                if item_element == "None" or item_element == "none" or item_element == 0:
                     pass
                 else:
-                    embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                    embed.add_field(name="Sub-Type", value=f"{item_element}")
                 embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
                 if hasRecipe == 1 or hasRecipe == True:
                     edited_embed.add_field(name="Type", value=f"{item_type}")
-                    if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                    if item_element == "None" or item_element == "none" or item_element == 0:
                         pass
                     else:
-                        edited_embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                        edited_embed.add_field(name="Sub-Type", value=f"{item_element}")
                         edited_embed.set_footer(text="Item ID: " + item_id)
                     await ctx.send(embed=edited_embed)
                     return
@@ -1795,10 +1795,10 @@ class Items(commands.Cog, name="template"):
                 embed.add_field(name="Price", value=f"{item_price}")
                 #add the crit chance to the embed
                 embed.add_field(name="Type", value=f"{item_type}")
-                if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                if item_element == "None" or item_element == "none" or item_element == 0:
                     pass
                 else:
-                    embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                    embed.add_field(name="Sub-Type", value=f"{item_element}")
                 
 
                 embed.set_footer(text="Item ID: " + item_id)
@@ -1823,8 +1823,8 @@ class Items(commands.Cog, name="template"):
                 item_damage = await db_manager.get_basic_item_damage(item_id)
                 #get the item type
                 item_type = await db_manager.get_basic_item_type(item_id)
-                item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
-                print(item_sub_type)
+                item_element = await db_manager.get_basic_item_element(item_id)
+                print(item_element)
                 item_crit_chance = await db_manager.get_basic_item_crit_chance(item_id)
                 #get the item price
                 item_price = await db_manager.get_basic_item_price(item_id)
@@ -1930,18 +1930,18 @@ class Items(commands.Cog, name="template"):
                                 edited_embed = discord.Embed.from_dict(embed_dict)
                 #add the crit chance to the embed
                 embed.add_field(name="Type", value=f"{item_type}")
-                if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                if item_element == "None" or item_element == "none" or item_element == 0:
                     pass
                 else:
-                    embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                    embed.add_field(name="Sub-Type", value=f"{item_element}")
                 embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
                 if hasRecipe == 1 or hasRecipe == True:
                     edited_embed.add_field(name="Type", value=f"{item_type}")
-                    if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                    if item_element == "None" or item_element == "none" or item_element == 0:
                         pass
                     else:
-                        edited_embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                        edited_embed.add_field(name="Sub-Type", value=f"{item_element}")
                         edited_embed.set_footer(text="Item ID: " + item_id)
                     await ctx.send(embed=edited_embed)
                     return
@@ -2021,10 +2021,10 @@ class Items(commands.Cog, name="template"):
                 embed.add_field(name="Price", value=f"{item_price}")
                 #add the crit chance to the embed
                 embed.add_field(name="Type", value=f"{item_type}")
-                if item_sub_type == "None" or item_sub_type == "none" or item_sub_type == 0:
+                if item_element == "None" or item_element == "none" or item_element == 0:
                     pass
                 else:
-                    embed.add_field(name="Sub-Type", value=f"{item_sub_type}")
+                    embed.add_field(name="Sub-Type", value=f"{item_element}")
                 embed.set_footer(text="Item ID: " + item_id)
                 #send the embed
                 await ctx.send(embed=embed)

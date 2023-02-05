@@ -573,7 +573,7 @@ async def add_basic_items() -> None:
             #`inShop` boolean NOT NULL,
             #`isEquippable` boolean NOT NULL,
             #`item_description` varchar(255) NOT NULL,
-            #`item_sub_type` varchar(255) NOT NULL,
+            #`item_element` varchar(255) NOT NULL,
             #`item_crit_chance` int(11) NOT NULL,
             #`item_projectile` varchar(255) NOT NULL,
             #`recipe_id` varchar(255) NOT NULL,
@@ -584,7 +584,7 @@ async def add_basic_items() -> None:
             #`item_mine_chance` int(11) NOT NULL,
             
             #add the item to the database
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_sub_type`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_sub_type'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance']))
             print(f"Added |{item['item_name']}| to the database")
             
             #add the items recipe to the database
@@ -1546,7 +1546,7 @@ async def view_streamers() -> list:
             return result if result is not None else []
         
 #add an item to the streamer_items table, uses the streamersID from the streamer table and the item name and the item price
-async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str, item_damage: int, item_sub_type: str, item_crit_chance: str, item_effect: str, isUsable: bool, isEquippable: bool) -> int:
+async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str, item_damage: int, item_element: str, item_crit_chance: str, item_effect: str, isUsable: bool, isEquippable: bool) -> int:
     """
     This function will add an item to the streamer_items table.
 
@@ -1560,7 +1560,7 @@ async def add_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarit
     item_id = item_id.replace(" ", "_")
     async with aiosqlite.connect("database/database.db") as db:
         #add all of it to the database
-        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type, item_damage, item_sub_type, item_crit_chance, item_effect, isUsable, isEquippable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type, item_damage, item_sub_type, item_crit_chance, item_effect, isUsable, isEquippable))
+        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type, item_damage, item_element, item_crit_chance, item_effect, isUsable, isEquippable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type, item_damage, item_element, item_crit_chance, item_effect, isUsable, isEquippable))
         await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM streamer_items")
         async with rows as cursor:
@@ -1685,7 +1685,7 @@ async def view_inventory(user_id: int) -> list:
         return []
         
 #add an item to the inventory table, uses the usersID from the users table and the item ID from the streamer_items table, if the item already exists in the inventory table, it will add 1 to the item_amount
-async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item_price: int, item_emoji: str, item_rarity: str, item_amount: int, item_type: str, item_damage: int, isEquipped: bool, item_sub_type: str, item_crit_chance: str, item_projectile: str) -> int:
+async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item_price: int, item_emoji: str, item_rarity: str, item_amount: int, item_type: str, item_damage: int, isEquipped: bool, item_element: str, item_crit_chance: str, item_projectile: str) -> int:
     """
     This function will add an item to the inventory table.
 
@@ -1720,10 +1720,10 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_name: str, item
                 #`inShop` boolean NOT NULL,
                 #`isEquippable` boolean NOT NULL,
                 #`item_description` varchar(255) NOT NULL,
-                #`item_sub_type` varchar(255) NOT NULL,
+                #`item_element` varchar(255) NOT NULL,
                 #`item_crit_chance` int(11) NOT NULL,
                 #`item_projectile` varchar(255) NOT NULL
-                await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_sub_type, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_sub_type, item_crit_chance, item_projectile))
+                await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
                 await db.commit()
                 rows = await db.execute("SELECT COUNT(*) FROM inventory")
                 async with rows as cursor:
@@ -1856,7 +1856,7 @@ async def get_streamer_item_type(item_id: str) -> str:
             return result[7] if result is not None else 0
         
 #get streamer item sub type via its id
-async def get_streamer_item_sub_type(item_id: str) -> str:
+async def get_streamer_item_element(item_id: str) -> str:
     """
     This function will get the sub type of an item.
 
@@ -2000,7 +2000,7 @@ async def get_basic_item_type(item_id: str) -> str:
             return result[5] if result is not None else 0
         
 #get basic item sub type via its id
-async def get_basic_item_sub_type(item_id: str) -> str:
+async def get_basic_item_element(item_id: str) -> str:
     """
     This function will get the sub type of an item.
 

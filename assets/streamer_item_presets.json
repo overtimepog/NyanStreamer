@@ -3,7 +3,7 @@
     "item_rarity": "Common",
     "item_type": "Weapon",
     "item_damage": 5,
-    "item_sub_type": "Fire",
+    "item_element": "Fire",
     "item_crit_chance": 0.1,
     "item_effect": "None",
     "isUsable": false,
@@ -14,7 +14,7 @@
     "item_rarity": "Uncommon",
     "item_type": "Armor",
     "item_damage": 10,
-    "item_sub_type": "None",
+    "item_element": "None",
     "item_crit_chance": 0,
     "item_effect": "None",
     "isUsable": false,
@@ -25,10 +25,40 @@
     "item_rarity": "Rare",
     "item_type": "Potion",
     "item_damage": 0,
-    "item_sub_type": "Health",
+    "item_element": "None",
     "item_crit_chance": 0,
     "item_effect": "boost 10 hp",
     "isUsable": true,
     "isEquippable": false
-}
+},
+{
+    "item_price": 60,
+    "item_rarity": "Rare",
+    "item_type": "Weapon",
+    "item_damage": 12,
+    "item_sub_type": "Fire",
+    "item_crit_chance": 0.15,
+    "isUsable": false,
+    "isEquippable": true
+  },
+  {
+    "item_price": 35,
+    "item_rarity": "Common",
+    "item_type": "Armor",
+    "item_damage": 6,
+    "item_sub_type": "None",
+    "item_crit_chance": 0,
+    "isUsable": false,
+    "isEquippable": true
+  },
+  {
+    "item_price": 100,
+    "item_rarity": "Legendary",
+    "item_type": "Weapon",
+    "item_damage": 25,
+    "item_sub_type": "Paralysis",
+    "item_crit_chance": 0.20,
+    "isUsable": false,
+    "isEquippable": true
+  }
 ]
