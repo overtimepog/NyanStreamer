@@ -151,17 +151,6 @@ async def on_message(message: discord.Message) -> None:
         if message.guild.id == 1070882685855211641:
             print("Message was sent from the connections Server")
                 #wait for the twitch ID
-            if message.content.startswith("TWITCH ID: "):
-                global twitch_id
-                    #remove the TWITCH ID: from the message and then connect the two accounts together
-                twitch_id = message.content.replace("TWITCH ID: ", "")
-                print(twitch_id)
-                #create the boolean variable has_twitch
-                has_twitch = True
-                has_discord = True
-                has_twitch_user = True
-                #connect the two accounts
-                #if i is more than 2, break the loop
 
             if message.content.startswith("TWITCH USERNAME: "):
                 global twitch_username
@@ -178,8 +167,21 @@ async def on_message(message: discord.Message) -> None:
                 discord_id = message.content.replace("DISCORD ID: ", "")
                 has_discord = True
                 has_twitch = False
+                has_twitch_user = False
                 #create a global variable to store the discord ID
                 print(discord_id)
+
+            if message.content.startswith("TWITCH ID: "):
+                global twitch_id
+                #remove the TWITCH ID: from the message and then connect the two accounts together
+                twitch_id = message.content.replace("TWITCH ID: ", "")
+                print(twitch_id)
+                #create the boolean variable has_twitch
+                has_twitch = True
+                has_discord = True
+                has_twitch_user = True
+                #connect the two accounts
+                #if i is more than 2, break the loop
 
             #only if both the discord ID and the twitch ID have been found, connect the two accounts
             if has_twitch and has_discord and has_twitch_user:

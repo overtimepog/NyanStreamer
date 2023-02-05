@@ -406,6 +406,29 @@ async def is_connected(user_id: int) -> bool:
         await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None"))
         return False
     
+#check if a twitch account is connected to a discord account
+async def is_twitch_connected(twitch_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE twitch_id = ?", (twitch_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `user_id` FROM `users` WHERE twitch_id = ?", (twitch_id,), fetch="one")
+        if users[0] == "None" or users[0] == None:
+            return False
+        else:
+            return True
+    else:
+        return False
+    
+#get the discord id of a twitch account
+async def get_user_id(twitch_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE twitch_id = ?", (twitch_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `user_id` FROM `users` WHERE twitch_id = ?", (twitch_id,), fetch="one")
+        return users[0]
+    else:
+        return None
+    
 #check if a twitch_id already exists in the database
 async def twitch_exists(twitch_id: int) -> bool:
     db = DB()
@@ -414,6 +437,19 @@ async def twitch_exists(twitch_id: int) -> bool:
         return True
     else:
         return False
+    
+#return a list of all items in the database
+async def get_all_basic_items() -> list:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `basic_items`", fetch="all")
+    return data
+
+#return a list of all of a streamers created items by channel name
+async def get_all_streamer_items(twitch_id: int) -> list:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `streamer_items` WHERE twitch_id = ?", (twitch_id,), fetch="all")
+    return data
+
 
 #make sure no two users have the same twitch account
 async def is_unique(twitch_id: int) -> bool:
@@ -1159,6 +1195,8 @@ async def check_user(user_id: int) -> int:
             return 1
         else:
             return None
+    
+
         
         
 #get a streamers name from an item ID

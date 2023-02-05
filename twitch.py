@@ -8,6 +8,7 @@ import random
 import sys
 
 import aiosqlite
+import aiohttp
 
 from helpers import db_manager, randomEncounter
 
@@ -21,7 +22,7 @@ class TwitchBot(commands.Bot):
 
     def __init__(self):
         # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
-        super().__init__(token=config["TOKEN"], prefix='/', initial_channels=[config["CHANNEL"]])
+        super().__init__(token=config["TOKEN"], prefix='!', initial_channels=[config["CHANNEL"]])
 
     async def event_ready(self):
         # We are logged in and ready to chat and use commands...
@@ -51,6 +52,106 @@ class TwitchBot(commands.Bot):
     async def hello(self, ctx: commands.Context):
         # Send a hello back!
         await ctx.send(f'Hello {ctx.author.name}!')
+
+    #command to drop an item to a random viewer in chat, get the random veiwer from https://tmi.twitch.tv/group/user/{channel}/chatters and then send a message to them
+    @commands.command()
+    async def drop(self, ctx: commands.Context):
+        #make sure only mods of the channel can use this command
+        if ctx.author.is_mod:
+            #get the viewers from the channel
+            channelName = TwitchBot.get_channel(self, ctx.channel.name)
+            twitchID = await db_manager.get_twitch_id(ctx.channel.name)
+            print(channelName)
+            channelName = str(channelName)
+            #remove the <Channel name: from the channel name
+            def remove_prefix(text, prefix):
+                if text.startswith(prefix):
+                    return text[len(prefix):]
+                return text
+            channelName = remove_prefix(channelName, "<Channel name: ")
+            #remove the > from the channel name
+            channelName = channelName[:-1]
+            #send a request to the twitch api to get the viewers
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"https://tmi.twitch.tv/group/user/{channelName}/chatters") as resp:
+                    data = await resp.json()
+            #get the viewers from the json
+            viewers = data["chatters"]["viewers"]
+            vips = data["chatters"]["vips"]
+            list = viewers + vips
+            #add the vips to the viewers list
+            #get a random viewer from the list
+            randomViewer = random.choice(list)
+            #get the item from the database
+            items = await db_manager.get_all_streamer_items(twitchID)
+            userTwitchID = await db_manager.get_twitch_id(randomViewer)
+            isConnected = await db_manager.is_twitch_connected(userTwitchID)
+            if isConnected == True:
+                #get the discord id of the random user
+                userDiscordID = await db_manager.get_user_id(userTwitchID)
+                if len(items) == 0:
+                    #send a message to the channel saying there are no items to drop
+                    print("no items for channel: " + ctx.channel.name)
+                    await ctx.send(f"There are no items to drop in this channel.")
+                    money = random.randint(1, 100)
+                    await db_manager.add_money(userDiscordID, money)
+                    await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
+                    return
+
+                #get a random item from the list
+                randomItem = random.choice(items)
+                    #`streamer_prefix` varchar(20) NOT NULL,
+                    #`item_id` varchar(20) NOT NULL,
+                    #`item_name` varchar NOT NULL,
+                    #`item_price` varchar(255) NOT NULL,
+                    #`item_emoji` varchar(255) NOT NULL,
+                    #`item_rarity` varchar(255) NOT NULL,
+                    #`twitch_id` varchar(255) NOT NULL,
+                    #`item_type` varchar(255) NOT NULL,
+                    #`item_damage` int(11) NOT NULL,
+                    #`item_sub_type` varchar(255) NOT NULL,
+                    #`item_crit_chance` int(11) NOT NULL,
+                    #`item_effect` varchar(255) NOT NULL,
+                    #`isUsable` boolean NOT NULL,
+                    #`isEquippable` boolean NOT NULL
+
+
+                #get all the data from the item
+                prefix = randomItem[0]
+                itemID = randomItem[1]
+                itemName = randomItem[2]
+                itemPrice = randomItem[3]
+                itemEmoji = randomItem[4]
+                itemRarity = randomItem[5]
+                twitchID = randomItem[6]
+                itemType = randomItem[7]
+                itemDamage = randomItem[8]
+                itemSubType = randomItem[9]
+                itemCritChance = randomItem[10]
+                itemEffect = randomItem[11]
+                isUsable = randomItem[12]
+                isEquippable = randomItem[13]
+                #make sure the random user is connected to discord
+                #get the twitch id of the random user
+                    #get the discord name of the random user
+                    #send a message to the random user
+                    #add the item to the users inventory
+                    #give it a 25% chance for the item to be dropped, and the other 75% it will give random amount of money
+                chance = random.randint(1, 4)
+                if chance == 1:
+                    await db_manager.add_item_to_inventory(userDiscordID, itemID, itemName, itemPrice, itemEmoji, itemRarity, twitchID, itemType, itemDamage, itemSubType, itemCritChance, itemEffect, isUsable, isEquippable, "None", "None", "None")
+                    #send a message to the random user saying they have been given an item
+                    await ctx.send(f"{randomViewer} has been given {randomItem[2]} by {ctx.author.name}!")
+                    return
+                    #get a random amount of money
+                money = random.randint(1, 100)
+                await db_manager.add_money(userDiscordID, money)
+                await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
+            else:
+                await ctx.send(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!")
+        else:
+            await ctx.send(f"You do not have permission to use this command!")
+        
         
 if __name__ == "__main__":
     bot = TwitchBot()

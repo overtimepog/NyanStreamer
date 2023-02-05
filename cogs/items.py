@@ -177,7 +177,7 @@ class Items(commands.Cog, name="template"):
         description="This command will create a new item in the database.",
     )
     @checks.is_streamer()
-    async def create_item(self, ctx: Context, item_name: str, item_emote: discord.PartialEmoji):
+    async def create_item(self, ctx: Context, item_name: str, item_emote: discord.Emoji or discord.PartialEmoji):
         """
         This command will create a new item in the database.
 
@@ -211,34 +211,48 @@ class Items(commands.Cog, name="template"):
         item_type = preset['item_type']
         item_damage = preset['item_damage']
         item_sub_type = preset['item_sub_type']
+        item_crit_chance = preset['item_crit_chance']
         item_effect = preset['item_effect']
         isUsable = preset['isUsable']
         isEquippable = preset['isEquippable']
-        if item_type == "Common":
-            #pic a random crit chance from the first 5 crit chances
-            item_crit_chance = random.choice(critChances[:5])
-        elif item_type == "Uncommon":
-            #pic a random crit chance from the first 10 crit chances but not the first 5
-            item_crit_chance = random.choice(critChances[5:10])
-        elif item_type == "Rare":
-            #pick a random crit chance after 10 but not after 15
-            item_crit_chance = random.choice(critChances[10:15])
-        elif item_type == "Epic":
-            #pic a random crit chance from the first 20 crit chances but not the first 15
-            item_crit_chance = random.choice(critChances[15:20])
-        elif item_type == "Legendary":
-            #pic a random crit chance from the first 20 crit chances but not the first 15
-            item_crit_chance = random.choice(critChances[20:25])
+
+        if item_rarity == "Common":
+            rarity_color="0x808080"
+            rarity_color = int(rarity_color, 16)
+            
+        elif item_rarity == "Uncommon":
+            rarity_color="0x00B300"
+            rarity_color = int(rarity_color, 16)
+            
+        elif item_rarity == "Rare":
+            rarity_color="0x0057C4"
+            rarity_color = int(rarity_color, 16)
+            
+        elif item_rarity == "Epic":
+            rarity_color="0xa335ee"
+            rarity_color = int(rarity_color, 16)
+            
+        elif item_rarity == "Legendary":
+            rarity_color="0xff8000"
+            rarity_color = int(rarity_color, 16)
+
         #add the item to the database
         #send an embed to the streamer with the item info
+        #global embed
         if item_type == "Weapon":
-            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=rarity_color)
         elif item_type == "Armor":
-            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Defence: {item_damage}", color=0x00ff00)
+            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Defence: {item_damage}", color=rarity_color)
         elif item_type == "Consumable":
-            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Effect: {item_effect}", color=0x00ff00)
+            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Effect: {item_effect}", color=rarity_color)
+        elif item_type == "Misc":
+            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}", color=rarity_color)
+
+        #make the embed a global variable
+
+        #make the embed author the streamer
+        embed.set_author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar.url)
         #set the embed thumbnail to the emoji url
-        
         embed.set_thumbnail(url=item_emote_url)
         #create a button to confirm the item creation
         class Buttons(discord.ui.View):
@@ -262,12 +276,33 @@ class Items(commands.Cog, name="template"):
                 preset = random.choice(presets)
                 item_price = preset['item_price']
                 item_rarity = preset['item_rarity']
+                item_rarity = str(item_rarity)
+                if item_rarity == "Common":
+                    rarity_color="0x808080"
+                    rarity_color = int(rarity_color, 16)
+
+                elif item_rarity == "Uncommon":
+                    rarity_color="0x00B300"
+                    rarity_color = int(rarity_color, 16)
+
+                elif item_rarity == "Rare":
+                    rarity_color="0x0057C4"
+                    rarity_color = int(rarity_color, 16)
+
+                elif item_rarity == "Epic":
+                    rarity_color="0xa335ee"
+                    rarity_color = int(rarity_color, 16)
+
+                elif item_rarity == "Legendary":
+                    rarity_color="0xff8000"
+                    rarity_color = int(rarity_color, 16)
                 item_type = preset['item_type']
                 item_damage = preset['item_damage']
                 #send an embed to the streamer with the item info
-                embed = discord.Embed(title=f"Item Preset", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=0x00ff00)
+                embed = discord.Embed(title=f"Item Preset", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=rarity_color)
                 #set the embed thumbnail to the emoji url
                 embed.set_thumbnail(url=item_emote_url)
+                embed.set_author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar.url)
                 await interaction.response.edit_message(embed=embed, view=self)
 
             @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red)
