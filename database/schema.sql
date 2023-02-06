@@ -52,6 +52,49 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)
 );
 
+CREATE TABLE IF NOT EXISTS `chests` (
+  chest_id int(11) NOT NULL,
+  chest_name varchar(255) NOT NULL,
+  chest_price varchar(255) NOT NULL,
+  chest_emoji varchar(255) NOT NULL,
+  chest_rarity varchar(255) NOT NULL,
+  chest_type varchar(255) NOT NULL,
+  chest_description varchar(255) NOT NULL,
+  key_id varchar(255) NOT NULL,
+  chest_contentsID varchar(255) NOT NULL,
+  FOREIGN KEY (key_id) REFERENCES basic_items(item_id)
+  FOREIGN KEY (chest_contentsID) REFERENCES chest_contents(chest_id)
+);
+
+CREATE TABLE IF NOT EXISTS `chest_contents` (
+  `chest_id` varchar(255) NOT NULL,
+  `item_id` varchar(255) NOT NULL,
+  `item_amount` int(11) NOT NULL,
+  `drop_chance` int(11) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `structures` (
+  `structure_id` varchar(255) NOT NULL,
+  `structure_name` varchar(255) NOT NULL,
+  `structure_image` varchar(255) NOT NULL,
+  `structure_description` varchar(255) NOT NULL,
+  `structure_outcomes` varchar(255) NOT NULL,
+  FOREIGN KEY (structure_outcomes) REFERENCES structure_outcomes(structure_id)
+);
+
+CREATE TABLE IF NOT EXISTS `structure_outcomes`(
+  `structure_id` varchar(255) NOT NULL,
+  `structure_quote` varchar(255) NOT NULL,
+  `structure_state` varchar(255) NOT NULL,
+  `outcome_chance` int(11) NOT NULL,
+  `outcome_item` varchar(255) NOT NULL,
+  `outcome_item_amount` int(11) NOT NULL,
+  `outcome_money` int(11) NOT NULL,
+  `outcome_xp` int(11) NOT NULL,
+  FOREIGN KEY (outcome_item) REFERENCES basic_items(item_id)
+);
+
+
 CREATE TABLE IF NOT EXISTS recipes (
   item_id VARCHAR(255) NOT NULL,
   ingredient_id VARCHAR(255) NOT NULL,

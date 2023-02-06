@@ -14,7 +14,7 @@
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
-        "recipe_id": "None",
+        "recipe_id": "pickaxe",
         "item_recipe": [{
             "ingredient_id": "stick",
             "ingredient_amount": 2
@@ -43,7 +43,7 @@
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
-        "recipe_id": "None",
+        "recipe_id": "axe",
         "item_recipe": [{
             "ingredient_id": "stick",
             "ingredient_amount": 2

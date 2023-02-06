@@ -54,6 +54,11 @@ with open("assets/quests/early_game.json", "r") as f:
 quests = early_game
 
 
+#chests
+with open("assets/items/chests.json", "r") as f:
+    chests = json.load(f)
+
+
 class Database:
     @staticmethod
     async def _connect():
@@ -598,6 +603,47 @@ async def add_basic_items() -> None:
                     await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (item['recipe_id'], ingredient['ingredient_id'], ingredient['ingredient_amount']))
                     print(f"Added |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
                 print(f"Added |{item['item_name']}|'s recipe to the database")
+
+#add the chests to the chest table
+async def add_chests() -> None:
+    db = DB()
+    for chest in chests:
+        data = await db.execute(f"SELECT * FROM `chests` WHERE chest_id = ?", (chest['chest_id'],), fetch="one")
+        if data is not None:
+            print(f"|{chest['chest_name']}| is already in the database")
+            pass
+        else:
+            #  item_id int(11) NOT NULL,
+            #  item_name varchar(255) NOT NULL,
+            #  item_price varchar(255) NOT NULL,
+            #  item_emoji varchar(255) NOT NULL,
+            #  item_rarity varchar(255) NOT NULL,
+            #  item_type varchar(255) NOT NULL,
+            #  item_description varchar(255) NOT NULL,
+            #  key_id varchar(255) NOT NULL,
+            #  chest_contentsID varchar(255) NOT NULL
+            #  FOREIGN KEY (key_id) REFERENCES basic_items(item_id)
+            #  FOREIGN KEY (chest_contentsID) REFERENCES chest_contents(item_id)
+            #);
+            #
+            #CREATE TABLE IF NOT EXISTS `chest_contents` (
+            #  `chest_id` varchar(255) NOT NULL,
+            #  `item_id` varchar(255) NOT NULL,
+            #  `item_amount` int(11) NOT NULL,
+            #  `drop_chance` int(11) NOT NULL,
+            #);
+            
+            #add the chest to the database
+            await db.execute(f"INSERT INTO `chests` (`chest_id`, `chest_name`, `chest_emoji`, `chest_rarity`, `chest_price`, `chest_type`, `chest_description`, `key_id`, `chest_contentsID`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (chest['chest_id'], chest['chest_name'], chest['chest_emoji'], chest['chest_rarity'], chest['chest_price'], chest['chest_type'], chest['chest_description'], chest['key_id'], chest['chest_contentsID']))
+            print(f"Added |{chest['chest_name']}| to the database")
+            
+            #add the chests contents to the database
+            if chest['chest_contentsID'] != "None":
+                for item in chest['chest_contents']:
+                    await db.execute(f"INSERT INTO `chest_contents` (`chest_id`, `item_id`, `item_amount`, `drop_chance`) VALUES (?, ?, ?, ?)", (chest['chest_contentsID'], item['item_id'], item['item_amount'], item['drop_chance']))
+                    print(f"Added |{item['item_id']}| to the chest |{chest['chest_name']}| with a drop chance of |{item['drop_chance']}|")
+                print(f"Added |{chest['chest_name']}|'s contents to the database")
+            
             
 
 #function to add all the items with inShop = True to the shop table and then add a random int between 1 and 10 to the amount column
@@ -1195,6 +1241,15 @@ async def check_basic_item(item_id: str) -> int:
         else:
             return 0
         
+#check if the item ID is a chest
+async def check_chest(item_id: str) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `chests` WHERE item_id = ?", (item_id,), fetch="one")
+        if data is not None:
+            return 1
+        else:
+            return 0
+        
         
 #check if the user_id is a user
 async def check_user(user_id: int) -> int:
@@ -1718,22 +1773,12 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
             else:
                 #check if the item is a streamer item
                 isStreamerItem = check_streamer_item(item_id)
+                isBasicItem = check_basic_item(item_id)
+                isChest = check_chest(item_id)
                 if isStreamerItem == 1:
                     async with db.execute("SELECT * FROM streamer_items WHERE item_id=?", (item_id,)) as cursor:
                         result = await cursor.fetchone()
                     if result is not None:
-                        #`item_name` varchar NOT NULL,
-                        #`item_price` varchar(255) NOT NULL,
-                        #`item_emoji` varchar(255) NOT NULL,
-                        #`item_rarity` varchar(255) NOT NULL,
-                        #`twitch_id` varchar(255) NOT NULL,
-                        #`item_type` varchar(255) NOT NULL,
-                        #`item_damage` int(11) NOT NULL,
-                        #`item_element` varchar(255) NOT NULL,
-                        #`item_crit_chance` int(11) NOT NULL,
-                        #`item_effect` varchar(255) NOT NULL,
-                        #`isUsable` boolean NOT NULL,
-                        #`isEquippable` boolean NOT NULL
                         item_name = result[2]
                         item_price = result[3]
                         item_emoji = result[4]
@@ -1747,68 +1792,63 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                         isEquippable = result[13]
                         isEquipped = 0
                         item_projectile = "None"
-                        await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))   
+                        await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))  
+                        await db.commit()
+                        return 1 
                     else:
                         return 0
-                    
-                    await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
-                    await db.commit()
-                    return 1
-                #if the item does not exist in the inventory table, add it to the inventory table
-                #CREATE TABLE IF NOT EXISTS `basic_items` (
-                #`item_id` varchar(20) NOT NULL,
-                #`item_name` varchar(255) NOT NULL,
-                #`item_price` varchar(255) NOT NULL,
-                #`item_emoji` varchar(255) NOT NULL,
-                #`item_rarity` varchar(255) NOT NULL,
-                #`item_type` varchar(255) NOT NULL,
-                #`item_damage` int(11) NOT NULL,
-                #`isUsable` boolean NOT NULL,
-                #`inShop` boolean NOT NULL,
-                #`isEquippable` boolean NOT NULL,
-                #`item_description` varchar(255) NOT NULL,
-                #`item_element` varchar(255) NOT NULL,
-                #`item_crit_chance` int(11) NOT NULL,
-                #`item_projectile` varchar(255) NOT NULL
-                
                 #get all the data above from the basic items table by the items ID
-                async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
-                    result = await cursor.fetchone()
-                    if result is not None:
-                        #`item_id` varchar(255) PRIMARY KEY,
-                        #`item_name` varchar(255) NOT NULL,
-                        #`item_price` varchar(255) NOT NULL,
-                        #`item_emoji` varchar(255) NOT NULL,
-                        #`item_rarity` varchar(255) NOT NULL,
-                        #`item_type` varchar(255) NOT NULL,
-                        #`item_damage` int(11) NOT NULL,
-                        #`isUsable` boolean NOT NULL,
-                        #`inShop` boolean NOT NULL,
-                        #`isEquippable` boolean NOT NULL,
-                        #`item_description` varchar(255) NOT NULL,
-                        #`item_element` varchar(255) NOT NULL,
-                        #`item_crit_chance` int(11) NOT NULL,
-                        #`item_projectile` varchar(255) NOT NULL,
-                        item_id = result[0]
-                        item_name = result[1]
-                        item_price = result[2]
-                        item_emoji = result[3]
-                        item_rarity = result[4]
-                        item_type = result[5]
-                        item_damage = result[6]
-                        isUsable = result[7]
-                        inShop = result[8]
-                        isEquippable = result[9]
-                        item_description = result[10]
-                        item_element = result[11]
-                        item_crit_chance = result[12]
-                        item_projectile = result[13]
-                        isEquipped = 0
-                        #add the item to the inventory table
-                        await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
-                    else:
-                        return 0
-                await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
+                if isBasicItem == 1:
+                    async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+                        result = await cursor.fetchone()
+                        if result is not None:
+                            item_id = result[0]
+                            item_name = result[1]
+                            item_price = result[2]
+                            item_emoji = result[3]
+                            item_rarity = result[4]
+                            item_type = result[5]
+                            item_damage = result[6]
+                            isUsable = result[7]
+                            inShop = result[8]
+                            isEquippable = result[9]
+                            item_description = result[10]
+                            item_element = result[11]
+                            item_crit_chance = result[12]
+                            item_projectile = result[13]
+                            isEquipped = 0
+                            #add the item to the inventory table
+                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
+                            await db.commit()
+                            return 1
+                        else:
+                            return 0
+                #get data from the chest table by the chest id
+                if isChest == 1:
+                    async with db.execute("SELECT * FROM chests WHERE chest_id=?", (item_id,)) as cursor:
+                        result = await cursor.fetchone()
+                        if result is not None:
+                            item_id = result[0]
+                            item_name = result[1]
+                            item_price = result[2]
+                            item_emoji = result[3]
+                            item_rarity = result[4]
+                            item_type = result[5]
+                            item_damage = result[6]
+                            isUsable = result[7]
+                            inShop = result[8]
+                            isEquippable = result[9]
+                            item_description = result[10]
+                            item_element = result[11]
+                            item_crit_chance = result[12]
+                            item_projectile = result[13]
+                            isEquipped = 0
+                            #add the item to the inventory table
+                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
+                            await db.commit()
+                            return 1
+                        else:
+                            return 0
                 await db.commit()
                 rows = await db.execute("SELECT COUNT(*) FROM inventory")
                 async with rows as cursor:
