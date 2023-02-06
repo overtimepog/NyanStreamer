@@ -1,6 +1,6 @@
 [
     {
-        "enemy_id": "Dragon",
+        "enemy_id": "dragon",
         "enemy_name": "Dragon",
         "enemy_health": 1000,
         "enemy_damage": 50,
@@ -20,7 +20,7 @@
         "enemy_element": "Fire"
     },
     {
-        "enemy_id": "Giant Spider",
+        "enemy_id": "giant_spider",
         "enemy_name": "Giant Spider",
         "enemy_health": 800,
         "enemy_damage": 40,
@@ -40,11 +40,11 @@
         "enemy_element": "Poison"
     },
     {
-        "enemy_id": "Skeleton King",
-        "enemy_name": "Skeleton King",
+        "enemy_id": "lich_king",
+        "enemy_name": "Lich King",
         "enemy_health": 600,
         "enemy_damage": 30,
-        "enemy_emoji": "\ud83d\udc80",
+        "enemy_emoji": "<a:Lich:1071986303199084585>",
         "enemy_description": "The ruler of the underworld, risen from the dead to claim his throne.",
         "enemy_rarity": "Epic",
         "enemy_type": "Boss",
