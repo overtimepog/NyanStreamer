@@ -139,7 +139,7 @@ class TwitchBot(commands.Bot):
                     #give it a 25% chance for the item to be dropped, and the other 75% it will give random amount of money
                 chance = random.randint(1, 4)
                 if chance == 1:
-                    await db_manager.add_item_to_inventory(userDiscordID, itemID, itemName, itemPrice, itemEmoji, itemRarity, twitchID, itemType, itemDamage, itemSubType, itemCritChance, itemEffect, isUsable, isEquippable, "None", "None", "None")
+                    await db_manager.add_item_to_inventory(userDiscordID, itemID, 1)
                     #send a message to the random user saying they have been given an item
                     await ctx.send(f"{randomViewer} has been given {randomItem[2]} by {ctx.author.name}!")
                     return

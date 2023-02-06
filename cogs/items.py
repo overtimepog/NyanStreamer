@@ -171,7 +171,7 @@ class Items(commands.Cog, name="template"):
                 return
         await ctx.send(f"You do not exist in the database.")
 
-    #command to create a new item in the database item table, using the add_item function from helpers\db_manager.py
+    #command to create a new item in the database item table, using the create_streamer_item function from helpers\db_manager.py
     @commands.hybrid_command(
         name="createitem",
         description="This command will create a new item in the database.",
@@ -264,7 +264,8 @@ class Items(commands.Cog, name="template"):
             async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button ):
                 await interaction.response.send_message("Item created.")
                 await interaction.message.delete()
-                await db_manager.add_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage, item_element, item_crit_chance, item_effect, isUsable, isEquippable)
+                await db_manager.create_streamer_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage, item_element, item_crit_chance, item_effect, isUsable, isEquippable)
+                
                 self.value = True
                 self.stop()
 
@@ -317,7 +318,7 @@ class Items(commands.Cog, name="template"):
         view = Buttons()
         await ctx.send("Here is your Item", embed=embed, view=view)
 
-        #await db_manager.add_item(streamerPrefix, item_name, item_rarity, emojiString, twitchID, item_type, item_damage)
+        #await db_manager.create_streamer_item(streamerPrefix, item_name, item_rarity, emojiString, twitchID, item_type, item_damage)
 
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
     @commands.hybrid_command(
@@ -872,7 +873,7 @@ class Items(commands.Cog, name="template"):
                              #send the user back to the homepage of the shop
                          else:
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
-                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_element, shop_item_crit_chance, shop_item_projectile)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, 1)
                              await ctx.send(f"You bought a {shop_item_name}!")
 
                     if page == 2:
@@ -910,7 +911,7 @@ class Items(commands.Cog, name="template"):
                              #send the user back to the homepage of the shop
                          else:
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
-                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_element, shop_item_crit_chance, shop_item_projectile)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, 1)
                              await ctx.send(f"You bought a {shop_item_name}!")
 
                     if page == 3:
@@ -948,7 +949,7 @@ class Items(commands.Cog, name="template"):
                              #send the user back to the homepage of the shop
                          else:
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
-                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_element, shop_item_crit_chance, shop_item_projectile)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, 1)
                              await ctx.send(f"You bought a {shop_item_name}!")
 
                     if page == 4:
@@ -986,7 +987,7 @@ class Items(commands.Cog, name="template"):
                              #send the user back to the homepage of the shop
                          else:
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
-                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, shop_item_name, shop_item_price, shop_item_emoji, shop_item_rarity, 1, shop_item_type, shop_item_description, False, shop_item_element, shop_item_crit_chance, shop_item_projectile)
+                             await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, 1)
                              await ctx.send(f"You bought a {shop_item_name}!")
             except Exception as e:
                 print(e)
