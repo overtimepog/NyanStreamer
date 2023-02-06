@@ -637,13 +637,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         return user2
     
 
-
-
-
-
-
-
-
 #----------------------------------deathbattle_monster----------------------------------#
 #a deathbattle between a user and a monster
 async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monsterName):
