@@ -22,7 +22,7 @@ from helpers import battle, buy, checks, db_manager, randomEncounter, start
 
 
 # Here we name the cog and create a new class for the cog.
-class Items(commands.Cog, name="template"):
+class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -2211,4 +2211,4 @@ class Items(commands.Cog, name="template"):
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
-    await bot.add_cog(Items(bot))
+    await bot.add_cog(Basic(bot))
