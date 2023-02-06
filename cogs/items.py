@@ -1250,7 +1250,7 @@ class Items(commands.Cog, name="template"):
                             #remove the item from the shop
                             await db_manager.remove_shop_item_amount(item_id, amount)
                             #add the item to the users inventory
-                            await db_manager.add_item_to_inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, amount, item_type, item_damage, False, item_element, item_crit_chance)
+                            await db_manager.add_item_to_inventory(user_id, item_id, amount)
                             #remove the price from the users money
                             await db_manager.remove_money(user_id, total_price)
                             await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
