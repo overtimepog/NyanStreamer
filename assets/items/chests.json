@@ -8,9 +8,11 @@
     "chest_description": "A chest, sometimes dropped from bosses and contains lots of goodies.",
     "key_id": "None",
     "chest_contentsID": "chest",
-    "chest_contents": [{
+    "chest_contents": [
+    {
         "item_id": "stick",
         "item_amount": 2,
         "drop_chance": 100
-    }]
+    }
+]
 }]

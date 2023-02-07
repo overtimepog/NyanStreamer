@@ -589,7 +589,7 @@ async def add_basic_items() -> None:
             #`item_mine_chance` int(11) NOT NULL,
             
             #add the item to the database
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, quote_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance'], item['quote_id']))
             print(f"Added |{item['item_name']}| to the database")
             
             #add the items recipe to the database
@@ -597,11 +597,17 @@ async def add_basic_items() -> None:
             # item_id VARCHAR(255) NOT NULL,
             # ingredient_id VARCHAR(255) NOT NULL,
             # ingredient_amount INTEGER NOT NULL
+            if item['quote_id'] != "None":
+                #for each item in the recipe add it to the database with the item_id being the recipe_id
+                for quote in item['quotes']:
+                    await db.execute(f"INSERT INTO `quotes` (`item_id`, `quote`) VALUES (?, ?)", (item['quote_id'], quote['quote']))
+                    print(f"Added Quote: |{quote['quote']}| to the quotes for |{item['item_name']}|")
+                print(f"Added |{item['item_name']}|'s quotes to the database")
             if item['recipe_id'] != "None":
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for ingredient in item['item_recipe']:
                     await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (item['recipe_id'], ingredient['ingredient_id'], ingredient['ingredient_amount']))
-                    print(f"Added |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
+                    print(f"Added Ingredient: |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
                 print(f"Added |{item['item_name']}|'s recipe to the database")
 
 #add the chests to the chest table
