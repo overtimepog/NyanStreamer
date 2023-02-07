@@ -22,7 +22,7 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
-        "quotes": [{
+        "item_quotes": [{
             "quote": "None"
         }]
     },
@@ -49,7 +49,7 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
-        "quotes": [{
+        "item_quotes": [{
             "quote": "None"
         }]
     },
@@ -76,7 +76,7 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
-        "quotes": [{
+        "item_quotes": [{
             "quote": "None"
         }]
     },
@@ -103,7 +103,7 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "steel_mace",
-        "quotes": [
+        "item_quotes": [
         {
             "quote": "{user} swings their steel mace at {target} and deals {damage} damage!"
         }
@@ -141,7 +141,7 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
-        "quotes": [{
+        "item_quotes": [{
             "quote": "None"
         }]
         },
@@ -177,7 +177,7 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
-        "quotes": [{
+        "item_quotes": [{
             "quote": "None"
         }]
         }

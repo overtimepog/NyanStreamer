@@ -17,7 +17,11 @@
         "enemy_drop_amount_max": 10,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Legendary",
-        "enemy_element": "Fire"
+        "enemy_element": "Fire",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "None"
+        }]
     },
     {
         "enemy_id": "giant_spider",
@@ -37,7 +41,11 @@
         "enemy_drop_amount_max": 2,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Rare",
-        "enemy_element": "Poison"
+        "enemy_element": "Poison",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "None"
+        }]
     },
     {
         "enemy_id": "lich_king",
@@ -57,6 +65,10 @@
         "enemy_drop_amount_max": 2,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Epic",
-        "enemy_element": "Undead"
+        "enemy_element": "Undead",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "None"
+        }]
     }        
 ]

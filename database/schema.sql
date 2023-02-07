@@ -51,10 +51,10 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `item_mine_chance` int(11) NOT NULL,
   `quote_id` varchar(255) NOT NULL,
   FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)
-  FOREIGN KEY (quote_id) REFERENCES quotes(item_id)
+  FOREIGN KEY (quote_id) REFERENCES item_quotes(item_id)
 );
 
-CREATE TABLE IF NOT EXISTS `quotes` (
+CREATE TABLE IF NOT EXISTS `item_quotes` (
   `item_id` varchar(255) NOT NULL,
   `quote` varchar(255) NOT NULL
 );
@@ -195,7 +195,14 @@ CREATE TABLE IF NOT EXISTS `enemies` (
   `isBurning` boolean NOT NULL,
   `isPoisoned` boolean NOT NULL,
   `isParalyzed` boolean NOT NULL,
+  `quote_id` varchar(255) NOT NULL,
   FOREIGN KEY (enemy_drop) REFERENCES basic_items(item_id)
+  FOREIGN KEY (quote_id) REFERENCES enemy_quotes(enemy_id)
+);
+
+CREATE TABLE IF NOT EXISTS `enemy_quotes` (
+  `enemy_id` varchar(20) NOT NULL,
+  `quote` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `inventory` (

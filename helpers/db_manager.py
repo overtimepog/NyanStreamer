@@ -599,10 +599,10 @@ async def add_basic_items() -> None:
             # ingredient_amount INTEGER NOT NULL
             if item['quote_id'] != "None":
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
-                for quote in item['quotes']:
-                    await db.execute(f"INSERT INTO `quotes` (`item_id`, `quote`) VALUES (?, ?)", (item['quote_id'], quote['quote']))
-                    print(f"Added Quote: |{quote['quote']}| to the quotes for |{item['item_name']}|")
-                print(f"Added |{item['item_name']}|'s quotes to the database")
+                for quote in item['item_quotes']:
+                    await db.execute(f"INSERT INTO `item_quotes` (`item_id`, `quote`) VALUES (?, ?)", (item['quote_id'], quote['quote']))
+                    print(f"Added Quote: |{quote['quote']}| to the item_quotes for |{item['item_name']}|")
+                print(f"Added |{item['item_name']}|'s item_quotes to the database")
             if item['recipe_id'] != "None":
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for ingredient in item['item_recipe']:
@@ -696,8 +696,17 @@ async def add_enemies() -> None:
             #`isParalyzed` boolean NOT NULL
             
             #add the enemys properties to the database
-            await db.execute("INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`, `enemy_crit_chance`, `enemy_drop`, `enemy_drop_chance`, `enemy_drop_amount`, `enemy_drop_amount_max`, `enemy_drop_amount_min`, `enemy_drop_rarity`, `enemy_element`, `isFrozen`, `isBurning`, `isPoisoned`, `isParalyzed`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money'], enemy['enemy_crit_chance'], enemy['enemy_drop'], enemy['enemy_drop_chance'], enemy['enemy_drop_amount'], enemy['enemy_drop_amount_max'], enemy['enemy_drop_amount_min'], enemy['enemy_drop_rarity'], enemy['enemy_element'], False, False, False, False))
+            await db.execute("INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`, `enemy_crit_chance`, `enemy_drop`, `enemy_drop_chance`, `enemy_drop_amount`, `enemy_drop_amount_max`, `enemy_drop_amount_min`, `enemy_drop_rarity`, `enemy_element`, `isFrozen`, `isBurning`, `isPoisoned`, `isParalyzed`, quote_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money'], enemy['enemy_crit_chance'], enemy['enemy_drop'], enemy['enemy_drop_chance'], enemy['enemy_drop_amount'], enemy['enemy_drop_amount_max'], enemy['enemy_drop_amount_min'], enemy['enemy_drop_rarity'], enemy['enemy_element'], False, False, False, False, enemy['quote_id']))
             print(f"Added |{enemy['enemy_name']}| to the database")
+            
+            #add enemy quotes to the database
+            if enemy['quote_id'] != "None":
+                #for each item in the recipe add it to the database with the item_id being the recipe_id
+                for quote in enemy['enemy_quotes']:
+                    await db.execute(f"INSERT INTO `enemy_quotes` (`item_id`, `quote`) VALUES (?, ?)", (enemy['quote_id'], quote['quote']))
+                    print(f"Added Quote: |{quote['quote']}| to the item_quotes for |{enemy['enemy_name']}|")
+                print(f"Added |{enemy['enemy_name']}|'s enemy_quotes to the database")
+                
             
 #add quests to the database
 async def add_quests() -> None:

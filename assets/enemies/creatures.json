@@ -17,6 +17,10 @@
         "enemy_drop_amount_max": 2,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Common",
-        "enemy_element": "None"
+        "enemy_element": "None",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "None"
+        }]
     }        
 ]

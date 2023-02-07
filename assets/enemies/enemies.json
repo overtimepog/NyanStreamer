@@ -17,7 +17,11 @@
         "enemy_drop_amount_max": 2,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Common",
-        "enemy_element": "None"
+        "enemy_element": "None",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "stabs"
+        }]
     },
     {
         "enemy_id": "spider",
@@ -37,7 +41,11 @@
         "enemy_drop_amount_max": 2,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Common",
-        "enemy_element": "Poison"
+        "enemy_element": "Poison",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "None"
+        }]
     },
     {
         "enemy_id": "goblin",
@@ -57,7 +65,11 @@
         "enemy_drop_amount_max": 2,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Common",
-        "enemy_element": "None"
+        "enemy_element": "None",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "None"
+        }]
         },
         {
         "enemy_id": "skeleton",
@@ -77,7 +89,11 @@
         "enemy_drop_amount_max": 2,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Common",
-        "enemy_element": "None"
+        "enemy_element": "None",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "None"
+        }]
         },
         {
         "enemy_id": "zombie",
@@ -97,6 +113,10 @@
         "enemy_drop_amount_max": 2,
         "enemy_drop_amount_min": 1,
         "enemy_drop_rarity": "Common",
-        "enemy_element": "None"
+        "enemy_element": "None",
+        "quote_id": "None",
+        "enemy_quotes": [{
+            "quote": "None"
+        }]
         }        
 ]
