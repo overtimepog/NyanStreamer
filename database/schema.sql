@@ -187,7 +187,8 @@ CREATE TABLE IF NOT EXISTS `enemies` (
   `isFrozen` boolean NOT NULL,
   `isBurning` boolean NOT NULL,
   `isPoisoned` boolean NOT NULL,
-  `isParalyzed` boolean NOT NULL
+  `isParalyzed` boolean NOT NULL,
+  FOREIGN KEY (enemy_drop) REFERENCES basic_items(item_id)
 );
 
 CREATE TABLE IF NOT EXISTS `inventory` (
