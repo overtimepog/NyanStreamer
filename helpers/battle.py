@@ -244,6 +244,8 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 turnCount += 1
                 
             else:
+                            
+                #TODO: fix promts to work with new system
                 #import User2 promts from assets/user1Promts.json
                 with open("assets/user1Promts.json") as f:
                     user1Promts = json.load(f)
@@ -399,6 +401,9 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 user1_paralyze_turn = turnCount
                 turnCount = turnCount + 1
             else:
+                
+                            
+                #TODO: fix promts to work with new system
                 #do the same thing as user 1 but with user 2
                 with open("assets/user2Promts.json") as f:
                     user2Promts = json.load(f)
@@ -782,6 +787,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #skip the users turn
                 turnCount += 1
             
+            
+            #TODO: fix promts to work with new system
             #import the json of the user1Promts
             with open("assets/user_enemy_Promts.json") as f:
                 user1Promts = json.load(f)
@@ -894,6 +901,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 monster_coins = await db_manager.get_enemy_money(monsterID)
                 
                 #get the enemys drop and drop min and max 
+                
+                #TODO: Change this to fit the new system
                 monster_drop = await db_manager.get_enemy_drop(monsterID)
                 monster_drop_chance = await db_manager.get_enemy_drop_chance(monsterID)
                 monster_drop_min = await db_manager.get_enemy_drop_amount_min(monsterID)
@@ -990,6 +999,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                             #mark the quest as complete
                             await db_manager.mark_quest_completed(userID, quest_id)
                 #get all the info on the drop item
+                #TODO: fix this to work with new system
                 item_name = await db_manager.get_basic_item_name(monster_drop)
                 item_price = await db_manager.get_basic_item_price(monster_drop)
                 item_type = await db_manager.get_basic_item_type(monster_drop)
@@ -1007,6 +1017,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 item_rarity = str(item_rarity[0])
                 
                 
+                #TODO - Fix this to work with new system
                 #calculate the how many items the user will get
                 #get the drop chance
                 monster_drop_chance = int(monster_drop_chance[0])
@@ -1162,6 +1173,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             await db_manager.remove_health(userID, damage)
             
             #import the json of the enemyPromts
+                        
+            #TODO: fix promts to work with new system
             with open("assets/enemy_user_Promts.json") as f:
                 enemyPromts = json.load(f)
             #get a random user2 promt
