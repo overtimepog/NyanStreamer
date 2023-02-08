@@ -137,8 +137,31 @@ CREATE TABLE IF NOT EXISTS `users` (
   `player_level` int(11) NOT NULL,
   `quest_id` varchar(255) NOT NULL,
   `twitch_id` varchar(255) NOT NULL,
-  `twitch_name` varchar(255) NOT NULL
+  `twitch_name` varchar(255) NOT NULL,
+  `dodge_chance` int(11) NOT NULL,
+  `crit_chance` int(11) NOT NULL,
+  `damage_boost` int(11) NOT NULL,
+  `health_boost` int(11) NOT NULL,
+  `fire_resistance` int(11) NOT NULL,
+  `poison_resistance` int(11) NOT NULL,
+  `frost_resistance` int(11) NOT NULL,
+  `paralysis_resistance` int(11) NOT NULL,
 );
+
+CREATE TABLE IF NOT EXISTS `stats`(
+  `user_id` int(11) NOT NULL,
+  `money_earned` int(11) NOT NULL,
+  `money_spent` int(11) NOT NULL,
+  `items_bought` int(11) NOT NULL,
+  `items_sold` int(11) NOT NULL,
+  `items_used` int(11) NOT NULL,
+  `items_equipped` int(11) NOT NULL,
+  `quests_completed` int(11) NOT NULL,
+  `enemies_killed` int(11) NOT NULL,
+  `users_killed` int(11) NOT NULL,
+  `battles_fought` int(11) NOT NULL,
+  `battles_won` int(11) NOT NULL,
+)
 
 CREATE TABLE IF NOT EXISTS `questProgress` (
   `user_id` varchar(20) NOT NULL,

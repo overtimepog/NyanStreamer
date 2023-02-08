@@ -3,7 +3,7 @@
         "enemy_id": "cow",
         "enemy_name": "Cow",
         "enemy_health": 50,
-        "enemy_damage": 10,
+        "enemy_damage": 2,
         "enemy_emoji": "\ud83d\udc2e",
         "enemy_description": "A peaceful cow grazing in the fields.",
         "enemy_rarity": "Common",
@@ -20,7 +20,7 @@
         "enemy_element": "None",
         "quote_id": "None",
         "enemy_quotes": [{
-            "quote": "None"
+            "quote": "{enemy_name} mooed at you."
         }]
     }        
 ]
