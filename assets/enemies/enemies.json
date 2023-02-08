@@ -11,112 +11,17 @@
         "enemy_xp": 5,
         "enemy_money": 5,
         "enemy_crit_chance": 0,
-        "enemy_drop": "rattail",
-        "enemy_drop_chance": 100,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
-        "enemy_drop_amount_min": 1,
-        "enemy_drop_rarity": "Common",
-        "enemy_element": "None",
-        "quote_id": "None",
-        "enemy_quotes": [{
-            "quote": "stabs"
-        }]
-    },
-    {
-        "enemy_id": "spider",
-        "enemy_name": "Spider",
-        "enemy_health": 15,
-        "enemy_damage": 5,
-        "enemy_emoji": "\ud83d\udc7e",
-        "enemy_description": "A spider. It's not very strong, but it's annoying as hell.",
-        "enemy_rarity": "Common",
-        "enemy_type": "Animal",
-        "enemy_xp": 10,
-        "enemy_money": 10,
-        "enemy_crit_chance": 0,
-        "enemy_drop": "string",
-        "enemy_drop_chance": 100,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
-        "enemy_drop_amount_min": 1,
-        "enemy_drop_rarity": "Common",
-        "enemy_element": "Poison",
-        "quote_id": "None",
-        "enemy_quotes": [{
-            "quote": "None"
-        }]
-    },
-    {
-        "enemy_id": "goblin",
-        "enemy_name": "Goblin",
-        "enemy_health": 20,
-        "enemy_damage": 8,
-        "enemy_emoji": "\ud83d\udc7a",
-        "enemy_description": "A small, mischievous creature known for its love of stealing and hoarding treasure.",
-        "enemy_rarity": "Common",
-        "enemy_type": "Fantasy",
-        "enemy_xp": 15,
-        "enemy_money": 20,
-        "enemy_crit_chance": 0,
-        "enemy_drop": "goblin_coin",
-        "enemy_drop_chance": 50,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
-        "enemy_drop_amount_min": 1,
+        "enemy_drop_id": "rat",
+        "enemy_drops": [{
+            "item_id": "rattail",
+            "item_amount": 100,
+            "item_drop_chance": 1
+        }],
         "enemy_drop_rarity": "Common",
         "enemy_element": "None",
         "quote_id": "None",
         "enemy_quotes": [{
             "quote": "None"
         }]
-        },
-        {
-        "enemy_id": "skeleton",
-        "enemy_name": "Skeleton",
-        "enemy_health": 25,
-        "enemy_damage": 10,
-        "enemy_emoji": "\ud83e\udc80",
-        "enemy_description": "A reanimated corpse, typically armed with a weapon and seeking to drain the life from the living.",
-        "enemy_rarity": "Common",
-        "enemy_type": "Fantasy",
-        "enemy_xp": 20,
-        "enemy_money": 15,
-        "enemy_crit_chance": 0,
-        "enemy_drop": "bone",
-        "enemy_drop_chance": 100,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
-        "enemy_drop_amount_min": 1,
-        "enemy_drop_rarity": "Common",
-        "enemy_element": "None",
-        "quote_id": "None",
-        "enemy_quotes": [{
-            "quote": "None"
-        }]
-        },
-        {
-        "enemy_id": "zombie",
-        "enemy_name": "Zombie",
-        "enemy_health": 30,
-        "enemy_damage": 12,
-        "enemy_emoji": "\ud83e\uddb0",
-        "enemy_description": "A reanimated corpse with a hunger for human flesh.",
-        "enemy_rarity": "Common",
-        "enemy_type": "Fantasy",
-        "enemy_xp": 25,
-        "enemy_money": 20,
-        "enemy_crit_chance": 0,
-        "enemy_drop": "rotting_flesh",
-        "enemy_drop_chance": 100,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
-        "enemy_drop_amount_min": 1,
-        "enemy_drop_rarity": "Common",
-        "enemy_element": "None",
-        "quote_id": "None",
-        "enemy_quotes": [{
-            "quote": "None"
-        }]
-        }        
+    }      
 ]

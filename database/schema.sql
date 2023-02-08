@@ -184,25 +184,27 @@ CREATE TABLE IF NOT EXISTS `enemies` (
   `enemy_xp` int(11) NOT NULL,
   `enemy_money` int(11) NOT NULL,
   `enemy_crit_chance` int(11) NOT NULL,
-  `enemy_drop` varchar(255) NOT NULL,
-  `enemy_drop_chance` int(11) NOT NULL,
-  `enemy_drop_amount` varchar(255) NOT NULL,
-  `enemy_drop_amount_max` int(11) NOT NULL,
-  `enemy_drop_amount_min` int(11) NOT NULL,
-  `enemy_drop_rarity` varchar(255) NOT NULL,
+  `enemy_drop_id` varchar(255) NOT NULL,
   `enemy_element` varchar(255) NOT NULL,
   `isFrozen` boolean NOT NULL,
   `isBurning` boolean NOT NULL,
   `isPoisoned` boolean NOT NULL,
   `isParalyzed` boolean NOT NULL,
   `quote_id` varchar(255) NOT NULL,
-  FOREIGN KEY (enemy_drop) REFERENCES basic_items(item_id)
   FOREIGN KEY (quote_id) REFERENCES enemy_quotes(enemy_id)
+  FOREIGN KEY (enemy_drop_id) REFERENCES enemy_drops(enemy_id)
 );
 
 CREATE TABLE IF NOT EXISTS `enemy_quotes` (
   `enemy_id` varchar(20) NOT NULL,
   `quote` varchar(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `enemy_drops` (
+  `enemy_id` varchar(20) NOT NULL,
+  `item_id` varchar(20) NOT NULL,
+  `item_amount` int(11) NOT NULL,
+  `item_drop_chance` int(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `inventory` (

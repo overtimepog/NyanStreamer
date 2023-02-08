@@ -1,53 +1,5 @@
 [
     {
-        "enemy_id": "dragon",
-        "enemy_name": "Dragon",
-        "enemy_health": 1000,
-        "enemy_damage": 50,
-        "enemy_emoji": "\ud83d\udc09",
-        "enemy_description": "A massive dragon with fiery breath and razor-sharp claws.",
-        "enemy_rarity": "Legendary",
-        "enemy_type": "Boss",
-        "enemy_xp": 1000,
-        "enemy_money": 500,
-        "enemy_crit_chance": 25,
-        "enemy_drop": "dragon_scale",
-        "enemy_drop_chance": 75,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 10,
-        "enemy_drop_amount_min": 1,
-        "enemy_drop_rarity": "Legendary",
-        "enemy_element": "Fire",
-        "quote_id": "None",
-        "enemy_quotes": [{
-            "quote": "None"
-        }]
-    },
-    {
-        "enemy_id": "giant_spider",
-        "enemy_name": "Giant Spider",
-        "enemy_health": 800,
-        "enemy_damage": 40,
-        "enemy_emoji": "\ud83d\udc1f",
-        "enemy_description": "A giant spider with venomous fangs and a powerful web.",
-        "enemy_rarity": "Rare",
-        "enemy_type": "Boss",
-        "enemy_xp": 800,
-        "enemy_money": 400,
-        "enemy_crit_chance": 20,
-        "enemy_drop": "spider_venom",
-        "enemy_drop_chance": 50,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
-        "enemy_drop_amount_min": 1,
-        "enemy_drop_rarity": "Rare",
-        "enemy_element": "Poison",
-        "quote_id": "None",
-        "enemy_quotes": [{
-            "quote": "None"
-        }]
-    },
-    {
         "enemy_id": "lich_king",
         "enemy_name": "Lich King",
         "enemy_health": 600,
@@ -59,11 +11,12 @@
         "enemy_xp": 600,
         "enemy_money": 300,
         "enemy_crit_chance": 15,
-        "enemy_drop": "skeleton_key",
-        "enemy_drop_chance": 25,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
-        "enemy_drop_amount_min": 1,
+        "enemy_drop_id": "lich_king",
+        "enemy_drops": [{
+            "item_id": "skeleton_key",
+            "item_amount": 1,
+            "item_drop_chance": 0.2
+        }],
         "enemy_drop_rarity": "Epic",
         "enemy_element": "Undead",
         "quote_id": "None",

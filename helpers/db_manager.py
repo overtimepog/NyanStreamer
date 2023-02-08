@@ -683,20 +683,16 @@ async def add_enemies() -> None:
             #`enemy_xp` int(11) NOT NULL,
             #`enemy_money` int(11) NOT NULL,
             #`enemy_crit_chance` int(11) NOT NULL,
-            #`enemy_drop` varchar(255) NOT NULL,
-            #`enemy_drop_chance` int(11) NOT NULL,
-            #`enemy_drop_amount` varchar(255) NOT NULL,
-            #`enemy_drop_amount_max` int(11) NOT NULL,
-            #`enemy_drop_amount_min` int(11) NOT NULL,
-            #`enemy_drop_rarity` varchar(255) NOT NULL,
+            #`enemy_drop_id` varchar(255) NOT NULL,
             #`enemy_element` varchar(255) NOT NULL,
             #`isFrozen ` boolean NOT NULL,
             #`isBurning` boolean NOT NULL,
             #`isPoisoned` boolean NOT NULL,
-            #`isParalyzed` boolean NOT NULL
+            #`isParalyzed` boolean NOT NULL,
+            #quote_id varchar(255) NOT NULL,
             
             #add the enemys properties to the database
-            await db.execute("INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`, `enemy_crit_chance`, `enemy_drop`, `enemy_drop_chance`, `enemy_drop_amount`, `enemy_drop_amount_max`, `enemy_drop_amount_min`, `enemy_drop_rarity`, `enemy_element`, `isFrozen`, `isBurning`, `isPoisoned`, `isParalyzed`, quote_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money'], enemy['enemy_crit_chance'], enemy['enemy_drop'], enemy['enemy_drop_chance'], enemy['enemy_drop_amount'], enemy['enemy_drop_amount_max'], enemy['enemy_drop_amount_min'], enemy['enemy_drop_rarity'], enemy['enemy_element'], False, False, False, False, enemy['quote_id']))
+            await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`, `enemy_crit_chance`, `enemy_drop_id`, `enemy_element`, `isFrozen`, `isBurning`, `isPoisoned`, `isParalyzed`, `quote_id`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money'], enemy['enemy_crit_chance'], enemy['enemy_drop_id'], enemy['enemy_element'], False, False, False, False, enemy['quote_id']))
             print(f"Added |{enemy['enemy_name']}| to the database")
             
             #add enemy quotes to the database
@@ -706,6 +702,19 @@ async def add_enemies() -> None:
                     await db.execute(f"INSERT INTO `enemy_quotes` (`item_id`, `quote`) VALUES (?, ?)", (enemy['quote_id'], quote['quote']))
                     print(f"Added Quote: |{quote['quote']}| to the item_quotes for |{enemy['enemy_name']}|")
                 print(f"Added |{enemy['enemy_name']}|'s enemy_quotes to the database")
+                    
+            #add the enemies drops to the database
+            if enemy['enemy_drop_id'] != "None":
+                #  `enemy_id` varchar(20) NOT NULL,
+                #`item_id` varchar(20) NOT NULL,
+                #`item_amount` int(11) NOT NULL,
+                #`item_drop_chance` int(11) NOT NULL
+                #for each item in the recipe add it to the database with the item_id being the recipe_id
+                for drop in enemy['enemy_drops']:
+                    await db.execute(f"INSERT INTO `enemy_drops` (`enemy_id`, `item_id`, `item_amount`, `item_drop_chance`) VALUES (?, ?, ?, ?)", (enemy['enemy_id'], drop['item_id'], drop['item_amount'], drop['item_drop_chance']))
+                    print(f"Added Drop: |{drop['item_id']} x{drop['item_amount']}| with drop chance |{drop['item_drop_chance']}| to |{enemy['enemy_name']}|'s Drops")
+                print(f"Added |{enemy['enemy_name']}|'s Drops to the database" + '\n')
+                    
                 
             
 #add quests to the database

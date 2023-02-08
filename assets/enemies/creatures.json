@@ -11,12 +11,12 @@
         "enemy_xp": 20,
         "enemy_money": 20,
         "enemy_crit_chance": 0,
-        "enemy_drop": "leather",
-        "enemy_drop_chance": 100,
-        "enemy_drop_amount": 1,
-        "enemy_drop_amount_max": 2,
-        "enemy_drop_amount_min": 1,
-        "enemy_drop_rarity": "Common",
+        "enemy_drop_id": "cow",
+        "enemy_drops": [{
+            "item_id": "leather",
+            "item_amount": 1,
+            "item_drop_chance": 0.5
+        }],
         "enemy_element": "None",
         "quote_id": "None",
         "enemy_quotes": [{
