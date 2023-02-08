@@ -15,7 +15,7 @@
         "enemy_drops": [{
             "item_id": "skeleton_key",
             "item_amount": 1,
-            "item_drop_chance": 0.2
+            "item_drop_chance": 0.02
         }],
         "enemy_drop_rarity": "Epic",
         "enemy_element": "Undead",
