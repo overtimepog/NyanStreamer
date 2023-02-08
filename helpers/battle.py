@@ -19,7 +19,7 @@ from helpers import db_manager, randomEncounter
 async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     turnCount = 0
     #set each users isInCombat to true
-    #TODO: figure out how to get the path of this file without hardcoding it
+    #DONE: figure out how to get the path of this file without hardcoding it
     #get the background image path
     imgpath = "images/battle_backround.png"
     fontPath = "fonts/G_ari_bd.ttf"
