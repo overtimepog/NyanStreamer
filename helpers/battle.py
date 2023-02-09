@@ -167,6 +167,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         user1_crit = str(user1_crit).replace("%", "")
         user2_crit = str(user2_crit).replace("%", "")
         #convert the crit chance to an int
+        #TODO: add the crit chance stat to this calculation
         user1_crit = int(user1_crit)
         user2_crit = int(user2_crit)
         user1_roll = random.randint(1, 100)
@@ -206,6 +207,8 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #if the user is using a projectile weapon, remove an arrow
             await db_manager.remove_health(user2, user1_damage)
             #have the user have a 1/10 chance of being set on fire
+            #TODO: add the imunity stat to this calculation
+            
             isSetONFire = random.randint(1, 10)
             #have the user have a 1/10 chance of being paralyzed
             isPoisoned = random.randint(1, 10)
