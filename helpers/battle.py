@@ -756,6 +756,12 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             monster_health = str(monster_health).replace(")", "")
             monster_health = str(monster_health).replace(",", "")
             #convert to int
+            #TODO - Fix this to work with new system
+            isSetONFire = random.randint(1, 10)
+            #have the user have a 1/10 chance of being paralyzed
+            isPoisoned = random.randint(1, 10)
+            #a 1/10 chance of being paralyzed
+            isParalyzed = random.randint(1, 10)
             monster_health = int(monster_health)
             if damage > monster_health:
                 damage = monster_health
@@ -1110,6 +1116,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             user1_name = str(user1_name)
             #calculate the damage
             damage = monster_attack - user1_defense
+            
+            #TODO - Fix this to work with new system
             isSetONFire = random.randint(1, 10)
             #have the user have a 1/10 chance of being paralyzed
             isPoisoned = random.randint(1, 10)
