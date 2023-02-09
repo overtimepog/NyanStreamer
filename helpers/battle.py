@@ -399,9 +399,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 #save the turn count when the user was paralyzed
                 user1_paralyze_turn = turnCount
                 turnCount = turnCount + 1
-            else:
-                
-                            
+            else:  
                 #TODO: fix promts to work with new system
                 #do the same thing as user 1 but with user 2
                 with open("assets/user2Promts.json") as f:
@@ -785,8 +783,6 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 enemy_paralyze_turn = turnCount
                 #skip the users turn
                 turnCount += 1
-            
-            
             #TODO: fix promts to work with new system
             #import the json of the user1Promts
             with open("assets/user_enemy_Promts.json") as f:
