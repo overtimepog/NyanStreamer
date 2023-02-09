@@ -243,8 +243,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 #skip the users turn
                 turnCount += 1
                 
-            else:
-                            
+            else:        
                 #TODO: fix promts to work with new system
                 #import User2 promts from assets/user1Promts.json
                 with open("assets/user1Promts.json") as f:
