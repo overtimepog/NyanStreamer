@@ -350,6 +350,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             await msg.edit(embed=embed)
 
         #set user 2's turns to any even number
+        #STUB - USER 2's TURN
         if turnCount % 2 == 1:
             #if its been 2 turns since the user was set on fire, remove the burning status
             if user2_burn_turn != None and turnCount - user2_burn_turn >= 2:
@@ -510,6 +511,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         turnCount += 1
         await asyncio.sleep(2)
 
+    #TODO - add the stats to the winning user
     if await db_manager.is_alive(user1):
         #once a user wins, set both users isInCombat to false, and edit the embed to show who won
         print("User 1 won!")
@@ -574,8 +576,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #get the users new level
             new_level = await db_manager.get_level(user1)
             await ctx.send(user1_name + " has leveled up! They are now level " + str(new_level) + "!")
-            
-
         return user1
     else:
         print("User 2 won!")
