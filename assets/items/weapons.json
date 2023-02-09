@@ -48,10 +48,15 @@
         "item_effect": "None",
         "isMineable": false,
         "item_mine_chance": 0,
-        "quote_id": "None",
-        "item_quotes": [{
-            "quote": "None"
-        }]
+        "quote_id": "rusty_sword",
+        "item_quotes": [
+            {
+                "quote": "{user} swings their steel mace at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} smashes {target} and deals {damage} damage!"
+            }
+        ]
     },
     {
         "item_id": "iron_dagger",
@@ -106,6 +111,9 @@
         "item_quotes": [
         {
             "quote": "{user} swings their steel mace at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} smashes {target} and deals {damage} damage!"
         }
     ]
     },

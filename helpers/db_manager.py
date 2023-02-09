@@ -1010,6 +1010,158 @@ async def get_enemy_drop_rarity(enemy_id: str) -> str:
     else:
         return None
     
+#get the enemy quotes from its ID
+async def get_enemy_quotes(enemy_id: str) -> list:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return data[17]
+    else:
+        return None
+    
+#get the item quotes from its ID
+async def get_item_quotes(item_id: str) -> list:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
+    if data is not None:
+        return data[18]
+    else:
+        return None
+    
+#get the players stats from the stats table using the user ID
+async def get_player_stats(user_id: int) -> list:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `stats` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        return data
+    else:
+        return None
+    
+#make commands to add and remove the following stats
+  #`money_earned`
+  #`money_spent` 
+  #`items_bought`
+  #`items_sold``
+  #`items_used`
+  #`items_equipped`
+  #`quests_completed`
+  #`enemies_killed` 
+  #`users_killed`
+  #`battles_fought` 
+  #`battles_won`
+  
+#add money earned
+async def add_money_earned(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET money_earned = money_earned + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove money earned
+async def remove_money_earned(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET money_earned = money_earned - ? WHERE user_id = ?", (amount, user_id))
+
+#add money spent
+async def add_money_spent(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET money_spent = money_spent + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove money spent
+async def remove_money_spent(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET money_spent = money_spent - ? WHERE user_id = ?", (amount, user_id))
+    
+#add items bought
+async def add_items_bought(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET items_bought = items_bought + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove items bought
+async def remove_items_bought(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET items_bought = items_bought - ? WHERE user_id = ?", (amount, user_id))
+    
+#add items sold
+async def add_items_sold(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET items_sold = items_sold + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove items sold
+async def remove_items_sold(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET items_sold = items_sold - ? WHERE user_id = ?", (amount, user_id))
+    
+#add items used
+async def add_items_used(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET items_used = items_used + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove items used
+async def remove_items_used(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET items_used = items_used - ? WHERE user_id = ?", (amount, user_id))
+    
+#add items equipped
+async def add_items_equipped(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET items_equipped = items_equipped + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove items equipped
+async def remove_items_equipped(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET items_equipped = items_equipped - ? WHERE user_id = ?", (amount, user_id))
+    
+#add quests completed
+async def add_quests_completed(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET quests_completed = quests_completed + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove quests completed
+async def remove_quests_completed(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET quests_completed = quests_completed - ? WHERE user_id = ?", (amount, user_id))
+    
+#add enemies killed
+async def add_enemies_killed(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET enemies_killed = enemies_killed + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove enemies killed
+async def remove_enemies_killed(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET enemies_killed = enemies_killed - ? WHERE user_id = ?", (amount, user_id))
+    
+#add users killed
+async def add_users_killed(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET users_killed = users_killed + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove users killed
+async def remove_users_killed(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET users_killed = users_killed - ? WHERE user_id = ?", (amount, user_id))
+
+#add battles fought
+async def add_battles_fought(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET battles_fought = battles_fought + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove battles fought
+async def remove_battles_fought(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET battles_fought = battles_fought - ? WHERE user_id = ?", (amount, user_id))
+    
+#add battles won
+async def add_battles_won(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET battles_won = battles_won + ? WHERE user_id = ?", (amount, user_id))
+    
+#remove battles won
+async def remove_battles_won(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `stats` SET battles_won = battles_won - ? WHERE user_id = ?", (amount, user_id))
+
+    
+    
 #check if an item has a recipe
 async def check_item_recipe(item_id: str) -> bool:
     db = DB()
