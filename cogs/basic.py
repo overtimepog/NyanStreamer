@@ -194,7 +194,7 @@ class Basic(commands.Cog, name="basic"):
             item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_amount = await db_manager.get_item_amount_from_inventory(item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
             rarity = str(item_rarity)
@@ -237,7 +237,7 @@ class Basic(commands.Cog, name="basic"):
             item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_amount = await db_manager.get_item_amount_from_inventory(item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
             rarity = str(item_rarity)
@@ -280,7 +280,7 @@ class Basic(commands.Cog, name="basic"):
             item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_amount = await db_manager.get_item_amount_from_inventory(item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
             rarity = str(item_rarity)
@@ -324,7 +324,7 @@ class Basic(commands.Cog, name="basic"):
             item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_amount = await db_manager.get_item_amount_from_inventory(item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
             rarity = str(item_rarity)
@@ -533,7 +533,7 @@ class Basic(commands.Cog, name="basic"):
                         #convert it to a int
                         user_cash = int(user_cash[0])
                         #check if the item is equippable
-                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        isEquippable = await db_manager.check_item_equipped(user_id, user_item_id)
                         item_equipped_id = await db_manager.id_of_item_equipped(user_id, user_item_id)
                         #check if the item is a weapon or armor, and see if the user already has it
                         if item_equipped_id == user_item_id:
@@ -704,7 +704,7 @@ class Basic(commands.Cog, name="basic"):
                         #convert it to a int
                         user_cash = int(user_cash[0])
                         #check if the item is equippable
-                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        isEquippable = await db_manager.check_item_equipped(user_id, user_item_id)
                         item_equipped_id = await db_manager.id_of_item_equipped(user_id, user_item_id)
                         #check if the item is a weapon or armor, and see if the user already has it
                         if item_equipped_id == user_item_id:
@@ -875,7 +875,7 @@ class Basic(commands.Cog, name="basic"):
                         #convert it to a int
                         user_cash = int(user_cash[0])
                         #check if the item is equippable
-                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        isEquippable = await db_manager.check_item_equipped(user_id, user_item_id)
                         item_equipped_id = await db_manager.id_of_item_equipped(user_id, user_item_id)
                         #check if the item is a weapon or armor, and see if the user already has it
                         if item_equipped_id == user_item_id:
@@ -1046,7 +1046,7 @@ class Basic(commands.Cog, name="basic"):
                         #convert it to a int
                         user_cash = int(user_cash[0])
                         #check if the item is equippable
-                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        isEquippable = await db_manager.check_item_equipped(user_id, user_item_id)
                         item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
                         #check if the item is a weapon or armor, and see if the user already has it
                         if item_equipped_id == item_id:
@@ -1062,7 +1062,7 @@ class Basic(commands.Cog, name="basic"):
                             if armor_equipped == True:
                                 await ctx.send(f"You already have armor equipped.")
                                 return
-                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        isEquippable = await db_manager.check_item_equipped(user_id, user_item_id)
                         item_equipped_id = await db_manager.id_of_item_equipped(user_id, user_item_id)
                         #check if the item is a weapon or armor, and see if the user already has it
                         if item_equipped_id == user_item_id:

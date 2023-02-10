@@ -2292,7 +2292,24 @@ async def remove_item_from_inventory(user_id: int, item_id: str) -> int:
                 #if the item does not exist in the inventory table, return 0
                 return 0
             
-#check if 
+#get the amount of an item from a users inventory
+async def get_item_amount_from_inventory(user_id: int, item_id: str) -> int:
+    """
+    This function will get the amount of an item from a users inventory.
+
+    :param user_id: The ID of the user that the item should be gotten from.
+    :param item_id: The ID of the item that should be gotten.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        #check if the item already exists in the inventory table
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
+            result = await cursor.fetchone()
+            if result is not None:
+                #if the item already exists in the inventory table, return the item_amount
+                return result[6]
+            else:
+                #if the item does not exist in the inventory table, return 0
+                return 0
             
 #get streamerPrefix from the streamer table using the streamers user ID
 async def get_streamerPrefix_with_user_id(user_id: int) -> str:
