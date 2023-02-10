@@ -42,6 +42,10 @@ async def slots(ctx: Context, user, gamble):
         ":tangerine:",
         ":watermelon:",
         ":strawberry:",
+        ":banana:",
+        ":pineapple:",
+        ":kiwi:",
+        ":pear:",
         ":crown:",
         ":gem:",
     ]
