@@ -1,0 +1,29 @@
+[
+    {
+        "item_id": "clover",
+        "item_name": "Lucky Clover",
+        "item_price": 100000,
+        "item_emoji": "🍀",
+        "item_rarity": "Legendary",
+        "item_type": "Misc",
+        "item_damage": 2,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A four-leaf clover. It's said to bring good luck.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [{}],
+        "isHuntable": true,
+        "item_hunt_chance": 0.1,
+        "item_effect": "luck + 100",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "None",
+        "item_quotes": [{
+            "quote": "None"
+        }]
+    }
+]

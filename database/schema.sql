@@ -101,15 +101,14 @@ CREATE TABLE IF NOT EXISTS `structure_outcomes`(
   FOREIGN KEY (outcome_item) REFERENCES basic_items(item_id)
 );
 
-
 CREATE TABLE IF NOT EXISTS recipes (
-  item_id VARCHAR(255) NOT NULL,
-  ingredient_id VARCHAR(255) NOT NULL,
-  ingredient_amount INTEGER NOT NULL
+  `item_id` VARCHAR(255) NOT NULL,
+  `ingredient_id` VARCHAR(255) NOT NULL,
+  `ingredient_amount` INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `shop` (
-  `item_id` varchar(20) NOT NULL,
+  `item_id` varchar(255) NOT NULL,
   `item_name` varchar(255) NOT NULL,
   `item_price` varchar(255) NOT NULL,
   `item_emoji` varchar(255) NOT NULL,
@@ -145,7 +144,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `fire_resistance` int(11) NOT NULL,
   `poison_resistance` int(11) NOT NULL,
   `frost_resistance` int(11) NOT NULL,
-  `paralysis_resistance` int(11) NOT NULL
+  `paralysis_resistance` int(11) NOT NULL,
+  `luck` int(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `stats`(
@@ -232,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `enemy_drops` (
 
 CREATE TABLE IF NOT EXISTS `inventory` (
   `user_id` varchar(20) NOT NULL,
-  `item_id` varchar(20) NOT NULL,
+  `item_id` varchar(255) NOT NULL,
   `item_name` varchar(255) NOT NULL,
   `item_price` varchar(255) NOT NULL,
   `item_emoji` varchar(255) NOT NULL,

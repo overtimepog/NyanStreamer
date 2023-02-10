@@ -40,7 +40,7 @@ class Basic(commands.Cog, name="basic"):
         :param itemprefix: The prefix that the streamer wants to be used with thier custom items.
         """
 
-#TODO, fix this so it works with the the users connected twitch account
+#Done, fix this so it works with the the users connected twitch account
 
         userprofile = await db_manager.profile(ctx.author.id)
         twitch_id = userprofile[14]
@@ -142,34 +142,1068 @@ class Basic(commands.Cog, name="basic"):
         description="This command will view your inventory.",
     )
     async def inventory(self, ctx: Context):
-        """
-        This command will view your inventory.
-
-        :param ctx: The context in which the command was called.
-        """
         user_id = ctx.message.author.id
-        #check if the user exists in the database
-        users = await db_manager.view_users()
-        for i in users:
-            user_id_if_exists = i[0]
-            user_id_if_exists = int(user_id_if_exists)
-            if user_id == user_id_if_exists:
-                inventory = await db_manager.view_inventory(user_id)
-                embed = discord.Embed(title="Inventory", description="Your inventory.", color=0x00ff00)
-                for i in inventory:
-                    item_id = i[1]
-                    isitem_equipped = await db_manager.check_item_equipped(user_id, item_id)
-                    item_name = i[2]
-                    item_emoji = i[4]
-                    item_amount = i[6]
-                    item_rarity = i[5]
-                    if isitem_equipped == 1:
-                        embed.add_field(name=f"`ID:{item_id}` {item_name}{item_emoji}", value=f"rarity: {item_rarity} (equipped)", inline=False)
+        inventory = await db_manager.view_inventory(user_id)
+        #create a list of all the items in the inventory
+        allWeapons = []
+        allProjectiles = []
+        allTools = []
+        allArmor = []
+        allConsumables = []
+        allMaterials = []
+        allMisc = []
+        
+        #define the lists whetre the embeds will be stored
+        weapons = []
+        armor = []
+        consumables = []
+        materials = []
+        misc = []
+        
+        #sort the inventory by item type
+        for i in inventory:
+            item_type = i[5]
+            item_type = str(item_type)
+            if item_type == "weapon":
+                allWeapons.append(i)
+            elif item_type == "projectile":
+                allProjectiles.append(i)
+            elif item_type == "tool":
+                allTools.append(i)
+            elif item_type == "armor":
+                allArmor.append(i)
+            elif item_type == "consumable":
+                allConsumables.append(i)
+            elif item_type == "material":
+                allMaterials.append(i)
+            elif item_type == "misc":
+                allMisc.append(i)
+        #for each item in each type of item, create an embed of the item and add it to a list named the item type
+        #weapons
+        #combine allProjectiles and allWeapon 
+        allWeapons = allWeapons + allProjectiles + allTools
+        for i in allWeapons:
+            item_id = i[0]
+            item_name = i[1]
+            item_price = i[2]
+            item_emote = i[3]
+            item_rarity = i[4]
+            item_type = i[5]
+            item_type = str(item_type)
+            item_damage = i[6]
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
+            rarity = str(item_rarity)
+            if rarity == "Common":
+                rarity_color="0x808080"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Uncommon":
+                rarity_color="0x00B300"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Rare":
+                rarity_color="0x0057C4"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Epic":
+                rarity_color="0xa335ee"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Legendary":
+                rarity_color="0xff8000"
+                rarity_color = int(rarity_color, 16)
+            #create an embed for this item
+            item = discord.Embed(
+                title=f"{item_name}{item_emote} x{item_amount}",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                color=rarity_color
+            )
+            #add the embed to the list
+            weapons.append(item)
+        #armor
+        for i in allArmor:
+            item_id = i[0]
+            item_name = i[1]
+            item_price = i[2]
+            item_emote = i[3]
+            item_rarity = i[4]
+            item_type = i[5]
+            item_type = str(item_type)
+            item_damage = i[6]
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
+            rarity = str(item_rarity)
+            if rarity == "Common":
+                rarity_color="0x808080"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Uncommon":
+                rarity_color="0x00B300"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Rare":
+                rarity_color="0x0057C4"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Epic":
+                rarity_color="0xa335ee"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Legendary":
+                rarity_color="0xff8000"
+                rarity_color = int(rarity_color, 16)
+            #create an embed for this item
+            item = discord.Embed(
+                title=f"{item_name}{item_emote} x{item_amount}",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                color=rarity_color
+            )
+            #add the embed to the list
+            armor.append(item)
+        #consumables
+        for i in allConsumables:
+            item_id = i[0]
+            item_name = i[1]
+            item_price = i[2]
+            item_emote = i[3]
+            item_rarity = i[4]
+            item_type = i[5]
+            item_type = str(item_type)
+            item_damage = i[6]
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
+            rarity = str(item_rarity)
+            if rarity == "Common":
+                rarity_color="0x808080"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Uncommon":
+                rarity_color="0x00B300"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Rare":
+                rarity_color="0x0057C4"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Epic":
+                rarity_color="0xa335ee"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Legendary":
+                rarity_color="0xff8000"
+                rarity_color = int(rarity_color, 16)
+            #create an embed for this item
+            item = discord.Embed(
+                title=f"{item_name}{item_emote} x{item_amount}",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                color=rarity_color
+            )
+            #add the embed to the list
+            consumables.append(item)
+        #misc
+        allMisc = allMisc + allMaterials
+        for i in allMisc:
+            item_id = i[0]
+            item_name = i[1]
+            item_price = i[2]
+            item_emote = i[3]
+            item_rarity = i[4]
+            item_type = i[5]
+            item_type = str(item_type)
+            item_damage = i[6]
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_amount = await db_manager.get_shop_item_amount(item_id)
+            item_info = await db_manager.get_basic_item_description(item_id)
+            item_info = str(item_info)
+            rarity = str(item_rarity)
+            if rarity == "Common":
+                rarity_color="0x808080"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Uncommon":
+                rarity_color="0x00B300"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Rare":
+                rarity_color="0x0057C4"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Epic":
+                rarity_color="0xa335ee"
+                rarity_color = int(rarity_color, 16)
+                
+            elif rarity == "Legendary":
+                rarity_color="0xff8000"
+                rarity_color = int(rarity_color, 16)
+            #create an embed for this item
+            item = discord.Embed(
+                title=f"{item_name}{item_emote} x{item_amount}",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                color=rarity_color
+            )
+            #add the embed to the list
+            misc.append(item)
+            
+        #create a shop embed to send in the beginning
+        invembed = discord.Embed(
+            title="Inventory",
+            description="This is your Inventory, its Organized just like the shop",
+            color=discord.Color.blurple()
+        )
+        #react to the shop embed with, sword, shield, potion, and house
+        message = await ctx.send(embed=invembed)
+        await message.add_reaction("⚔️")
+        await message.add_reaction("🛡️")
+        await message.add_reaction("🧪")
+        await message.add_reaction("💎")
+        await message.add_reaction("🏠")
+        await message.add_reaction("⏪")
+        await message.add_reaction("⏩")
+        await message.add_reaction("✅")
+        
+        #switch between the different embeds based on the reaction
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in ["⚔️", "🛡️", "🧪", "💎", "🏠", "⏪", "⏩", "✅"]
+        page = 0
+        i = 0
+        reaction = None
+        while True:
+            if str(reaction) == "⚔️":
+                await message.remove_reaction("⚔️", ctx.author)
+                try: 
+                    page = 1
+                    await message.edit(embed=weapons[i])
+                except(IndexError):
+                    await ctx.send("There are no weapons in your inventory")
+            elif str(reaction) == "🛡️":
+                await message.remove_reaction("🛡️", ctx.author)
+                try:
+                    page = 2
+                    await message.edit(embed=armor[i])
+                except(IndexError):
+                    await ctx.send("There is no armor in your inventory")
+            elif str(reaction) == "🧪":
+                await message.remove_reaction("🧪", ctx.author)
+                try:
+                    page = 3
+                    await message.edit(embed=consumables[i])
+                except(IndexError):
+                    await ctx.send("There are no consumables in your inventory")
+            elif str(reaction) == "💎":
+                await message.remove_reaction("💎", ctx.author)
+                try:
+                    page = 4
+                    await message.edit(embed=misc[i])
+                except(IndexError):
+                    await ctx.send("There are no misc items in your inventory")
+            elif str(reaction) == "🏠":
+                page = 0
+                await message.edit(embed=invembed)
+                await message.remove_reaction("🏠", ctx.author)
+            try:
+                reaction, user = await self.bot.wait_for("reaction_add", timeout=200.0, check=check)
+                #if the page is 1 (weapons) and the reaction is the arrow forward, go to the item in the list of weapons
+                if page == 1 and str(reaction) == "⏩":
+                    if i < len(weapons)-1:
+                        i += 1
+                        await message.edit(embed=weapons[i])
+                        await message.remove_reaction("⏩", ctx.author)
                     else:
-                        embed.add_field(name=f"`ID:{item_id}` {item_name}{item_emoji} x{item_amount}", value=f"rarity: {item_rarity}", inline=False)
-                await ctx.send(embed=embed)
-                return
-        await ctx.send(f"You do not exist in the database.")
+                        i = 0
+                        await message.edit(embed=weapons[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                #if the page is 1 (weapons) and the reaction is the arrow backward, go to the previous item in the list of weapons
+                elif page == 1 and str(reaction) == "⏪":
+                    if i > 0:
+                        i -= 1
+                        await message.edit(embed=weapons[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                    else:
+                        i = len(weapons)-1
+                        await message.edit(embed=weapons[i])
+                        await message.remove_reaction("⏪", ctx.author)
+        
+                #if the page is 2 (armor) and the reaction is the arrow forward, go to the item in the list of armor
+                elif page == 2 and str(reaction) == "⏩":
+                    if i < len(armor)-1:
+                        i += 1
+                        await message.edit(embed=armor[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                    else:
+                        i = 0
+                        await message.edit(embed=armor[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                #if the page is 2 (armor) and the reaction is the arrow backward, go to the previous item in the list of armor
+                elif page == 2 and str(reaction) == "⏪":
+                    if i > 0:
+                        i -= 1
+                        await message.edit(embed=armor[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                    else:
+                        i = len(armor)-1
+                        await message.edit(embed=armor[i])
+                        await message.remove_reaction("⏪", ctx.author)   
+                        
+                #if the page is 3 (consumables) and the reaction is the arrow forward, go to the item in the list of consumables
+                elif page == 3 and str(reaction) == "⏩":
+                    if i < len(consumables)-1:
+                        i += 1
+                        await message.edit(embed=consumables[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                    else:
+                        i = 0
+                        await message.edit(embed=consumables[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                #if the page is 3 (consumables) and the reaction is the arrow backward, go to the previous item in the list of consumables
+                elif page == 3 and str(reaction) == "⏪":
+                    if i > 0:
+                        i -= 1
+                        await message.edit(embed=consumables[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                    else:
+                        i = len(consumables)-1
+                        await message.edit(embed=consumables[i])
+                        await message.remove_reaction("⏪", ctx.author)                        
+
+                #if the page is 4 (misc) and the reaction is the arrow forward, go to the item in the list of misc
+                elif page == 4 and str(reaction) == "⏩":
+                    if i < len(misc)-1:
+                        i += 1
+                        await message.edit(embed=misc[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                    else:
+                        i = 0
+                        await message.edit(embed=misc[i])
+                        await message.remove_reaction("⏩", ctx.author)
+                #if the page is 4 (misc) and the reaction is the arrow backward, go to the previous item in the list of misc
+                elif page == 4 and str(reaction) == "⏪":
+                    if i > 0:
+                        i -= 1
+                        await message.edit(embed=misc[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                    else:
+                        i = len(misc)-1
+                        await message.edit(embed=misc[i])
+                        await message.remove_reaction("⏪", ctx.author)
+                #if the reaction is the check mark, buy the item
+                
+                #EQUIP PROCESSING
+                elif str(reaction) == "✅":
+                    #remove the reaction
+                    await message.remove_reaction("✅", ctx.author)
+                    #if the page is 1 (weapons), check if the user already has the weapon, if not, add it to their inventory, otherwise tell them they already have it
+                    if page == 1:
+                        user_items = await db_manager.view_inventory(ctx.author.id)
+                        print(user_items)
+                        #get shop items 
+                        user_weapons = allWeapons
+                        print(user_weapons[i])
+                        user_item_type = user_weapons[i][5]
+                        print(user_item_type)
+                        #check if the users inventory is empty
+                        if user_items == []:
+                            user_weapons = []
+                        else:
+                            user_weapons = user_items[i][0]
+                        #sort the users inventory by weapon
+                        user_item_id = user_weapons[i][0]
+                        user_item_name = user_weapons[i][1]
+                        user_item_price = user_weapons[i][2]
+                        user_item_price = int(user_item_price)
+                        user_item_emoji = user_weapons[i][3]
+                        user_item_rarity = user_weapons[i][4]
+                        user_item_type = user_weapons[i][5]
+                        user_item_damage = user_weapons[i][6]
+                        user_item_element = await db_manager.get_basic_item_element(user_item_id)
+                        user_item_crit_chance = await db_manager.get_basic_item_crit_chance(user_item_id)
+                        user_item_projectile = await db_manager.get_basic_item_projectile(user_item_id)
+                        #get all the rwquirmenst for the add_item_to_inventory command
+                        #check if                         #get the item name from the weapon list
+                        print(user_item_id)
+                        #check if the user can afford to buy the item
+                        user_cash = await db_manager.get_money(ctx.author.id)
+                        #convert it to a int
+                        user_cash = int(user_cash[0])
+                        #check if the item is equippable
+                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+                        #check if the item is a weapon or armor, and see if the user already has it
+                        if item_equipped_id == item_id:
+                            await ctx.send(f"`{item_name}` is already equipped.")
+                            return
+                        if item_type == "Weapon":
+                            weapon_equipped = await db_manager.is_weapon_equipped(user_id)
+                            if weapon_equipped == True:
+                                await ctx.send(f"You already have a weapon equipped.")
+                                return
+                        elif item_type == "Armor":
+                            armor_equipped = await db_manager.is_armor_equipped(user_id)
+                            if armor_equipped == True:
+                                await ctx.send(f"You already have armor equipped.")
+                                return
+                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        if isEquippable == 1:
+                            await db_manager.equip_item(user_id, item_id)
+                            #get the item effect
+                            item_effect = await db_manager.get_basic_item_effect(item_id)
+                            print(item_effect)
+                            #split the effect by spaces
+                            item_effect = item_effect.split()
+                            #get the effect, the effect type, and the effect amount
+                            effect = item_effect[0]
+                            print(effect)
+                            effect_add_or_minus = item_effect[1]
+                            print(effect_add_or_minus)
+                            effect_amount = item_effect[2]
+                            print(effect_amount)
+                            #if the effect is health
+                            if effect == "health":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's health
+                                    await db_manager.add_health_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's health
+                                    await db_manager.remove_health_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
+
+                            #if the effect is damage
+                            elif effect == "damage":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's damage
+                                    await db_manager.add_damage_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's damage
+                                    await db_manager.remove_damage_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+
+                            #if the effect is luck
+                            elif effect == "luck":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's luck
+                                    await db_manager.add_luck(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's luck
+                                    await db_manager.remove_luck(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+
+                            #if the effect is crit chance
+                            elif effect == "crit_chance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's crit chance
+                                    await db_manager.add_crit_chance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's crit chance
+                                    await db_manager.remove_crit_chance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+
+                            #if the effect is fire resistance
+                            elif effect == "fire_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's fire resistance
+                                    await db_manager.add_fire_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's fire resistance
+                                    await db_manager.remove_fire_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+
+                            #if the effect is paralsys resistance
+                            elif effect == "paralysis_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's paralsys resistance
+                                    await db_manager.add_paralysis_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's paralsys resistance
+                                    await db_manager.remove_paralysis_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
+
+                            #if the effect is poison resistance
+                            elif effect == "poison_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's poison resistance
+                                    await db_manager.add_poison_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's poison resistance
+                                    await db_manager.remove_poison_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+
+                            #if the effect is frost resistance
+                            elif effect == "frost_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's frost resistance
+                                    await db_manager.add_frost_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's frost resistance
+                                    await db_manager.remove_frost_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+
+                            #if the item has no effect
+                            else:
+                                await ctx.send(f"You equipped `{item_name}`")
+                        else:
+                            await ctx.send(f"that is not equippable.")
+                        #if its not a weapon or armor, tell the user that they equiped it
+                    #if the page is 2 (armor), check if the user already has the armor, if not, add it to their inventory, otherwise tell them they already have it
+                    elif page == 2:
+                        user_items = await db_manager.view_inventory(ctx.author.id)
+                        print(user_items)
+                        #get shop items 
+                        user_armor = allArmor
+                        print(user_armor[i])
+                        user_item_type = user_armor[i][5]
+                        print(user_item_type)
+                        #check if the users inventory is empty
+                        if user_items == []:
+                            user_armor = []
+                        else:
+                            user_armor = user_items[i][0]
+                        #sort the users inventory by weapon
+                        user_item_id = user_armor[i][0]
+                        user_item_name = user_armor[i][1]
+                        user_item_price = user_armor[i][2]
+                        user_item_price = int(user_item_price)
+                        user_item_emoji = user_armor[i][3]
+                        user_item_rarity = user_armor[i][4]
+                        user_item_type = user_armor[i][5]
+                        user_item_damage = user_armor[i][6]
+                        user_item_element = await db_manager.get_basic_item_element(user_item_id)
+                        user_item_crit_chance = await db_manager.get_basic_item_crit_chance(user_item_id)
+                        user_item_projectile = await db_manager.get_basic_item_projectile(user_item_id)
+                        #get all the rwquirmenst for the add_item_to_inventory command
+                        #check if                         #get the item name from the weapon list
+                        print(user_item_id)
+                        #check if the user can afford to buy the item
+                        user_cash = await db_manager.get_money(ctx.author.id)
+                        #convert it to a int
+                        user_cash = int(user_cash[0])
+                        #check if the item is equippable
+                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+                        #check if the item is a weapon or armor, and see if the user already has it
+                        if item_equipped_id == item_id:
+                            await ctx.send(f"`{item_name}` is already equipped.")
+                            return
+                        if item_type == "Weapon":
+                            weapon_equipped = await db_manager.is_weapon_equipped(user_id)
+                            if weapon_equipped == True:
+                                await ctx.send(f"You already have a weapon equipped.")
+                                return
+                        elif item_type == "Armor":
+                            armor_equipped = await db_manager.is_armor_equipped(user_id)
+                            if armor_equipped == True:
+                                await ctx.send(f"You already have armor equipped.")
+                                return
+                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        if isEquippable == 1:
+                            await db_manager.equip_item(user_id, item_id)
+                            #get the item effect
+                            item_effect = await db_manager.get_basic_item_effect(item_id)
+                            print(item_effect)
+                            #split the effect by spaces
+                            item_effect = item_effect.split()
+                            #get the effect, the effect type, and the effect amount
+                            effect = item_effect[0]
+                            print(effect)
+                            effect_add_or_minus = item_effect[1]
+                            print(effect_add_or_minus)
+                            effect_amount = item_effect[2]
+                            print(effect_amount)
+                            #if the effect is health
+                            if effect == "health":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's health
+                                    await db_manager.add_health_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's health
+                                    await db_manager.remove_health_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
+
+                            #if the effect is damage
+                            elif effect == "damage":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's damage
+                                    await db_manager.add_damage_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's damage
+                                    await db_manager.remove_damage_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+
+                            #if the effect is luck
+                            elif effect == "luck":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's luck
+                                    await db_manager.add_luck(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's luck
+                                    await db_manager.remove_luck(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+
+                            #if the effect is crit chance
+                            elif effect == "crit_chance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's crit chance
+                                    await db_manager.add_crit_chance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's crit chance
+                                    await db_manager.remove_crit_chance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+
+                            #if the effect is fire resistance
+                            elif effect == "fire_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's fire resistance
+                                    await db_manager.add_fire_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's fire resistance
+                                    await db_manager.remove_fire_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+
+                            #if the effect is paralsys resistance
+                            elif effect == "paralysis_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's paralsys resistance
+                                    await db_manager.add_paralysis_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's paralsys resistance
+                                    await db_manager.remove_paralysis_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
+
+                            #if the effect is poison resistance
+                            elif effect == "poison_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's poison resistance
+                                    await db_manager.add_poison_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's poison resistance
+                                    await db_manager.remove_poison_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+
+                            #if the effect is frost resistance
+                            elif effect == "frost_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's frost resistance
+                                    await db_manager.add_frost_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's frost resistance
+                                    await db_manager.remove_frost_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+
+                            #if the item has no effect
+                            else:
+                                await ctx.send(f"You equipped `{item_name}`")
+                        else:
+                            await ctx.send(f"that is not equippable.")
+                     #page 3
+                    elif page == 3:
+                        #consumables
+                        user_items = await db_manager.view_inventory(ctx.author.id)
+                        print(user_items)
+                        #get shop items 
+                        user_consumables = allConsumables
+                        print(user_consumables[i])
+                        user_item_type = user_consumables[i][5]
+                        print(user_item_type)
+                        #check if the users inventory is empty
+                        if user_items == []:
+                            user_consumables = []
+                        else:
+                            user_consumables = user_items[i][0]
+                        #sort the users inventory by weapon
+                        user_item_id = user_consumables[i][0]
+                        user_item_name = user_consumables[i][1]
+                        user_item_price = user_consumables[i][2]
+                        user_item_price = int(user_item_price)
+                        user_item_emoji = user_consumables[i][3]
+                        user_item_rarity = user_consumables[i][4]
+                        user_item_type = user_consumables[i][5]
+                        user_item_damage = user_consumables[i][6]
+                        user_item_element = await db_manager.get_basic_item_element(user_item_id)
+                        user_item_crit_chance = await db_manager.get_basic_item_crit_chance(user_item_id)
+                        user_item_projectile = await db_manager.get_basic_item_projectile(user_item_id)
+                        #get all the rwquirmenst for the add_item_to_inventory command
+                        #check if                         #get the item name from the weapon list
+                        print(user_item_id)
+                        #check if the user can afford to buy the item
+                        user_cash = await db_manager.get_money(ctx.author.id)
+                        #convert it to a int
+                        user_cash = int(user_cash[0])
+                        #check if the item is equippable
+                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+                        #check if the item is a weapon or armor, and see if the user already has it
+                        if item_equipped_id == item_id:
+                            await ctx.send(f"`{item_name}` is already equipped.")
+                            return
+                        if item_type == "Weapon":
+                            weapon_equipped = await db_manager.is_weapon_equipped(user_id)
+                            if weapon_equipped == True:
+                                await ctx.send(f"You already have a weapon equipped.")
+                                return
+                        elif item_type == "Armor":
+                            armor_equipped = await db_manager.is_armor_equipped(user_id)
+                            if armor_equipped == True:
+                                await ctx.send(f"You already have armor equipped.")
+                                return
+                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        if isEquippable == 1:
+                            await db_manager.equip_item(user_id, item_id)
+                            #get the item effect
+                            item_effect = await db_manager.get_basic_item_effect(item_id)
+                            print(item_effect)
+                            #split the effect by spaces
+                            item_effect = item_effect.split()
+                            #get the effect, the effect type, and the effect amount
+                            effect = item_effect[0]
+                            print(effect)
+                            effect_add_or_minus = item_effect[1]
+                            print(effect_add_or_minus)
+                            effect_amount = item_effect[2]
+                            print(effect_amount)
+                            #if the effect is health
+                            if effect == "health":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's health
+                                    await db_manager.add_health_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's health
+                                    await db_manager.remove_health_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
+
+                            #if the effect is damage
+                            elif effect == "damage":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's damage
+                                    await db_manager.add_damage_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's damage
+                                    await db_manager.remove_damage_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+
+                            #if the effect is luck
+                            elif effect == "luck":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's luck
+                                    await db_manager.add_luck(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's luck
+                                    await db_manager.remove_luck(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+
+                            #if the effect is crit chance
+                            elif effect == "crit_chance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's crit chance
+                                    await db_manager.add_crit_chance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's crit chance
+                                    await db_manager.remove_crit_chance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+
+                            #if the effect is fire resistance
+                            elif effect == "fire_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's fire resistance
+                                    await db_manager.add_fire_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's fire resistance
+                                    await db_manager.remove_fire_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+
+                            #if the effect is paralsys resistance
+                            elif effect == "paralysis_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's paralsys resistance
+                                    await db_manager.add_paralysis_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's paralsys resistance
+                                    await db_manager.remove_paralysis_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
+
+                            #if the effect is poison resistance
+                            elif effect == "poison_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's poison resistance
+                                    await db_manager.add_poison_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's poison resistance
+                                    await db_manager.remove_poison_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+
+                            #if the effect is frost resistance
+                            elif effect == "frost_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's frost resistance
+                                    await db_manager.add_frost_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's frost resistance
+                                    await db_manager.remove_frost_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+
+                            #if the item has no effect
+                            else:
+                                await ctx.send(f"You equipped `{item_name}`")
+                        else:
+                            await ctx.send(f"that is not equippable.")
+                    
+                    elif page == 4:
+                        #misc
+                        user_items = await db_manager.view_inventory(ctx.author.id)
+                        print(user_items)
+                        #get shop items 
+                        user_misc = allMisc
+                        print(user_misc[i])
+                        user_item_type = user_misc[i][5]
+                        print(user_item_type)
+                        #check if the users inventory is empty
+                        if user_items == []:
+                            user_misc = []
+                        else:
+                            user_misc = user_items[i][0]
+                        #sort the users inventory by weapon
+                        user_item_id = user_misc[i][0]
+                        user_item_name = user_misc[i][1]
+                        user_item_price = user_misc[i][2]
+                        user_item_price = int(user_item_price)
+                        user_item_emoji = user_misc[i][3]
+                        user_item_rarity = user_misc[i][4]
+                        user_item_type = user_misc[i][5]
+                        user_item_damage = user_misc[i][6]
+                        user_item_element = await db_manager.get_basic_item_element(user_item_id)
+                        user_item_crit_chance = await db_manager.get_basic_item_crit_chance(user_item_id)
+                        user_item_projectile = await db_manager.get_basic_item_projectile(user_item_id)
+                        #get all the rwquirmenst for the add_item_to_inventory command
+                        #check if                         #get the item name from the weapon list
+                        print(user_item_id)
+                        #check if the user can afford to buy the item
+                        user_cash = await db_manager.get_money(ctx.author.id)
+                        #convert it to a int
+                        user_cash = int(user_cash[0])
+                        #check if the item is equippable
+                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+                        #check if the item is a weapon or armor, and see if the user already has it
+                        if item_equipped_id == item_id:
+                            await ctx.send(f"`{item_name}` is already equipped.")
+                            return
+                        if item_type == "Weapon":
+                            weapon_equipped = await db_manager.is_weapon_equipped(user_id)
+                            if weapon_equipped == True:
+                                await ctx.send(f"You already have a weapon equipped.")
+                                return
+                        elif item_type == "Armor":
+                            armor_equipped = await db_manager.is_armor_equipped(user_id)
+                            if armor_equipped == True:
+                                await ctx.send(f"You already have armor equipped.")
+                                return
+                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        if isEquippable == 1:
+                            await db_manager.equip_item(user_id, item_id)
+                            #get the item effect
+                            item_effect = await db_manager.get_basic_item_effect(item_id)
+                            print(item_effect)
+                            #split the effect by spaces
+                            item_effect = item_effect.split()
+                            #get the effect, the effect type, and the effect amount
+                            effect = item_effect[0]
+                            print(effect)
+                            effect_add_or_minus = item_effect[1]
+                            print(effect_add_or_minus)
+                            effect_amount = item_effect[2]
+                            print(effect_amount)
+                            #if the effect is health
+                            if effect == "health":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's health
+                                    await db_manager.add_health_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's health
+                                    await db_manager.remove_health_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
+
+                            #if the effect is damage
+                            elif effect == "damage":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's damage
+                                    await db_manager.add_damage_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's damage
+                                    await db_manager.remove_damage_boost(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+
+                            #if the effect is luck
+                            elif effect == "luck":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's luck
+                                    await db_manager.add_luck(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's luck
+                                    await db_manager.remove_luck(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+
+                            #if the effect is crit chance
+                            elif effect == "crit_chance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's crit chance
+                                    await db_manager.add_crit_chance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's crit chance
+                                    await db_manager.remove_crit_chance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+
+                            #if the effect is fire resistance
+                            elif effect == "fire_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's fire resistance
+                                    await db_manager.add_fire_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's fire resistance
+                                    await db_manager.remove_fire_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+
+                            #if the effect is paralsys resistance
+                            elif effect == "paralysis_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's paralsys resistance
+                                    await db_manager.add_paralysis_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's paralsys resistance
+                                    await db_manager.remove_paralysis_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
+
+                            #if the effect is poison resistance
+                            elif effect == "poison_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's poison resistance
+                                    await db_manager.add_poison_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's poison resistance
+                                    await db_manager.remove_poison_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+
+                            #if the effect is frost resistance
+                            elif effect == "frost_resistance":
+                                #if the effect is add
+                                if effect_add_or_minus == "+":
+                                    #add the effect amount to the user's frost resistance
+                                    await db_manager.add_frost_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                                #if the effect is minus
+                                elif effect_add_or_minus == "-":
+                                    #remove the effect amount from the user's frost resistance
+                                    await db_manager.remove_frost_resistance(user_id, effect_amount)
+                                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+
+                            #if the item has no effect
+                            else:
+                                await ctx.send(f"You equipped `{item_name}`")
+                        else:
+                            await ctx.send(f"that is not equippable.")
+            except Exception as e:
+                print(e)
+        
 
     #command to create a new item in the database item table, using the create_streamer_item function from helpers\db_manager.py
     @commands.hybrid_command(
@@ -553,7 +1587,7 @@ class Basic(commands.Cog, name="basic"):
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote} x{item_amount}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
             #add the embed to the list
@@ -596,7 +1630,7 @@ class Basic(commands.Cog, name="basic"):
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote} x{item_amount}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
             #add the embed to the list
@@ -639,7 +1673,7 @@ class Basic(commands.Cog, name="basic"):
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote} x{item_amount}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
             #add the embed to the list
@@ -683,7 +1717,7 @@ class Basic(commands.Cog, name="basic"):
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote} x{item_amount}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Rarity**: `{item_rarity}` ",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
             #add the embed to the list
@@ -1470,7 +2504,125 @@ class Basic(commands.Cog, name="basic"):
         isEquippable = await db_manager.is_basic_item_equipable(item_id)
         if isEquippable == 1:
             await db_manager.equip_item(user_id, item_id)
-            await ctx.send(f"You equipped `{item_name}`")
+            #get the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            print(item_effect)
+            #split the effect by spaces
+            item_effect = item_effect.split()
+            #get the effect, the effect type, and the effect amount
+            effect = item_effect[0]
+            print(effect)
+            effect_add_or_minus = item_effect[1]
+            print(effect_add_or_minus)
+            effect_amount = item_effect[2]
+            print(effect_amount)
+            #if the effect is health
+            if effect == "health":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's health
+                    await db_manager.add_health_boost(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's health
+                    await db_manager.remove_health_boost(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
+                    
+            #if the effect is damage
+            elif effect == "damage":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's damage
+                    await db_manager.add_damage_boost(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's damage
+                    await db_manager.remove_damage_boost(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+                    
+            #if the effect is luck
+            elif effect == "luck":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's luck
+                    await db_manager.add_luck(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's luck
+                    await db_manager.remove_luck(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+                    
+            #if the effect is crit chance
+            elif effect == "crit_chance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's crit chance
+                    await db_manager.add_crit_chance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's crit chance
+                    await db_manager.remove_crit_chance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+                    
+            #if the effect is fire resistance
+            elif effect == "fire_resistance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's fire resistance
+                    await db_manager.add_fire_resistance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's fire resistance
+                    await db_manager.remove_fire_resistance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+                    
+            #if the effect is paralsys resistance
+            elif effect == "paralysis_resistance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's paralsys resistance
+                    await db_manager.add_paralysis_resistance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's paralsys resistance
+                    await db_manager.remove_paralysis_resistance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
+                    
+            #if the effect is poison resistance
+            elif effect == "poison_resistance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's poison resistance
+                    await db_manager.add_poison_resistance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's poison resistance
+                    await db_manager.remove_poison_resistance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+                    
+            #if the effect is frost resistance
+            elif effect == "frost_resistance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's frost resistance
+                    await db_manager.add_frost_resistance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's frost resistance
+                    await db_manager.remove_frost_resistance(user_id, effect_amount)
+                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+                    
+            #if the item has no effect
+            else:
+                await ctx.send(f"You equipped `{item_name}`")
         else:
             await ctx.send(f"that is not equippable.")
             
@@ -1490,6 +2642,99 @@ class Basic(commands.Cog, name="basic"):
         item_name = await db_manager.get_basic_item_name(item_id)
         item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
         if item_equipped_id == item_id:
+            #remove the item effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            #split the effect by spaces
+            item_effect = item_effect.split()
+            #get the effect, the effect type, and the effect amount
+            effect = item_effect[0]
+            effect_add_or_minus = item_effect[1]
+            effect_amount = item_effect[2]
+            #if the effect is health
+            if effect == "health":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's health
+                    await db_manager.remove_health_boost(user_id, effect_amount)
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's health
+                    await db_manager.add_health_boost(user_id, effect_amount)
+            #if the effect is damage
+            elif effect == "damage":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's damage
+                    await db_manager.remove_damage_boost(user_id, effect_amount)
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's damage
+                    await db_manager.add_damage_boost(user_id, effect_amount)
+            #if the effect is luck
+            elif effect == "luck":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's luck
+                    await db_manager.remove_luck(user_id, effect_amount)
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's luck
+                    await db_manager.add_luck(user_id, effect_amount)
+                    
+            #if the effect is crit chance
+            elif effect == "crit_chance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's crit chance
+                    await db_manager.remove_crit_chance(user_id, effect_amount)
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's crit chance
+                    await db_manager.add_crit_chance(user_id, effect_amount)
+                
+            #if the effect is fire resistance
+            elif effect == "fire_resistance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's fire resistance
+                    await db_manager.remove_fire_resistance(user_id, effect_amount)
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's fire resistance
+                    await db_manager.add_fire_resistance(user_id, effect_amount)
+            
+            #if the effect is poison resistance
+            elif effect == "poison_resistance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's poison resistance
+                    await db_manager.remove_poison_resistance(user_id, effect_amount)
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's poison resistance
+                    await db_manager.add_poison_resistance(user_id, effect_amount)
+                    
+            #if the effect is frost resistance
+            elif effect == "frost_resistance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's frost resistance
+                    await db_manager.remove_frost_resistance(user_id, effect_amount)
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's frost resistance
+                    await db_manager.add_frost_resistance(user_id, effect_amount)
+                    
+            #if the effect is paralysis resistance
+            elif effect == "paralysis_resistance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's paralysis resistance
+                    await db_manager.remove_paralysis_resistance(user_id, effect_amount)
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's paralysis resistance
+                    await db_manager.add_paralysis_resistance(user_id, effect_amount)
             await db_manager.unequip_item(user_id, item_id)
             await ctx.send(f"You unequipped `{item_name}`")
         else:
