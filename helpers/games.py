@@ -46,14 +46,19 @@ async def slots(ctx: Context, user, gamble):
         ":lemon:",
         ":peach:",
         ":tangerine:",
+        ":watermelon:",
+        ":strawberry:",
+        ":crown:",
+        ":gem:",
     ]
     #edit the embed to show the emojis spinning
     #for every emoji in the list, edit the embed to show the emoji in the slot
     #SLOT 1
-    for i in emoji:
-        slot_machine.set_field_at(0, name="Slot 1", value=i, inline=True)
-        await slot_machine_message.edit(embed=slot_machine)
-        await asyncio.sleep(0.5)
+    for i in range(2):
+        for i in emoji:
+            slot_machine.set_field_at(0, name="Slot 1", value=i, inline=True)
+            await slot_machine_message.edit(embed=slot_machine)
+            await asyncio.sleep(0.5)
     #get a random emoji from the list
     slot1 = random.choice(emoji)
     #edit the embed to show the emoji in the slot
@@ -62,10 +67,12 @@ async def slots(ctx: Context, user, gamble):
     #for every emoji in the list, edit the embed to show the emoji in the slot
     
     #SLOT 2
-    for i in emoji:
-        slot_machine.set_field_at(1, name="Slot 2", value=i, inline=True)
-        await slot_machine_message.edit(embed=slot_machine)
-        await asyncio.sleep(0.5)
+    #run it twice
+    for i in range(2):
+        for i in emoji:
+            slot_machine.set_field_at(1, name="Slot 2", value=i, inline=True)
+            await slot_machine_message.edit(embed=slot_machine)
+            await asyncio.sleep(0.5)
     #get a random emoji from the list
     slot2 = random.choice(emoji)
     #edit the embed to show the emoji in the slot
@@ -74,17 +81,16 @@ async def slots(ctx: Context, user, gamble):
     #for every emoji in the list, edit the embed to show the emoji in the slot
     
     #SLOT 3
-    for i in emoji:
-        slot_machine.set_field_at(2, name="Slot 3", value=i, inline=True)
-        await slot_machine_message.edit(embed=slot_machine)
-        await asyncio.sleep(0.5)
+    for i in range(2):
+        for i in emoji:
+            slot_machine.set_field_at(2, name="Slot 3", value=i, inline=True)
+            await slot_machine_message.edit(embed=slot_machine)
+            await asyncio.sleep(0.5)
     #get a random emoji from the list
     slot3 = random.choice(emoji)
     #edit the embed to show the emoji in the slot
     slot_machine.set_field_at(2, name="Slot 3", value=slot3, inline=True)
     await slot_machine_message.edit(embed=slot_machine)
-    
-    #edit the embed to show the emojis spinning
     
         
     

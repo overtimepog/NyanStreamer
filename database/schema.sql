@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `fire_resistance` int(11) NOT NULL,
   `poison_resistance` int(11) NOT NULL,
   `frost_resistance` int(11) NOT NULL,
-  `paralysis_resistance` int(11) NOT NULL,
+  `paralysis_resistance` int(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `stats`(
@@ -160,8 +160,8 @@ CREATE TABLE IF NOT EXISTS `stats`(
   `enemies_killed` int(11) NOT NULL,
   `users_killed` int(11) NOT NULL,
   `battles_fought` int(11) NOT NULL,
-  `battles_won` int(11) NOT NULL,
-)
+  `battles_won` int(11) NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS `questProgress` (
   `user_id` varchar(20) NOT NULL,
