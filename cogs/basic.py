@@ -162,35 +162,36 @@ class Basic(commands.Cog, name="basic"):
         
         #sort the inventory by item type
         for i in inventory:
-            item_type = i[5]
+            print(i)
+            item_type = i[7]
             item_type = str(item_type)
-            if item_type == "weapon":
+            if item_type == "Weapon":
                 allWeapons.append(i)
-            elif item_type == "projectile":
+            elif item_type == "Projectile":
                 allProjectiles.append(i)
-            elif item_type == "tool":
+            elif item_type == "Tool":
                 allTools.append(i)
-            elif item_type == "armor":
+            elif item_type == "Armor":
                 allArmor.append(i)
-            elif item_type == "consumable":
+            elif item_type == "Consumable":
                 allConsumables.append(i)
-            elif item_type == "material":
+            elif item_type == "Material":
                 allMaterials.append(i)
-            elif item_type == "misc":
+            elif item_type == "Misc":
                 allMisc.append(i)
         #for each item in each type of item, create an embed of the item and add it to a list named the item type
         #weapons
         #combine allProjectiles and allWeapon 
         allWeapons = allWeapons + allProjectiles + allTools
         for i in allWeapons:
-            item_id = i[0]
-            item_name = i[1]
-            item_price = i[2]
-            item_emote = i[3]
-            item_rarity = i[4]
-            item_type = i[5]
+            item_id = i[1]
+            item_name = i[2]
+            item_price = i[3]
+            item_emote = i[4]
+            item_rarity = i[5]
+            item_type = i[7]
             item_type = str(item_type)
-            item_damage = i[6]
+            item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             item_amount = await db_manager.get_shop_item_amount(item_id)
@@ -226,14 +227,14 @@ class Basic(commands.Cog, name="basic"):
             weapons.append(item)
         #armor
         for i in allArmor:
-            item_id = i[0]
-            item_name = i[1]
-            item_price = i[2]
-            item_emote = i[3]
-            item_rarity = i[4]
-            item_type = i[5]
+            item_id = i[1]
+            item_name = i[2]
+            item_price = i[3]
+            item_emote = i[4]
+            item_rarity = i[5]
+            item_type = i[7]
             item_type = str(item_type)
-            item_damage = i[6]
+            item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             item_amount = await db_manager.get_shop_item_amount(item_id)
@@ -269,14 +270,14 @@ class Basic(commands.Cog, name="basic"):
             armor.append(item)
         #consumables
         for i in allConsumables:
-            item_id = i[0]
-            item_name = i[1]
-            item_price = i[2]
-            item_emote = i[3]
-            item_rarity = i[4]
-            item_type = i[5]
+            item_id = i[1]
+            item_name = i[2]
+            item_price = i[3]
+            item_emote = i[4]
+            item_rarity = i[5]
+            item_type = i[7]
             item_type = str(item_type)
-            item_damage = i[6]
+            item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             item_amount = await db_manager.get_shop_item_amount(item_id)
@@ -313,14 +314,14 @@ class Basic(commands.Cog, name="basic"):
         #misc
         allMisc = allMisc + allMaterials
         for i in allMisc:
-            item_id = i[0]
-            item_name = i[1]
-            item_price = i[2]
-            item_emote = i[3]
-            item_rarity = i[4]
-            item_type = i[5]
+            item_id = i[1]
+            item_name = i[2]
+            item_price = i[3]
+            item_emote = i[4]
+            item_rarity = i[5]
+            item_type = i[7]
             item_type = str(item_type)
-            item_damage = i[6]
+            item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             item_amount = await db_manager.get_shop_item_amount(item_id)
@@ -512,19 +513,15 @@ class Basic(commands.Cog, name="basic"):
                         user_item_type = user_weapons[i][5]
                         print(user_item_type)
                         #check if the users inventory is empty
-                        if user_items == []:
-                            user_weapons = []
-                        else:
-                            user_weapons = user_items[i][0]
                         #sort the users inventory by weapon
-                        user_item_id = user_weapons[i][0]
-                        user_item_name = user_weapons[i][1]
-                        user_item_price = user_weapons[i][2]
+                        user_item_id = user_weapons[i][1]
+                        user_item_name = user_weapons[i][2]
+                        user_item_price = user_weapons[i][3]
                         user_item_price = int(user_item_price)
-                        user_item_emoji = user_weapons[i][3]
-                        user_item_rarity = user_weapons[i][4]
-                        user_item_type = user_weapons[i][5]
-                        user_item_damage = user_weapons[i][6]
+                        user_item_emoji = user_weapons[i][4]
+                        user_item_rarity = user_weapons[i][5]
+                        user_item_type = user_weapons[i][7]
+                        user_item_damage = user_weapons[i][8]
                         user_item_element = await db_manager.get_basic_item_element(user_item_id)
                         user_item_crit_chance = await db_manager.get_basic_item_crit_chance(user_item_id)
                         user_item_projectile = await db_manager.get_basic_item_projectile(user_item_id)
@@ -537,9 +534,9 @@ class Basic(commands.Cog, name="basic"):
                         user_cash = int(user_cash[0])
                         #check if the item is equippable
                         isEquippable = await db_manager.check_item_equipped(user_item_id)
-                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, user_item_id)
                         #check if the item is a weapon or armor, and see if the user already has it
-                        if item_equipped_id == item_id:
+                        if item_equipped_id == user_item_id:
                             await ctx.send(f"`{item_name}` is already equipped.")
                             return
                         if item_type == "Weapon":
@@ -552,11 +549,11 @@ class Basic(commands.Cog, name="basic"):
                             if armor_equipped == True:
                                 await ctx.send(f"You already have armor equipped.")
                                 return
-                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        isEquippable = await db_manager.is_basic_item_equipable(user_item_id)
                         if isEquippable == 1:
                             await db_manager.equip_item(user_id, item_id)
                             #get the item effect
-                            item_effect = await db_manager.get_basic_item_effect(item_id)
+                            item_effect = await db_manager.get_basic_item_effect(user_item_id)
                             print(item_effect)
                             #split the effect by spaces
                             item_effect = item_effect.split()
@@ -684,22 +681,18 @@ class Basic(commands.Cog, name="basic"):
                         #get shop items 
                         user_armor = allArmor
                         print(user_armor[i])
-                        user_item_type = user_armor[i][5]
+                        user_item_type = user_armor[i][7]
                         print(user_item_type)
                         #check if the users inventory is empty
-                        if user_items == []:
-                            user_armor = []
-                        else:
-                            user_armor = user_items[i][0]
                         #sort the users inventory by weapon
-                        user_item_id = user_armor[i][0]
-                        user_item_name = user_armor[i][1]
-                        user_item_price = user_armor[i][2]
+                        user_item_id = user_armor[i][1]
+                        user_item_name = user_armor[i][2]
+                        user_item_price = user_armor[i][3]
                         user_item_price = int(user_item_price)
-                        user_item_emoji = user_armor[i][3]
-                        user_item_rarity = user_armor[i][4]
-                        user_item_type = user_armor[i][5]
-                        user_item_damage = user_armor[i][6]
+                        user_item_emoji = user_armor[i][4]
+                        user_item_rarity = user_armor[i][5]
+                        user_item_type = user_armor[i][7]
+                        user_item_damage = user_armor[i][8]
                         user_item_element = await db_manager.get_basic_item_element(user_item_id)
                         user_item_crit_chance = await db_manager.get_basic_item_crit_chance(user_item_id)
                         user_item_projectile = await db_manager.get_basic_item_projectile(user_item_id)
@@ -712,9 +705,9 @@ class Basic(commands.Cog, name="basic"):
                         user_cash = int(user_cash[0])
                         #check if the item is equippable
                         isEquippable = await db_manager.check_item_equipped(user_item_id)
-                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, user_item_id)
                         #check if the item is a weapon or armor, and see if the user already has it
-                        if item_equipped_id == item_id:
+                        if item_equipped_id == user_item_id:
                             await ctx.send(f"`{item_name}` is already equipped.")
                             return
                         if item_type == "Weapon":
@@ -727,11 +720,11 @@ class Basic(commands.Cog, name="basic"):
                             if armor_equipped == True:
                                 await ctx.send(f"You already have armor equipped.")
                                 return
-                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        isEquippable = await db_manager.is_basic_item_equipable(user_item_id)
                         if isEquippable == 1:
-                            await db_manager.equip_item(user_id, item_id)
+                            await db_manager.equip_item(user_id, user_item_id)
                             #get the item effect
-                            item_effect = await db_manager.get_basic_item_effect(item_id)
+                            item_effect = await db_manager.get_basic_item_effect(user_item_id)
                             print(item_effect)
                             #split the effect by spaces
                             item_effect = item_effect.split()
@@ -859,22 +852,18 @@ class Basic(commands.Cog, name="basic"):
                         #get shop items 
                         user_consumables = allConsumables
                         print(user_consumables[i])
-                        user_item_type = user_consumables[i][5]
+                        user_item_type = user_consumables[i][7]
                         print(user_item_type)
                         #check if the users inventory is empty
-                        if user_items == []:
-                            user_consumables = []
-                        else:
-                            user_consumables = user_items[i][0]
                         #sort the users inventory by weapon
-                        user_item_id = user_consumables[i][0]
-                        user_item_name = user_consumables[i][1]
-                        user_item_price = user_consumables[i][2]
+                        user_item_id = user_consumables[i][1]
+                        user_item_name = user_consumables[i][2]
+                        user_item_price = user_consumables[i][3]
                         user_item_price = int(user_item_price)
-                        user_item_emoji = user_consumables[i][3]
-                        user_item_rarity = user_consumables[i][4]
-                        user_item_type = user_consumables[i][5]
-                        user_item_damage = user_consumables[i][6]
+                        user_item_emoji = user_consumables[i][4]
+                        user_item_rarity = user_consumables[i][5]
+                        user_item_type = user_consumables[i][7]
+                        user_item_damage = user_consumables[i][8]
                         user_item_element = await db_manager.get_basic_item_element(user_item_id)
                         user_item_crit_chance = await db_manager.get_basic_item_crit_chance(user_item_id)
                         user_item_projectile = await db_manager.get_basic_item_projectile(user_item_id)
@@ -887,9 +876,9 @@ class Basic(commands.Cog, name="basic"):
                         user_cash = int(user_cash[0])
                         #check if the item is equippable
                         isEquippable = await db_manager.check_item_equipped(user_item_id)
-                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, user_item_id)
                         #check if the item is a weapon or armor, and see if the user already has it
-                        if item_equipped_id == item_id:
+                        if item_equipped_id == user_item_id:
                             await ctx.send(f"`{item_name}` is already equipped.")
                             return
                         if item_type == "Weapon":
@@ -902,11 +891,11 @@ class Basic(commands.Cog, name="basic"):
                             if armor_equipped == True:
                                 await ctx.send(f"You already have armor equipped.")
                                 return
-                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        isEquippable = await db_manager.is_basic_item_equipable(user_item_id)
                         if isEquippable == 1:
-                            await db_manager.equip_item(user_id, item_id)
+                            await db_manager.equip_item(user_id, user_item_id)
                             #get the item effect
-                            item_effect = await db_manager.get_basic_item_effect(item_id)
+                            item_effect = await db_manager.get_basic_item_effect(user_item_id)
                             print(item_effect)
                             #split the effect by spaces
                             item_effect = item_effect.split()
@@ -1034,22 +1023,18 @@ class Basic(commands.Cog, name="basic"):
                         #get shop items 
                         user_misc = allMisc
                         print(user_misc[i])
-                        user_item_type = user_misc[i][5]
+                        user_item_type = user_misc[i][7]
                         print(user_item_type)
                         #check if the users inventory is empty
-                        if user_items == []:
-                            user_misc = []
-                        else:
-                            user_misc = user_items[i][0]
                         #sort the users inventory by weapon
-                        user_item_id = user_misc[i][0]
-                        user_item_name = user_misc[i][1]
-                        user_item_price = user_misc[i][2]
+                        user_item_id = user_misc[i][1]
+                        user_item_name = user_misc[i][2]
+                        user_item_price = user_misc[i][3]
                         user_item_price = int(user_item_price)
-                        user_item_emoji = user_misc[i][3]
-                        user_item_rarity = user_misc[i][4]
-                        user_item_type = user_misc[i][5]
-                        user_item_damage = user_misc[i][6]
+                        user_item_emoji = user_misc[i][4]
+                        user_item_rarity = user_misc[i][5]
+                        user_item_type = user_misc[i][7]
+                        user_item_damage = user_misc[i][8]
                         user_item_element = await db_manager.get_basic_item_element(user_item_id)
                         user_item_crit_chance = await db_manager.get_basic_item_crit_chance(user_item_id)
                         user_item_projectile = await db_manager.get_basic_item_projectile(user_item_id)
@@ -1077,11 +1062,27 @@ class Basic(commands.Cog, name="basic"):
                             if armor_equipped == True:
                                 await ctx.send(f"You already have armor equipped.")
                                 return
-                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        isEquippable = await db_manager.check_item_equipped(user_item_id)
+                        item_equipped_id = await db_manager.id_of_item_equipped(user_id, user_item_id)
+                        #check if the item is a weapon or armor, and see if the user already has it
+                        if item_equipped_id == user_item_id:
+                            await ctx.send(f"`{item_name}` is already equipped.")
+                            return
+                        if item_type == "Weapon":
+                            weapon_equipped = await db_manager.is_weapon_equipped(user_id)
+                            if weapon_equipped == True:
+                                await ctx.send(f"You already have a weapon equipped.")
+                                return
+                        elif item_type == "Armor":
+                            armor_equipped = await db_manager.is_armor_equipped(user_id)
+                            if armor_equipped == True:
+                                await ctx.send(f"You already have armor equipped.")
+                                return
+                        isEquippable = await db_manager.is_basic_item_equipable(user_item_id)
                         if isEquippable == 1:
-                            await db_manager.equip_item(user_id, item_id)
+                            await db_manager.equip_item(user_id, user_item_id)
                             #get the item effect
-                            item_effect = await db_manager.get_basic_item_effect(item_id)
+                            item_effect = await db_manager.get_basic_item_effect(user_item_id)
                             print(item_effect)
                             #split the effect by spaces
                             item_effect = item_effect.split()
