@@ -15,29 +15,19 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from helpers import db_manager, battle
 
+#slots 2, this time use a new method of creating the slot machine
 async def slots(ctx: Context, user, gamble):
-    #create the slot machine, this will be a discord embed with 3 slots that will spin, through all the possible slot machine emojis, and then stop on 3 emojis
-    #if the 3 emojis are the same, the user wins, if not, they lose
-    #if the user wins, they get 3x their bet back
-    #if the user loses, they lose their bet
-    #if the user gets 2 of the same emojis, they get 1.5x their bet back
-
-    #get the users money
-    user_money = await db_manager.get_money(user.id)
-    #check if the user has enough money to gamble
-    if user_money < gamble:
-        await ctx.send(f"You do not have enough money to gamble `{gamble}`.")
-        return
-    #remove the users money
-    await db_manager.remove_money(user.id, gamble)
+    #instead of an embed, use a regular message
     #create the slot machine
-    slot_machine = discord.Embed(title="Slot Machine", description=f"**{user.name}** is gambling `{gamble}`.", color=0x00ff00)
-    slot_machine.set_author(name="Slots", icon_url=user.avatar_url)
-    slot_machine.set_footer(text="Slots")
-    slot_machine.add_field(name="Slot 1", value=":question:", inline=True)
-    slot_machine.add_field(name="Slot 2", value=":question:", inline=True)
-    slot_machine.add_field(name="Slot 3", value=":question:", inline=True)
-    slot_machine_message = await ctx.send(embed=slot_machine)
+    #get the user's money
+    money = await db_manager.get_money(user.id)
+    #make both the money and gamble an int
+    money = int(money[0])
+    gamble = int(gamble)
+    #if the user doesn't have enough money, return
+    if money < gamble:
+        return await ctx.send(f"**{user.name}** doesn't have enough money to gamble `{gamble}`.")
+    slot_machine = await ctx.send(f"**{user.name}** is gambling `{gamble}`.")
     #create a list of all the possible slot machine emojis
     emoji = [
         ":apple:",
@@ -51,46 +41,118 @@ async def slots(ctx: Context, user, gamble):
         ":crown:",
         ":gem:",
     ]
-    #edit the embed to show the emojis spinning
-    #for every emoji in the list, edit the embed to show the emoji in the slot
+    #edit the message to show the emojis spinning
+    #for every emoji in the list, edit the message to show the emoji in the slot
     #SLOT 1
-    for i in range(2):
-        for i in emoji:
-            slot_machine.set_field_at(0, name="Slot 1", value=i, inline=True)
-            await slot_machine_message.edit(embed=slot_machine)
-            await asyncio.sleep(0.5)
     #get a random emoji from the list
-    slot1 = random.choice(emoji)
-    #edit the embed to show the emoji in the slot
-    slot_machine.set_field_at(0, name="Slot 1", value=slot1, inline=True)
-    await slot_machine_message.edit(embed=slot_machine)
-    #for every emoji in the list, edit the embed to show the emoji in the slot
-    
+
+    random_number = random.randint(1, 100)
+    if random_number <= 5:
+        slot1 = ":gem:"
+    else:
+        slot1 = random.choice(emoji)
+        if slot1 == ":gem:":
+            slot1 = random.choice(emoji)
+
+    #do the same for crowns, but a 10% chance
+    random_number = random.randint(1, 100)
+    if random_number <= 10:
+        slot1 = ":crown:"
+    else:
+        slot1 = random.choice(emoji)
+        if slot1 == ":crown:":
+            slot1 = random.choice(emoji)
+    #spin the slot till it gets to the emoji that was chosen
+    for i in emoji:
+        if i == slot1:
+            break
+        await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {i} : :question: : :question:")
+
+    #edit the message to show the emoji in the slot
+    await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : :question: : :question:")
+    #for every emoji in the list, edit the message to show the emoji in the slot
+
     #SLOT 2
-    #run it twice
-    for i in range(2):
-        for i in emoji:
-            slot_machine.set_field_at(1, name="Slot 2", value=i, inline=True)
-            await slot_machine_message.edit(embed=slot_machine)
-            await asyncio.sleep(0.5)
-    #get a random emoji from the list
-    slot2 = random.choice(emoji)
-    #edit the embed to show the emoji in the slot
-    slot_machine.set_field_at(1, name="Slot 2", value=slot2, inline=True)
-    await slot_machine_message.edit(embed=slot_machine)
-    #for every emoji in the list, edit the embed to show the emoji in the slot
-    
+    random_number = random.randint(1, 100)
+    if random_number <= 5:
+        slot2 = ":gem:"
+    else:
+        slot2 = random.choice(emoji)
+        if slot2 == ":gem:":
+            slot2 = random.choice(emoji)
+
+    #do the same for crowns, but a 10% chance
+    random_number = random.randint(1, 100)
+    if random_number <= 10:
+        slot2 = ":crown:"
+    else:
+        slot2 = random.choice(emoji)
+        if slot2 == ":crown:":
+            slot2 = random.choice(emoji)
+    #spin the slot till it gets to the emoji that was chosen
+    for i in emoji:
+        if i == slot2:
+            break
+        await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : {i} : :question:")
+    #edit the message to show the emoji in the slot
+    await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : {slot2} : :question:")
+    #for every emoji in the list, edit the message to show the emoji in the slot
+
     #SLOT 3
-    for i in range(2):
-        for i in emoji:
-            slot_machine.set_field_at(2, name="Slot 3", value=i, inline=True)
-            await slot_machine_message.edit(embed=slot_machine)
-            await asyncio.sleep(0.5)
-    #get a random emoji from the list
-    slot3 = random.choice(emoji)
-    #edit the embed to show the emoji in the slot
-    slot_machine.set_field_at(2, name="Slot 3", value=slot3, inline=True)
-    await slot_machine_message.edit(embed=slot_machine)
+    #get a random emoji from the list, gems are less likely to show up having a 5% chance
+    random_number = random.randint(1, 100)
+    if random_number <= 5:
+        slot3 = ":gem:"
+    else:
+        slot3 = random.choice(emoji)
+        if slot3 == ":gem:":
+            slot3 = random.choice(emoji)
+
+    #do the same for crowns, but a 10% chance
+    random_number = random.randint(1, 100)
+    if random_number <= 10:
+        slot3 = ":crown:"
+    else:
+        slot3 = random.choice(emoji)
+        if slot3 == ":crown:":
+            slot3 = random.choice(emoji)
+    #spin the slot till it gets to the emoji that was chosen
+    for i in emoji:
+        if i == slot3:
+            break
+        await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : {slot2} : {i}")
+    #edit the message to show the emoji in the slot
+    await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : {slot2} : {slot3}")
+
+    #get the result of each slot
+    slot1_result = slot1
+    slot2_result = slot2
+    slot3_result = slot3
+
+    #check if the slots are the same
+    if slot1_result == slot2_result == slot3_result:
+        #if they are the same, add the amount they bet  times 3 to their balance
+        await slot_machine.edit(content=f"**{user.name}** won `{gamble*3}`! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, gamble*3)
+    elif slot1_result == slot2_result or slot1_result == slot3_result or slot2_result == slot3_result:
+        #if 2 of the slots are the same, add the amount they bet  times 2 to their balance
+        await slot_machine.edit(content=f"**{user.name}** won `{gamble*1.5}`! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, gamble*1.5)
+    elif slot1_result == slot2_result == slot3_result == ":crown:":
+        #if they are all crowns, add the amount they bet  times 5 to their balance
+        await slot_machine.edit(content=f"**{user.name}** won `{gamble*5}`! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, gamble*5)
+    elif slot1_result == slot2_result == slot3_result == ":gem:":
+        #if they are all gems, add the amount they bet  times 10 to their balance
+        await slot_machine.edit(content=f"**{user.name}** won `{gamble*10}`! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, gamble*10)
+    else:
+        #if they are all different, take the amount they bet from their balance
+        await slot_machine.edit(content=f"**{user.name}** lost `{gamble}`! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.remove_money(user.id, gamble)
+
+
+
     
         
     
