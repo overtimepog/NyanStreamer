@@ -26,38 +26,38 @@ import requests
 #`isEquippable` boolean NOT NULL    
       
 #Items
-with open("assets/items/weapons.json", "r") as f:
+with open("assets/items/weapons.json", "r", encoding="utf8") as f:
     weapons = json.load(f)
-with open("assets/items/materials.json", "r") as f:
+with open("assets/items/materials.json", "r", encoding="utf8") as f:
     materials = json.load(f)
-with open("assets/items/tools.json", "r") as f:
+with open("assets/items/tools.json", "r", encoding="utf8") as f:
     tools = json.load(f)
-with open("assets/items/armor.json", "r") as f:
+with open("assets/items/armor.json", "r", encoding="utf8") as f:
     armor = json.load(f)
-with open("assets/items/consumables.json", "r") as f:
+with open("assets/items/consumables.json", "r", encoding="utf8") as f:
     consumables = json.load(f)
-with open("assets/items/misc.json", "r") as f:
+with open("assets/items/misc.json", "r", encoding="utf8") as f:
     misc = json.load(f)
 basic_items = weapons + materials + tools + armor + consumables + misc
     
 #Enemies
-with open("assets/enemies/enemies.json", "r") as f:
+with open("assets/enemies/enemies.json", "r", encoding="utf8") as f:
     enemies = json.load(f)
-with open("assets/enemies/creatures.json", "r") as f:
+with open("assets/enemies/creatures.json", "r", encoding="utf8") as f:
     creatures = json.load(f)
-with open("assets/enemies/bosses.json", "r") as f:
+with open("assets/enemies/bosses.json", "r", encoding="utf8") as f:
     bosses = json.load(f)
 enemies = enemies + creatures + bosses
 
 #Quests
-with open("assets/quests/early_game.json", "r") as f:
+with open("assets/quests/early_game.json", "r", encoding="utf8") as f:
     early_game = json.load(f)
     
 quests = early_game
 
 
 #chests
-with open("assets/items/chests.json", "r") as f:
+with open("assets/items/chests.json", "r", encoding="utf8") as f:
     chests = json.load(f)
 
 

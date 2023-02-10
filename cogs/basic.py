@@ -194,8 +194,12 @@ class Basic(commands.Cog, name="basic"):
             item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_item_amount_from_inventory(item_id)
+            if item_effect == "None":
+                item_effect = "No Effect"
+            item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
+            #check if the item is equipped
+            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
             item_info = str(item_info)
             rarity = str(item_rarity)
             if rarity == "Common":
@@ -217,12 +221,26 @@ class Basic(commands.Cog, name="basic"):
             elif rarity == "Legendary":
                 rarity_color="0xff8000"
                 rarity_color = int(rarity_color, 16)
+            
             #create an embed for this item
-            item = discord.Embed(
-                title=f"{item_name}{item_emote} x{item_amount}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
-                color=rarity_color
-            )
+            if item_equipped == 1:
+                item_amount = item_amount - 1
+                if item_amount == 0:
+                    item_amount = " Equipped"
+                item = discord.Embed(
+                    title=f"{item_name}{item_emote} x{item_amount}",
+                    description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                    color=rarity_color
+                )
+                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+            else:
+                item = discord.Embed(
+                    title=f"{item_name}{item_emote} x{item_amount}",
+                    description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                    color=rarity_color
+                )
+                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+
             #add the embed to the list
             weapons.append(item)
         #armor
@@ -237,8 +255,11 @@ class Basic(commands.Cog, name="basic"):
             item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_item_amount_from_inventory(item_id)
+            if item_effect == "None":
+                item_effect = "No Effect"
+            item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
+            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
             item_info = str(item_info)
             rarity = str(item_rarity)
             if rarity == "Common":
@@ -261,11 +282,24 @@ class Basic(commands.Cog, name="basic"):
                 rarity_color="0xff8000"
                 rarity_color = int(rarity_color, 16)
             #create an embed for this item
-            item = discord.Embed(
-                title=f"{item_name}{item_emote} x{item_amount}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
-                color=rarity_color
-            )
+            if item_equipped == 1:
+                item_amount = item_amount - 1
+                if item_amount == 0:
+                    item_amount = " Equipped"
+                item = discord.Embed(
+                    title=f"{item_name}{item_emote} x{item_amount}",
+                    description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                    color=rarity_color
+                )
+                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+            else:
+                item = discord.Embed(
+                    title=f"{item_name}{item_emote} x{item_amount}",
+                    description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                    color=rarity_color
+                )
+                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+
             #add the embed to the list
             armor.append(item)
         #consumables
@@ -280,8 +314,11 @@ class Basic(commands.Cog, name="basic"):
             item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_item_amount_from_inventory(item_id)
+            if item_effect == "None":
+                item_effect = "No Effect"
+            item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
+            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
             item_info = str(item_info)
             rarity = str(item_rarity)
             if rarity == "Common":
@@ -304,11 +341,24 @@ class Basic(commands.Cog, name="basic"):
                 rarity_color="0xff8000"
                 rarity_color = int(rarity_color, 16)
             #create an embed for this item
-            item = discord.Embed(
-                title=f"{item_name}{item_emote} x{item_amount}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
-                color=rarity_color
-            )
+            if item_equipped == 1:
+                item_amount = item_amount - 1
+                if item_amount == 0:
+                    item_amount = " Equipped"
+                item = discord.Embed(
+                    title=f"{item_name}{item_emote} x{item_amount}",
+                    description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                    color=rarity_color
+                )
+                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+            else:
+                item = discord.Embed(
+                    title=f"{item_name}{item_emote} x{item_amount}",
+                    description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                    color=rarity_color
+                )
+                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+
             #add the embed to the list
             consumables.append(item)
         #misc
@@ -324,7 +374,9 @@ class Basic(commands.Cog, name="basic"):
             item_damage = i[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
-            item_amount = await db_manager.get_item_amount_from_inventory(item_id)
+            if item_effect == "None":
+                item_effect = "No Effect"
+            item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
             item_info = await db_manager.get_basic_item_description(item_id)
             item_info = str(item_info)
             rarity = str(item_rarity)
@@ -348,20 +400,34 @@ class Basic(commands.Cog, name="basic"):
                 rarity_color="0xff8000"
                 rarity_color = int(rarity_color, 16)
             #create an embed for this item
-            item = discord.Embed(
-                title=f"{item_name}{item_emote} x{item_amount}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
-                color=rarity_color
-            )
+            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+            if item_equipped == 1:
+                item_amount = item_amount - 1
+                if item_amount == 0:
+                    item_amount = " Equipped"
+                item = discord.Embed(
+                    title=f"{item_name}{item_emote} x{item_amount}",
+                    description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                    color=rarity_color
+                )
+                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+            else:
+                item = discord.Embed(
+                    title=f"{item_name}{item_emote} x{item_amount}",
+                    description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                    color=rarity_color
+                )
+                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
             #add the embed to the list
             misc.append(item)
             
         #create a shop embed to send in the beginning
         invembed = discord.Embed(
-            title="Inventory",
+            title=f"{ctx.author.name}'s Inventory",
             description="This is your Inventory, its Organized just like the shop",
             color=discord.Color.blurple()
         )
+        invembed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
         #react to the shop embed with, sword, shield, potion, and house
         message = await ctx.send(embed=invembed)
         await message.add_reaction("⚔️")

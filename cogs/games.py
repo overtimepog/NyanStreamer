@@ -27,6 +27,14 @@ class Games(commands.Cog, name="games"):
     async def slots(self, ctx: Context, gamble: int):
         await games.slots(ctx, ctx.author, gamble)
 
+    #slots rules command
+    @commands.hybrid_command(
+        name="slotrules",
+        description="Shows the rules for slots.",
+    )
+    async def slotrules(self, ctx: Context):
+        await games.slot_rules(ctx)
+
 
 
 async def setup(bot):
