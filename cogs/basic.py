@@ -232,14 +232,14 @@ class Basic(commands.Cog, name="basic"):
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                     color=rarity_color
                 )
-                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+                item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
             else:
                 item = discord.Embed(
                     title=f"{item_name}{item_emote} x{item_amount}",
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                     color=rarity_color
                 )
-                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+                item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
 
             #add the embed to the list
             weapons.append(item)
@@ -291,14 +291,14 @@ class Basic(commands.Cog, name="basic"):
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                     color=rarity_color
                 )
-                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+                item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
             else:
                 item = discord.Embed(
                     title=f"{item_name}{item_emote} x{item_amount}",
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                     color=rarity_color
                 )
-                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+                item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
 
             #add the embed to the list
             armor.append(item)
@@ -350,14 +350,14 @@ class Basic(commands.Cog, name="basic"):
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                     color=rarity_color
                 )
-                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+                item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
             else:
                 item = discord.Embed(
                     title=f"{item_name}{item_emote} x{item_amount}",
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                     color=rarity_color
                 )
-                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+                item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
 
             #add the embed to the list
             consumables.append(item)
@@ -410,14 +410,14 @@ class Basic(commands.Cog, name="basic"):
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                     color=rarity_color
                 )
-                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+                item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
             else:
                 item = discord.Embed(
                     title=f"{item_name}{item_emote} x{item_amount}",
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                     color=rarity_color
                 )
-                item.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+                item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
             #add the embed to the list
             misc.append(item)
             
@@ -438,10 +438,12 @@ class Basic(commands.Cog, name="basic"):
         await message.add_reaction("⏪")
         await message.add_reaction("⏩")
         await message.add_reaction("✅")
-        
+        await message.add_reaction("❌")
+
+      
         #switch between the different embeds based on the reaction
         def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in ["⚔️", "🛡️", "🧪", "💎", "🏠", "⏪", "⏩", "✅"]
+            return user == ctx.author and str(reaction.emoji) in ["⚔️", "🛡️", "🧪", "💎", "🏠", "⏪", "⏩", "✅", "❌"]
         page = 0
         i = 0
         reaction = None
@@ -479,7 +481,7 @@ class Basic(commands.Cog, name="basic"):
                 await message.edit(embed=invembed)
                 await message.remove_reaction("🏠", ctx.author)
             try:
-                reaction, user = await self.bot.wait_for("reaction_add", timeout=200.0, check=check)
+                reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                 #if the page is 1 (weapons) and the reaction is the arrow forward, go to the item in the list of weapons
                 if page == 1 and str(reaction) == "⏩":
                     if i < len(weapons)-1:
@@ -1268,6 +1270,11 @@ class Basic(commands.Cog, name="basic"):
                                 await ctx.send(f"You equipped `{item_name}`")
                         else:
                             await ctx.send(f"that is not equippable.")
+                elif str(reaction) == "❌":
+                    #delete the embed
+                    await message.delete()
+                    return  
+            
             except Exception as e:
                 print(e)
         
@@ -2090,6 +2097,10 @@ class Basic(commands.Cog, name="basic"):
                              await db_manager.remove_money(ctx.author.id, shop_item_price)
                              await db_manager.add_item_to_inventory(ctx.author.id, shop_item_id, 1)
                              await ctx.send(f"You bought a {shop_item_name}!")
+                elif str(reaction) == "❌":
+                    #delete the embed
+                    await message.delete()
+                    return
             except Exception as e:
                 print(e)
                     
