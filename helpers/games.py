@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import json
 import os
 import random
@@ -12,8 +13,18 @@ import requests
 from discord.ext import commands
 from discord.ext.commands import Bot, Context
 from PIL import Image, ImageChops, ImageDraw, ImageFont
+from discord import Color, Embed
 
 from helpers import db_manager, battle
+import asyncio
+import os
+import random
+from typing import List, Tuple, Union
+
+import discord
+from discord.ext import commands
+from helpers.card import Card
+from PIL import Image
 
 #slots 2, this time use a new method of creating the slot machine
 async def slots(ctx: Context, user, gamble):
@@ -199,5 +210,3 @@ async def slot_rules(ctx: Context):
     )
     #send the embed
     await ctx.send(embed=embed)
-
-    
