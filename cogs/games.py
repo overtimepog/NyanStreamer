@@ -118,6 +118,32 @@ class Games(commands.Cog, name="games"):
             return
         deck = [Card(suit, num) for num in range(2,15) for suit in Card.suits]
         random.shuffle(deck) # Generate deck and shuffle it
+        #give the user a higher chance of drawing a good hand based on their luck stat
+        luck = await db_manager.get_luck(ctx.author.id)
+        #roll a random number between the luck stat and 100
+        luck = random.randint(luck, 100)
+        print("Luck: " + str(luck))
+        if luck > 99:
+            deck.append(Card('S', 14))
+            deck.append(Card('H', 14))
+            deck.append(Card('D', 14))
+            deck.append(Card('C', 14))
+            deck.append(Card('S', 13))
+            deck.append(Card('H', 13))
+            deck.append(Card('D', 13))
+            deck.append(Card('C', 13))
+            deck.append(Card('S', 12))
+            deck.append(Card('H', 12))
+            deck.append(Card('D', 12))
+            deck.append(Card('C', 12))
+            deck.append(Card('S', 11))
+            deck.append(Card('H', 11))
+            deck.append(Card('D', 11))
+            deck.append(Card('C', 11))
+            deck.append(Card('S', 10))
+            deck.append(Card('H', 10))
+            deck.append(Card('D', 10))
+            deck.append(Card('C', 10))
 
         player_hand: List[Card] = []
         dealer_hand: List[Card] = []
