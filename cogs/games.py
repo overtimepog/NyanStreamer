@@ -128,22 +128,6 @@ class Games(commands.Cog, name="games"):
             deck.append(Card('H', 14))
             deck.append(Card('D', 14))
             deck.append(Card('C', 14))
-            deck.append(Card('S', 13))
-            deck.append(Card('H', 13))
-            deck.append(Card('D', 13))
-            deck.append(Card('C', 13))
-            deck.append(Card('S', 12))
-            deck.append(Card('H', 12))
-            deck.append(Card('D', 12))
-            deck.append(Card('C', 12))
-            deck.append(Card('S', 11))
-            deck.append(Card('H', 11))
-            deck.append(Card('D', 11))
-            deck.append(Card('C', 11))
-            deck.append(Card('S', 10))
-            deck.append(Card('H', 10))
-            deck.append(Card('D', 10))
-            deck.append(Card('C', 10))
 
         player_hand: List[Card] = []
         dealer_hand: List[Card] = []
