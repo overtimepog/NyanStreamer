@@ -119,15 +119,7 @@ class Games(commands.Cog, name="games"):
         deck = [Card(suit, num) for num in range(2,15) for suit in Card.suits]
         random.shuffle(deck) # Generate deck and shuffle it
         #give the user a higher chance of drawing a good hand based on their luck stat
-        luck = await db_manager.get_luck(ctx.author.id)
-        #roll a random number between the luck stat and 100
-        luck = random.randint(luck, 100)
-        print("Luck: " + str(luck))
-        if luck > 99:
-            deck.append(Card('S', 14))
-            deck.append(Card('H', 14))
-            deck.append(Card('D', 14))
-            deck.append(Card('C', 14))
+
 
         player_hand: List[Card] = []
         dealer_hand: List[Card] = []
@@ -136,7 +128,67 @@ class Games(commands.Cog, name="games"):
         dealer_hand.append(deck.pop())
         player_hand.append(deck.pop())
         dealer_hand.append(deck.pop().flip())
-
+        
+        luck = await db_manager.get_luck(ctx.author.id)
+        #roll a random number between the luck stat and 100
+        luck = random.randint(luck, 100)
+        print("Luck: " + str(luck))
+        if luck > 99:
+            #set the player's hand to 21
+            #pick one of the random hands
+            #set the player's hand to that hand
+            blackjackHands = [
+                [Card("D", 10), Card("S", 14)], 
+                [Card("C", 10), Card("D", 14)], 
+                [Card("H", 10), Card("C", 14)], 
+                [Card("S", 10), Card("D", 14)], 
+                [Card("D", 10), Card("H", 14)], 
+                [Card("C", 10), Card("S", 14)],
+                [Card("D", 14), Card("S", 10)], 
+                [Card("C", 14), Card("D", 10)], 
+                [Card("H", 14), Card("C", 10)], 
+                [Card("S", 14), Card("D", 10)], 
+                [Card("D", 14), Card("H", 10)], 
+                [Card("C", 14), Card("S", 10)],
+                [Card("D", 11), Card("S", 14)], 
+                [Card("C", 11), Card("D", 14)], 
+                [Card("H", 11), Card("C", 14)], 
+                [Card("S", 11), Card("D", 14)], 
+                [Card("D", 11), Card("H", 14)], 
+                [Card("C", 11), Card("S", 14)],
+                [Card("D", 14), Card("S", 11)], 
+                [Card("C", 14), Card("D", 11)], 
+                [Card("H", 14), Card("C", 11)], 
+                [Card("S", 14), Card("D", 11)], 
+                [Card("D", 14), Card("H", 11)], 
+                [Card("C", 14), Card("S", 11)],
+                [Card("D", 12), Card("S", 14)], 
+                [Card("C", 12), Card("D", 14)], 
+                [Card("H", 12), Card("C", 14)], 
+                [Card("S", 12), Card("D", 14)], 
+                [Card("D", 12), Card("H", 14)], 
+                [Card("C", 12), Card("S", 14)],
+                [Card("D", 14), Card("S", 12)], 
+                [Card("C", 14), Card("D", 12)], 
+                [Card("H", 14), Card("C", 12)], 
+                [Card("S", 14), Card("D", 12)], 
+                [Card("D", 14), Card("H", 12)], 
+                [Card("C", 14), Card("S", 12)],
+                [Card("D", 13), Card("S", 14)], 
+                [Card("C", 13), Card("D", 14)], 
+                [Card("H", 13), Card("C", 14)], 
+                [Card("S", 13), Card("D", 14)], 
+                [Card("D", 13), Card("H", 14)], 
+                [Card("C", 13), Card("S", 14)],
+                [Card("D", 14), Card("S", 13)], 
+                [Card("C", 14), Card("D", 13)], 
+                [Card("H", 14), Card("C", 13)], 
+                [Card("S", 14), Card("D", 13)], 
+                [Card("D", 14), Card("H", 13)], 
+                [Card("C", 14), Card("S", 13)],
+            ]
+            player_hand = random.choice(blackjackHands)
+        print("Player hand: " + str(player_hand))
         player_score = self.calc_hand(player_hand)
         dealer_score = self.calc_hand(dealer_hand)
 
@@ -168,12 +220,13 @@ class Games(commands.Cog, name="games"):
             player_score = self.calc_hand(player_hand)
             dealer_score = self.calc_hand(dealer_hand)
             if player_score == 21:  # win condition
+                #return 3/2 of the bet
                 bet = int(bet*1.5)
                 await db_manager.add_money(ctx.author.id, bet)
                 result = ("Blackjack!", 'won')
                 break
             elif player_score > 21:  # losing condition
-                await db_manager.add_money(ctx.author.id, bet*-1)
+                await db_manager.remove_money(ctx.author.id, bet)
                 result = ("Player busts", 'lost')
                 break
             msg = await out_table(
