@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `isMineable` boolean NOT NULL,
   `item_mine_chance` int(11) NOT NULL,
   `quote_id` varchar(255) NOT NULL,
+  `item_sub_type` varchar(255) NOT NULL,
   FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)
   FOREIGN KEY (quote_id) REFERENCES item_quotes(item_id)
 );

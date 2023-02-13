@@ -430,33 +430,33 @@ class Basic(commands.Cog, name="basic"):
         invembed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
         #react to the shop embed with, sword, shield, potion, and house
         message = await ctx.send(embed=invembed)
-        await message.add_reaction("⚔️")
-        await message.add_reaction("🛡️")
+        await message.add_reaction("🗡")
+        await message.add_reaction("<:ironarmor:1061292989047132190>")
         await message.add_reaction("🧪")
-        await message.add_reaction("💎")
+        await message.add_reaction("<:diamond:1061287200756596806>")
         await message.add_reaction("🏠")
-        await message.add_reaction("⏪")
-        await message.add_reaction("⏩")
+        await message.add_reaction("⬅️")
+        await message.add_reaction("➡️")
         await message.add_reaction("✅")
         await message.add_reaction("❌")
 
       
         #switch between the different embeds based on the reaction
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in ["⚔️", "🛡️", "🧪", "💎", "🏠", "⏪", "⏩", "✅", "❌"]
+def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in ["🗡", "<:ironarmor:1061292989047132190>", "🧪", "<:diamond:1061287200756596806>", "🏠", "⬅️", "➡️", "✅", "❌"]
         page = 0
         i = 0
         reaction = None
         while True:
-            if str(reaction) == "⚔️":
-                await message.remove_reaction("⚔️", ctx.author)
+            if str(reaction) == "🗡":
+                await message.remove_reaction("🗡", ctx.author)
                 try: 
                     page = 1
                     await message.edit(embed=weapons[i])
                 except(IndexError):
                     await ctx.send("There are no weapons in your inventory")
-            elif str(reaction) == "🛡️":
-                await message.remove_reaction("🛡️", ctx.author)
+            elif str(reaction) == "<:ironarmor:1061292989047132190>":
+                await message.remove_reaction("<:ironarmor:1061292989047132190>", ctx.author)
                 try:
                     page = 2
                     await message.edit(embed=armor[i])
@@ -469,8 +469,8 @@ class Basic(commands.Cog, name="basic"):
                     await message.edit(embed=consumables[i])
                 except(IndexError):
                     await ctx.send("There are no consumables in your inventory")
-            elif str(reaction) == "💎":
-                await message.remove_reaction("💎", ctx.author)
+            elif str(reaction) == "<:diamond:1061287200756596806>":
+                await message.remove_reaction("<:diamond:1061287200756596806>", ctx.author)
                 try:
                     page = 4
                     await message.edit(embed=misc[i])
@@ -483,90 +483,89 @@ class Basic(commands.Cog, name="basic"):
             try:
                 reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                 #if the page is 1 (weapons) and the reaction is the arrow forward, go to the item in the list of weapons
-                if page == 1 and str(reaction) == "⏩":
+                if page == 1 and str(reaction) == "➡️":
                     if i < len(weapons)-1:
                         i += 1
                         await message.edit(embed=weapons[i])
-                        await message.remove_reaction("⏩", ctx.author)
+                        await message.remove_reaction("➡️", ctx.author)
                     else:
                         i = 0
                         await message.edit(embed=weapons[i])
-                        await message.remove_reaction("⏩", ctx.author)
+                        await message.remove_reaction("➡️", ctx.author)
                 #if the page is 1 (weapons) and the reaction is the arrow backward, go to the previous item in the list of weapons
-                elif page == 1 and str(reaction) == "⏪":
+                elif page == 1 and str(reaction) == "⬅️":
                     if i > 0:
                         i -= 1
                         await message.edit(embed=weapons[i])
-                        await message.remove_reaction("⏪", ctx.author)
+                        await message.remove_reaction("⬅️", ctx.author)
                     else:
                         i = len(weapons)-1
                         await message.edit(embed=weapons[i])
-                        await message.remove_reaction("⏪", ctx.author)
+                        await message.remove_reaction("⬅️", ctx.author)
         
                 #if the page is 2 (armor) and the reaction is the arrow forward, go to the item in the list of armor
-                elif page == 2 and str(reaction) == "⏩":
+                elif page == 2 and str(reaction) == "➡️":
                     if i < len(armor)-1:
                         i += 1
                         await message.edit(embed=armor[i])
-                        await message.remove_reaction("⏩", ctx.author)
+                        await message.remove_reaction("➡️", ctx.author)
                     else:
                         i = 0
                         await message.edit(embed=armor[i])
-                        await message.remove_reaction("⏩", ctx.author)
+                        await message.remove_reaction("➡️", ctx.author)
                 #if the page is 2 (armor) and the reaction is the arrow backward, go to the previous item in the list of armor
-                elif page == 2 and str(reaction) == "⏪":
+                elif page == 2 and str(reaction) == "⬅️":
                     if i > 0:
                         i -= 1
                         await message.edit(embed=armor[i])
-                        await message.remove_reaction("⏪", ctx.author)
+                        await message.remove_reaction("⬅️", ctx.author)
                     else:
                         i = len(armor)-1
                         await message.edit(embed=armor[i])
-                        await message.remove_reaction("⏪", ctx.author)   
+                        await message.remove_reaction("⬅️", ctx.author)   
                         
                 #if the page is 3 (consumables) and the reaction is the arrow forward, go to the item in the list of consumables
-                elif page == 3 and str(reaction) == "⏩":
+                elif page == 3 and str(reaction) == "➡️":
                     if i < len(consumables)-1:
                         i += 1
                         await message.edit(embed=consumables[i])
-                        await message.remove_reaction("⏩", ctx.author)
+                        await message.remove_reaction("➡️", ctx.author)
                     else:
                         i = 0
                         await message.edit(embed=consumables[i])
-                        await message.remove_reaction("⏩", ctx.author)
+                        await message.remove_reaction("➡️", ctx.author)
                 #if the page is 3 (consumables) and the reaction is the arrow backward, go to the previous item in the list of consumables
-                elif page == 3 and str(reaction) == "⏪":
+                elif page == 3 and str(reaction) == "⬅️":
                     if i > 0:
                         i -= 1
                         await message.edit(embed=consumables[i])
-                        await message.remove_reaction("⏪", ctx.author)
+                        await message.remove_reaction("⬅️", ctx.author)
                     else:
                         i = len(consumables)-1
                         await message.edit(embed=consumables[i])
-                        await message.remove_reaction("⏪", ctx.author)                        
+                        await message.remove_reaction("⬅️", ctx.author)                        
 
                 #if the page is 4 (misc) and the reaction is the arrow forward, go to the item in the list of misc
-                elif page == 4 and str(reaction) == "⏩":
+                elif page == 4 and str(reaction) == "➡️":
                     if i < len(misc)-1:
                         i += 1
                         await message.edit(embed=misc[i])
-                        await message.remove_reaction("⏩", ctx.author)
+                        await message.remove_reaction("➡️", ctx.author)
                     else:
                         i = 0
                         await message.edit(embed=misc[i])
-                        await message.remove_reaction("⏩", ctx.author)
+                        await message.remove_reaction("➡️", ctx.author)
                 #if the page is 4 (misc) and the reaction is the arrow backward, go to the previous item in the list of misc
-                elif page == 4 and str(reaction) == "⏪":
+                elif page == 4 and str(reaction) == "⬅️":
                     if i > 0:
                         i -= 1
                         await message.edit(embed=misc[i])
-                        await message.remove_reaction("⏪", ctx.author)
+                        await message.remove_reaction("⬅️", ctx.author)
                     else:
                         i = len(misc)-1
                         await message.edit(embed=misc[i])
-                        await message.remove_reaction("⏪", ctx.author)
+                        await message.remove_reaction("⬅️", ctx.author)
                 #if the reaction is the check mark, buy the item
-                
                 #EQUIP PROCESSING
                 elif str(reaction) == "✅":
                     #remove the reaction

@@ -1,7 +1,7 @@
 [
     {
-        "item_id": "ironarmor",
-        "item_name": "Iron Armor",
+        "item_id": "iron_chestplate",
+        "item_name": "Iron Chestplate",
         "item_price": 100,
         "item_emoji": "<:ironarmor:1061292989047132190>",
         "item_rarity": "Common",
@@ -10,7 +10,7 @@
         "isUsable": false,
         "inShop": true,
         "isEquippable": true,
-        "item_description": "A basic iron armor, used to protect.",
+        "item_description": "A basic iron chestplate, used to protect.",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
@@ -27,11 +27,12 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "Chestplate"
     },
     {
-        "item_id": "dragon_scale_armor",
-        "item_name": "Dragon Scale Armor",
+        "item_id": "dragon_scale_chestplate",
+        "item_name": "Dragon Scale Chestplate",
         "item_price": 500,
         "item_emoji": "\ud83e\udddc",
         "item_rarity": "Legendary",
@@ -40,7 +41,7 @@
         "isUsable": false,
         "inShop": false,
         "isEquippable": true,
-        "item_description": "A powerful armor crafted from dragon scales, offering superior protection.",
+        "item_description": "A powerful Chestplate crafted from dragon scales, offering superior protection.",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
@@ -60,6 +61,7 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "Chestplate"
     }
 ]

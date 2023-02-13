@@ -24,7 +24,8 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "None"
     },
     {
         "item_id": "rusty_sword",
@@ -56,7 +57,8 @@
             {
                 "quote": "{user} smashes {target} and deals {damage} damage!"
             }
-        ]
+        ],
+        "item_sub_type": "None"
     },
     {
         "item_id": "iron_dagger",
@@ -83,7 +85,8 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "None"
     },
     {
         "item_id": "steel_mace",
@@ -115,7 +118,9 @@
         {
             "quote": "{user} smashes {target} and deals {damage} damage!"
         }
-    ]
+        ],
+        "item_sub_type": "None"
+
     },
     {
         "item_id": "fire_wand",
@@ -151,7 +156,8 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "None"
         },
         {
         "item_id": "ice_wand",
@@ -187,6 +193,7 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "None"
         }
 ]

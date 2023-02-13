@@ -30,7 +30,8 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "None"
     },
     {
         "item_id": "axe",
@@ -63,7 +64,8 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "None"
     },
     {
         "item_id": "bow",
@@ -96,6 +98,7 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "None"
     }
 ]

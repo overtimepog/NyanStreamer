@@ -24,6 +24,7 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "Bauble"
     }
 ]

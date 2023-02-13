@@ -30,7 +30,8 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "Potion"
     },
     {
         "item_id": "revivepotion",
@@ -63,6 +64,7 @@
         "quote_id": "None",
         "item_quotes": [{
             "quote": "None"
-        }]
+        }],
+        "item_sub_type": "Potion"
     }
 ]
