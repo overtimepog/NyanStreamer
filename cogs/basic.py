@@ -442,7 +442,7 @@ class Basic(commands.Cog, name="basic"):
 
       
         #switch between the different embeds based on the reaction
-def check(reaction, user):
+        def check(reaction, user):
             return user == ctx.author and str(reaction.emoji) in ["🗡", "<:ironarmor:1061292989047132190>", "🧪", "<:diamond:1061287200756596806>", "🏠", "⬅️", "➡️", "✅", "❌"]
         page = 0
         i = 0
