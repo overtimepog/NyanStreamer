@@ -1142,6 +1142,14 @@ async def remove_money_spent(user_id: int, amount: int) -> None:
     db = DB()
     await db.execute("UPDATE `stats` SET money_spent = money_spent - ? WHERE user_id = ?", (amount, user_id))
     
+#get the item id from its name
+async def get_item_id(item_name: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_name = ?", (item_name,), fetch="one")
+    if data is not None:
+        return data[0]
+    else:
+        return None
 #add items bought
 async def add_items_bought(user_id: int, amount: int) -> None:
     db = DB()
@@ -2320,8 +2328,17 @@ async def remove_item_from_inventory(user_id: int, item_id: str) -> int:
             result = await cursor.fetchone()
             if result is not None:
                 #if the item already exists in the inventory table, remove 1 from the item_amount
-                await db.execute("UPDATE inventory SET item_amount = item_amount - 1 WHERE user_id = ? AND item_id = ?", (user_id, item_id))
+                await db.execute("UPDATE inventory SET item_amount = item_amount - 1 WHERE user_id=? AND item_id=?", (user_id, item_id))
                 await db.commit()
+                #if the item_amount is 0, remove the item from the inventory table
+                async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
+                    result = await cursor.fetchone()
+                    if result[6] <= 0:
+                        await db.execute("DELETE FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id))
+                        await db.commit()
+                        return 1
+                    else:
+                        return 1
                 return 1
             else:
                 #if the item does not exist in the inventory table, return 0

@@ -18,7 +18,7 @@
         "item_recipe": [{}],
         "isHuntable": true,
         "item_hunt_chance": 0.01,
-        "item_effect": "luck + 75",
+        "item_effect": "luck + 50",
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
