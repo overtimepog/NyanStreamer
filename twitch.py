@@ -54,7 +54,9 @@ class TwitchBot(commands.Bot):
         await ctx.send(f'Hello {ctx.author.name}!')
 
     #command to drop an item to a random viewer in chat, get the random veiwer from https://tmi.twitch.tv/group/user/{channel}/chatters and then send a message to them
+    @commands.cooldown(rate=1, per=1800, bucket=commands.Bucket.channel)
     @commands.command()
+    #add a cooldown of 1 hour
     async def drop(self, ctx: commands.Context):
         #make sure only mods of the channel can use this command
         if ctx.author.is_mod:
@@ -84,6 +86,7 @@ class TwitchBot(commands.Bot):
             randomViewer = random.choice(list)
             #get the item from the database
             items = await db_manager.get_all_streamer_items(twitchID)
+            basic_items = db_manager.get_all_basic_items()
             userTwitchID = await db_manager.get_twitch_id(randomViewer)
             isConnected = await db_manager.is_twitch_connected(userTwitchID)
             if isConnected == True:
@@ -92,8 +95,11 @@ class TwitchBot(commands.Bot):
                 if len(items) == 0:
                     #send a message to the channel saying there are no items to drop
                     print("no items for channel: " + ctx.channel.name)
-                    await ctx.send(f"There are no items to drop in this channel.")
-                    money = random.randint(1, 100)
+                    await ctx.send(f"There are no items to drop in {ctx.channel.name}, giving money instead :)!")
+                    #drop a random basic item instead
+                    #get a random item from the list
+                    
+                    money = random.randint(25, 1000)
                     await db_manager.add_money(userDiscordID, money)
                     await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
                     return
@@ -136,15 +142,19 @@ class TwitchBot(commands.Bot):
                     #get the discord name of the random user
                     #send a message to the random user
                     #add the item to the users inventory
-                    #give it a 25% chance for the item to be dropped, and the other 75% it will give random amount of money
+                    #give it a 50% chance for the item to be dropped, and the other 75% it will give random amount of money
                 chance = random.randint(1, 4)
-                if chance == 1:
-                    await db_manager.add_item_to_inventory(userDiscordID, itemID, 1)
+                if chance <= 2:
+                    itemgiven = await db_manager.add_streamer_item_to_user(userDiscordID, itemID)
                     #send a message to the random user saying they have been given an item
-                    await ctx.send(f"{randomViewer} has been given {randomItem[2]} by {ctx.author.name}!")
-                    return
+                    if itemgiven == 0:
+                        await ctx.send(f"{randomViewer} already has {randomItem[2]} in their inventory!, you have been given 5000 coins instead!")
+                        return
+                    elif itemgiven == 1:
+                        await ctx.send(f"{randomViewer} has been given {randomItem[2]} by {ctx.author.name}!")
+                        return
                     #get a random amount of money
-                money = random.randint(1, 100)
+                money = random.randint(25, 1000)
                 await db_manager.add_money(userDiscordID, money)
                 await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
             else:

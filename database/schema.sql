@@ -13,19 +13,11 @@ CREATE TABLE IF NOT EXISTS `streamer` (
 
 CREATE TABLE IF NOT EXISTS `streamer_items` (
   `streamer_prefix` varchar(20) NOT NULL,
+  `channel` varchar(20) NOT NULL,
   `item_id` varchar(20) NOT NULL,
   `item_name` varchar NOT NULL,
-  `item_price` varchar(255) NOT NULL,
   `item_emoji` varchar(255) NOT NULL,
-  `item_rarity` varchar(255) NOT NULL,
-  `twitch_id` varchar(255) NOT NULL,
-  `item_type` varchar(255) NOT NULL,
-  `item_damage` int(11) NOT NULL,
-  `item_element` varchar(255) NOT NULL,
-  `item_crit_chance` int(11) NOT NULL,
-  `item_effect` varchar(255) NOT NULL,
-  `isUsable` boolean NOT NULL,
-  `isEquippable` boolean NOT NULL
+  `item_rarity` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `basic_items` (
@@ -161,7 +153,8 @@ CREATE TABLE IF NOT EXISTS `stats`(
   `enemies_killed` int(11) NOT NULL,
   `users_killed` int(11) NOT NULL,
   `battles_fought` int(11) NOT NULL,
-  `battles_won` int(11) NOT NULL
+  `battles_won` int(11) NOT NULL,
+  `streamer_items_collected` int(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `questProgress` (
@@ -228,7 +221,8 @@ CREATE TABLE IF NOT EXISTS `enemy_drops` (
   `enemy_id` varchar(20) NOT NULL,
   `item_id` varchar(20) NOT NULL,
   `item_amount` int(11) NOT NULL,
-  `item_drop_chance` int(11) NOT NULL
+  `item_drop_chance` int(11) NOT NULL,
+  PRIMARY KEY (`enemy_id`,`item_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `inventory` (
@@ -245,6 +239,15 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `item_element` varchar(255) NOT NULL,
   `item_crit_chance` int(11) NOT NULL,
   `item_projectile` varchar(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `streamer_item_inventory` (
+  `user_id` int(11) NOT NULL,
+  `channel` varchar(255) NOT NULL,
+  `streamer_item_id` varchar(255) NOT NULL,
+  `streamer_item_name` varchar(255) NOT NULL,
+  `streamer_item_emoji` varchar(255) NOT NULL,
+  `streamer_item_rarity` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `warns` (

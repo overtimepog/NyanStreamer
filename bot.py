@@ -150,15 +150,18 @@ async def on_message(message: discord.Message) -> None:
     try:
         if message.guild.id == 1070882685855211641:
             print("Message was sent from the connections Server")
-                #wait for the twitch ID
+            #wait for the twitch ID
+            global has_twitch_user
+            global has_twitch
+            global has_discord
 
             if message.content.startswith("TWITCH USERNAME: "):
                 global twitch_username
                 twitch_username = message.content.replace("TWITCH USERNAME: ", "")
                 print(twitch_username)
-                has_twitch_user = True
-                has_twitch = False
                 has_discord = True
+                has_twitch = False
+                has_twitch_user = True
                 #connect the two accounts
                 #if i is more than 2, break the loop
 
@@ -188,7 +191,13 @@ async def on_message(message: discord.Message) -> None:
                 await db_manager.connect_twitch_id(discord_id, twitch_id)
                 await db_manager.connect_twitch_name(discord_id, twitch_username)
                 #send a message to the user saying that the accounts have been connected
-                await message.channel.send(f"Connected {discord_id} to {twitch_id}!")
+                #dm the user that they are connected
+                #connection embed
+                embed = discord.Embed(title="Connected!", description="Your accounts have been connected!", color=0x00ff00)
+                #add a footer saying the users discord id and twitch id
+                embed.set_footer(text=f"Discord ID: {discord_id} | Twitch ID: {twitch_id}")
+                #send the embed
+                await bot.get_user(int(discord_id)).send(embed=embed)
                 print(f"Connected {discord_id} to {twitch_id}!")
                 #delete the channel
                 await message.channel.delete()

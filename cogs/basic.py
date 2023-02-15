@@ -638,154 +638,40 @@ class Basic(commands.Cog, name="basic"):
         
 
     #command to create a new item in the database item table, using the create_streamer_item function from helpers\db_manager.py
+    #`streamer_prefix` varchar(20) NOT NULL,
+    #`item_id` varchar(20) NOT NULL,
+    #`item_name` varchar NOT NULL,
+    #`item_emoji` varchar(255) NOT NULL,
+    #`item_rarity` varchar(255) NOT NULL,
+    
     @commands.hybrid_command(
         name="createitem",
-        description="This command will create a new item in the database.",
+        description="This command will create a new streamer item in the database.",
     )
     @checks.is_streamer()
-    async def create_item(self, ctx: Context, item_name: str, item_emote: discord.Emoji or discord.PartialEmoji):
+    async def create_item(self, ctx: Context, item_name: str, item_emoji: str):
         """
-        This command will create a new item in the database.
+        This command will create a new streamer item in the database.
 
         :param ctx: The context in which the command was called.
-        :param item_name: The name of the item that should be added.
-        :param item_price: The price of the item that should be added.
+        :param item_id: The id of the item that should be created.
+        :param item_name: The name of the item that should be created.
+        :param item_emoji: The emoji of the item that should be created.
+        :param item_rarity: The rarity of the item that should be created.
         """
         user_id = ctx.message.author.id
-        #check if the item already exists in the database
-        #grab the streamersID from the database
-        streamerPrefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
-        streamerChannel = await db_manager.get_streamerChannel(user_id)
-        twitchID = await db_manager.get_twitchID(user_id)
-        twitchID = int(twitchID)
-        items = await db_manager.view_streamer_items(streamerChannel)
-        item_emote_url = item_emote.url
-        emojiString = f'<:{item_emote.name}:{item_emote.id}>'
-        print(items)
+        #get the streamer prefix
+        streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
+        channel = db_manager.get_streamer_channel_from_user_id(user_id)
+        #check if the item exists in the database
+        items = await db_manager.view_streamer_items(channel)
         for i in items:
             if item_name in i:
-                await ctx.send(f"`{item_name}`already exists in the database.")
+                await ctx.send("This item already exists for your channel.")
                 return
-        critChances = ['1%','2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%', '11%', '12%', '13%', '14%', '15%', '16%', '17%', '18%', '19%', '20%', '21%', '22%', '23%', '24%', '25%']
-        #get the presets from the json file
-        with open('assets/streamer_item_presets.json') as f:
-            presets = json.load(f)
-        #pick a random preset
-        preset = random.choice(presets)
-        item_price = preset['item_price']
-        item_rarity = preset['item_rarity']
-        item_type = preset['item_type']
-        item_damage = preset['item_damage']
-        item_element = preset['item_element']
-        item_crit_chance = preset['item_crit_chance']
-        item_effect = preset['item_effect']
-        isUsable = preset['isUsable']
-        isEquippable = preset['isEquippable']
-
-        if item_rarity == "Common":
-            rarity_color="0x808080"
-            rarity_color = int(rarity_color, 16)
-            
-        elif item_rarity == "Uncommon":
-            rarity_color="0x00B300"
-            rarity_color = int(rarity_color, 16)
-            
-        elif item_rarity == "Rare":
-            rarity_color="0x0057C4"
-            rarity_color = int(rarity_color, 16)
-            
-        elif item_rarity == "Epic":
-            rarity_color="0xa335ee"
-            rarity_color = int(rarity_color, 16)
-            
-        elif item_rarity == "Legendary":
-            rarity_color="0xff8000"
-            rarity_color = int(rarity_color, 16)
-
-        #add the item to the database
-        #send an embed to the streamer with the item info
-        #global embed
-        if item_type == "Weapon":
-            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=rarity_color)
-        elif item_type == "Armor":
-            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Defence: {item_damage}", color=rarity_color)
-        elif item_type == "Consumable":
-            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Effect: {item_effect}", color=rarity_color)
-        elif item_type == "Misc":
-            embed = discord.Embed(title=f"Item Created", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}", color=rarity_color)
-
-        #make the embed a global variable
-
-        #make the embed author the streamer
-        embed.set_author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar.url)
-        #set the embed thumbnail to the emoji url
-        embed.set_thumbnail(url=item_emote_url)
-        #create a button to confirm the item creation
-        class Buttons(discord.ui.View):
-            def __init__(self):
-                super().__init__()
-                self.value = None
-
-            @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
-            async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button ):
-                await interaction.response.send_message("Item created.")
-                await interaction.message.delete()
-                await db_manager.create_streamer_item(streamerPrefix, item_name, item_price, item_rarity, emojiString, twitchID, item_type, item_damage, item_element, item_crit_chance, item_effect, isUsable, isEquippable)
-                
-                self.value = True
-                self.stop()
-
-            #reroll button
-            @discord.ui.button(label="Reroll", style=discord.ButtonStyle.grey)
-            async def reroll(self, interaction: discord.Interaction, button: discord.ui.Button):
-                #reroll the item
-                #pick a random preset
-                preset = random.choice(presets)
-                item_price = preset['item_price']
-                item_rarity = preset['item_rarity']
-                item_rarity = str(item_rarity)
-                if item_rarity == "Common":
-                    rarity_color="0x808080"
-                    rarity_color = int(rarity_color, 16)
-
-                elif item_rarity == "Uncommon":
-                    rarity_color="0x00B300"
-                    rarity_color = int(rarity_color, 16)
-
-                elif item_rarity == "Rare":
-                    rarity_color="0x0057C4"
-                    rarity_color = int(rarity_color, 16)
-
-                elif item_rarity == "Epic":
-                    rarity_color="0xa335ee"
-                    rarity_color = int(rarity_color, 16)
-
-                elif item_rarity == "Legendary":
-                    rarity_color="0xff8000"
-                    rarity_color = int(rarity_color, 16)
-                item_type = preset['item_type']
-                item_damage = preset['item_damage']
-                #send an embed to the streamer with the item info
-                embed = discord.Embed(title=f"Item Preset", description=f"Item: {item_name}\nItem Price: {item_price}\nItem Rarity: {item_rarity}\nItem Type: {item_type}\nItem Damage: {item_damage}", color=rarity_color)
-                #set the embed thumbnail to the emoji url
-                embed.set_thumbnail(url=item_emote_url)
-                embed.set_author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar.url)
-                await interaction.response.edit_message(embed=embed, view=self)
-
-            @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red)
-            async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
-                await interaction.response.send_message("Item creation cancelled.")
-                #delete the message
-                await interaction.message.delete()
-                self.value = False
-                self.stop()
-
-
-        view = Buttons()
-        await ctx.send("Here is your Item", embed=embed, view=view)
-
-        #await db_manager.create_streamer_item(streamerPrefix, item_name, item_rarity, emojiString, twitchID, item_type, item_damage)
-
+        #create the item
+        await db_manager.create_streamer_item(streamer_prefix, channel, item_name, item_emoji, "Legendary")
+        await ctx.send("Item created.")
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
     @commands.hybrid_command(
         name="removeitem",
@@ -1511,7 +1397,7 @@ class Basic(commands.Cog, name="basic"):
             quest = i[8]
             quest = str(quest)
             #add a field to the embed for this quest
-            questembed.add_field(name=f"**{quest_name}**", value=f"`ID:{quest_id}` \n **Description**: `{quest_description}` \n **XP**: `{quest_xp}` \n **Reward**: `{quest_reward}` \n **Reward Amount**: `{quest_reward_amount}` \n **Level Requirement**: `{quest_level_req}` \n **Quest**: `{quest_type} {quest}` ", inline=False)
+            questembed.add_field(name=f"**{quest_name}**", value=f"`ID:{quest_id}` \n **Description**: `{quest_description}` \n **XP**: `{quest_xp}` \n **Reward**: `{quest_reward_amount} {quest_reward}` \n **Level Requirement**: `{quest_level_req}` \n **Quest**: `{quest_type} {quest}'s` ", inline=False)
             
             #save the embed to a list
             embeds.append(questembed)
@@ -1519,7 +1405,7 @@ class Basic(commands.Cog, name="basic"):
         #send the first embed, and add reactions to it to switch between the different embeds
         message = await ctx.send(embed=embeds[0])
         await message.add_reaction("⏪")
-        await message.add_reaction("➡️")
+        await message.add_reaction("⏩")
         await message.add_reaction("✅")
         #create a function to check if the reaction is the one we want
         def check(reaction, user):
@@ -1550,6 +1436,8 @@ class Basic(commands.Cog, name="basic"):
                 user_id = str(user_id)
                 #check if the user already has the quest
                 user_has_quest = await db_manager.check_user_has_quest(user_id, quest_id)
+                #check if the user has any quest 
+                user_has_any_quest = await db_manager.check_user_has_any_quest(user_id)
                 isCompleted = await db_manager.check_quest_completed(user_id, quest_id)
                 #check if the user meets the level requirements
                 user_level = await db_manager.get_level(user_id)
@@ -1567,6 +1455,10 @@ class Basic(commands.Cog, name="basic"):
                 
                 elif user_has_quest == True:
                     await ctx.send("You already have this quest!")
+                    break
+                #if the user already has a different quest, tell them they already have a quest
+                elif user_has_any_quest == True:
+                    await ctx.send("You already have a quest!, Abondon or Complete your current quest to get a new one!")
                     break
                 #if the user already completed the quest, tell them they already completed it
 
@@ -2832,6 +2724,7 @@ class Basic(commands.Cog, name="basic"):
         #disconnect the user
         await db_manager.disconnect_twitch_id(ctx.author.id)
         await db_manager.disconnect_twitch_name(ctx.author.id)
+        await db_manager.update_is_not_streamer(ctx.author.id)
         await ctx.send("Your twitch account has been disconnected from your discord account!")
 
 

@@ -20,7 +20,7 @@
         "quest_reward_amount": 10,
         "quest_level_required": 2,
         "quest_type": "gathering",
-        "quest": "10 herbs",
+        "quest": "10 herb",
         "OnBoard": true
     }
         

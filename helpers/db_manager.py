@@ -1014,6 +1014,15 @@ async def give_user_quest(user_id: int, quest_id: str) -> None:
     db = DB()
     await db.execute("UPDATE `users` SET quest_id = ? WHERE user_id = ?", (quest_id, user_id))
     
+#check if a user has any quest
+async def check_user_has_any_quest(user_id: int) -> bool:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ? AND quest_id != ?", (user_id, "None"), fetch="one")
+    if data is not None:
+        return True
+    else:
+        return False
+    
 #remove a quest from a user
 async def remove_quest_from_user(user_id: int) -> None:
     db = DB()
@@ -1949,8 +1958,8 @@ async def get_enemy_element(enemy_id: int) -> int:
 async def get_twitch_id(streamer_channel: str) -> int:
 
     headers = {
-    'Authorization': 'Bearer obotkbh9829mgr4t8x165z6orsdfvr',
-    'Client-Id': 'fh0hp0ectgvo0f7mky467of5jmo83n',
+    'Authorization': 'Bearer qyo5q800j1un0dr6098r3lj1kg1p3g',
+    'Client-Id': 'gp762nuuoqcoxypju8c569th9wz7q5',
     }
     def remove_prefix(text, prefix):
         if text.startswith(prefix):
@@ -1979,8 +1988,8 @@ async def get_twitch_id(streamer_channel: str) -> int:
 async def get_broadcaster_type(streamer_channel: str) -> str:
     
     headers = {
-    'Authorization': 'Bearer obotkbh9829mgr4t8x165z6orsdfvr',
-    'Client-Id': 'fh0hp0ectgvo0f7mky467of5jmo83n',
+    'Authorization': 'Bearer qyo5q800j1un0dr6098r3lj1kg1p3g',
+    'Client-Id': 'gp762nuuoqcoxypju8c569th9wz7q5',
     }
     def remove_prefix(text, prefix):
         if text.startswith(prefix):
@@ -2001,6 +2010,7 @@ async def get_broadcaster_type(streamer_channel: str) -> str:
     async with aiohttp.ClientSession() as session:
             async with session.get('https://api.twitch.tv/helix/users', params=params, headers=headers) as request:
                 data = await request.json()
+                print (data)
                 broadcaster_type = data['data'][0]['broadcaster_type']
                 print(broadcaster_type)
                 return broadcaster_type
@@ -2064,27 +2074,37 @@ async def view_streamers() -> list:
             result = await cursor.fetchall()
             return result if result is not None else []
         
-#add an item to the streamer_items table, uses the streamersID from the streamer table and the item name and the item price
-async def create_streamer_item(streamerPrefix: str, itemName: str, itemPrice: int, itemRarity: str, itemEmoji: str, twitchID : int, item_type: str, item_damage: int, item_element: str, item_crit_chance: str, item_effect: str, isUsable: bool, isEquippable: bool) -> int:
+#add an item to the streamer_items table, uses the streamersID from the streamer table and the item name
+  #`streamer_prefix` varchar(20) NOT NULL,
+  #`item_id` varchar(20) NOT NULL,
+  #`item_name` varchar NOT NULL,
+  #`item_emoji` varchar(255) NOT NULL,
+  #`item_rarity` varchar(255) NOT NULL,
+
+async def create_streamer_item(streamerPrefix: str, channel: str, itemName: str, itemEmoji: str) -> int:
     """
     This function will add an item to the streamer_items table.
 
     :param streamerPrefix: The ID of the streamer that the item should be added to.
     :param itemName: The name of the item that should be added.
-    :param itemPrice: The price of the item that should be added.
+    :param itemEmoji: The emoji of the item that should be added.
+    :param itemRarity: The rarity of the item that should be added.
     """
     #create an item_id for the item that is being added by combining the streamerPrefix and the itemName
-    item_id = str(streamerPrefix) + " " + itemName
+    item_id = str(streamerPrefix) + "_" + itemName
     #convert all spaces in the item name to underscores
     item_id = item_id.replace(" ", "_")
+    #rarity = Streamer
+    itemRarity = "Streamer"
     async with aiosqlite.connect("database/database.db") as db:
-        #add all of it to the database
-        await db.execute("INSERT INTO streamer_items(streamer_prefix, item_id, item_name, item_price, item_emoji, item_rarity, twitch_id, item_type, item_damage, item_element, item_crit_chance, item_effect, isUsable, isEquippable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (streamerPrefix, item_id, itemName, itemPrice, itemEmoji, itemRarity, twitchID, item_type, item_damage, item_element, item_crit_chance, item_effect, isUsable, isEquippable))
+        #add the item to the database
+        await db.execute("INSERT INTO `streamer_items` (streamer_prefix, channel, item_id, item_name, item_emoji, item_rarity) VALUES (?, ?, ?, ?, ?, ?)", (streamerPrefix, channel, item_id, itemName, itemEmoji, itemRarity))
         await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM streamer_items")
         async with rows as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
+    
         
 #remove an item from the streamer_items table using the streamersID from the streamer table and the item name
 async def remove_item(streamerPrefix: str, itemName: str) -> int:
@@ -2259,28 +2279,6 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             return 1
                         else:
                             return 0
-                if isStreamerItem == 1:
-                    async with db.execute("SELECT * FROM streamer_items WHERE item_id=?", (item_id,)) as cursor:
-                        result = await cursor.fetchone()
-                    if result is not None:
-                        item_name = result[2]
-                        item_price = result[3]
-                        item_emoji = result[4]
-                        item_rarity = result[5]
-                        item_type = result[7]
-                        item_damage = result[8]
-                        item_element = result[9]
-                        item_crit_chance = result[10]
-                        item_effect = result[11]
-                        isUsable = result[12]
-                        isEquippable = result[13]
-                        isEquipped = 0
-                        item_projectile = "None"
-                        await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))  
-                        await db.commit()
-                        return 1 
-                    else:
-                        return 0
                 #get all the data above from the basic items table by the items ID
                 #get data from the chest table by the chest id
                 if isChest == 1:
@@ -2313,6 +2311,48 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                 async with rows as cursor:
                     result = await cursor.fetchone()
                     return result[0] if result is not None else 0
+                
+#add a streamer item to the streamer_items_inventory table, if the the user already has the item, give them 5000 coins instead
+  #`user_id` int(11) NOT NULL,
+  #`channel` varchar(255) NOT NULL
+  #`streamer_item_id` varchar(255) NOT NULL,
+  #`streamer_item_name` varchar(255) NOT NULL,
+  #`streamer_item_emoji` varchar(255) NOT NULL, 
+  #`streamer_item_rarity` varchar(255) NOT NULL
+  
+async def add_streamer_item_to_user(user_id: int, streamer_item_id: str) -> int:
+    """
+    This function will add a streamer item to the streamer_items_inventory table.
+
+    :param user_id: The ID of the user that the item should be added to.
+    :param channel: The channel that the item should be added to.
+    :param streamer_item_id: The ID of the item that should be added.
+    :param streamer_item_name: The name of the item that should be added.
+    :param streamer_item_emoji: The emoji of the item that should be added.
+    :param streamer_item_rarity: The rarity of the item that should be added.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        #check if the item already exists in the streamer_items_inventory table
+        async with db.execute("SELECT * FROM streamer_items_inventory WHERE user_id=? AND streamer_item_id=?", (user_id, streamer_item_id)) as cursor:
+            result = await cursor.fetchone()
+            if result is not None:
+                #give the user 5000 coins
+                await add_money(user_id, 5000)
+                return 0
+            else:
+                #streamer item id is just the prefix + the item name
+                channel = await get_streamer_channel_from_user_id(user_id)
+                #get the streamer prefix from the streamer table
+                prefix = await get_streamerPrefix_with_user_id(user_id)
+                #get the streamer item name from the streamer items table
+                streamer_item_name = await get_streamer_item_name(streamer_item_id)
+                #get the streamer item emoji from the streamer items table
+                streamer_item_emoji = await get_streamer_item_emote(streamer_item_id)
+                #add the item to the streamer_items_inventory table
+                await db.execute("INSERT INTO streamer_items_inventory(user_id, channel, streamer_item_id, streamer_item_name, streamer_item_emoji, streamer_item_rarity) VALUES (?, ?, ?, ?, ?, ?)", (user_id, channel, streamer_item_id, streamer_item_name, streamer_item_emoji, "Streamer"))
+                await db.commit()
+                return 1
+  
 
 #remove an item from the inventory table, uses the usersID from the users table and the item ID from the streamer_items table, if the item already exists in the inventory table, it will remove 1 from the item_amount
 async def remove_item_from_inventory(user_id: int, item_id: str) -> int:
@@ -2362,6 +2402,18 @@ async def get_item_amount_from_inventory(user_id: int, item_id: str) -> int:
             else:
                 #if the item does not exist in the inventory table, return 0
                 return 0
+            
+#get streamer channel from user id
+async def get_streamer_channel_from_user_id(user_id: int) -> str:
+    """
+    This function will get the streamer channel from the streamer table.
+
+    :param user_id: The ID of the user that the streamer channel should be gotten from.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer WHERE user_id=?", (user_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
             
 #get streamerPrefix from the streamer table using the streamers user ID
 async def get_streamerPrefix_with_user_id(user_id: int) -> str:
