@@ -198,9 +198,9 @@ async def slots(ctx: Context, user, gamble):
         
 #create slots_rules function
 #this function will be called when the user types !slots_rules
-# !slots_rules will show the rules of the slots game
-# !slots_rules will also show the user how to play the slots game
-# !slots_rules will also show the user the rewards for each slot
+# /slots_rules will show the rules of the slots game
+# /slots_rules will also show the user how to play the slots game
+# /slots_rules will also show the user the rewards for each slot
 async def slot_rules(ctx: Context):
     #create the embed
     embed = discord.Embed(
