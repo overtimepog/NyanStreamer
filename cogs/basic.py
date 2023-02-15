@@ -721,7 +721,6 @@ class Basic(commands.Cog, name="basic"):
 
         :param ctx: The context in which the command was called.
         """
-        await db_manager.add_streamer_item_to_user(ctx.message.author.id, "ovrt_pog_stick")
         user_id = ctx.message.author.id
         user_name = ctx.message.author.name
         #get the streamer prefix
