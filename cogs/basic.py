@@ -662,7 +662,11 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.message.author.id
         #get the streamer prefix
         streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
-        channel = db_manager.get_streamer_channel_from_user_id(user_id)
+        print(streamer_prefix)
+        #get streamer broadcast type
+        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
+        print(channel)
+        broadcast_type = await db_manager.get_broadcaster_type(channel)
         #check if the item exists in the database
         items = await db_manager.view_streamer_items(channel)
         for i in items:
@@ -670,8 +674,18 @@ class Basic(commands.Cog, name="basic"):
                 await ctx.send("This item already exists for your channel.")
                 return
         #create the item
-        await db_manager.create_streamer_item(streamer_prefix, channel, item_name, item_emoji, "Legendary")
-        await ctx.send("Item created.")
+        #if the streamer has more than 5 items and is an affilate, the item will not be created
+        if broadcast_type == "affiliate" and len(items) >= 5:
+            await ctx.send("You have reached the maximum amount of items for an affiliate.")
+            return
+        #if the streamer has more than 10 items and is a partner, the item will not be created
+        elif broadcast_type == "partner" and len(items) >= 10:
+            await ctx.send("You have reached the maximum amount of items for a partner.")
+            return
+        else:
+            await db_manager.create_streamer_item(streamer_prefix, channel, item_name, item_emoji)
+            await ctx.send("Item created.")
+
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
     @commands.hybrid_command(
         name="removeitem",
