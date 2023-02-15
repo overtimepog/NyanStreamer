@@ -707,49 +707,54 @@ class Basic(commands.Cog, name="basic"):
                 await db_manager.remove_item(item_id)
                 await ctx.send(f"Removed item with the ID `{item_id}` from your items.")
                 return
-        await ctx.send(f"Item with the ID `{item_id}` does not exist in the database or you are not the streamer of this item.")
+        await ctx.send(f"Item with the ID `{item_id}` does not exist in the database or you are not the streamer that owns this item.")
 
 
-#command to view the items of a specific streamer by their ID, using the view_streamer_items function from helpers\db_manager.py
+#command to view all the streamer items owned by the user from a specific streamer, if they dont have the item, display ??? for the emoji
     @commands.hybrid_command(
-        name="view_streamer_items",
-        description="This command will view all items of a specific streamer.",
+        name="trophyview",
+        description="This command will view all of the items owned by the user from a specific streamer.",
     )
-    @checks.is_owner()
-    #the user needs to input the streamers ID
-    async def view_streamer_items(self, ctx: Context, streamer_channel: str):
+    async def trophyview(self, ctx: Context, streamer: str):
         """
-        This command will view all items of a specific streamer.
+        This command will view all of the items owned by the user from a specific streamer.
 
         :param ctx: The context in which the command was called.
-        :param streamer_prefix: The ID of the streamer whose items should be viewed.
         """
+        await db_manager.add_streamer_item_to_user(ctx.message.author.id, "ovrt_pog_stick")
         user_id = ctx.message.author.id
-        #check if the streamer exists in the database
-        streamers = await db_manager.view_streamers()
-        #remove the https://www.twitch.tv/ from the streamerchannel
-        #rmove prefix function
-        def remove_prefix(text, prefix):
-            if text.startswith(prefix):
-                return text[len(prefix):]
-            return text
-        streamer_channel_name = remove_prefix(streamer_channel, "https://www.twitch.tv/")
-        for i in streamers:
-            if streamer_channel in i:
-                items = await db_manager.view_streamer_items(streamer_channel)
-                embed = discord.Embed(title="Items", description=f"All of `{streamer_channel_name}'s` Items.", color=0x00ff00)
-                print(items)
-                for i in items:
-                    #remove the streamerPrefix from the name of the item
-                    print(i)
-                    item_id = i[1]
-                    item_name = i[2]
-                    item_price = i[3]
-                    item_emote = i[4]
-                    embed.add_field(name=f"`ID:{item_id}` {item_name}{item_emote}", value=f"Price: {item_price}", inline=True)
-                await ctx.send(embed=embed)
-                return
-        await ctx.send(f"Streamer doesn't exist in the database.")
+        user_name = ctx.message.author.name
+        #get the streamer prefix
+        streamer_prefix = await db_manager.get_streamerPrefix_with_channel(streamer)
+        print(streamer_prefix)
+        #get the streamer prefix of the user
+        user_streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
+        print(user_streamer_prefix)
+        #if streamer_prefix != user_streamer_prefix:
+        #get streamer broadcast type
+        #get the items from the database
+        items = await db_manager.view_streamer_items(streamer)
+        #get the users items from the database
+        user_items = await db_manager.view_streamer_item_inventory(user_id)
+        if len(user_items) == 0:
+            await ctx.send("You do not own any streamer items.")
+            return
+        #create the embed
+        embed = discord.Embed(title=f"{user_name}'s Streamer Items from {streamer}", description=f"heres every item from {streamer} if it has ???, it means you dont own one, think of this as a trophy case", color=0x00ff00)
+        #add the items to the embed
+        for i in items:
+            #check if the user has the item
+            for j in user_items:
+                if i[1] in j:
+                    embed.add_field(name=f"{i[4]}", value=f"{i[5]}", inline=False)
+                    break
+                else:
+                    embed.add_field(name=f"{i[4]}", value=f"???", inline=False)
+                    break
+        await ctx.send(embed=embed)
+        #else:
+            #await ctx.send("You cannot view your own items.")
+     
 
 #shop command to view the shop using the display_shop function from helpers\db_manager.py
 #    @commands.hybrid_command(

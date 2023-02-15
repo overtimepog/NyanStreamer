@@ -2141,7 +2141,27 @@ async def view_streamer_items(streamer_channel: str) -> list:
         async with db.execute("SELECT * FROM streamer_items WHERE streamer_prefix=?", (streamerPrefix,)) as cursor:
             result = await cursor.fetchall()
             return result if result is not None else []
+        
+#get all the streamer items owned by a user from the streamer_item_inventory table
+  #`user_id` int(11) NOT NULL,
+  #`channel` varchar(255) NOT NULL,
+  #`streamer_item_id` varchar(255) NOT NULL,
+  #`streamer_item_name` varchar(255) NOT NULL,
+  #`streamer_item_emoji` varchar(255) NOT NULL,
+  #`streamer_item_rarity` varchar(255) NOT NULL
 
+async def view_streamer_item_inventory(user_id: int) -> list:
+    """
+    This function will view all streamer items owned by a user in the database.
+
+    :return: A list of all streamer items in the database owned by a user.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer_item_inventory WHERE user_id=?", (user_id,)) as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+    
+  
 #view all the basic items in the database
 async def view_basic_items() -> list:
     """
@@ -2312,7 +2332,7 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                     result = await cursor.fetchone()
                     return result[0] if result is not None else 0
                 
-#add a streamer item to the streamer_items_inventory table, if the the user already has the item, give them 5000 coins instead
+#add a streamer item to the streamer_item_inventory table, if the the user already has the item, give them 5000 coins instead
   #`user_id` int(11) NOT NULL,
   #`channel` varchar(255) NOT NULL
   #`streamer_item_id` varchar(255) NOT NULL,
@@ -2322,7 +2342,7 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
   
 async def add_streamer_item_to_user(user_id: int, streamer_item_id: str) -> int:
     """
-    This function will add a streamer item to the streamer_items_inventory table.
+    This function will add a streamer item to the streamer_item_inventory table.
 
     :param user_id: The ID of the user that the item should be added to.
     :param channel: The channel that the item should be added to.
@@ -2332,8 +2352,8 @@ async def add_streamer_item_to_user(user_id: int, streamer_item_id: str) -> int:
     :param streamer_item_rarity: The rarity of the item that should be added.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        #check if the item already exists in the streamer_items_inventory table
-        async with db.execute("SELECT * FROM streamer_items_inventory WHERE user_id=? AND streamer_item_id=?", (user_id, streamer_item_id)) as cursor:
+        #check if the item already exists in the streamer_item_inventory table
+        async with db.execute("SELECT * FROM streamer_item_inventory WHERE user_id=? AND streamer_item_id=?", (user_id, streamer_item_id)) as cursor:
             result = await cursor.fetchone()
             if result is not None:
                 #give the user 5000 coins
@@ -2348,8 +2368,8 @@ async def add_streamer_item_to_user(user_id: int, streamer_item_id: str) -> int:
                 streamer_item_name = await get_streamer_item_name(streamer_item_id)
                 #get the streamer item emoji from the streamer items table
                 streamer_item_emoji = await get_streamer_item_emote(streamer_item_id)
-                #add the item to the streamer_items_inventory table
-                await db.execute("INSERT INTO streamer_items_inventory(user_id, channel, streamer_item_id, streamer_item_name, streamer_item_emoji, streamer_item_rarity) VALUES (?, ?, ?, ?, ?, ?)", (user_id, channel, streamer_item_id, streamer_item_name, streamer_item_emoji, "Streamer"))
+                #add the item to the streamer_item_inventory table
+                await db.execute("INSERT INTO streamer_item_inventory(user_id, channel, streamer_item_id, streamer_item_name, streamer_item_emoji, streamer_item_rarity) VALUES (?, ?, ?, ?, ?, ?)", (user_id, channel, streamer_item_id, streamer_item_name, streamer_item_emoji, "Streamer"))
                 await db.commit()
                 return 1
   
