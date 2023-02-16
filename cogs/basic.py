@@ -739,7 +739,7 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("You do not own any streamer items.")
             return
         #create the embed
-        embed = discord.Embed(title=f"{user_name}'s Streamer Items from {streamer}", description=f"heres every item from {streamer} \n if it has ???, it means you dont own one, think of this as a trophy case \n", color=0x00ff00)
+        embed = discord.Embed(title=f"{user_name}'s Streamer Items from {streamer}", description=f"heres every item from {streamer} \n if it has ???, it means you dont own one, think of this as a trophy case for streamer items you collect by watching {streamer}'s streams :)\n", color=0x00ff00)
         #add the items to the embed
         for i in items:
             #check if the user has the item
