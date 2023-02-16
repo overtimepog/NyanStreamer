@@ -23,7 +23,7 @@
         "item_mine_chance": 0,
         "quote_id": "None",
         "item_quotes": [{
-            "quote": "None"
+            "quote": "{user} swings their Netherbane at {target} and deals {damage} damage!"
         }],
         "item_sub_type": "None"
     },
@@ -38,7 +38,7 @@
         "isUsable": false,
         "inShop": true,
         "isEquippable": true,
-        "item_description": "An old and rusty sword, the blade is notched and the hilt is worn.",
+        "item_description": "An old and rusty sword, the blade is notched and the hilt is worn but its good for getting started.",
         "item_element": "None",
         "item_crit_chance": "2%",
         "item_projectile": "None",
@@ -52,11 +52,57 @@
         "quote_id": "rusty_sword",
         "item_quotes": [
             {
-                "quote": "{user} swings their steel mace at {target} and deals {damage} damage!"
+                "quote": "{user} swings their rusty sword at {target} and deals {damage} damage!"
             },
             {
-                "quote": "{user} smashes {target} and deals {damage} damage!"
+                "quote": "{user} stabs {target} with their rusty sword and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} wields their rusty sword and strikes {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} lunges forward with their rusty sword and inflicts {damage} damage on {target}!"
+            },
+            {
+                "quote": "{user} slashes their rusty sword across {target}'s body for {damage} damage!"
+            },
+            {
+                "quote": "{user}'s rusty sword connects with {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} thrusts their rusty sword at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} charges at {target} with their rusty sword, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} swings their rusty sword with all their might, hitting {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} jabs their rusty sword into {target}'s flesh, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} hacks at {target} with their rusty sword, causing {damage} damage!"
+            },
+            {
+                "quote": "{user} plunges their rusty sword into {target}'s body, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} slashes {target} with their rusty sword, causing {damage} damage!"
+            },
+            {
+                "quote": "{user} strikes {target} with their rusty sword, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} cuts into {target} with their rusty sword, inflicting {damage} damage!"
+            },
+            {
+                "quote": "{user} pummels {target} with their rusty sword, causing {damage} damage!"
+            },
+            {
+                "quote": "{user} plunges their rusty sword into {target}'s {body part}, dealing {damage} damage!"
             }
+                
         ],
         "item_sub_type": "None"
     },
@@ -83,9 +129,11 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
-        "item_quotes": [{
-            "quote": "None"
-        }],
+        "item_quotes": [
+            {
+                "quote": "{user} swings their Iron Dagger at {target} and deals {damage} damage!"
+            }
+        ],
         "item_sub_type": "None"
     },
     {
@@ -116,7 +164,7 @@
             "quote": "{user} swings their steel mace at {target} and deals {damage} damage!"
         },
         {
-            "quote": "{user} smashes {target} and deals {damage} damage!"
+            "quote": "{user} smashes {target} with their mace and deals {damage} damage!"
         }
         ],
         "item_sub_type": "None"
@@ -154,9 +202,11 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
-        "item_quotes": [{
-            "quote": "None"
-        }],
+        "item_quotes": [
+            {
+                "quote": "{user} shoots a fireball at {target} and deals {damage} damage!"
+            }
+        ],
         "item_sub_type": "None"
         },
         {
@@ -191,9 +241,11 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "quote_id": "None",
-        "item_quotes": [{
-            "quote": "None"
-        }],
+        "item_quotes": [
+        {
+            "quote": "{user} shoots an ice shard at {target} and deals {damage} damage!"
+        }
+        ],
         "item_sub_type": "None"
         }
 ]

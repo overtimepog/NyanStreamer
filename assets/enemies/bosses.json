@@ -21,7 +21,7 @@
         "enemy_element": "Undead",
         "quote_id": "None",
         "enemy_quotes": [{
-            "quote": "{enemy_name} uses magic to strike down {player_name} for {damage} damage."
+            "quote": "{enemy_name} calls down a lightning strike on {player_name} for {damage} damage."
         }]
     }        
 ]

@@ -1769,7 +1769,7 @@ class Basic(commands.Cog, name="basic"):
         if userExist == None or userExist == []:
             await db_manager.profile(user_id)
             await db_manager.add_money(user_id, 200)
-            await ctx.send("You have started your journey. Welcome to the world of **Dank Streamer**.")
+            await db_manager.add_item_to_inventory(user_id, "rusty_sword", 1)
         else:
             await ctx.send("You have already started your journey.")
     
