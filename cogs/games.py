@@ -11,7 +11,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager, randomEncounter, start, use, games
+from helpers import battle, checks, db_manager, randomEncounter, games
 import asyncio
 import os
 import random

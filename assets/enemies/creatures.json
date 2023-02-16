@@ -18,7 +18,7 @@
             "item_drop_chance": 0.5
         }],
         "enemy_element": "None",
-        "quote_id": "None",
+        "quote_id": "cow",
         "enemy_quotes": [{
             "quote": "{enemy_name} mooed at you."
         }]

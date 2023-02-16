@@ -18,7 +18,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager, randomEncounter, start, use
+from helpers import battle, checks, db_manager, randomEncounter
 
 
 # Here we name the cog and create a new class for the cog.
@@ -1772,6 +1772,27 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.add_item_to_inventory(user_id, "rusty_sword", 1)
         else:
             await ctx.send("You have already started your journey.")
+            
+#get the quotes of a specific enemy
+    @commands.hybrid_command(
+        name="quotes",
+        description="This command will view the quotes of a specific enemy.",
+    )
+    async def quotes(self, ctx: Context, enemy: str):
+        """
+        This command will view the quotes of a specific enemy.
+
+        :param ctx: The context in which the command was called.
+        :param enemy: The enemy that you want to view the quotes of.
+        """
+        quotes = await db_manager.get_enemy_quotes(enemy)
+        if quotes == None or quotes == []:
+            await ctx.send("That enemy doesn't have any quotes.")
+        else:
+            embed = discord.Embed(title="Quotes", description=f"{enemy}'s Quotes.", color=0x00ff00)
+            for i in quotes:
+                embed.add_field(name="Quote", value=f"{i}", inline=False)
+            await ctx.send(embed=embed)
     
         
 
@@ -2085,20 +2106,6 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(f"You unequipped `{item_name}`")
         else:
             await ctx.send(f"`{item_name}` is not equipped.")
-            
-    #a command to use an item using the use_item function from helpers\db_manager.py, check if the item is usable, if it is, use it, if it isn't, say that it isn't usable
-    @commands.hybrid_command(
-        name="use",
-        description="This command will use an item.",
-    )
-    async def use(self, ctx: Context, item_id: str):
-        """
-        This command will use an item.
-
-        :param ctx: The context in which the command was called.
-        :param item: The item that should be used.
-        """
-        use.useItem(ctx, item_id)
             
     #command to get info about an item
     @commands.hybrid_command(
@@ -2622,7 +2629,7 @@ class Basic(commands.Cog, name="basic"):
         #check if the user is in the database
         user_in_db = await db_manager.check_if_user_in_db(user_id)
         if user_in_db == False:
-            await ctx.send("You are not in the database yet, please use the start command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `/start` command to start your adventure!")
             return
         #check if the user is in a battle
         user_in_battle = await db_manager.is_in_combat(user_id)
@@ -2663,16 +2670,7 @@ class Basic(commands.Cog, name="basic"):
     )
     async def delete_channels(self, ctx: Context):
         await randomEncounter.delete_channels(ctx)
-        
-        
-    #command to start a user's adventure, gives them a starter weapon and armor
-    @commands.hybrid_command(
-        name="start",
-        description="Start your adventure!",
-    )
-    async def start(self, ctx: Context):
-        #run the start function from helper/start.py
-        await start.start(ctx)
+    
         
     #command to connect their discord account to their twitch account
     @commands.hybrid_command(

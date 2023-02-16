@@ -19,7 +19,7 @@
         }],
         "enemy_drop_rarity": "Common",
         "enemy_element": "None",
-        "quote_id": "None",
+        "quote_id": "rat",
         "enemy_quotes": [
             {
                 "quote": "{enemy_name} slashes at {player_name} dealing {damage} damage."

@@ -695,8 +695,16 @@ async def add_chests() -> None:
     for chest in chests:
         data = await db.execute(f"SELECT * FROM `chests` WHERE chest_id = ?", (chest['chest_id'],), fetch="one")
         if data is not None:
-            print(f"|{chest['chest_name']}| is already in the database")
-            pass
+            await db.execute(f"INSERT INTO `chests` (`chest_id`, `chest_name`, `chest_emoji`, `chest_rarity`, `chest_price`, `chest_type`, `chest_description`, `key_id`, `chest_contentsID`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (chest['chest_id'], chest['chest_name'], chest['chest_emoji'], chest['chest_rarity'], chest['chest_price'], chest['chest_type'], chest['chest_description'], chest['key_id'], chest['chest_contentsID']))
+            print(f"Updated |{chest['chest_name']}| to the database")
+            
+            #add the chests contents to the database
+            if chest['chest_contentsID'] != "None":
+                for item in chest['chest_contents']:
+                    await db.execute(f"INSERT INTO `chest_contents` (`chest_id`, `item_id`, `item_amount`, `drop_chance`) VALUES (?, ?, ?, ?)", (chest['chest_contentsID'], item['item_id'], item['item_amount'], item['drop_chance']))
+                    print(f"Updated |{item['item_id']}| to the chest |{chest['chest_name']}| with a drop chance of |{item['drop_chance']}|")
+                print(f"Updated |{chest['chest_name']}|'s contents to the database")
+            
         else:
             #  item_id int(11) NOT NULL,
             #  item_name varchar(255) NOT NULL,
@@ -748,8 +756,30 @@ async def add_enemies() -> None:
     for enemy in enemies:
         data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy['enemy_id'],), fetch="one")
         if data is not None:
-            print(f"|{enemy['enemy_name']}| is already in the database")
-            pass
+            await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_name`, `enemy_health`, `enemy_damage`, `enemy_emoji`, `enemy_description`, `enemy_rarity`, `enemy_type`, `enemy_xp`, `enemy_money`, `enemy_crit_chance`, `enemy_drop_id`, `enemy_element`, `isFrozen`, `isBurning`, `isPoisoned`, `isParalyzed`, `quote_id`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (enemy['enemy_id'], enemy['enemy_name'], enemy['enemy_health'], enemy['enemy_damage'], enemy['enemy_emoji'], enemy['enemy_description'], enemy['enemy_rarity'], enemy['enemy_type'], enemy['enemy_xp'], enemy['enemy_money'], enemy['enemy_crit_chance'], enemy['enemy_drop_id'], enemy['enemy_element'], False, False, False, False, enemy['quote_id']))
+            print(f"Updated |{enemy['enemy_name']}| to the database")
+            
+            #add enemy quotes to the database
+            if enemy['quote_id'] != "None":
+                #for each item in the recipe add it to the database with the item_id being the recipe_id
+                for quote in enemy['enemy_quotes']:
+                    await db.execute(f"INSERT INTO `enemy_quotes` (`enemy_id`, `quote`) VALUES (?, ?)", (enemy['quote_id'], quote['quote']))
+                    print(f"Updated Quote: |{quote['quote']}| to the item_quotes for |{enemy['enemy_name']}|")
+                print(f"Updated |{enemy['enemy_name']}|'s enemy_quotes to the database")
+                    
+            #add the enemies drops to the database
+            if enemy['enemy_drop_id'] != "None":
+                #delete the enemy drops from the database
+                await db.execute(f"DELETE FROM `enemy_drops` WHERE enemy_id = ?", (enemy['enemy_id'],))
+                #  `enemy_id` varchar(20) NOT NULL,
+                #`item_id` varchar(20) NOT NULL,
+                #`item_amount` int(11) NOT NULL,
+                #`item_drop_chance` int(11) NOT NULL
+                #for each item in the recipe add it to the database with the item_id being the recipe_id
+                for drop in enemy['enemy_drops']:
+                    await db.execute(f"INSERT INTO `enemy_drops` (`enemy_id`, `item_id`, `item_amount`, `item_drop_chance`) VALUES (?, ?, ?, ?)", (enemy['enemy_id'], drop['item_id'], drop['item_amount'], drop['item_drop_chance']))
+                    print(f"Updated Drop: |{drop['item_id']} x{drop['item_amount']}| with drop chance |{drop['item_drop_chance']}| to |{enemy['enemy_name']}|'s Drops")
+                print(f"Updated |{enemy['enemy_name']}|'s Drops to the database" + '\n')
         else:
             #`enemy_id` varchar(20) NOT NULL,
             #`enemy_name` varchar(255) NOT NULL,
@@ -778,7 +808,7 @@ async def add_enemies() -> None:
             if enemy['quote_id'] != "None":
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for quote in enemy['enemy_quotes']:
-                    await db.execute(f"INSERT INTO `enemy_quotes` (`item_id`, `quote`) VALUES (?, ?)", (enemy['quote_id'], quote['quote']))
+                    await db.execute(f"INSERT INTO `enemy_quotes` (`enemy_id`, `quote`) VALUES (?, ?)", (enemy['quote_id'], quote['quote']))
                     print(f"Added Quote: |{quote['quote']}| to the item_quotes for |{enemy['enemy_name']}|")
                 print(f"Added |{enemy['enemy_name']}|'s enemy_quotes to the database")
                     
@@ -1091,21 +1121,21 @@ async def get_enemy_drop_rarity(enemy_id: str) -> str:
     else:
         return None
     
-#get the enemy quotes from its ID
+#get the enemy quotes from its ID from the enemy_quotes table
 async def get_enemy_quotes(enemy_id: str) -> list:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    data = await db.execute(f"SELECT * FROM `enemy_quotes` WHERE enemy_id = ?", (enemy_id,), fetch="one")
     if data is not None:
-        return data[17]
+        return data[1]
     else:
         return None
     
-#get the item quotes from its ID
+#get the item quotes from its ID, from the item_quotes table
 async def get_item_quotes(item_id: str) -> list:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
+    data = await db.execute(f"SELECT * FROM `item_quotes` WHERE item_id = ?", (item_id,), fetch="one")
     if data is not None:
-        return data[18]
+        return data[1]
     else:
         return None
     
