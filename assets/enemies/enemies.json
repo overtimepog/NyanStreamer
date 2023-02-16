@@ -23,6 +23,9 @@
         "enemy_quotes": [
             {
                 "quote": "{enemy_name} slashes at {player_name} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} bites {player_name} dealing {damage} damage."
             }
         ]
     }      

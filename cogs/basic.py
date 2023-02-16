@@ -1789,9 +1789,9 @@ class Basic(commands.Cog, name="basic"):
         if quotes == None or quotes == []:
             await ctx.send("That enemy doesn't have any quotes.")
         else:
+            print(quotes) 
             embed = discord.Embed(title="Quotes", description=f"{enemy}'s Quotes.", color=0x00ff00)
-            for i in quotes:
-                embed.add_field(name="Quote", value=f"{i}", inline=False)
+            embed.add_field(name="Quote", value=f"{quotes}", inline=False)
             await ctx.send(embed=embed)
     
         

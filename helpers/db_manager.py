@@ -1122,6 +1122,7 @@ async def get_enemy_drop_rarity(enemy_id: str) -> str:
         return None
     
 #get the enemy quotes from its ID from the enemy_quotes table
+#fix
 async def get_enemy_quotes(enemy_id: str) -> list:
     db = DB()
     data = await db.execute(f"SELECT * FROM `enemy_quotes` WHERE enemy_id = ?", (enemy_id,), fetch="one")
