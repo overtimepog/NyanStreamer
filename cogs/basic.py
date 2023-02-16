@@ -735,10 +735,10 @@ class Basic(commands.Cog, name="basic"):
         items = await db_manager.view_streamer_items(streamer)
         #get the users items from the database
         user_items = await db_manager.view_streamer_item_inventory(user_id)
-        if len(user_items) == 0:
-            await ctx.send("You do not own any streamer items.")
-            return
         #create the embed
+        if len(items) == 0:
+            await ctx.send("This streamer has no items.")
+            return
         embed = discord.Embed(title=f"{user_name}'s Streamer Items from {streamer}", description=f"heres every item from {streamer} \n if it has ???, it means you dont own one, think of this as a trophy case for streamer items you collect by watching {streamer}'s streams :)\n", color=0x00ff00)
         #add the items to the embed
         for i in items:
