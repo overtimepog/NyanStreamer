@@ -632,12 +632,16 @@ async def add_basic_items() -> None:
             await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, quote_id, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance'], item['quote_id'], item['item_sub_type']))
             print(f"Updated {item['item_name']}")
             if item['quote_id'] != "None":
+                #remove the old quotes from the database
+                await db.execute(f"DELETE FROM `item_quotes` WHERE item_id = ?", (item['quote_id'],))
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for quote in item['item_quotes']:
                     await db.execute(f"INSERT INTO `item_quotes` (`item_id`, `quote`) VALUES (?, ?)", (item['quote_id'], quote['quote']))
                     print(f"Updated Quote: |{quote['quote']}| to the item_quotes for |{item['item_name']}|")
                 print(f"Updated |{item['item_name']}|'s item_quotes to the database")
             if item['recipe_id'] != "None":
+                #remove the old recipes from the database
+                await db.execute(f"DELETE FROM `recipes` WHERE item_id = ?", (item['recipe_id'],))
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for ingredient in item['item_recipe']:
                     await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (item['recipe_id'], ingredient['ingredient_id'], ingredient['ingredient_amount']))
@@ -761,6 +765,8 @@ async def add_enemies() -> None:
             
             #add enemy quotes to the database
             if enemy['quote_id'] != "None":
+                #delete the enemy quotes from the database
+                await db.execute(f"DELETE FROM `enemy_quotes` WHERE enemy_id = ?", (enemy['enemy_id'],))
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for quote in enemy['enemy_quotes']:
                     await db.execute(f"INSERT INTO `enemy_quotes` (`enemy_id`, `quote`) VALUES (?, ?)", (enemy['quote_id'], quote['quote']))
@@ -1125,7 +1131,7 @@ async def get_enemy_drop_rarity(enemy_id: str) -> str:
 #fix
 async def get_enemy_quotes(enemy_id: str) -> list:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `enemy_quotes` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    data = await db.execute(f"SELECT * FROM `enemy_quotes` WHERE enemy_id = ?", (enemy_id,), fetch="all")
     if data is not None:
         return data[1]
     else:
@@ -1134,7 +1140,7 @@ async def get_enemy_quotes(enemy_id: str) -> list:
 #get the item quotes from its ID, from the item_quotes table
 async def get_item_quotes(item_id: str) -> list:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `item_quotes` WHERE item_id = ?", (item_id,), fetch="one")
+    data = await db.execute(f"SELECT * FROM `item_quotes` WHERE item_id = ?", (item_id,), fetch="all")
     if data is not None:
         return data[1]
     else:
