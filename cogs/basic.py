@@ -684,6 +684,11 @@ class Basic(commands.Cog, name="basic"):
             return
         else:
             await db_manager.create_streamer_item(streamer_prefix, channel, item_name, item_emoji)
+            #give the user the item 
+            item_id = str(streamer_prefix) + "_" + item_name
+            #convert all spaces in the item name to underscores
+            item_id = item_id.replace(" ", "_")
+            await db_manager.add_streamer_item_to_user(user_id, item_id)
             await ctx.send("Item created.")
 
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
@@ -1770,6 +1775,7 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.profile(user_id)
             await db_manager.add_money(user_id, 200)
             await db_manager.add_item_to_inventory(user_id, "rusty_sword", 1)
+            await ctx.send(f"You have started your Journy, Welcome {ctx.message.author.name} to **Dank Streamer**.")
         else:
             await ctx.send("You have already started your journey.")
             
@@ -1793,7 +1799,7 @@ class Basic(commands.Cog, name="basic"):
             for i in quotes:
                 quote = i[1]
                 embed.add_field(name="Quote", value=f"{quote}", inline=False)
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed)        
     
         
 
