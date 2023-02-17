@@ -671,7 +671,7 @@ class Basic(commands.Cog, name="basic"):
         items = await db_manager.view_streamer_items(channel)
         for i in items:
             if item_name in i:
-                await ctx.send("This item already exists for your channel.")
+                await ctx.send(f"An Item named {item_name} already exists for your channel.")
                 return
         #create the item
         #if the streamer has more than 5 items and is an affilate, the item will not be created
