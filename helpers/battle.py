@@ -73,7 +73,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     #save the image
     background.save("images/battle.png")
     #send the image in chat
-    msg = await ctx.channel.send(file=discord.File("images/battle.png"), embed=embed)
+    msg = await ctx.channel.send(embed=embed)
     #delete the image
     os.remove("images/battle.png")
     
@@ -168,8 +168,12 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         user2_crit = str(user2_crit).replace("%", "")
         #convert the crit chance to an int
         #TODO: add the crit chance stat to this calculation
-        user1_crit = int(user1_crit)
-        user2_crit = int(user2_crit)
+        user1_weapon_crit = int(user1_crit)
+        user2_weapon_crit = int(user2_crit)
+        user1_crit_stat = await db_manager.get_crit_chance(user1)
+        user2_crit_stat = await db_manager.get_crit_chance(user2)
+        user1_crit = user1_weapon_crit + user1_crit_stat
+        user2_crit = user2_weapon_crit + user2_crit_stat
         user1_roll = random.randint(1, 100)
         user2_roll = random.randint(1, 100)
         #if the roll is equal to the crit chance, double the damage\
@@ -208,21 +212,34 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             await db_manager.remove_health(user2, user1_damage)
             #have the user have a 1/10 chance of being set on fire
             #TODO: add the imunity stat to this calculation
+            user2_fire_resistance = await db_manager.get_fire_resistance(user2)
+            user2_paralyze_resistance = await db_manager.get_paralysis_resistance(user2)
+            user2_poison_resistance = await db_manager.get_poison_resistance(user2)
             
             isSetONFire = random.randint(1, 10)
-            #have the user have a 1/10 chance of being paralyzed
+            #if the fire resistance / 10 is greater than the number, the user is immune to fire
+            if user2_fire_resistance / 10 >= isSetONFire:
+                isSetONFire = 0
+            
+            #have the user have a 1/10 chance of being poisoned
+            #if the poison resistance / 10 is greater than the number, the user is immune to poison
             isPoisoned = random.randint(1, 10)
+            if user2_poison_resistance / 10 >= isPoisoned:
+                isPoisoned = 0
             #a 1/10 chance of being paralyzed
             isParalyzed = random.randint(1, 10)
+            #if the paralysis resistance / 10 is greater than the number, the user is immune to paralysis
+            if user2_paralyze_resistance / 10 >= isParalyzed:
+                isParalyzed = 0
             #make embed with the previous description plus the new description
             if prev_desc == None:
                 prev_desc = ""
             #if they crit, add a (crit) to the end of the damage
             if user1_roll <= user1_crit:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ hit a crit on __" + user2_name + "__ with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ damage (crit)"
+                Newdescription = prev_desc + "and hit a Critical Hit!"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user1_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + user2_name + "__ on fire <:flame1:1061287587395948634> with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "and Set them on Fire"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user2)
                 #mark the turn the user was set on fire
@@ -230,7 +247,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poisoned:1061287780652691466> __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + "and Poisoned them"
                 #set the users poison status to true
                 await db_manager.set_user_poisoned(user2)
                 #mark the turn the user was poisoned
@@ -238,7 +255,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
 
             #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
             elif user1_weapon_subtype == "Paralyze" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ paralyzed <:paralyzed:1061287659722510419> __" + user2_name + "__  with __" + user1_weapon_name + "__ for __" + str(user1_damage) + "__ they wont be able to attack for a turn (paralyzed)"
+                Newdescription = prev_desc + "and Paralyzed them"
                 #set the users poison status to true
                 await db_manager.set_user_paralyzed(user2)
                 #mark the turn the user was poisoned
@@ -248,37 +265,13 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 
             else:        
                 #TODO: fix promts to work with new system
-                #import User2 promts from assets/user1Promts.json
-                with open("assets/user1Promts.json") as f:
-                    user1Promts = json.load(f)
-                    
-                #if the user is using a projectile weapon use the projectile promts
-                if user1_weapon_projectile != "None":
-                    #import User2 promts from assets/user1Promts.json
-                    with open("assets/user1ProjectilePromts.json") as f:
-                        user1Promts = json.load(f)
-                #get a random user1 promt
-                user1Promt = random.choice(user1Promts)
-                #convert the promt to a string
+                user1_weapon = await db_manager.get_item_id(user1_weapon_name)
+                user_weapon_quotes = await db_manager.get_item_quotes(user1_weapon)
+                user1Promt = random.choice(user_weapon_quotes)
                 user1Promt = str(user1Promt)
-                #replace the {user2_name} with the user2 name
-                #convert both names to strings
-                user1_name = str(user1_name)
-                user2_name = str(user2_name)
-                user1Promt = user1Promt.replace("{user2_name}", "__" + user2_name + "__")
-                #replace {user1_name} with the user1 name
-                user1Promt = user1Promt.replace("{user1_name}", "__" + user1_name + "__")
-                #replace the {user2_weapon_name} with the user2 weapon
-                user1Promt = user1Promt.replace("{user1_weapon_name}", "__" + user1_weapon_name + "__")
-                #replace the {user2_damage} with the user2 damage
-                user1Promt = user1Promt.replace("{user1_weapon_damage}", "__" + str(user1_damage) + "__")
-                
-                #if the user is using a projectile weapon, replace the {user1_projectile} with the projectile
-                if user1_weapon_projectile != "None":
-                    user1Promt = user1Promt.replace("{user1_projectile}", "__" + user1_weapon_projectile + "__")
-                    
-                #add the user2 promt to the new description
-                
+                user1Promt = user1Promt.replace("{user}", user1_name)
+                user1Promt = user1Promt.replace("{target}", user2_name)
+                user1Promt = user1Promt.replace("{damage}", str(user1_damage))
                 Newdescription = prev_desc + "\n" + f"{user1Promt}"
             #convert the embed to a string
             Newdescription = str(Newdescription)
@@ -369,18 +362,36 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #user 2 attacks
             await db_manager.remove_health(user1, user2_damage)
             #roll a 1/10 chance for the user to be set on fire
+            user1_fire_resistance = await db_manager.get_fire_resistance(user1)
+            user1_paralyze_resistance = await db_manager.get_paralysis_resistance(user1)
+            user1_poison_resistance = await db_manager.get_poison_resistance(user1)
+            
             isSetONFire = random.randint(1, 10)
+            #if the fire resistance / 10 is greater than the number, the user is immune to fire
+            if user1_fire_resistance / 10 >= isSetONFire:
+                isSetONFire = 0
+            
+            #have the user have a 1/10 chance of being poisoned
+            #if the poison resistance / 10 is greater than the number, the user is immune to poison
             isPoisoned = random.randint(1, 10)
+            if user1_poison_resistance / 10 >= isPoisoned:
+                isPoisoned = 0
+                
+            #a 1/10 chance of being paralyzed
             isParalyzed = random.randint(1, 10)
+            #if the paralysis resistance / 10 is greater than the number, the user is immune to paralysis
+            if user1_paralyze_resistance / 10 >= isParalyzed:
+                isParalyzed = 0
+
             #make embed with the previous description plus the new description
             if prev_desc == None:
                 prev_desc = ""
             #if they crit, add a (crit) to the end of the damage
             if user2_roll <= user2_crit:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ hit a crit on __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ damage (crit)"
+                Newdescription = prev_desc + "and hit a Critical Hit!"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user2_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ set __" + user1_name + "__ on fire <:flame1:1061287587395948634> with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "and Set them on Fire"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user1)
                 #mark down the turn count when the user was set on fire
@@ -388,7 +399,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #if the sub type is Poison tell the user they were set on fire and add a (poisoned) to the end of the damage
 
             elif user2_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ poisoned <:poisoned:1061287780652691466> __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + "and Poisoned them"
                 #set the users poison status to true
                 await db_manager.set_user_poisoned(user1)
                 #mark down the turn count when the user was set on fire
@@ -396,8 +407,8 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 
             #if the sub type is paralysis tell the user they were set on paralyzed and add a (paralyzed) to the end of the damage
             elif user2_weapon_subtype == "Paralysis" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + user2_name + "__ paralyzed <:paralyzed:1061287659722510419> __" + user1_name + "__ with __" + user2_weapon_name + "__ for __" + str(user2_damage) + "__ they wont be able to attack for a turn (paralyzed)"
                 #set the users paralysis status to true
+                Newdescription = prev_desc + "and Paralyzed them"
                 await db_manager.set_user_paralyzed(user1)
                 #skip the users turn
                 #save the turn count when the user was paralyzed
@@ -405,36 +416,13 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 turnCount = turnCount + 1
             else:  
                 #TODO: fix promts to work with new system
-                #do the same thing as user 1 but with user 2
-                with open("assets/user2Promts.json") as f:
-                    user2Promts = json.load(f)
-                    
-                if user2_weapon_projectile != "None":
-                    #import User2 promts from assets/user1Promts.json
-                    with open("assets/user2ProjectilePromts.json") as f:
-                        user1Promts = json.load(f)
-                    
-                #get a random user2 promt
-                user2Promt = random.choice(user2Promts)
-                #convert the promt to a string
+                user2_weapon = await db_manager.get_item_id(user2_weapon_name)
+                user_weapon_quotes = await db_manager.get_item_quotes(user2_weapon)
+                user2Promt = random.choice(user_weapon_quotes)
                 user2Promt = str(user2Promt)
-                #replace the {user1_name} with the user1 name
-                #convert both names to strings
-                user1_name = str(user1_name)
-                user2_name = str(user2_name)
-                user2Promt = user2Promt.replace("{user1_name}", "__" + user1_name + "__")
-                #replace {user2_name} with the user2 name
-                user2Promt = user2Promt.replace("{user2_name}", "__" + user2_name + "__")
-                #replace the {user2_weapon_name} with the user1 weapon
-                user2Promt = user2Promt.replace("{user2_weapon_name}", "__" + user2_weapon_name + "__")
-                #replace the {user2_damage} with the user1 damage
-                user2Promt = user2Promt.replace("{user2_weapon_damage}", "__" + str(user2_damage) + "__")
-                
-                #if the user is using a projectile weapon, replace the {user1_projectile} with the projectile
-                if user2_weapon_projectile != "None":
-                    user2Promt = user2Promt.replace("{user2_projectile}", "__" + user2_weapon_projectile + "__")
-                    
-                    
+                user2Promt = user2Promt.replace("{user}", user2_name)
+                user2Promt = user2Promt.replace("{target}", user1_name)
+                user2Promt = user2Promt.replace("{damage}", str(user2_damage))
                 Newdescription = prev_desc + "\n" + f"{user2Promt}"
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
@@ -515,6 +503,9 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     if await db_manager.is_alive(user1):
         #once a user wins, set both users isInCombat to false, and edit the embed to show who won
         print("User 1 won!")
+        await db_manager.add_battles_fought(user1, 1)
+        await db_manager.add_battles_won(user1, 1)
+        await db_manager.add_battles_fought(user2, 1)
         #set new description to the previous description plus the winner
         Newdescription = prev_desc + "\n" + "🏆" + user1_name + " won!"
         Newdescription = str(Newdescription)
@@ -555,16 +546,18 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         
         #do the same thing for the other user
         xp_granted = random.randint(10, 20)
-        coins_granted = random.randint(10, 20)
+        coins_granted = await db_manager.get_money(user2)
+        coins_granted = coins_granted / 2
+        coins_granted = int(coins_granted)
         #grant the user a random amount of xp between 10 and 20
         await db_manager.add_xp(user1, xp_granted)
-        #grant the user a random amount of coins between 10 and 20
+        await db_manager.remove_money(user2, coins_granted)
         await db_manager.add_money(user1, coins_granted)
         #send a message to the channel saying the users xp and coins
         #convert the xp and coins to strings
         xp_granted = str(xp_granted)
         coins_granted = str(coins_granted)
-        await ctx.send(user1_name + " has won the fight and has been granted " + coins_granted + " xp and " + coins_granted + " coins!")
+        await ctx.send(user1_name + " has won the fight and has been granted " + xp_granted + " xp and " + coins_granted + f" coins! from {user2_name}")
         
         #check if the user has leveled up by checking if the users xp is greater than or equal to the xp needed to level up
         if await db_manager.can_level_up(user1):
@@ -579,6 +572,9 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         return user1
     else:
         print("User 2 won!")
+        await db_manager.add_battles_fought(user2, 1)
+        await db_manager.add_battles_won(user2, 1)
+        await db_manager.add_battles_fought(user1, 1)
         #set new description to the previous description plus the winner
         Newdescription = prev_desc + "\n" + "🏆" + user2_name + " won!"
         Newdescription = str(Newdescription)
@@ -618,16 +614,19 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         await db_manager.set_not_in_combat(user1)
         await db_manager.set_not_in_combat(user2)
         xp_granted = random.randint(10, 20)
-        coins_granted = random.randint(10, 20)
+        coins_granted = await db_manager.get_money(user1)
+        coins_granted = coins_granted / 2
+        coins_granted = int(coins_granted)
         #grant the user a random amount of xp between 10 and 20
         await db_manager.add_xp(user2, xp_granted)
         #grant the user a random amount of coins between 10 and 20
+        await db_manager.remove_money(user1, coins_granted)
         await db_manager.add_money(user2, coins_granted)
         #send a message to the channel saying the users xp and coins
         #convert the xp and coins to strings
         xp_granted = str(xp_granted)
         coins_granted = str(coins_granted)
-        await ctx.send(user2_name + " has won the fight and has been granted " + coins_granted + " xp and " + coins_granted + " coins!")
+        await ctx.send(user2_name + " has won the fight and has been granted " + xp_granted + " xp and " + coins_granted + f" coins! from {user1_name}")
         
         #check if the user has leveled up by checking if the users xp is greater than or equal to the xp needed to level up 
         if await db_manager.can_level_up(user2):
@@ -756,7 +755,6 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             monster_health = str(monster_health).replace(")", "")
             monster_health = str(monster_health).replace(",", "")
             #convert to int
-            #TODO - Fix this to work with new system
             isSetONFire = random.randint(1, 10)
             #have the user have a 1/10 chance of being paralyzed
             isPoisoned = random.randint(1, 10)
@@ -769,7 +767,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             await db_manager.remove_enemy_health(monsterID, damage)
             
             if user1_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ set __" + monster_name + "__ on fire <:flame1:1061287587395948634> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + "and set them on Fire"
                 #set the users burn status to true
                 await db_manager.set_enemy_burning(monsterID)
                 #mark the turn the user was set on fire
@@ -777,7 +775,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ poisoned <:poisoned:1061287780652691466> __" + monster_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + "and Poisoned them"
                 #set the users poison status to true
                 await db_manager.set_enemy_poisoned(monsterID)
                 #mark the turn the user was poisoned
@@ -785,36 +783,21 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
 
             #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
             elif user1_weapon_subtype == "Paralyze" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + user1_name + "__ paralyzed <:paralyzed:1061287659722510419> __" + monster_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
+                Newdescription = prev_desc + "and Paralyzed them"
                 #set the users poison status to true
                 await db_manager.set_enemy_paralyzed(monsterID)
                 #mark the turn the user was poisoned
                 enemy_paralyze_turn = turnCount
                 #skip the users turn
                 turnCount += 1
-            #TODO: fix promts to work with new system
-            #import the json of the user1Promts
-            with open("assets/user_enemy_Promts.json") as f:
-                user1Promts = json.load(f)
-            #get a random user1 promt
-            user1Promt = random.choice(user1Promts)
-            #convert the promt to a string
-            user1Promt = str(user1Promt)
-            #replace the {user2_name} with the user2 name
-            #convert both names to strings
-            user1_name = str(userName)
-            monster_name = str(monster_name)
-            user1Promt = user1Promt.replace("{monster_name}", "__" + monster_name + "__")
-            #replace {user1_name} with the user1 name
-            user1Promt = user1Promt.replace("{user1_name}", "__" + user1_name + "__")
-            #replace the {user2_weapon_name} with the user2 weapon
-            user1Promt = user1Promt.replace("{user1_weapon_name}", "__" + user1_weapon_name + "__")
-            #replace the {user2_damage} with the user2 damage
-            user1Promt = user1Promt.replace("{user1_weapon_damage}", "__" + str(user1_damage) + "__")
-            
-            #add the user2 promt to the new description
-            
-            Newdescription = prev_desc + "\n" + f"{user1Promt}"
+            user1_weapon = await db_manager.get_item_id(user1_weapon_name)
+            user_weapon_quotes = await db_manager.get_item_quotes(user1_weapon)
+            userPromt = random.choice(user_weapon_quotes)
+            userPromt = str(userPromt)
+            userPromt = userPromt.replace("{user}", userName)
+            userPromt = userPromt.replace("{target}", monsterName)
+            userPromt = userPromt.replace("{damage}", str(damage))
+            Newdescription = prev_desc + "\n" + f"{userPromt}"
             #convert the embed to a string
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
@@ -1118,15 +1101,30 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             damage = monster_attack - user1_defense
             
             #TODO - Fix this to work with new system
+            user1_fire_resistance = await db_manager.get_fire_resistance(userID)
+            user1_paralyze_resistance = await db_manager.get_paralysis_resistance(userID)
+            user1_poison_resistance = await db_manager.get_poison_resistance(userID)
+            
             isSetONFire = random.randint(1, 10)
-            #have the user have a 1/10 chance of being paralyzed
+            #if the fire resistance / 10 is greater than the number, the user is immune to fire
+            if user1_fire_resistance / 10 >= isSetONFire:
+                isSetONFire = 0
+            
+            #have the user have a 1/10 chance of being poisoned
+            #if the poison resistance / 10 is greater than the number, the user is immune to poison
             isPoisoned = random.randint(1, 10)
+            if user1_poison_resistance / 10 >= isPoisoned:
+                isPoisoned = 0
+                
             #a 1/10 chance of being paralyzed
             isParalyzed = random.randint(1, 10)
+            #if the paralysis resistance / 10 is greater than the number, the user is immune to paralysis
+            if user1_paralyze_resistance / 10 >= isParalyzed:
+                isParalyzed = 0
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             monster_element = await db_manager.get_enemy_element(monsterID)
             if monster_element == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ set __" + user1_name + "__ on fire <:flame1:1061287587395948634> __ for __" + str(monster_attack) + "__ plus 1 damage per turn (burning)"
+                Newdescription = prev_desc + f" and set {userName} on Fire."
                 #set the users burn status to true
                 await db_manager.set_user_burning(userID)
                 #mark the turn the user was set on fire
@@ -1134,7 +1132,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif monster_element == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ poisoned <:poisoned:1061287780652691466> __" + user1_name + "__ for __" + str(monster_attack) + "__ plus 3 damage per turn (poisoned)"
+                Newdescription = prev_desc + f"and Poisoned {userName}."
                 #set the users poison status to true
                 await db_manager.set_user_poisoned(userID)
                 #mark the turn the user was poisoned
@@ -1142,7 +1140,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
 
             #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
             elif monster_element == "Paralyze" and isParalyzed == 1:
-                Newdescription = prev_desc + "\n" + "__" + monster_name + "__ paralyzed <:paralyzed:1061287659722510419> __" + user1_name + "__ for __" + str(monster_attack) + "__ they wont be able to attack for a turn (paralyzed)"
+                Newdescription = prev_desc + "and Paralyzed " + userName + "."
                 #set the users poison status to true
                 await db_manager.set_user_paralyzed(userID)
                 #mark the turn the user was poisoned
@@ -1165,7 +1163,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #double the damage
                 damage = damage * 2
                 #set newdriscription to the crit message
-                Newdescription = "__" + monster_name + "__ has crit __" + user1_name + "__ for __" + str(damage) + "__ damage!"  
+                Newdescription = prev_desc + f" and Crit {userName} for {damage} damage."
             #if the damage is less than 0, set it to 0
             if damage < 0:
                 damage = 0
@@ -1176,25 +1174,32 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             if damage > user1_health:
                 damage = user1_health
             #remove the damage from the users health
+            #roll for dodge chance
+            dodge_chance = random.randint(1, 100)
+            #get the users dodge chance
+            user_dodge_chance = await db_manager.get_dodge_chance(userID)
+            #if the dodge chance is less than or equal to the users dodge chance, tell the user they dodged the attack
+            if dodge_chance <= user_dodge_chance:
+                Newdescription = prev_desc + f" {userName} Dodged the attack."
+                damage = 0
             await db_manager.remove_health(userID, damage)
             
             #import the json of the enemyPromts
                         
             #TODO: fix promts to work with new system
-            with open("assets/enemy_user_Promts.json") as f:
-                enemyPromts = json.load(f)
-            #get a random user2 promt
+            #get the enemy promts
+            enemyPromts = await db_manager.get_enemy_quotes(monsterID)
+            #if the promts are empty, set them to a default message
+            if enemyPromts == None:
+                enemyPromts = f"{monsterName} attacked {userName} for {damage} damage."
+            #pick a random enemy promt
             enemyPromts = random.choice(enemyPromts)
-            #convert the promt to a string
-            enemyPromts = str(enemyPromts)
-            #replace the {user2_name} with the user2 name
-            #convert both names to strings
-            monster_name = str(monster_name)
-            enemyPromts = enemyPromts.replace("{monster_name}", "__" + monster_name + "__")
-            #replace {user1_name} with the user1 name
-            enemyPromts = enemyPromts.replace("{user1_name}", "__" + user1_name + "__")
-            #replace {monster_damage} with the monster damage
-            enemyPromts = enemyPromts.replace("{monster_damage}", "__" + str(monster_attack) + "__")
+            #replace the {damage} with the damage
+            enemyPromts = enemyPromts.replace("{damage}", str(damage))
+            #replace the {target} with the users name
+            enemyPromts = enemyPromts.replace("{target}", userName)
+            #replace the {enemy} with the monsters name
+            enemyPromts = enemyPromts.replace("{enemy_name}", monsterName)
             Newdescription = prev_desc + "\n" + f"{enemyPromts}"
             #convert the embed to a string
             Newdescription = str(Newdescription)

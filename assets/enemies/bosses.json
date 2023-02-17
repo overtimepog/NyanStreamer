@@ -2,14 +2,14 @@
     {
         "enemy_id": "lich_king",
         "enemy_name": "Lich King",
-        "enemy_health": 600,
-        "enemy_damage": 30,
+        "enemy_health": 500,
+        "enemy_damage": 20,
         "enemy_emoji": "<a:Lich:1071986303199084585>",
         "enemy_description": "The ruler of the underworld, risen from the dead to claim his throne.",
         "enemy_rarity": "Epic",
         "enemy_type": "Boss",
-        "enemy_xp": 600,
-        "enemy_money": 300,
+        "enemy_xp": 100,
+        "enemy_money": 600,
         "enemy_crit_chance": 15,
         "enemy_drop_id": "lich_king",
         "enemy_drops": [{
@@ -21,7 +21,7 @@
         "enemy_element": "Undead",
         "quote_id": "lich_king",
         "enemy_quotes": [{
-            "quote": "{enemy_name} calls down a lightning strike on {player_name} for {damage} damage."
+            "quote": "{enemy_name} calls down a lightning strike on {target} for {damage} damage."
         }]
     }        
 ]

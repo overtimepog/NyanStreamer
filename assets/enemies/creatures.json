@@ -2,25 +2,30 @@
     {
         "enemy_id": "cow",
         "enemy_name": "Cow",
-        "enemy_health": 50,
+        "enemy_health": 15,
         "enemy_damage": 2,
         "enemy_emoji": "\ud83d\udc2e",
         "enemy_description": "A peaceful cow grazing in the fields.",
         "enemy_rarity": "Common",
         "enemy_type": "Peaceful",
-        "enemy_xp": 20,
-        "enemy_money": 20,
+        "enemy_xp": 5,
+        "enemy_money": 10,
         "enemy_crit_chance": 0,
         "enemy_drop_id": "cow",
         "enemy_drops": [{
             "item_id": "leather",
             "item_amount": 1,
-            "item_drop_chance": 0.5
+            "item_drop_chance": 1
         }],
         "enemy_element": "None",
         "quote_id": "cow",
-        "enemy_quotes": [{
-            "quote": "{enemy_name} mooed at you."
-        }]
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} mooed at {target} for {damage}."
+            },
+            {
+                "quote": "{enemy_name} fights back at {target} for {damage}."
+            }
+    ]
     }        
 ]

@@ -22,10 +22,13 @@
         "quote_id": "rat",
         "enemy_quotes": [
             {
-                "quote": "{enemy_name} slashes at {player_name} dealing {damage} damage."
+                "quote": "{enemy_name} slashes at {target} dealing {damage} damage."
             },
             {
-                "quote": "{enemy_name} bites {player_name} dealing {damage} damage."
+                "quote": "{enemy_name} bites {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} scratches {target} dealing {damage} damage."
             }
         ]
     }      
