@@ -20,7 +20,8 @@ from discord.ext.commands import Context, has_permissions
 
 from helpers import battle, checks, db_manager, randomEncounter
 
-
+global i
+i = 0
 # Here we name the cog and create a new class for the cog.
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
@@ -137,6 +138,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(embed=embed)
 
 #command to view inventory of a user, using the view_inventory function from helpers\db_manager.py
+#STUB - Inventory
     @commands.hybrid_command(
         name="inventory",
         description="This command will view your inventory.",
@@ -451,192 +453,142 @@ class Basic(commands.Cog, name="basic"):
         else:
             invembed.add_field(name="Misc", value="0", inline=True)
         #send the embed
-        message = await ctx.send(embed=invembed)
-        await message.add_reaction("🗡")
-        await message.add_reaction("<:ironarmor:1061292989047132190>")
-        await message.add_reaction("🧪")
-        await message.add_reaction("<:diamond:1061287200756596806>")
-        await message.add_reaction("🏠")
-        await message.add_reaction("⬅️")
-        await message.add_reaction("➡️")
-        await message.add_reaction("💰")
-        await message.add_reaction("❌")
-
-      
-        #switch between the different embeds based on the reaction
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in ["🗡", "<:ironarmor:1061292989047132190>", "🧪", "<:diamond:1061287200756596806>", "🏠", "⬅️", "➡️", "💰", "❌"]
-        page = 0
-        i = 0
-        reaction = None
-        while True:
-            if str(reaction) == "🗡":
-                await message.remove_reaction("🗡", ctx.author)
-                try: 
+        #await message.add_reaction("🗡")
+        #await message.add_reaction("<:ironarmor:1061292989047132190>")
+        #await message.add_reaction("🧪")
+        #await message.add_reaction("<:diamond:1061287200756596806>")
+        #await message.add_reaction("🏠")
+        #await message.add_reaction("⬅️")
+        #await message.add_reaction("➡️")
+        #await message.add_reaction("💰")
+        #await message.add_reaction("❌")
+        global page
+        
+        class HomeView(discord.ui.View):
+            page = 0
+            @discord.ui.button(label="Weapons", row=0, style=discord.ButtonStyle.primary)
+            async def first_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                try:
+                    global page 
+                    global i
                     page = 1
-                    await message.edit(embed=weapons[i])
+                    await message.edit(embed=weapons[i], view=InvView())
+                    await interaction.response.defer()
                 except(IndexError):
-                    await ctx.send("There are no weapons in your inventory")
-            elif str(reaction) == "<:ironarmor:1061292989047132190>":
-                await message.remove_reaction("<:ironarmor:1061292989047132190>", ctx.author)
+                    await interaction.response.send_message("You don't have any Weapons in your inventory", ephemeral=True)
+
+            @discord.ui.button(label="Armor", row=0, style=discord.ButtonStyle.primary)
+            async def second_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
                 try:
+                    global page 
+                    global i
                     page = 2
-                    await message.edit(embed=armor[i])
+                    await message.edit(embed=armor[i], view=InvView())
+                    await interaction.response.defer()
                 except(IndexError):
-                    await ctx.send("There is no armor in your inventory")
-            elif str(reaction) == "🧪":
-                await message.remove_reaction("🧪", ctx.author)
+                    await interaction.response.send_message("You don't have any Armor in your inventory", ephemeral=True)
+                
+            @discord.ui.button(label="Consumables", row=0, style=discord.ButtonStyle.primary)
+            async def third_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
                 try:
+                    global page 
+                    global i
                     page = 3
-                    await message.edit(embed=consumables[i])
+                    await message.edit(embed=consumables[i], view=InvView())
+                    await interaction.response.defer()
                 except(IndexError):
-                    await ctx.send("There are no consumables in your inventory")
-            elif str(reaction) == "<:diamond:1061287200756596806>":
-                await message.remove_reaction("<:diamond:1061287200756596806>", ctx.author)
+                    await interaction.response.send_message("You don't have any Consumables in your inventory", ephemeral=True)
+                
+            @discord.ui.button(label="Misc", row=0, style=discord.ButtonStyle.primary)
+            async def fourth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
                 try:
+                    global page 
+                    global i
                     page = 4
-                    await message.edit(embed=misc[i])
+                    await message.edit(embed=misc[i], view=InvView())
+                    await interaction.response.defer()
                 except(IndexError):
-                    await ctx.send("There are no misc items in your inventory")
-            elif str(reaction) == "🏠":
+                    await interaction.response.send_message("You don't have any Misc Items in your inventory", ephemeral=True)
+                    
+        global page
+        class InvView(discord.ui.View):
+            global page 
+            global i
+            #if not on the home page, remove the weapon, armor, consumable, and misc buttons with a sell, and equip buttons
+                #remove the weapon, armor, consumable, and misc buttons
+            @discord.ui.button(label="Sell", row=0, style=discord.ButtonStyle.primary)
+            async def eighth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                pass
+                    
+            @discord.ui.button(label="Equip", row=0, style=discord.ButtonStyle.primary)
+            async def ninth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                pass
+                
+            @discord.ui.button(label="Home", row=1, style=discord.ButtonStyle.primary)
+            async def tenth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                global page 
+                global i
                 page = 0
-                await message.edit(embed=invembed)
-                await message.remove_reaction("🏠", ctx.author)
-            try:
-                reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
-                #if the page is 1 (weapons) and the reaction is the arrow forward, go to the item in the list of weapons
-                if page == 1 and str(reaction) == "➡️":
-                    if i < len(weapons)-1:
-                        i += 1
-                        await message.edit(embed=weapons[i])
-                        await message.remove_reaction("➡️", ctx.author)
-                    else:
-                        i = 0
-                        await message.edit(embed=weapons[i])
-                        await message.remove_reaction("➡️", ctx.author)
-                #if the page is 1 (weapons) and the reaction is the arrow backward, go to the previous item in the list of weapons
-                elif page == 1 and str(reaction) == "⬅️":
-                    if i > 0:
-                        i -= 1
-                        await message.edit(embed=weapons[i])
-                        await message.remove_reaction("⬅️", ctx.author)
-                    else:
-                        i = len(weapons)-1
-                        await message.edit(embed=weapons[i])
-                        await message.remove_reaction("⬅️", ctx.author)
-        
-                #if the page is 2 (armor) and the reaction is the arrow forward, go to the item in the list of armor
-                elif page == 2 and str(reaction) == "➡️":
-                    if i < len(armor)-1:
-                        i += 1
-                        await message.edit(embed=armor[i])
-                        await message.remove_reaction("➡️", ctx.author)
-                    else:
-                        i = 0
-                        await message.edit(embed=armor[i])
-                        await message.remove_reaction("➡️", ctx.author)
-                #if the page is 2 (armor) and the reaction is the arrow backward, go to the previous item in the list of armor
-                elif page == 2 and str(reaction) == "⬅️":
-                    if i > 0:
-                        i -= 1
-                        await message.edit(embed=armor[i])
-                        await message.remove_reaction("⬅️", ctx.author)
-                    else:
-                        i = len(armor)-1
-                        await message.edit(embed=armor[i])
-                        await message.remove_reaction("⬅️", ctx.author)   
-                        
-                #if the page is 3 (consumables) and the reaction is the arrow forward, go to the item in the list of consumables
-                elif page == 3 and str(reaction) == "➡️":
-                    if i < len(consumables)-1:
-                        i += 1
-                        await message.edit(embed=consumables[i])
-                        await message.remove_reaction("➡️", ctx.author)
-                    else:
-                        i = 0
-                        await message.edit(embed=consumables[i])
-                        await message.remove_reaction("➡️", ctx.author)
-                #if the page is 3 (consumables) and the reaction is the arrow backward, go to the previous item in the list of consumables
-                elif page == 3 and str(reaction) == "⬅️":
-                    if i > 0:
-                        i -= 1
-                        await message.edit(embed=consumables[i])
-                        await message.remove_reaction("⬅️", ctx.author)
-                    else:
-                        i = len(consumables)-1
-                        await message.edit(embed=consumables[i])
-                        await message.remove_reaction("⬅️", ctx.author)                        
-
-                #if the page is 4 (misc) and the reaction is the arrow forward, go to the item in the list of misc
-                elif page == 4 and str(reaction) == "➡️":
-                    if i < len(misc)-1:
-                        i += 1
-                        await message.edit(embed=misc[i])
-                        await message.remove_reaction("➡️", ctx.author)
-                    else:
-                        i = 0
-                        await message.edit(embed=misc[i])
-                        await message.remove_reaction("➡️", ctx.author)
-                #if the page is 4 (misc) and the reaction is the arrow backward, go to the previous item in the list of misc
-                elif page == 4 and str(reaction) == "⬅️":
-                    if i > 0:
-                        i -= 1
-                        await message.edit(embed=misc[i])
-                        await message.remove_reaction("⬅️", ctx.author)
-                    else:
-                        i = len(misc)-1
-                        await message.edit(embed=misc[i])
-                        await message.remove_reaction("⬅️", ctx.author)
-                #if the reaction is the check mark, buy the item
-                elif str(reaction) == "💰":
-                    #sell the item
-                    await message.remove_reaction("💰", ctx.author)
-                    #get the item price
-                    if page == 1:
-                        weapons = allWeapons
-                        item_id = weapons[i][1]
-                        #remove the item from the users inventory and add its price to the user's inventory
-                        await db_manager.remove_item_from_inventory(ctx.author.id, item_id)
-                        item_price = weapons[i][3]
-                        await db_manager.add_money(ctx.author.id, item_price)
-                        await ctx.send(f"You sold {weapons[i][2]} for {item_price} coins.")
-                    elif page == 2:
-                        armor = allArmor
-                        item_id = armor[i][1]
-                        #remove the item from the users inventory and add its price to the user's inventory
-                        await db_manager.remove_item_from_inventory(ctx.author.id, item_id)
-                        item_price = armor[i][3]
-                        await db_manager.add_money(ctx.author.id, item_price)
-                        await ctx.send(f"You sold {armor[i][2]} for {item_price} coins.")
-                        return
-                    elif page == 3:
-                        consumables = allConsumables
-                        item_id = consumables[i][1]
-                        #remove the item from the users inventory and add its price to the user's inventory
-                        await db_manager.remove_item_from_inventory(ctx.author.id, item_id)
-                        item_price = consumables[i][3]
-                        await db_manager.add_money(ctx.author.id, item_price)
-                        await ctx.send(f"You sold {consumables[i][2]} for {item_price} coins.")
-                        return
-                    elif page == 4:
-                        misc = allMisc
-                        item_id = misc[i][1]
-                        #remove the item from the users inventory and add its price to the user's inventory
-                        await db_manager.remove_item_from_inventory(ctx.author.id, item_id)
-                        item_price = misc[i][3]
-                        await db_manager.add_money(ctx.author.id, item_price)
-                        await ctx.send(f"You sold {misc[i][2]} for {item_price} coins.")
-                        return
-                        
-                elif str(reaction) == "❌":
-                    #delete the embed
-                    await message.delete()
-                    return  
+                await message.edit(embed=invembed, view=HomeView())
+                await interaction.response.defer()
             
-            except Exception as e:
-                print(e)
-        
+            @discord.ui.button(label="Previous Page", row=2, style=discord.ButtonStyle.primary)
+            async def eleventh_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                global page 
+                global i
+                try:
+                    if page == 1:
+                        i -= 1
+                        await message.edit(embed=weapons[i], view=InvView())
+                        await interaction.response.defer()
+                    elif page == 2:
+                        i -= 1
+                        await message.edit(embed=armor[i], view=InvView())
+                        await interaction.response.defer()
+                    elif page == 3:
+                        i -= 1
+                        await message.edit(embed=consumables[i], view=InvView())
+                        await interaction.response.defer()
+                    elif page == 4:
+                        i -= 1
+                        await message.edit(embed=misc[i], view=InvView())
+                        await interaction.response.defer()
+                    else:
+                        await interaction.response.send_message("You are on the home page", ephemeral=True)
+                        await interaction.response.defer()
+                except(IndexError):
+                    await ctx.send("You are on the last page", ephemeral=True)
+                    await interaction.response.defer()
+                    
+            @discord.ui.button(label="Next Page", row=2, style=discord.ButtonStyle.primary)
+            async def twelfth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                global page 
+                global i
+                try:
+                    if page == 1:
+                        i += 1
+                        await message.edit(embed=weapons[i])
+                        await interaction.response.defer()
+                    elif page == 2:
+                        i += 1
+                        await message.edit(embed=armor[i])
+                        await interaction.response.defer()
+                    elif page == 3:
+                        i += 1
+                        await message.edit(embed=consumables[i])
+                        await interaction.response.defer()
+                    elif page == 4:
+                        i += 1
+                        await message.edit(embed=misc[i])
+                        await interaction.response.defer()
+                    else:
+                        await ctx.send("You are on the home page", ephemeral=True)
+                        await interaction.response.defer()
+                except(IndexError):
+                    await ctx.send("You are on the last page", ephemeral=True)
+                    await interaction.response.defer()
 
+        message = await ctx.send(embed=invembed, view=HomeView())
     #command to create a new item in the database item table, using the create_streamer_item function from helpers\db_manager.py
     #`streamer_prefix` varchar(20) NOT NULL,
     #`item_id` varchar(20) NOT NULL,
