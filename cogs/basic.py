@@ -185,7 +185,9 @@ class Basic(commands.Cog, name="basic"):
         #weapons
         #combine allProjectiles and allWeapon 
         allWeapons = allWeapons + allProjectiles + allTools
+        total = len(allWeapons)
         for i in allWeapons:
+            page_number = allWeapons.index(i) + 1
             item_id = i[1]
             item_name = i[2]
             item_price = i[3]
@@ -242,11 +244,14 @@ class Basic(commands.Cog, name="basic"):
                     color=rarity_color
                 )
                 item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                item.set_footer(text=f"Page {page_number}/{total}")
 
             #add the embed to the list
             weapons.append(item)
         #armor
+        total = len(allArmor)
         for i in allArmor:
+            page_number = allArmor.index(i) + 1
             item_id = i[1]
             item_name = i[2]
             item_price = i[3]
@@ -301,11 +306,14 @@ class Basic(commands.Cog, name="basic"):
                     color=rarity_color
                 )
                 item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                item.set_footer(text=f"Page {page_number}/{total}")
 
             #add the embed to the list
             armor.append(item)
         #consumables
+        total = len(allConsumables)
         for i in allConsumables:
+            page_number = allConsumables.index(i) + 1
             item_id = i[1]
             item_name = i[2]
             item_price = i[3]
@@ -360,12 +368,14 @@ class Basic(commands.Cog, name="basic"):
                     color=rarity_color
                 )
                 item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
-
+                item.set_footer(text=f"Page {page_number}/{total}")
             #add the embed to the list
             consumables.append(item)
         #misc
         allMisc = allMisc + allMaterials
+        total = len(allMisc)
         for i in allMisc:
+            page_number = allMisc.index(1) + 1
             item_id = i[1]
             item_name = i[2]
             item_price = i[3]
@@ -406,7 +416,7 @@ class Basic(commands.Cog, name="basic"):
             if item_equipped == 1:
                 item_amount = item_amount - 1
                 if item_amount == 0:
-                    item_amount = " Equipped"
+                    item_amount = " (Equipped)"
                 item = discord.Embed(
                     title=f"{item_name}{item_emote} x{item_amount}",
                     description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
@@ -420,6 +430,7 @@ class Basic(commands.Cog, name="basic"):
                     color=rarity_color
                 )
                 item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                item.set_footer(text=f"Page {page_number}/{total}")
             #add the embed to the list
             misc.append(item)
             
@@ -843,7 +854,9 @@ class Basic(commands.Cog, name="basic"):
         #weapons
         #combine allProjectiles and allWeapon 
         allWeapons = allWeapons + allProjectiles + allTools
+        total = len(allWeapons)
         for i in allWeapons:
+            page_number = allWeapons.index(i) + 1
             item_id = i[0]
             item_name = i[1]
             item_price = i[2]
@@ -883,10 +896,13 @@ class Basic(commands.Cog, name="basic"):
                 description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
+            item.set_footer(text=f"Page {page_number}/{total}")
             #add the embed to the list
             weapons.append(item)
         #armor
+        total = len(allArmor)
         for i in allArmor:
+            page_number = allArmor.index(i) + 1
             item_id = i[0]
             item_name = i[1]
             item_price = i[2]
@@ -926,10 +942,13 @@ class Basic(commands.Cog, name="basic"):
                 description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
+            item.set_footer(text=f"Page {page_number}/{total}")
             #add the embed to the list
             armor.append(item)
         #consumables
+        total = len(allConsumables)
         for i in allConsumables:
+            page_number = allConsumables.index(i) + 1
             item_id = i[0]
             item_name = i[1]
             item_price = i[2]
@@ -969,11 +988,14 @@ class Basic(commands.Cog, name="basic"):
                 description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
+            item.set_footer(text=f"Page {page_number}/{total}")
             #add the embed to the list
             consumables.append(item)
         #misc
         allMisc = allMisc + allMaterals
+        total = len(allMisc)
         for i in allMisc:
+            page_number = allMisc.index(i) + 1
             item_id = i[0]
             item_name = i[1]
             item_price = i[2]
@@ -1013,6 +1035,7 @@ class Basic(commands.Cog, name="basic"):
                 description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Type**: `{item_type}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
+            item.set_footer(text=f"Page {page_number}/{total}")
             #add the embed to the list
             misc.append(item)
             
@@ -1023,16 +1046,141 @@ class Basic(commands.Cog, name="basic"):
             color=discord.Color.blurple()
         )
         #react to the shop embed with, sword, shield, potion, and house
-        message = await ctx.send(embed=shopembed)
-        await message.add_reaction("⚔️")
-        await message.add_reaction("🛡️")
-        await message.add_reaction("🧪")
-        await message.add_reaction("💎")
-        await message.add_reaction("🏠")
-        await message.add_reaction("⏪")
-        await message.add_reaction("⏩")
-        await message.add_reaction("✅")
-        await message.add_reaction("❌")
+        #message = await ctx.send(embed=shopembed)
+        #await message.add_reaction("⚔️")
+        #await message.add_reaction("🛡️")
+        #await message.add_reaction("🧪")
+        #await message.add_reaction("💎")
+        #await message.add_reaction("🏠")
+        #await message.add_reaction("⏪")
+        #await message.add_reaction("⏩")
+        #await message.add_reaction("✅")
+        #await message.add_reaction("❌")
+        class HomeView(discord.ui.View):
+            page = 0
+            @discord.ui.button(label="Weapons", row=0, style=discord.ButtonStyle.primary)
+            async def first_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                try:
+                    global page 
+                    global i
+                    page = 1
+                    await message.edit(embed=weapons[i], view=ShopView())
+                    await interaction.response.defer()
+                except(IndexError):
+                    await interaction.response.send_message("You don't have any Weapons in your inventory", ephemeral=True)
+
+            @discord.ui.button(label="Armor", row=0, style=discord.ButtonStyle.primary)
+            async def second_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                try:
+                    global page 
+                    global i
+                    page = 2
+                    await message.edit(embed=armor[i], view=ShopView())
+                    await interaction.response.defer()
+                except(IndexError):
+                    await interaction.response.send_message("You don't have any Armor in your inventory", ephemeral=True)
+                
+            @discord.ui.button(label="Consumables", row=0, style=discord.ButtonStyle.primary)
+            async def third_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                try:
+                    global page 
+                    global i
+                    page = 3
+                    await message.edit(embed=consumables[i], view=ShopView())
+                    await interaction.response.defer()
+                except(IndexError):
+                    await interaction.response.send_message("You don't have any Consumables in your inventory", ephemeral=True)
+                
+            @discord.ui.button(label="Misc", row=0, style=discord.ButtonStyle.primary)
+            async def fourth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                try:
+                    global page 
+                    global i
+                    page = 4
+                    await message.edit(embed=misc[i], view=ShopView())
+                    await interaction.response.defer()
+                except(IndexError):
+                    await interaction.response.send_message("You don't have any Misc Items in your inventory", ephemeral=True)
+                    
+        global page
+        class ShopView(discord.ui.View):
+            global page 
+            global i
+            #if not on the home page, remove the weapon, armor, consumable, and misc buttons with a sell, and equip buttons
+                #remove the weapon, armor, consumable, and misc buttons
+            @discord.ui.button(label="Sell", row=0, style=discord.ButtonStyle.primary)
+            async def eighth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                pass
+                    
+            @discord.ui.button(label="Equip", row=0, style=discord.ButtonStyle.primary)
+            async def ninth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                pass
+                
+            @discord.ui.button(label="Home", row=1, style=discord.ButtonStyle.primary)
+            async def tenth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                global page 
+                global i
+                page = 0
+                await message.edit(embed=shopembed, view=HomeView())
+                await interaction.response.defer()
+            
+            @discord.ui.button(label="Previous Page", row=2, style=discord.ButtonStyle.primary)
+            async def eleventh_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                global page 
+                global i
+                try:
+                    if page == 1:
+                        i -= 1
+                        await message.edit(embed=weapons[i], view=ShopView())
+                        await interaction.response.defer()
+                    elif page == 2:
+                        i -= 1
+                        await message.edit(embed=armor[i], view=ShopView())
+                        await interaction.response.defer()
+                    elif page == 3:
+                        i -= 1
+                        await message.edit(embed=consumables[i], view=ShopView())
+                        await interaction.response.defer()
+                    elif page == 4:
+                        i -= 1
+                        await message.edit(embed=misc[i], view=ShopView())
+                        await interaction.response.defer()
+                    else:
+                        await interaction.response.send_message("You are on the home page", ephemeral=True)
+                        await interaction.response.defer()
+                except(IndexError):
+                    await ctx.send("You are on the last page", ephemeral=True)
+                    await interaction.response.defer()
+                    
+            @discord.ui.button(label="Next Page", row=2, style=discord.ButtonStyle.primary)
+            async def twelfth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
+                global page 
+                global i
+                try:
+                    if page == 1:
+                        i += 1
+                        await message.edit(embed=weapons[i])
+                        await interaction.response.defer()
+                    elif page == 2:
+                        i += 1
+                        await message.edit(embed=armor[i])
+                        await interaction.response.defer()
+                    elif page == 3:
+                        i += 1
+                        await message.edit(embed=consumables[i])
+                        await interaction.response.defer()
+                    elif page == 4:
+                        i += 1
+                        await message.edit(embed=misc[i])
+                        await interaction.response.defer()
+                    else:
+                        await ctx.send("You are on the home page", ephemeral=True)
+                        await interaction.response.defer()
+                except(IndexError):
+                    await ctx.send("You are on the last page", ephemeral=True)
+                    await interaction.response.defer()
+
+        message = await ctx.send(embed=shopembed, view=HomeView())
         
         #switch between the different embeds based on the reaction
         def check(reaction, user):
