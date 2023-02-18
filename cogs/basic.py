@@ -229,7 +229,7 @@ class Basic(commands.Cog, name="basic"):
             #create an embed for this item
             item = discord.Embed(
                 title=f"{item_name}{item_emote}",
-                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defence**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
                 color=rarity_color
             )
             if item_equipped == 1:
@@ -519,21 +519,21 @@ class Basic(commands.Cog, name="basic"):
                 print(item_equipped_id)
                 print(item_type)
                 if item_equipped_id == item_id:
-                    await ctx.send(f"`{item_name}` is already equipped.")
-                    await interaction.response.defer()
+                    await interaction.response.send_message(f"`{item_name}` is already equipped.")
+                    
                     return
                 if item_type == "Weapon":
                     weapon_equipped = await db_manager.is_weapon_equipped(user_id)
                     if weapon_equipped == True:
                         await db_manager.unequip_item(user_id, item_id)
-                        ctx.send(f"your previous weapon has been unequiped and `{item_name}` has been equipped.")
-                        await interaction.response.defer()
+                        interaction.response.send_message(f"your previous weapon has been unequiped and `{item_name}` has been equipped.")
+                        
                 elif item_type == "Armor":
                     armor_equipped = await db_manager.is_armor_equipped(user_id)
                     if armor_equipped == True:
                         await db_manager.unequip_item(user_id, item_id)
-                        ctx.send(f"your previous armor has been unequiped and `{item_name}` has been equipped.")
-                        await interaction.response.defer()
+                        interaction.response.send_message(f"your previous armor has been unequiped and `{item_name}` has been equipped.")
+                        
                 isEquippable = await db_manager.is_basic_item_equipable(item_id)
                 if isEquippable == 1:
                     await db_manager.equip_item(user_id, item_id)
@@ -547,10 +547,8 @@ class Basic(commands.Cog, name="basic"):
                     print(effect)
                     if effect == "None":
                         await db_manager.equip_item(user_id, item_id)
-                        await ctx.send(f"You equipped `{item_name}`.")
-                        weapons[i].title = f"{item_name}{item_emote} (Equipped)"
-                        await message.edit(embed=weapons[i], view=InvView())
-                        await interaction.response.defer()
+                        await interaction.response.send_message(f"You equipped `{item_name}`.")
+                        
                         return
                     effect_add_or_minus = item_effect[1]
                     print(effect_add_or_minus)
@@ -562,14 +560,14 @@ class Basic(commands.Cog, name="basic"):
                         if effect_add_or_minus == "+":
                             #add the effect amount to the user's health
                             await db_manager.add_health_boost(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                            
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's health
                             await db_manager.remove_health_boost(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
+                            
 
                     #if the effect is damage
                     elif effect == "damage":
@@ -577,14 +575,14 @@ class Basic(commands.Cog, name="basic"):
                         if effect_add_or_minus == "+":
                             #add the effect amount to the user's damage
                             await db_manager.add_damage_boost(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                            
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's damage
                             await db_manager.remove_damage_boost(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+                            
 
                     #if the effect is luck
                     elif effect == "luck":
@@ -592,14 +590,14 @@ class Basic(commands.Cog, name="basic"):
                         if effect_add_or_minus == "+":
                             #add the effect amount to the user's luck
                             await db_manager.add_luck(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                            
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's luck
                             await db_manager.remove_luck(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+                            
 
                     #if the effect is crit chance
                     elif effect == "crit_chance":
@@ -607,14 +605,14 @@ class Basic(commands.Cog, name="basic"):
                         if effect_add_or_minus == "+":
                             #add the effect amount to the user's crit chance
                             await db_manager.add_crit_chance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                            
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's crit chance
                             await db_manager.remove_crit_chance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+                            
 
                     #if the effect is fire resistance
                     elif effect == "fire_resistance":
@@ -622,14 +620,14 @@ class Basic(commands.Cog, name="basic"):
                         if effect_add_or_minus == "+":
                             #add the effect amount to the user's fire resistance
                             await db_manager.add_fire_resistance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                            
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's fire resistance
                             await db_manager.remove_fire_resistance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+                            
 
                     #if the effect is paralsys resistance
                     elif effect == "paralysis_resistance":
@@ -637,14 +635,14 @@ class Basic(commands.Cog, name="basic"):
                         if effect_add_or_minus == "+":
                             #add the effect amount to the user's paralsys resistance
                             await db_manager.add_paralysis_resistance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
+                            
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's paralsys resistance
                             await db_manager.remove_paralysis_resistance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
+                            
 
                     #if the effect is poison resistance
                     elif effect == "poison_resistance":
@@ -652,14 +650,14 @@ class Basic(commands.Cog, name="basic"):
                         if effect_add_or_minus == "+":
                             #add the effect amount to the user's poison resistance
                             await db_manager.add_poison_resistance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                            
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's poison resistance
                             await db_manager.remove_poison_resistance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+                            
 
                     #if the effect is frost resistance
                     elif effect == "frost_resistance":
@@ -667,22 +665,22 @@ class Basic(commands.Cog, name="basic"):
                         if effect_add_or_minus == "+":
                             #add the effect amount to the user's frost resistance
                             await db_manager.add_frost_resistance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                            
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's frost resistance
                             await db_manager.remove_frost_resistance(user_id, effect_amount)
-                            await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
-                            await interaction.response.defer()
+                            await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+                            
 
                     #if the item has no effect
                     else:
-                        await ctx.send(f"You equipped `{item_name}`")
-                        await interaction.response.defer()
+                        await interaction.response.send_message(f"You equipped `{item_name}`")
+                        
                 else:
-                    await ctx.send(f"that is not equippable.")
-                    await interaction.response.defer()
+                    await interaction.response.send_message(f"that is not equippable.")
+                    
 
             @discord.ui.button(label="Sell", row=0, style=discord.ButtonStyle.primary)
             async def eighth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
@@ -773,10 +771,10 @@ class Basic(commands.Cog, name="basic"):
                         await message.edit(embed=misc[i])
                         await interaction.response.defer()
                     else:
-                        await ctx.send("You are on the home page", ephemeral=True)
+                        await interaction.response.send_message("You are on the home page", ephemeral=True)
                         await interaction.response.defer()
                 except(IndexError):
-                    await ctx.send("You are on the last page", ephemeral=True)
+                    await interaction.response.send_message("You are on the last page", ephemeral=True)
                     await interaction.response.defer()
                     
             @discord.ui.button(label="⏩", row=1, style=discord.ButtonStyle.gray)
@@ -801,10 +799,10 @@ class Basic(commands.Cog, name="basic"):
                         await message.edit(embed=misc[i])
                         await interaction.response.defer()
                     else:
-                        await ctx.send("You are on the home page", ephemeral=True)
+                        await interaction.response.send_message("You are on the home page", ephemeral=True)
                         await interaction.response.defer()
                 except(IndexError):
-                    await ctx.send("You are on the last page", ephemeral=True)
+                    await interaction.response.send_message("You are on the last page", ephemeral=True)
                     await interaction.response.defer()
         message = await ctx.send(embed=invembed, view=HomeView())
     #command to create a new item in the database item table, using the create_streamer_item function from helpers\db_manager.py
