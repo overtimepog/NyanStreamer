@@ -749,6 +749,7 @@ async def add_shop_items() -> None:
     #clear the shop table
     await db.execute(f"DELETE FROM `shop`")
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
+    #pick 5 random items from the database
     for item in data:
         ItemAmount = random.randint(1, 10)
         await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7], item[9], ItemAmount))
@@ -770,7 +771,7 @@ async def add_enemies() -> None:
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for quote in enemy['enemy_quotes']:
                     await db.execute(f"INSERT INTO `enemy_quotes` (`enemy_id`, `quote`) VALUES (?, ?)", (enemy['quote_id'], quote['quote']))
-                    print(f"Updated Quote: |{quote['quote']}| to the item_quotes for |{enemy['enemy_name']}|")
+                    print(f"Updated Quote: |{quote['quote']}| to the enemy_quotes for |{enemy['enemy_name']}|")
                 print(f"Updated |{enemy['enemy_name']}|'s enemy_quotes to the database")
                     
             #add the enemies drops to the database
@@ -815,7 +816,7 @@ async def add_enemies() -> None:
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for quote in enemy['enemy_quotes']:
                     await db.execute(f"INSERT INTO `enemy_quotes` (`enemy_id`, `quote`) VALUES (?, ?)", (enemy['quote_id'], quote['quote']))
-                    print(f"Added Quote: |{quote['quote']}| to the item_quotes for |{enemy['enemy_name']}|")
+                    print(f"Added Quote: |{quote['quote']}| to the enemy_quotes for |{enemy['enemy_name']}|")
                 print(f"Added |{enemy['enemy_name']}|'s enemy_quotes to the database")
                     
             #add the enemies drops to the database
