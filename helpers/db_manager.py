@@ -190,6 +190,7 @@ async def get_enemy_damage(enemy_id: str) -> int:
         users = await db.execute(f"SELECT `enemy_damage` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
         return users
     
+    
 
 #remove health from an enemy
 async def remove_enemy_health(enemy_id: str, amount: int) -> None:
@@ -1098,8 +1099,8 @@ async def get_enemy_drop_chance(enemy_id: str) -> int:
     data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
     if data is not None:
         return data[12]
-    else:
-        return None
+    elif data[12] == 0 or data[12] == None or data[12] == "" or data[12] == "None":
+        return 0
     
 #get the enemy drop amount min from its ID
 async def get_enemy_drop_amount_min(enemy_id: str) -> int:
@@ -1108,7 +1109,7 @@ async def get_enemy_drop_amount_min(enemy_id: str) -> int:
     if data is not None:
         return data[14]
     else:
-        return None
+        return 0
 
 #get the enemy drop amount max from its ID
 async def get_enemy_drop_amount_max(enemy_id: str) -> int:
@@ -1117,7 +1118,7 @@ async def get_enemy_drop_amount_max(enemy_id: str) -> int:
     if data is not None:
         return data[15]
     else:
-        return None
+        return 0
     
 #get the drop chance from its ID
 async def get_enemy_drop_rarity(enemy_id: str) -> str:

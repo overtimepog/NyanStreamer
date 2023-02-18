@@ -648,8 +648,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
     turnCount = 0
     #create the embed and send it
     embed = discord.Embed(title="Deathbattle", description="Fight!", color=0xffff00)
-    embed.add_field(name=userName, value="Health: 100", inline=True)
-    embed.add_field(name=monsterName, value="Health: 100", inline=True)
+    embed.add_field(name=userName, value="Ready", inline=True)
+    embed.add_field(name=monsterName, value="Ready", inline=True)
     #set the user in combat
     await db_manager.set_in_combat(userID)
     msg = await ctx.send(embed=embed)
@@ -720,8 +720,10 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             monster_defence = await db_manager.get_enemy_health(monsterID)
             #convert the defence to int
             monster_defence = int(monster_defence[0])
-            #divide the defence by 2
-            monster_defence = monster_defence / 2
+            #divide the defence by 5
+            monster_defence = monster_defence / 5
+            #convert the defence to int
+            monster_defence = int(monster_defence)
             
             #get the enemies name and convert it to str
             monster_name = await db_manager.get_enemy_name(monsterID)
@@ -764,7 +766,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             if damage > monster_health:
                 damage = monster_health
             #remove the damage from the monsters health
-            await db_manager.remove_enemy_health(monsterID, damage)
+            monster_health = monster_health - damage
             
             if user1_weapon_subtype == "Fire" and isSetONFire == 1:
                 Newdescription = prev_desc + "and set them on Fire"
@@ -792,11 +794,36 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 turnCount += 1
             user1_weapon = await db_manager.get_item_id(user1_weapon_name)
             user_weapon_quotes = await db_manager.get_item_quotes(user1_weapon)
-            userPromt = random.choice(user_weapon_quotes)
-            userPromt = str(userPromt)
-            userPromt = userPromt.replace("{user}", userName)
-            userPromt = userPromt.replace("{target}", monsterName)
-            userPromt = userPromt.replace("{damage}", str(damage))
+            if user_weapon_quotes == None or user_weapon_quotes == [] or user_weapon_quotes == "" or user_weapon_quotes == "None":
+                userPromt = "{user} attacked {target} for {damage} damage"
+                userPromt = userPromt.replace("{user}", userName)
+                userPromt = userPromt.replace("{target}", monsterName)
+                userPromt = userPromt.replace("{damage}", str(damage))
+            else:
+                userPromt = random.choice(user_weapon_quotes)
+                if userPromt == user1_weapon:
+                    userPromt = "{user} attacked {target} for {damage} damage"
+                    userPromt = str(userPromt)
+                    userPromt = userPromt.replace("{user}", userName)
+                    userPromt = userPromt.replace("{target}", monsterName)
+                    userPromt = userPromt.replace("{damage}", str(damage))
+                else:
+                    userPromt = str(userPromt)
+                    userPromt = userPromt.replace("{user}", userName)
+                    userPromt = userPromt.replace("{target}", monsterName)
+                    userPromt = userPromt.replace("{damage}", str(damage))
+
+                #roll for a critical hit
+            criticalHit = await db_manager.get_crit_chance(userID)
+            #convert the critical hit to int
+            criticalHit = int(criticalHit)
+            #roll for a critical hit
+            criticalHitRoll = random.randint(1, 100)
+            #if the critical hit roll is less than or equal to the critical hit chance, double the damage
+            if criticalHitRoll <= criticalHit:
+                damage = damage * 2
+                userPromt = userPromt + f" and hit a Crit !"
+
             Newdescription = prev_desc + "\n" + f"{userPromt}"
             #convert the embed to a string
             Newdescription = str(Newdescription)
@@ -806,26 +833,25 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             embed = discord.Embed(description=f"{Newdescription}", color=0xffff00)
             #edit the embed feilds to include the new health
             user1_health = await db_manager.get_health(userID)
-            enemyHealth = await db_manager.get_enemy_health(monsterID)
             #remove the () and , from the health
             user1_health = str(user1_health).replace("(", "")
             user1_health = str(user1_health).replace(")", "")
             user1_health = str(user1_health).replace(",", "")
-            enemyHealth = str(enemyHealth).replace("(", "")
-            enemyHealth = str(enemyHealth).replace(")", "")
-            enemyHealth = str(enemyHealth).replace(",", "")
+            monster_health = str(monster_health).replace("(", "")
+            monster_health = str(monster_health).replace(")", "")
+            monster_health = str(monster_health).replace(",", "")
             #convert to int
             user1_health = int(user1_health)
-            enemyHealth = int(enemyHealth)
+            monster_health = int(monster_health)
             #if the user is dead, set their health to 0
             if user1_health <= 0:
                 user1_health = 0
-            if enemyHealth <= 0:
-                enemyHealth = 0
+            if monster_health <= 0:
+                monster_health = 0
 
             #convert back to string
             user1_health = str(user1_health)
-            enemyHealth = str(enemyHealth)
+            monster_health = str(monster_health)
             
             if await db_manager.check_user_burning(userID):
                 await db_manager.remove_health(userID, 1)
@@ -834,7 +860,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #mark down the turn count when the user was set on fire
                 
             if await db_manager.check_enemy_burning(monsterID):
-                await db_manager.remove_enemy_health(monsterID, 1)
+                #remove 1 health from the monsters health
+                monster_health = monster_health - 1
                 #add a (burning) to the users health
                 monster_health = monster_health + " (burning)"
                 #mark down the turn count when the user was set on fire
@@ -846,7 +873,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #mark down the turn count when the user was set on fire
             
             if await db_manager.check_enemy_poisoned(monsterID):
-                await db_manager.remove_enemy_health(monsterID, 3)
+                monster_health = monster_health - 3
                 #add a (poisoned) to the users health
                 monster_health = monster_health + " (poisoned)"
                 #mark down the turn count when the user was set on fire
@@ -860,8 +887,10 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             embed = discord.Embed(description=f"{Newdescription}")
             #set the embed color to green
             embed.color = 0x00ff00
-            embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
-            embed.add_field(name=monster_name, value="Health: " + enemyHealth, inline=True)
+            embed.add_field(name=userName, value="Health: " + user1_health, inline=True)
+            monster_health = str(monster_health)
+            embed.add_field(name=monster_name, value="Health: " + monster_health, inline=True)
+            monster_health = int(monster_health)
             prev_desc = Newdescription
             #Q, whats the hex color for green
             #A, 0x00ff00
@@ -875,14 +904,12 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #add 1 to the turn count
             #if the monster is dead, give the user xp and coins and end the fight
             #get the monsters health
-            monster_health = await db_manager.get_enemy_health(monsterID)
-            #convert the health to int
-            monster_health = int(monster_health[0])
             #if the health is less than or equal to 0
+            monster_health = int(monster_health)
             if monster_health <= 0:
                 #get the users name
                 #convert the name to str
-                user1_name = str(userName)
+                userName = str(userName)
                 #get the enemies xp and coins to give to the user
                 monster_xp = await db_manager.get_enemy_xp(monsterID)
                 monster_coins = await db_manager.get_enemy_money(monsterID)
@@ -910,7 +937,16 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 monster_xp = str(monster_xp)
                 monster_coins = str(monster_coins)
                 #send a message to the channel saying the users xp and coins
-                await ctx.send(user1_name + " has won the fight and has been granted " + monster_xp + " xp and " + monster_coins + " coins!")
+                embed = discord.Embed(description=f"{userName} has defeated {monster_name} and gained {monster_xp} xp and {monster_coins} coins")
+                #set the embed color to green
+                embed.color = 0x00ff00
+                embed.add_field(name=userName, value="Health: " + user1_health, inline=True)
+                monster_health = str(monster_health)
+                embed.add_field(name=monster_name, value="Health: " + monster_health, inline=True)
+                monster_health = int(monster_health)
+                #Q, whats the hex color for green
+                #A, 0x00ff00
+                await msg.edit(embed=embed)
                 #check if the user has leveled up by checking if the users xp is greater than or equal to the xp needed to level up 
                 #reconvert them back to int
                 monster_xp = int(monster_xp)
@@ -993,24 +1029,24 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 item_emoji = await db_manager.get_basic_item_emote(monster_drop)
                 item_rarity = await db_manager.get_basic_item_rarity(monster_drop)
                 #convert the item name to str
-                item_name = str(item_name[0])
+                item_name = str(item_name)
                 #convert the item price to int
-                item_price = int(item_price[0])
+                item_price = int(item_price)
                 #convert the item type to str
-                item_type = str(item_type[0])
+                item_type = str(item_type)
                 #convert the item emoji to str
-                item_emoji = str(item_emoji[0])
-                #convert the item rarity to str
-                item_rarity = str(item_rarity[0])
+                item_emoji = str(item_emoji)
+                #convert the item rarity to sr
+                item_rarity = str(item_rarity)
                 
                 
                 #TODO - Fix this to work with new system
                 #calculate the how many items the user will get
                 #get the drop chance
-                monster_drop_chance = int(monster_drop_chance[0])
+                monster_drop_chance = int(monster_drop_chance)
                 #get the drop min and max
-                monster_drop_min = int(monster_drop_min[0])
-                monster_drop_max = int(monster_drop_max[0])
+                monster_drop_min = int(monster_drop_min)
+                monster_drop_max = int(monster_drop_max)
                 #get a random number between the min and max
                 drop_amount = random.randint(monster_drop_min, monster_drop_max)
                 #get a random number between 1 and 100
@@ -1020,7 +1056,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                     #give the user the drop
                     await db_manager.add_item_to_inventory(userID, monster_drop, drop_amount)
                     #send a message to the channel saying the user got the drop
-                    await ctx.send(user1_name + " has gotten " + str(drop_amount) + " " + monster_drop + "!")
+                    await ctx.send(userName + " has gotten " + str(drop_amount) + " " + monster_drop + "!")
                 if await db_manager.can_level_up(userID):
                     #if the user can level up, level them up
                     await db_manager.add_level(userID, 1)
@@ -1036,7 +1072,8 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                     new_level = new_level.replace(",", "")
                     #convert the level to int
                     new_level = int(new_level)
-                    await ctx.send(user1_name + " has leveled up! They are now level " + str(new_level) + "!")
+                    await ctx.send(userName + " has leveled up! They are now level " + str(new_level) + "!")
+                #set the enemys health back to full
                 return userID
         #monsters turn to attack
         if turnCount % 2 == 1:
@@ -1058,12 +1095,12 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #if the enemy is on fire, deal 3 damage to them
             isBurning = await db_manager.check_enemy_burning(monsterID)
             if isBurning:
-                await db_manager.remove_enemy_health(monsterID, 3)
+                monster_health = monster_health - 3
                 
             #if the enemy is poisoned, deal 1 damage to them
             isPoisoned = await db_manager.check_enemy_poisoned(monsterID)
             if isPoisoned:
-                await db_manager.remove_enemy_health(monsterID, 1)
+                monster_health = monster_health - 1
                 
             #get the monsters attack
             monster_attack = await db_manager.get_enemy_damage(monsterID)
@@ -1074,13 +1111,13 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #convert the defence to int
             monster_defence = int(monster_defence[0])
             #divide the defence by 2
-            monster_defence = monster_defence / 2
+            monster_defence = monster_defence / 5
             
             #get the users armor
             user1_armor = await db_manager.get_equipped_armor(userID)
             if user1_armor == None or user1_armor == []:
                 user1_armor_name = "Clothes"
-                user1_defense = 1
+                user1_defense = 0
             else:
                 user1_armor_name = user1_armor[0][2]
                 user1_defense = user1_armor[0][8]
@@ -1096,7 +1133,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 user1_damage = user1_weapon[0][8]
             #get the users name and convert it to str
             
-            user1_name = str(user1_name)
+            userName = str(userName)
             #calculate the damage
             damage = monster_attack - user1_defense
             
@@ -1155,15 +1192,10 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
 
             
             #convert the crit chance to int
-            monster_crit_chance = int(monster_crit_chance[0])
+            #monster_crit_chance = int(monster_crit_chance[0])
             #get a random number between 1 and 100
             crit_chance = random.randint(1, 100)
             #if the crit chance is less than or equal to the monsters crit chance
-            if crit_chance <= monster_crit_chance:
-                #double the damage
-                damage = damage * 2
-                #set newdriscription to the crit message
-                Newdescription = prev_desc + f" and Crit {userName} for {damage} damage."
             #if the damage is less than 0, set it to 0
             if damage < 0:
                 damage = 0
@@ -1171,8 +1203,15 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             if monster_attack < user1_defense:
                 damage = 0
             #if the damage is greater than the users health, set the damage to the users health
-            if damage > user1_health:
-                damage = user1_health
+            #remove the () from the users health
+            user_health = str(user_health)
+            user_health = user_health.replace("(", "")
+            user_health = user_health.replace(")", "")
+            #remove the ,
+            user_health = user_health.replace(",", "")
+            user_health = int(user_health)
+            if damage > user_health:
+                damage = user_health
             #remove the damage from the users health
             #roll for dodge chance
             dodge_chance = random.randint(1, 100)
@@ -1190,46 +1229,68 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             #get the enemy promts
             enemyPromts = await db_manager.get_enemy_quotes(monsterID)
             #if the promts are empty, set them to a default message
-            if enemyPromts == None:
-                enemyPromts = f"{monsterName} attacked {userName} for {damage} damage."
-            #pick a random enemy promt
-            enemyPromts = random.choice(enemyPromts)
-            #replace the {damage} with the damage
-            enemyPromts = enemyPromts.replace("{damage}", str(damage))
-            #replace the {target} with the users name
-            enemyPromts = enemyPromts.replace("{target}", userName)
-            #replace the {enemy} with the monsters name
-            enemyPromts = enemyPromts.replace("{enemy_name}", monsterName)
-            Newdescription = prev_desc + "\n" + f"{enemyPromts}"
+            if enemyPromts == None or enemyPromts == "" or enemyPromts == [] or enemyPromts == "None" or enemyPromts == monsterID:
+                enemyPromt = f"{monsterName} attacked {userName} for {damage} damage."
+                enemyPromt = enemyPromt.replace("{damage}", str(damage))
+                #replace the {target} with the users name
+                enemyPromt = enemyPromt.replace("{target}", userName)
+                #replace the {enemy} with the monsters name
+                enemyPromt = enemyPromt.replace("{enemy_name}", monsterName)
+            else:
+                #pick a random enemy promt
+                enemyPromt = random.choice(enemyPromts)
+                if enemyPromt == monsterID:
+                    enemyPromt = f"{monsterName} attacked {userName} for {damage} damage."
+                    enemyPromt = str(enemyPromt)
+                    #replace the {damage} with the damage
+                    enemyPromt = enemyPromt.replace("{damage}", str(damage))
+                    #replace the {target} with the users name
+                    enemyPromt = enemyPromt.replace("{target}", userName)
+                    #replace the {enemy} with the monsters name
+                    enemyPromt = enemyPromt.replace("{enemy_name}", monsterName)
+                else:
+                    enemyPromt = str(enemyPromt)
+                    #replace the {damage} with the damage
+                    enemyPromt = enemyPromt.replace("{damage}", str(damage))
+                    #replace the {target} with the users name
+                    enemyPromt = enemyPromt.replace("{target}", userName)
+                    #replace the {enemy} with the monsters name
+                    enemyPromt = enemyPromt.replace("{enemy_name}", monsterName)
+                    #CONVERT THE PROMTS TO A STRING
+            if crit_chance <= monster_crit_chance:
+                #double the damage
+                damage = damage * 2
+                #set newdriscription to the crit message
+                enemyPromt = enemyPromt + f" and hit a Crit !"
+            Newdescription = prev_desc + "\n" + f"{enemyPromt}"
             #convert the embed to a string
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
             if Newdescription.count("\n") >= 3:
                 Newdescription = Newdescription.split("\n", 1)[1]
-            embed = discord.Embed(description=f"{Newdescription}", color=0xffff00)
             #edit the embed feilds to include the new health
             user1_health = await db_manager.get_health(userID)
-            enemyHealth = await db_manager.get_enemy_health(monsterID)
+            monster_health = monster_health
             #remove the () and , from the health
             user1_health = str(user1_health).replace("(", "")
             user1_health = str(user1_health).replace(")", "")
             user1_health = str(user1_health).replace(",", "")
-            enemyHealth = str(enemyHealth).replace("(", "")
-            enemyHealth = str(enemyHealth).replace(")", "")
-            enemyHealth = str(enemyHealth).replace(",", "")
+            monster_health = str(monster_health).replace("(", "")
+            monster_health = str(monster_health).replace(")", "")
+            monster_health = str(monster_health).replace(",", "")
             #convert to int
             user1_health = int(user1_health)
-            enemyHealth = int(enemyHealth)
+            monster_health = int(monster_health)
             
             #if the user is dead, set their health to 0
             if user1_health <= 0:
                 user1_health = 0
-            if enemyHealth <= 0:
-                enemyHealth = 0
+            if monster_health <= 0:
+                monster_health = 0
 
             #convert back to string
             user1_health = str(user1_health)
-            enemyHealth = str(enemyHealth)
+            monster_health = str(monster_health)
             
             if await db_manager.check_user_burning(userID):
                 await db_manager.remove_health(userID, 1)
@@ -1238,7 +1299,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #mark down the turn count when the user was set on fire
                 
             if await db_manager.check_enemy_burning(monsterID):
-                await db_manager.remove_enemy_health(monsterID, 1)
+                monster_health = monster_health - 1
                 #add a (burning) to the users health
                 monster_health = monster_health + " (burning)"
                 #mark down the turn count when the user was set on fire
@@ -1250,7 +1311,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #mark down the turn count when the user was set on fire
             
             if await db_manager.check_enemy_poisoned(monsterID):
-                await db_manager.remove_enemy_health(monsterID, 3)
+                monster_health = monster_health - 3
                 #add a (poisoned) to the users health
                 monster_health = monster_health + " (poisoned)"
                 #mark down the turn count when the user was set on fire
@@ -1264,8 +1325,10 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
             embed = discord.Embed(description=f"{Newdescription}")
             #set the embed color to red
             embed.color = 0xff0000
-            embed.add_field(name=user1_name, value="Health: " + user1_health, inline=True)
-            embed.add_field(name=monster_name, value="Health: " + enemyHealth, inline=True)
+            embed.add_field(name=userName, value="Health: " + user1_health, inline=True)
+            monster_health = str(monster_health)
+            embed.add_field(name=monster_name, value="Health: " + monster_health, inline=True)
+            monster_health = int(monster_health)
             prev_desc = Newdescription
             #Q, whats the hex color for green
             #A, 0x00ff00
@@ -1289,7 +1352,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #convert the name to str
                 monster_name = str(monster_name)
                 #send a message to the channel saying the user has died
-                await ctx.send(user1_name + " has died!")
+                await ctx.send(userName + " has died!")
                 #set the users health to 0
                 await db_manager.set_health(userID, 0)
                 #set the user as dead 

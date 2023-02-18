@@ -2742,10 +2742,10 @@ class Basic(commands.Cog, name="basic"):
         await battle.deathbattle_monster(ctx, user_id, author_name, monsterid, monsterName)
 
     @commands.hybrid_command(
-        name="create_channels",
-        description="Create The channels for Random Encounters",
+        name="random_encounter",
+        description="Start Random Encounters on your server",
     )
-    async def create_channels(self, ctx: Context):
+    async def random_encounter(self, ctx: Context):
         await randomEncounter.generate_channels(ctx)
         await randomEncounter.loop_random_encounters(ctx)
         

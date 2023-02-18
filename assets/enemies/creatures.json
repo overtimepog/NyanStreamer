@@ -10,7 +10,7 @@
         "enemy_type": "Peaceful",
         "enemy_xp": 5,
         "enemy_money": 10,
-        "enemy_crit_chance": 0,
+        "enemy_crit_chance": 1,
         "enemy_drop_id": "cow",
         "enemy_drops": [{
             "item_id": "leather",
