@@ -194,17 +194,17 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #if its been two turns since the user was set on fire, remove the burning status
             if user1_burn_turn != None and turnCount - user1_burn_turn >= 2:
                 user1_burn_turn = None
-                db_manager.set_user_not_burning(user1)
+                await db_manager.set_user_not_burning(user1)
 
             #if its been 2 turns since the user was poisoned, remove the poisoned status
             if user1_poison_turn != None and turnCount - user1_poison_turn >= 2:
                 user1_poison_turn = None
-                db_manager.set_user_not_poisoned(user1)
+                await db_manager.set_user_not_poisoned(user1)
 
             #if its been 1 turn since the user was paralyzed, remove the paralyzed status
             if user1_paralyze_turn != None and turnCount - user1_paralyze_turn >= 1:
                 user1_paralyze_turn = None
-                db_manager.set_user_not_paralyzed(user1)
+                await db_manager.set_user_not_paralyzed(user1)
     
             #user 1 attacks
             
@@ -234,12 +234,23 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #make embed with the previous description plus the new description
             if prev_desc == None:
                 prev_desc = ""
+                
+            user1_weapon = await db_manager.get_item_id(user1_weapon_name)
+            user_weapon_quotes = await db_manager.get_item_quotes(user1_weapon)
+            user1Promt = random.choice(user_weapon_quotes)
+            if user1Promt == user1_weapon:
+                user1Promt = random.choice(user_weapon_quotes)
+            user1Promt = str(user1Promt)
+            user1Promt = user1Promt.replace("{user}", user1_name)
+            user1Promt = user1Promt.replace("{target}", user2_name)
+            user1Promt = user1Promt.replace("{damage}", str(user1_damage))
+            desc = prev_desc + "\n" + f"{user1Promt}"
             #if they crit, add a (crit) to the end of the damage
             if user1_roll <= user1_crit:
-                Newdescription = prev_desc + "and hit a Critical Hit!"
+                Newdescription = desc + "and hit a Critical Hit!"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user1_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "and Set them on Fire"
+                Newdescription = desc + "and Set them on Fire"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user2)
                 #mark the turn the user was set on fire
@@ -247,7 +258,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 
             #if the user is poisoned, tell the user they were poisoned, skip their turn and add a (poisoned) to the end of the damage
             elif user1_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "and Poisoned them"
+                Newdescription = desc + "and Poisoned them"
                 #set the users poison status to true
                 await db_manager.set_user_poisoned(user2)
                 #mark the turn the user was poisoned
@@ -255,24 +266,15 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
 
             #if the subtype is paralyze, tell the user they were paralyzed and skip their turn
             elif user1_weapon_subtype == "Paralyze" and isParalyzed == 1:
-                Newdescription = prev_desc + "and Paralyzed them"
+                Newdescription = desc + "and Paralyzed them"
                 #set the users poison status to true
                 await db_manager.set_user_paralyzed(user2)
                 #mark the turn the user was poisoned
                 user2_paralyze_turn = turnCount
                 #skip the users turn
                 turnCount += 1
-                
-            else:        
-                #TODO: fix promts to work with new system
-                user1_weapon = await db_manager.get_item_id(user1_weapon_name)
-                user_weapon_quotes = await db_manager.get_item_quotes(user1_weapon)
-                user1Promt = random.choice(user_weapon_quotes)
-                user1Promt = str(user1Promt)
-                user1Promt = user1Promt.replace("{user}", user1_name)
-                user1Promt = user1Promt.replace("{target}", user2_name)
-                user1Promt = user1Promt.replace("{damage}", str(user1_damage))
-                Newdescription = prev_desc + "\n" + f"{user1Promt}"
+            else:
+                Newdescription = desc
             #convert the embed to a string
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
@@ -386,12 +388,22 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #make embed with the previous description plus the new description
             if prev_desc == None:
                 prev_desc = ""
+            user2_weapon = await db_manager.get_item_id(user2_weapon_name)
+            user_weapon_quotes = await db_manager.get_item_quotes(user2_weapon)
+            user2Promt = random.choice(user_weapon_quotes)
+            if user2Promt == user2_weapon:
+                user2Promt = random.choice(user_weapon_quotes)
+            user2Promt = str(user2Promt)
+            user2Promt = user2Promt.replace("{user}", user2_name)
+            user2Promt = user2Promt.replace("{target}", user1_name)
+            user2Promt = user2Promt.replace("{damage}", str(user2_damage))
+            desc = prev_desc + "\n" + f"{user2Promt}"
             #if they crit, add a (crit) to the end of the damage
             if user2_roll <= user2_crit:
-                Newdescription = prev_desc + "and hit a Critical Hit!"
+                Newdescription = desc + "and hit a Critical Hit!"
             #if the sub type is Fire tell the user they were set on fire and add a (burning) to the end of the damage
             elif user2_weapon_subtype == "Fire" and isSetONFire == 1:
-                Newdescription = prev_desc + "and Set them on Fire"
+                Newdescription = desc + "and Set them on Fire"
                 #set the users burn status to true
                 await db_manager.set_user_burning(user1)
                 #mark down the turn count when the user was set on fire
@@ -399,7 +411,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #if the sub type is Poison tell the user they were set on fire and add a (poisoned) to the end of the damage
 
             elif user2_weapon_subtype == "Poison" and isPoisoned == 1:
-                Newdescription = prev_desc + "and Poisoned them"
+                Newdescription = desc + "and Poisoned them"
                 #set the users poison status to true
                 await db_manager.set_user_poisoned(user1)
                 #mark down the turn count when the user was set on fire
@@ -408,22 +420,14 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #if the sub type is paralysis tell the user they were set on paralyzed and add a (paralyzed) to the end of the damage
             elif user2_weapon_subtype == "Paralysis" and isParalyzed == 1:
                 #set the users paralysis status to true
-                Newdescription = prev_desc + "and Paralyzed them"
+                Newdescription = desc + "and Paralyzed them"
                 await db_manager.set_user_paralyzed(user1)
                 #skip the users turn
                 #save the turn count when the user was paralyzed
                 user1_paralyze_turn = turnCount
                 turnCount = turnCount + 1
-            else:  
-                #TODO: fix promts to work with new system
-                user2_weapon = await db_manager.get_item_id(user2_weapon_name)
-                user_weapon_quotes = await db_manager.get_item_quotes(user2_weapon)
-                user2Promt = random.choice(user_weapon_quotes)
-                user2Promt = str(user2Promt)
-                user2Promt = user2Promt.replace("{user}", user2_name)
-                user2Promt = user2Promt.replace("{target}", user1_name)
-                user2Promt = user2Promt.replace("{damage}", str(user2_damage))
-                Newdescription = prev_desc + "\n" + f"{user2Promt}"
+            else:
+                Newdescription = desc
             Newdescription = str(Newdescription)
             #if there are more than 4 lines in the embed, remove the first line
             if Newdescription.count("\n") >= 3:

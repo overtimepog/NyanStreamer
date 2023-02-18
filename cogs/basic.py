@@ -1808,11 +1808,13 @@ class Basic(commands.Cog, name="basic"):
         embed.add_field(name = chr(173), value = chr(173))
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
         embed.add_field(name="Level", value=f"{user_level}", inline=True)
-        for i in user_items:
-            item_name = i[2]
-            item_emote = i[4]
-            item_amount = i[6]
-            embed.add_field(name=f"{item_name}{item_emote}", value=f"{item_amount}", inline=False)
+        #for i in user_items:
+        #    item_name = i[2]
+        #    item_emote = i[4]
+        #    item_amount = i[6]
+        #    item_type = i[7]
+        #    if item_type == "Weapon":
+        #        embed.add_field(name=f"{item_emote} {item_name}", value=f"Damage: {item_amount}", inline=True)
             
         #create a section for the users current quest
         if user_quest == 0 or user_quest == None or user_quest == "" or user_quest == "None":
@@ -2827,6 +2829,40 @@ class Basic(commands.Cog, name="basic"):
         await db_manager.disconnect_twitch_name(ctx.author.id)
         await db_manager.update_is_not_streamer(ctx.author.id)
         await ctx.send("Your twitch account has been disconnected from your discord account!")
+        
+    @commands.hybrid_command(
+        name="fight",
+        description="Fight a user!",
+    )
+    async def fight(self, ctx: Context, user: discord.Member):
+        #check if the user is in a battle
+        #check if the user is in a battle
+        user_is_in_battle = await db_manager.is_in_combat(ctx.author.id)
+        if user_is_in_battle == True:
+            await ctx.send("You are already in a battle!")
+            return
+        #check if the user is dead
+        user_is_alive = await db_manager.is_alive(ctx.author.id)
+        if user_is_alive == False:
+            await ctx.send("You are dead! wait to respawn! or use an item to revive!")
+            return
+        #check if the user is in a battle
+        user_is_in_battle = await db_manager.is_in_combat(user.id)
+        if user_is_in_battle == True:
+            await ctx.send("This user is already in a battle!")
+            return
+        #check if the user is dead
+        user_is_alive = await db_manager.is_alive(user.id)
+        if user_is_alive == False:
+            await ctx.send("This user is dead! wait till they respawn! or they use an item to revive!")
+            return
+        
+        user_exists = await db_manager.check_user(user.id)
+        if user_exists == None:
+            await ctx.send("This user does not exist!, tell them to do /start to start playing!")
+            return
+        
+        await battle.deathbattle(ctx, ctx.author.id, user.id, ctx.author.name, user.name)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
