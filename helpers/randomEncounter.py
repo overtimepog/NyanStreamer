@@ -137,9 +137,10 @@ async def random_encounter(ctx: Context):
         try:
             reaction, user = await ctx.bot.wait_for('reaction_add', timeout=30.0, check=check)
         except asyncio.TimeoutError:
-            await dungeon.send('Sorry, you took too long')
+            await dungeonEmbed.remove_reaction("✅", ctx.bot.user)
         else:
             await dungeon.send('Starting Fight')
+            await dungeonEmbed.remove_reaction("✅", ctx.bot.user)
             await battle.deathbattle_monster(dungeon, ctx.author.id, ctx.author.name, enemy[0], enemy[1])
     return enemy
 
