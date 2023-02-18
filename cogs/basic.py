@@ -896,6 +896,7 @@ class Basic(commands.Cog, name="basic"):
         """
         user_id = ctx.message.author.id
         user_name = ctx.message.author.name
+        streamer = streamer.lower()
         #get the streamer prefix
         streamer_prefix = await db_manager.get_streamerPrefix_with_channel(streamer)
         print(streamer_prefix)
@@ -905,6 +906,7 @@ class Basic(commands.Cog, name="basic"):
         #if streamer_prefix != user_streamer_prefix:
         #get streamer broadcast type
         #get the items from the database
+        #put the streamername to lowercase
         items = await db_manager.view_streamer_items(streamer)
         #get the users items from the database
         user_items = await db_manager.view_streamer_item_inventory(user_id)
@@ -919,10 +921,9 @@ class Basic(commands.Cog, name="basic"):
             for j in user_items:
                 if i[1] in j:
                     embed.add_field(name=f"{i[4]}", value=f"**{i[3]}**", inline=False)
-                    break
                 else:
                     embed.add_field(name=f"**???**", value=f"**???**", inline=False)
-                    break
+        #send the embed
         await ctx.send(embed=embed)
         #else:
             #await ctx.send("You cannot view your own items.")
