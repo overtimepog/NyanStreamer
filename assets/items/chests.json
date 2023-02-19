@@ -1,18 +1,20 @@
-[    {
-    "chest_id": "chest",
-    "chest_name": "Chest",
-    "chest_price": 100,
-    "chest_emoji": "<:chest:1061289541027254362>",
-    "chest_rarity": "Legendary",
-    "chest_type": "Consumable",
-    "chest_description": "A chest, sometimes dropped from bosses and contains lots of goodies.",
-    "key_id": "None",
-    "chest_contentsID": "chest",
-    "chest_contents": [
+[    
     {
-        "item_id": "stick",
-        "item_amount": 2,
-        "drop_chance": 100
+        "chest_id": "chest",
+        "chest_name": "Chest",
+        "chest_price": 100,
+        "chest_emoji": "<:chest:1061289541027254362>",
+        "chest_rarity": "Legendary",
+        "chest_type": "Consumable",
+        "chest_description": "A chest, sometimes dropped from bosses and contains lots of goodies.",
+        "key_id": "None",
+        "chest_contentsID": "chest",
+        "chest_contents": [
+            {
+                "item_id": "stick",
+                "item_amount": 2,
+                "drop_chance": 100
+            }
+        ]
     }
 ]
-}]
