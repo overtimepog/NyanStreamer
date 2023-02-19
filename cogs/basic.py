@@ -3328,13 +3328,43 @@ class Basic(commands.Cog, name="basic"):
         await db_manager.remove_quest_from_user(ctx.author.id)
         await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
         
-            
+    
+    #shop command that shows the shop
+    @commands.hybrid_command(
+        name="shop2",
+        description="This command will show the shop.",
+    )
+    async def shop(self, ctx: Context):
+        """
+        This command will show the shop.
+
+        :param ctx: The context in which the command was called.
+        """
+        #get the shop items from the database
+        shop_items = await db_manager.display_shop_items()
+        #create an embed
+        shop_embed = discord.Embed(
+            title="Shop",
+            description="This is the shop, you can buy items here with `/buy itemid` EX. `/buy rusty_sword`.",
+            color=0x00FF00,
+        )
+        #create muliple embeds if there are more than 10 items in the shop
+
+
+
+
+
+
+
+
+
+
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
     @commands.hybrid_command(
         name="buy",
         description="This command will buy an item from the shop.",
     )
-    async def buy(self, ctx: Context, item_id: str, amount: int):
+    async def buy(self, ctx: Context, item: str, amount: int):
         """
         This command will buy an item from the shop.
 
@@ -3354,19 +3384,19 @@ class Basic(commands.Cog, name="basic"):
         #check if the item exists in the shop
         shop = await db_manager.display_shop_items()
         for i in shop:
-            if item_id in i:
+            if item in i:
                 #check if the user has enough bucks
                 item_price = i[2]
                 item_price = int(item_price)
                 total_price = item_price * amount
                 if user_money >= total_price:
                     #if the item type is a weapon, check if the user has already has this weapon
-                    item_type = await db_manager.get_basic_item_type(item_id)
+                    item_type = await db_manager.get_basic_item_type(item)
                     if item_type == "Weapon":
                         #check if the user has this weapon
                         user_inventory = await db_manager.view_inventory(user_id)
                         for i in user_inventory:
-                            if item_id in i:
+                            if item in i:
                                 await ctx.send(f"You already have this weapon!")
                                 return
                         #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
@@ -3378,24 +3408,24 @@ class Basic(commands.Cog, name="basic"):
                         #check if the user has this armor on their inventory
                         user_inventory = await db_manager.view_inventory(user_id)
                         for i in user_inventory:
-                            if item_id in i:
+                            if item in i:
                                 await ctx.send(f"You already have this armor!")
                                 return
                         #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
                         if amount > 1:
                             await ctx.send(f"You can only buy 1 of the same Armor!")
                             return
-                    item_name = await db_manager.get_basic_item_name(item_id)
-                    item_price = await db_manager.get_shop_item_price(item_id)
-                    item_emoji = await db_manager.get_shop_item_emoji(item_id)
+                    item_name = await db_manager.get_basic_item_name(item)
+                    item_price = await db_manager.get_shop_item_price(item)
+                    item_emoji = await db_manager.get_shop_item_emoji(item)
                     #Q, how to I get the string out of a coroutine?
                     #A, use await
-                    item_rarity = await db_manager.get_basic_item_rarity(item_id)
-                    item_type = await db_manager.get_basic_item_type(item_id)
-                    item_damage = await db_manager.get_basic_item_damage(item_id)
-                    item_name = await db_manager.get_basic_item_name(item_id)
-                    item_element = await db_manager.get_basic_item_element(item_id)
-                    item_crit_chance = await db_manager.get_basic_item_crit_chance(item_id)
+                    item_rarity = await db_manager.get_basic_item_rarity(item)
+                    item_type = await db_manager.get_basic_item_type(item)
+                    item_damage = await db_manager.get_basic_item_damage(item)
+                    item_name = await db_manager.get_basic_item_name(item)
+                    item_element = await db_manager.get_basic_item_element(item)
+                    item_crit_chance = await db_manager.get_basic_item_crit_chance(item)
                     #remove the item from the shop
                     #send a message asking the user if they are sure they want to buy the item, and add reactions to the message to confirm or cancel the purchase
                     message = await ctx.send(f"Are you sure you want to buy `{amount}` of `{item_name}` for `{total_price}` bucks?")
@@ -3418,12 +3448,12 @@ class Basic(commands.Cog, name="basic"):
                     if str(reaction) == "✅":
                         #make sure they have enough money to buy the item
                             #if the item type is a weapon, check if the user has already has this weapon
-                        item_type = await db_manager.get_basic_item_type(item_id)
+                        item_type = await db_manager.get_basic_item_type(item)
                         if item_type == "Weapon":
                             #check if the user has this weapon
                             user_inventory = await db_manager.view_inventory(user_id)
                             for i in user_inventory:
-                                if item_id in i:
+                                if item in i:
                                     await ctx.send(f"You already have this weapon!")
                                     return
                             #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
@@ -3435,7 +3465,7 @@ class Basic(commands.Cog, name="basic"):
                             #check if the user has this armor on their inventory
                             user_inventory = await db_manager.view_inventory(user_id)
                             for i in user_inventory:
-                                if item_id in i:
+                                if item in i:
                                     await ctx.send(f"You already have this armor!")
                                     return
                             #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
@@ -3451,15 +3481,15 @@ class Basic(commands.Cog, name="basic"):
                         else:
                             ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
                             #remove the item from the shop
-                            await db_manager.remove_shop_item_amount(item_id, amount)
+                            await db_manager.remove_shop_item_amount(item, amount)
                             #add the item to the users inventory
-                            await db_manager.add_item_to_inventory(user_id, item_id, amount)
+                            await db_manager.add_item_to_inventory(user_id, item, amount)
                             #remove the price from the users money
                             await db_manager.remove_money(user_id, total_price)
                             await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
                         return
                 else:
-                    item_name = await db_manager.get_basic_item_name(item_id)
+                    item_name = await db_manager.get_basic_item_name(item)
                     await ctx.send(f"You don't have enough bucks to buy `{amount}` of `{item_name}`.")
                     return
         await ctx.send(f"Item doesn't exist in the shop.")
