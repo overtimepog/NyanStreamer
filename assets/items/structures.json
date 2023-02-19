@@ -12,7 +12,7 @@
             "structure_state": "success",
             "outcome_chance": 70,
             "outcome_type": "item_gain",
-            "outcome_output": "gold",
+            "outcome_output": "money",
             "outcome_amount": 100,
             "outcome_money": 0,
             "outcome_xp": 0
