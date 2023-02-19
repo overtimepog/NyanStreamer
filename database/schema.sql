@@ -78,8 +78,8 @@ CREATE TABLE IF NOT EXISTS `structures` (
   `structure_name` varchar(255) NOT NULL,
   `structure_image` varchar(255) NOT NULL,
   `structure_description` varchar(255) NOT NULL,
-  `structure_outcomes` varchar(255) NOT NULL,
-  FOREIGN KEY (structure_outcomes) REFERENCES structure_outcomes(structure_id)
+  `structure_outcomesID` varchar(255) NOT NULL,
+  FOREIGN KEY (structure_outcomesID) REFERENCES structure_outcomes(structure_id)
 );
 
 CREATE TABLE IF NOT EXISTS `structure_outcomes`(
@@ -87,8 +87,9 @@ CREATE TABLE IF NOT EXISTS `structure_outcomes`(
   `structure_quote` varchar(255) NOT NULL,
   `structure_state` varchar(255) NOT NULL,
   `outcome_chance` int(11) NOT NULL,
-  `outcome_item` varchar(255) NOT NULL,
-  `outcome_item_amount` int(11) NOT NULL,
+  `outcome_type` varchar(255) NOT NULL,
+  `outcome` varchar(255) NOT NULL,
+  `outcome_amount` int(11) NOT NULL,
   `outcome_money` int(11) NOT NULL,
   `outcome_xp` int(11) NOT NULL,
   FOREIGN KEY (outcome_item) REFERENCES basic_items(item_id)
