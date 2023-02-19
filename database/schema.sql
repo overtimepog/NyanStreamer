@@ -89,10 +89,12 @@ CREATE TABLE IF NOT EXISTS `structure_outcomes`(
   `outcome_chance` int(11) NOT NULL,
   `outcome_type` varchar(255) NOT NULL,
   `outcome` varchar(255) NOT NULL,
-  `outcome_amount` int(11) NOT NULL,
-  `outcome_money` int(11) NOT NULL,
-  `outcome_xp` int(11) NOT NULL,
-  FOREIGN KEY (outcome_item) REFERENCES basic_items(item_id)
+  `outcome_amount` varchar(11) NOT NULL,
+  `outcome_money` varchar(11) NOT NULL,
+  `outcome_xp` varchar(11) NOT NULL,
+  FOREIGN KEY (outcome) REFERENCES basic_items(item_id)
+  FOREIGN KEY (outcome) REFERENCES chests(chest_id)
+  FOREIGN KEY (outcome) REFERENCES enemies(enemy_id)
 );
 
 CREATE TABLE IF NOT EXISTS recipes (

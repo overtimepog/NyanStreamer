@@ -5,13 +5,14 @@
         "structure_name": "Castle",
         "structure_image": "castle.png",
         "structure_description": "A grand castle with towering walls and majestic architecture.",
+        "structure_outcomesID": "castle",
         "structure_outcomes": [
           {
             "structure_quote": "The castle stands proud and regal.",
             "structure_state": "success",
             "outcome_chance": 70,
             "outcome_type": "item_gain",
-            "outcome": "gold",
+            "outcome_output": "gold",
             "outcome_amount": 100,
             "outcome_money": 0,
             "outcome_xp": 0
@@ -21,7 +22,7 @@
             "structure_state": "success",
             "outcome_chance": 30,
             "outcome_type": "item_gain",
-            "outcome": "diamond",
+            "outcome_output": "diamond",
             "outcome_amount": 1,
             "outcome_money": 0,
             "outcome_xp": 0
@@ -31,7 +32,7 @@
             "structure_state": "success",
             "outcome_chance": 10,
             "outcome_type": "battle",
-            "outcome": "dragon",
+            "outcome_output": "dragon",
             "outcome_amount": 0,
             "outcome_money": 0,
             "outcome_xp": 0
@@ -41,7 +42,7 @@
             "structure_state": "loss",
             "outcome_chance": 10,
             "outcome_type": "health",
-            "outcome": "loss",
+            "outcome_output": "loss",
             "outcome_amount": 10,
             "outcome_money": 0,
             "outcome_xp": 0
@@ -51,7 +52,7 @@
             "structure_state": "loss",
             "outcome_chance": 5,
             "outcome_type": "item_loss",
-            "outcome": "sword",
+            "outcome_output": "sword",
             "outcome_amount": 1,
             "outcome_money": 0,
             "outcome_xp": 0
@@ -61,7 +62,7 @@
             "structure_state": "success",
             "outcome_chance": 5,
             "outcome_type": "item_gain",
-            "outcome": "artifact",
+            "outcome_output": "artifact",
             "outcome_amount": 1,
             "outcome_money": 0,
             "outcome_xp": 0
@@ -73,13 +74,14 @@
         "structure_name": "Tavern",
         "structure_image": "tavern.png",
         "structure_description": "A cozy tavern with a warm fireplace and lively atmosphere.",
+        "structure_outcomesID": "tavern",
         "structure_outcomes": [
           {
             "structure_quote": "The tavern is bustling with activity.",
             "structure_state": "success",
             "outcome_chance": 80,
             "outcome_type": "item_gain",
-            "outcome": "ale",
+            "outcome_output": "ale",
             "outcome_amount": 3,
             "outcome_money": 20,
             "outcome_xp": 10
@@ -89,7 +91,7 @@
             "structure_state": "success",
             "outcome_chance": 20,
             "outcome_type": "item_gain",
-            "outcome": "bread",
+            "outcome_output": "bread",
             "outcome_amount": 1,
             "outcome_money": 10,
             "outcome_xp": 5

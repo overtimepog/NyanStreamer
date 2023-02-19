@@ -707,7 +707,7 @@ async def add_structures() -> None:
         structure_image = structure['structure_image']
         structure_description = structure['structure_description']
         structure_outcomesID = structure['structure_outcomesID']
-        await db.execute("INSERT INTO structures (structure_id, structure_name, structure_image, structure_description, structure_outcomes) VALUES (?, ?, ?, ?, ?)", (structure_id, structure_name, structure_image, structure_description, structure_outcomesID))
+        await db.execute("INSERT INTO structures (structure_id, structure_name, structure_image, structure_description, structure_outcomesID) VALUES (?, ?, ?, ?, ?)", (structure_id, structure_name, structure_image, structure_description, structure_outcomesID))
         print(f"Added |{structure_name}| to the structures table")
         
         
@@ -716,12 +716,15 @@ async def add_structures() -> None:
             structure_quote = outcome['structure_quote']
             structure_state = outcome['structure_state']
             outcome_chance = outcome['outcome_chance']
-            outcome_item = outcome['outcome_item']
-            outcome_item_amount = outcome['outcome_item_amount']
+            outcome_type = outcome['outcome_type']
+            outcome_output = outcome['outcome_output']
+            outcome_amount = outcome['outcome_amount']
             outcome_money = outcome['outcome_money']
             outcome_xp = outcome['outcome_xp']
-            await db.execute("INSERT INTO structure_outcomes (structure_id, structure_quote, structure_state, outcome_chance, outcome_item, outcome_item_amount, outcome_money, outcome_xp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (structure_id, structure_quote, structure_state, outcome_chance, outcome_item, outcome_item_amount, outcome_money, outcome_xp))
-            print(f"Added |{outcome_item}| to the |{structure_name}| structure")
+            
+            # Insert data into structure_outcomes table
+            await db.execute("INSERT INTO structure_outcomes (structure_id, structure_quote, structure_state, outcome_chance, outcome_type, outcome, outcome_amount, outcome_money, outcome_xp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (structure_id, structure_quote, structure_state, outcome_chance, outcome_type, outcome_output, outcome_amount, outcome_money, outcome_xp))
+            print(f"Added |{structure_state}, {outcome_type}, {outcome_output}/{outcome_amount}| to the |{structure_name}| structure")
     
 
 #add the chests to the chest table
@@ -1787,6 +1790,15 @@ async def check_chest(item_id: str) -> int:
 async def get_chest_contents(chest_id: str) -> list:
         db = DB()
         data = await db.execute(f"SELECT * FROM `chest_contents` WHERE chest_id = ?", (chest_id,), fetch="one")
+        if data is not None:
+            return data
+        else:
+            return None
+        
+#get the structure outcomes from the structure ID
+async def get_structure_outcomes(structure_id: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `structure_outcomes` WHERE structure_id = ?", (structure_id,), fetch="one")
         if data is not None:
             return data
         else:
