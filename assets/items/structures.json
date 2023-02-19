@@ -1,0 +1,63 @@
+{
+    "structures": [
+      {
+        "structure_id": "castle",
+        "structure_name": "Castle",
+        "structure_image": "castle.png",
+        "structure_description": "A grand castle with towering walls and majestic architecture.",
+        "structure_outcomesID": "castle",
+        "structure_outcomes": [
+          {
+            "structure_id": "castle",
+            "structure_quote": "The castle stands proud and regal.",
+            "structure_state": "intact",
+            "outcome_chance": 70,
+            "outcome_item": "gold",
+            "outcome_item_amount": 100,
+            "outcome_money": 0,
+            "outcome_xp": 0
+          },
+          {
+            "structure_id": "castle",
+            "structure_quote": "The castle is in ruins, but its treasures remain hidden.",
+            "structure_state": "ruined",
+            "outcome_chance": 30,
+            "outcome_item": "diamond",
+            "outcome_item_amount": 1,
+            "outcome_money": 0,
+            "outcome_xp": 0
+          }
+        ]
+      },
+      {
+        "structure_id": "tavern",
+        "structure_name": "Tavern",
+        "structure_image": "tavern.png",
+        "structure_description": "A cozy tavern with a warm fireplace and lively atmosphere.",
+        "structure_outcomesID": "tavern",
+        "structure_outcomes": [
+          {
+            "structure_id": "tavern",
+            "structure_quote": "The tavern is bustling with activity.",
+            "structure_state": "open",
+            "outcome_chance": 80,
+            "outcome_item": "ale",
+            "outcome_item_amount": 3,
+            "outcome_money": 20,
+            "outcome_xp": 10
+          },
+          {
+            "structure_id": "tavern",
+            "structure_quote": "The tavern is quiet and empty.",
+            "structure_state": "closed",
+            "outcome_chance": 20,
+            "outcome_item": "bread",
+            "outcome_item_amount": 1,
+            "outcome_money": 10,
+            "outcome_xp": 5
+          }
+        ]
+      }
+    ]
+  }
+  

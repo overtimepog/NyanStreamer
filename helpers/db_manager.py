@@ -59,6 +59,10 @@ quests = early_game
 #chests
 with open("assets/items/chests.json", "r", encoding="utf8") as f:
     chests = json.load(f)
+    
+#structures
+with open("assets/items/structures.json", "r", encoding="utf8") as f:
+    structures = json.load(f)
 
 
 class Database:
@@ -693,6 +697,32 @@ async def add_basic_items() -> None:
                     await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (item['recipe_id'], ingredient['ingredient_id'], ingredient['ingredient_amount']))
                     print(f"Added Ingredient: |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
                 print(f"Added |{item['item_name']}|'s recipe to the database")
+
+async def add_structures() -> None:
+    db = DB()
+    # Insert data into structures table
+    for structure in structures['structures']:
+        structure_id = structure['structure_id']
+        structure_name = structure['structure_name']
+        structure_image = structure['structure_image']
+        structure_description = structure['structure_description']
+        structure_outcomesID = structure['structure_outcomesID']
+        await db.execute("INSERT INTO structures (structure_id, structure_name, structure_image, structure_description, structure_outcomes) VALUES (?, ?, ?, ?, ?)", (structure_id, structure_name, structure_image, structure_description, structure_outcomesID))
+        print(f"Added |{structure_name}| to the structures table")
+        
+        
+        # Insert data into structure_outcomes table
+        for outcome in structure['structure_outcomes']:
+            structure_quote = outcome['structure_quote']
+            structure_state = outcome['structure_state']
+            outcome_chance = outcome['outcome_chance']
+            outcome_item = outcome['outcome_item']
+            outcome_item_amount = outcome['outcome_item_amount']
+            outcome_money = outcome['outcome_money']
+            outcome_xp = outcome['outcome_xp']
+            await db.execute("INSERT INTO structure_outcomes (structure_id, structure_quote, structure_state, outcome_chance, outcome_item, outcome_item_amount, outcome_money, outcome_xp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (structure_id, structure_quote, structure_state, outcome_chance, outcome_item, outcome_item_amount, outcome_money, outcome_xp))
+            print(f"Added |{outcome_item}| to the |{structure_name}| structure")
+    
 
 #add the chests to the chest table
 async def add_chests() -> None:
@@ -1752,6 +1782,15 @@ async def check_chest(item_id: str) -> int:
             return 1
         else:
             return 0
+        
+#get the chests chest_contents list from the chest ID
+async def get_chest_contents(chest_id: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `chest_contents` WHERE chest_id = ?", (chest_id,), fetch="one")
+        if data is not None:
+            return data
+        else:
+            return None
         
         
 #check if the user_id is a user

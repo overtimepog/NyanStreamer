@@ -97,9 +97,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             user1_weapon_subtype = "None"
             #convert subtype to str
             user1_weapon_subtype = str(user1_weapon_subtype)
-            user1_weapon_projectile = user1_weapon[0][12]
             #convert projectile to str
-            user1_weapon_projectile = str(user1_weapon_projectile)
         else:
             user1_weapon_name = user1_weapon[0][2]
             #convert it to str
@@ -135,9 +133,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #convert subtype to str
             user2_weapon_subtype = str(user2_weapon_subtype)
             #if the users weapon has the item_projectile arrow, make sure the user has arrows
-            user2_weapon_projectile = user2_weapon[0][12]
-            #convert projectile to str
-            user2_weapon_projectile = str(user2_weapon_projectile)
             #if the users weapon 
         #get the equipped armor
         user2_armor = await db_manager.get_equipped_armor(user2)
