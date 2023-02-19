@@ -163,39 +163,39 @@ class Basic(commands.Cog, name="basic"):
         misc = []
         
         #sort the inventory by item type
-        for i in inventory:
-            print(i)
-            item_type = i[7]
+        for j in inventory:
+            print(j)
+            item_type = j[7]
             item_type = str(item_type)
             if item_type == "Weapon":
-                allWeapons.append(i)
+                allWeapons.append(j)
             elif item_type == "Projectile":
-                allProjectiles.append(i)
+                allProjectiles.append(j)
             elif item_type == "Tool":
-                allTools.append(i)
+                allTools.append(j)
             elif item_type == "Armor":
-                allArmor.append(i)
+                allArmor.append(j)
             elif item_type == "Consumable":
-                allConsumables.append(i)
+                allConsumables.append(j)
             elif item_type == "Material":
-                allMaterials.append(i)
+                allMaterials.append(j)
             elif item_type == "Misc":
-                allMisc.append(i)
+                allMisc.append(j)
         #for each item in each type of item, create an embed of the item and add it to a list named the item type
         #weapons
         #combine allProjectiles and allWeapon 
         allWeapons = allWeapons + allProjectiles + allTools
         total = len(allWeapons)
-        for i in allWeapons:
-            page_number = allWeapons.index(i) + 1
-            item_id = i[1]
-            item_name = i[2]
-            item_price = i[3]
-            item_emote = i[4]
-            item_rarity = i[5]
-            item_type = i[7]
+        for j in allWeapons:
+            page_number = allWeapons.index(j) + 1
+            item_id = j[1]
+            item_name = j[2]
+            item_price = j[3]
+            item_emote = j[4]
+            item_rarity = j[5]
+            item_type = j[7]
             item_type = str(item_type)
-            item_damage = i[8]
+            item_damage = j[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             if item_effect == "None":
@@ -244,16 +244,16 @@ class Basic(commands.Cog, name="basic"):
             weapons.append(item)
         #armor
         total = len(allArmor)
-        for i in allArmor:
-            page_number = allArmor.index(i) + 1
-            item_id = i[1]
-            item_name = i[2]
-            item_price = i[3]
-            item_emote = i[4]
-            item_rarity = i[5]
-            item_type = i[7]
+        for j in allArmor:
+            page_number = allArmor.index(j) + 1
+            item_id = j[1]
+            item_name = j[2]
+            item_price = j[3]
+            item_emote = j[4]
+            item_rarity = j[5]
+            item_type = j[7]
             item_type = str(item_type)
-            item_damage = i[8]
+            item_damage = j[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             if item_effect == "None":
@@ -300,16 +300,16 @@ class Basic(commands.Cog, name="basic"):
             armor.append(item)
         #consumables
         total = len(allConsumables)
-        for i in allConsumables:
-            page_number = allConsumables.index(i) + 1
-            item_id = i[1]
-            item_name = i[2]
-            item_price = i[3]
-            item_emote = i[4]
-            item_rarity = i[5]
-            item_type = i[7]
+        for j in allConsumables:
+            page_number = allConsumables.index(j) + 1
+            item_id = j[1]
+            item_name = j[2]
+            item_price = j[3]
+            item_emote = j[4]
+            item_rarity = j[5]
+            item_type = j[7]
             item_type = str(item_type)
-            item_damage = i[8]
+            item_damage = j[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             if item_effect == "None":
@@ -356,16 +356,16 @@ class Basic(commands.Cog, name="basic"):
         #misc
         allMisc = allMisc + allMaterials
         total = len(allMisc)
-        for i in allMisc:
-            page_number = allMisc.index(1) + 1
-            item_id = i[1]
-            item_name = i[2]
-            item_price = i[3]
-            item_emote = i[4]
-            item_rarity = i[5]
-            item_type = i[7]
+        for j in allMisc:
+            page_number = allMisc.index(j) + 1
+            item_id = j[1]
+            item_name = j[2]
+            item_price = j[3]
+            item_emote = j[4]
+            item_rarity = j[5]
+            item_type = j[7]
             item_type = str(item_type)
-            item_damage = i[8]
+            item_damage = j[8]
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item_id)
             if item_effect == "None":
@@ -507,11 +507,11 @@ class Basic(commands.Cog, name="basic"):
             global page 
             global i
             #if not on the home page, remove the weapon, armor, consumable, and misc buttons with a sell, and equip buttons
-                #remove the weapon, armor, consumable, and misc buttons
-                    
+                #remove the weapon, armor, consumable, and misc buttons 
             @discord.ui.button(label="Equip", row=0, style=discord.ButtonStyle.primary)
             async def ninth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
-                item_id = i[1]
+                global i
+                item_id = j[1]
                 user_id = ctx.message.author.id
                 item_name = await db_manager.get_basic_item_name(item_id)
                 item_type = await db_manager.get_basic_item_type(item_id)
@@ -520,19 +520,193 @@ class Basic(commands.Cog, name="basic"):
                 print(item_type)
                 if item_equipped_id == item_id:
                     await interaction.response.send_message(f"`{item_name}` is already equipped.")
-                    
                     return
                 if item_type == "Weapon":
                     weapon_equipped = await db_manager.is_weapon_equipped(user_id)
                     if weapon_equipped == True:
                         await db_manager.unequip_item(user_id, item_id)
                         interaction.response.send_message(f"your previous weapon has been unequiped and `{item_name}` has been equipped.")
+                        item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                                
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                         
                 elif item_type == "Armor":
                     armor_equipped = await db_manager.is_armor_equipped(user_id)
                     if armor_equipped == True:
                         await db_manager.unequip_item(user_id, item_id)
                         interaction.response.send_message(f"your previous armor has been unequiped and `{item_name}` has been equipped.")
+                        item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                         
                 isEquippable = await db_manager.is_basic_item_equipable(item_id)
                 if isEquippable == 1:
@@ -548,7 +722,93 @@ class Basic(commands.Cog, name="basic"):
                     if effect == "None":
                         await db_manager.equip_item(user_id, item_id)
                         await interaction.response.send_message(f"You equipped `{item_name}`.")
+                        item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
                         
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                         return
                     effect_add_or_minus = item_effect[1]
                     print(effect_add_or_minus)
@@ -561,12 +821,186 @@ class Basic(commands.Cog, name="basic"):
                             #add the effect amount to the user's health
                             await db_manager.add_health_boost(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's health
                             await db_manager.remove_health_boost(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
 
                     #if the effect is damage
@@ -576,12 +1010,186 @@ class Basic(commands.Cog, name="basic"):
                             #add the effect amount to the user's damage
                             await db_manager.add_damage_boost(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's damage
                             await db_manager.remove_damage_boost(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
 
                     #if the effect is luck
@@ -591,12 +1199,186 @@ class Basic(commands.Cog, name="basic"):
                             #add the effect amount to the user's luck
                             await db_manager.add_luck(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's luck
                             await db_manager.remove_luck(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
 
                     #if the effect is crit chance
@@ -606,12 +1388,186 @@ class Basic(commands.Cog, name="basic"):
                             #add the effect amount to the user's crit chance
                             await db_manager.add_crit_chance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's crit chance
                             await db_manager.remove_crit_chance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
 
                     #if the effect is fire resistance
@@ -621,12 +1577,186 @@ class Basic(commands.Cog, name="basic"):
                             #add the effect amount to the user's fire resistance
                             await db_manager.add_fire_resistance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's fire resistance
                             await db_manager.remove_fire_resistance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
 
                     #if the effect is paralsys resistance
@@ -636,12 +1766,186 @@ class Basic(commands.Cog, name="basic"):
                             #add the effect amount to the user's paralsys resistance
                             await db_manager.add_paralysis_resistance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's paralsys resistance
                             await db_manager.remove_paralysis_resistance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
 
                     #if the effect is poison resistance
@@ -651,12 +1955,186 @@ class Basic(commands.Cog, name="basic"):
                             #add the effect amount to the user's poison resistance
                             await db_manager.add_poison_resistance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's poison resistance
                             await db_manager.remove_poison_resistance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
 
                     #if the effect is frost resistance
@@ -666,22 +2144,283 @@ class Basic(commands.Cog, name="basic"):
                             #add the effect amount to the user's frost resistance
                             await db_manager.add_frost_resistance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
                         #if the effect is minus
                         elif effect_add_or_minus == "-":
                             #remove the effect amount from the user's frost resistance
                             await db_manager.remove_frost_resistance(user_id, effect_amount)
                             await interaction.response.send_message(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+                            item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                             
 
                     #if the item has no effect
                     else:
                         await interaction.response.send_message(f"You equipped `{item_name}`")
+                        item_equipped = await db_manager.check_item_equipped(user_id, item_id)
+                        item_amount = await db_manager.get_item_amount_from_inventory(user_id, item_id)
+                        item_effect = await db_manager.get_basic_item_effect(item_id)
+                        if item_effect == "None":
+                            item_effect = "No Effect"
+                        item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            color=rarity_color
+                        )
+                        if item_type == "Weapon":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Damage**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Armor":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Defense**: `{item_damage}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Consumable":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        elif item_type == "Misc":
+                            item = discord.Embed(
+                            title=f"{item_name}{item_emote}",
+                            description=f"`ID:{item_id}` \n **Info**: `{item_info}` \n **Price**: `{item_price}` \n **Effect**: `{item_effect}` \n **Rarity**: `{item_rarity}` ",
+                            color=rarity_color
+                            )
+                        if item_equipped == 1:
+                            item.title = f"{item_name}{item_emote} x{item_amount} (Equipped)"
+                            item_amount = item_amount - 1
+                            if item_amount == 0:
+                                item.title = f"{item_name}{item_emote} (Equipped)"
+                        item.set_author(name=f"{ctx.author.name}'s Inventory", icon_url=ctx.author.avatar.url)
+                        if item_type == "Weapon":
+                            page_number = len(weapons) - i
+                            total = len(weapons)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Armor":
+                            page_number = len(armor) - i
+                            total = len(armor)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Consumable":
+                            page_number = len(consumables) - i
+                            total = len(consumables)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        elif item_type == "Misc":
+                            page_number = len(misc) - i
+                            total = len(misc)
+                            item.set_footer(text=f"Page {page_number}/{total}")
+                        #add the embed to the list
+                        if item_type == "Weapon":
+                            #delete the old embed
+                            weapons.pop(i)
+                            #add the new embed
+                            weapons.insert(i, item)
+                            await message.edit(embed=weapons[i], view=InvView())
+                            return
+                        
+                        elif item_type == "Armor":
+                            #delete the old embed
+                            armor.pop(i)
+                            #add the new embed
+                            armor.insert(i, item)
+                            await message.edit(embed=armor[i], view=InvView())
+                            return
+                            
+                        elif item_type == "Consumable":
+                            #delete the old embed
+                            consumables.pop(i)
+                            #add the new embed
+                            consumables.insert(i, item)
+                            await message.edit(embed=consumables[i], view=InvView())
+                            return
+
+                        elif item_type == "Misc":
+                            #delete the old embed
+                            misc.pop(i)
+                            #add the new embed
+                            misc.insert(i, item)
+                            await message.edit(embed=misc[i], view=InvView())
+                            return
                         
                 else:
                     await interaction.response.send_message(f"that is not equippable.")
-                    
-
+                    return
+            
             @discord.ui.button(label="Sell", row=0, style=discord.ButtonStyle.primary)
             async def eighth_button_callback(self, interaction: discord.Interaction, button: discord.ui.button):
                 pass
@@ -721,7 +2460,7 @@ class Basic(commands.Cog, name="basic"):
                         i -= 1
                         if i < 0:
                             i = 0
-                        InvView.tenth_button_callback.style = discord.ButtonStyle.g
+                        InvView.tenth_button_callback.style = discord.ButtonStyle.gray
                         await message.edit(embed=weapons[i], view=InvView())
                         await interaction.response.defer()
                     elif page == 2:
