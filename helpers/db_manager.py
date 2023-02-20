@@ -2930,7 +2930,7 @@ async def get_item_recipe(item_id: str) -> list:
             return result if result is not None else 0
         
 #check the inventory of a user for any items with the item_type Armor and if they are equiped with the item_type Armor
-async def is_armor_equipped(user_id: int) -> bool:
+async def is_armor_equipped(user_id: int) -> int:
     """
     This function will check if a user has armor equiped.
 
@@ -2943,7 +2943,7 @@ async def is_armor_equipped(user_id: int) -> bool:
             return result[1] if result is not None else 0
         
 #check the inventory of a user for any items with the item_type Weapon and if they are equiped with the item_type Weapon
-async def is_weapon_equipped(user_id: int) -> bool:
+async def is_weapon_equipped(user_id: int) -> int:
     """
     This function will check if a user has a weapon equiped.
 
@@ -2956,7 +2956,7 @@ async def is_weapon_equipped(user_id: int) -> bool:
             return result[1] if result is not None else 0
         
 #check the inventory of a user for any items with the item_type Accessory and if they are equiped with the item_type Accessory
-async def is_accessory_equipped(user_id: int) -> bool:
+async def is_accessory_equipped(user_id: int) -> int:
     """
     This function will check if a user has an accessory equiped.
 
