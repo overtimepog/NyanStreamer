@@ -2280,6 +2280,30 @@ async def view_basic_items() -> list:
             result = await cursor.fetchall()
             return result if result is not None else []
         
+#view all the basic items that have "IsMineable" set to true
+async def view_mineable_items() -> list:
+    """
+    This function will view all mineable basic items in the database.
+
+    :return: A list of all mineable basic items in the database.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE isMineable = 1") as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+    
+#view all the basic items that have "IsHuntable" set to true
+async def view_huntable_items() -> list:
+    """
+    This function will view all huntable basic items in the database.
+
+    :return: A list of all huntable basic items in the database.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE isHuntable = 1") as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+        
 #view an item from the basic_items table using the items id
 async def view_basic_item(item_id: str) -> list:
     """
