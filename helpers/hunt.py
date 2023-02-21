@@ -16,7 +16,6 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 from helpers import db_manager, battle
 
 async def hunt(ctx: Context):
-    await ctx.send("Hunting...")
     firsthuntitems = await db_manager.view_huntable_items()
     #get the hunt chance for each item in the huntitems list
     huntItems = []

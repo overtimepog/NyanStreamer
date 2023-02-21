@@ -1910,21 +1910,6 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(f"{ctx.author.name} is challenging {monsterid} to a battle!")
         author_name = ctx.author.name
         await battle.deathbattle_monster(ctx, user_id, author_name, monsterid, monsterName)
-
-    @commands.hybrid_command(
-        name="random_encounter",
-        description="Start Random Encounters on your server",
-    )
-    async def random_encounter(self, ctx: Context):
-        await randomEncounter.generate_channels(ctx)
-        await randomEncounter.loop_random_encounters(ctx)
-        
-    @commands.hybrid_command(
-        name="delete_channels",
-        description="Delete The channels for Random Encounters",
-    )
-    async def delete_channels(self, ctx: Context):
-        await randomEncounter.delete_channels(ctx)
     
         
     #command to connect their discord account to their twitch account
