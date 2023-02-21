@@ -23,6 +23,7 @@ from helpers.card import Card
 from helpers.embed import make_embed
 from PIL import Image
 
+cash = "<:cash:1077447099752394864>"
 
 # Here we name the cog and create a new class for the cog.
 class Games(commands.Cog, name="games"):
@@ -289,7 +290,7 @@ class Games(commands.Cog, name="games"):
             title=result[0],
             color=color,
             description=(
-                f"**You {result[1]} ${bet}**\nYour hand: {player_score}\n" +
+                f"**You {result[1]} {cash}{bet}**\nYour hand: {player_score}\n" +
                 f"Dealer's hand: {dealer_score}"
             )
         )

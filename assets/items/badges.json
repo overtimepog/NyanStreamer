@@ -1,0 +1,30 @@
+[
+    {
+        "item_id": "devSlayer",
+        "item_name": "Dev Slayer",
+        "item_price": 30,
+        "item_emoji": "",
+        "item_rarity": "Legendary",
+        "item_type": "Badge",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "Given to a player who happens to kill OverTime#7858, the developer of this bot.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [{}],
+        "isHuntable": true,
+        "item_hunt_chance": 0,
+        "item_effect": "damage + 1",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "None",
+        "item_quotes": [{
+            "quote": "None"
+        }],
+        "item_sub_type": "None"
+    }
+]

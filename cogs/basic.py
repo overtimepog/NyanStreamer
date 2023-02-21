@@ -22,6 +22,7 @@ from helpers import battle, checks, db_manager, randomEncounter
 
 global i
 i = 0
+cash = "<:cash:1077447099752394864>"
 # Here we name the cog and create a new class for the cog.
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
@@ -943,7 +944,7 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name="Health", value=f"{user_health} / 100 (Dead)", inline=True)
         else:
             embed.add_field(name="Health", value=f"{user_health} / 100", inline=True)
-        embed.add_field(name="Money", value=f"{user_money}", inline=True)
+        embed.add_field(name="Money", value=f"{cash}{user_money}", inline=True)
         #add xp and level
         embed.add_field(name = chr(173), value = chr(173))
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)

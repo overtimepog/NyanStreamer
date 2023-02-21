@@ -26,6 +26,8 @@ from discord.ext import commands
 from helpers.card import Card
 from PIL import Image
 
+cash = "<:cash:1077447099752394864>"
+
 #slots 2, this time use a new method of creating the slot machine
 async def slots(ctx: Context, user, gamble):
     #instead of an embed, use a regular message
@@ -36,13 +38,17 @@ async def slots(ctx: Context, user, gamble):
     #get the users equiped item
     luck = await db_manager.get_luck(user.id)
     print(luck)
+    #take the money from the user
+    await db_manager.remove_money(user.id, gamble)
+    await db_manager.add_money_spent(user.id, gamble)
     #make both the money and gamble an int
     money = int(money[0])
     gamble = int(gamble)
     #if the user doesn't have enough money, return
     if money < gamble:
-        return await ctx.send(f"**{user.name}** doesn't have enough money to gamble `{gamble}`.")
-    slot_machine = await ctx.send(f"**{user.name}** is gambling `{gamble}`.")
+        return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
+    slot_machine = await ctx.send(f"**{user.name}** is gambling {cash}**{gamble}**.")
+    
     #create a list of all the possible slot machine emojis
     emoji = [
         ":apple:",
@@ -87,10 +93,10 @@ async def slots(ctx: Context, user, gamble):
     for i in emoji:
         if i == slot1:
             break
-        await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {i} : :question: : :question:")
+        await slot_machine.edit(content=f"**{user.name}** is gambling {cash}**{gamble}** \n {i} : :question: : :question:")
 
     #edit the message to show the emoji in the slot
-    await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : :question: : :question:")
+    await slot_machine.edit(content=f"**{user.name}** is gambling {cash}**{gamble}** \n {slot1} : :question: : :question:")
     #for every emoji in the list, edit the message to show the emoji in the slot
 
     #SLOT 2
@@ -119,9 +125,9 @@ async def slots(ctx: Context, user, gamble):
     for i in emoji:
         if i == slot2:
             break
-        await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : {i} : :question:")
+        await slot_machine.edit(content=f"**{user.name}** is gambling {cash}**{gamble}** \n {slot1} : {i} : :question:")
     #edit the message to show the emoji in the slot
-    await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : {slot2} : :question:")
+    await slot_machine.edit(content=f"**{user.name}** is gambling {cash}**{gamble}** \n {slot1} : {slot2} : :question:")
     #for every emoji in the list, edit the message to show the emoji in the slot
 
     #SLOT 3
@@ -151,9 +157,9 @@ async def slots(ctx: Context, user, gamble):
     for i in emoji:
         if i == slot3:
             break
-        await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : {slot2} : {i}")
+        await slot_machine.edit(content=f"**{user.name}** is gambling {cash}**{gamble}** \n {slot1} : {slot2} : {i}")
     #edit the message to show the emoji in the slot
-    await slot_machine.edit(content=f"**{user.name}** is gambling `{gamble}` \n {slot1} : {slot2} : {slot3}")
+    await slot_machine.edit(content=f"**{user.name}** is gambling {cash}**{gamble}** \n {slot1} : {slot2} : {slot3}")
 
     #get the result of each slot
     slot1_result = slot1
@@ -164,37 +170,43 @@ async def slots(ctx: Context, user, gamble):
     #if any slot is a gem, add the amount they bet  times 1.1 to their balance
     if slot1_result == slot2_result or slot1_result == slot3_result or slot2_result == slot3_result:
         #if 2 of the slots are the same, add the amount they bet  times 1.5 to their balance
-        await slot_machine.edit(content=f"**{user.name}** won `{gamble*3}`! \n {slot1} : {slot2} : {slot3}")
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*3}**! \n {slot1} : {slot2} : {slot3}")
         await db_manager.add_money(user.id, gamble*3)
+        await db_manager.add_money_earned(user.id, gamble*3)
     
     elif slot1_result == ":gem:" or slot2_result == ":gem:" or slot3_result == ":gem:":
-        await slot_machine.edit(content=f"**{user.name}** won `{gamble*1.5}`! \n {slot1} : {slot2} : {slot3}")
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*1.5}**! \n {slot1} : {slot2} : {slot3}")
         await db_manager.add_money(user.id, gamble*1.5)
+        await db_manager.add_money_earned(user.id, gamble*1.5)
         
     #if any slot is a crown, add the amount they bet  times 1.2 to their balance
     elif slot1_result == ":crown:" or slot2_result == ":crown:" or slot3_result == ":crown:":
-        await slot_machine.edit(content=f"**{user.name}** won `{gamble*1.2}`! \n {slot1} : {slot2} : {slot3}")
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*1.2}**! \n {slot1} : {slot2} : {slot3}")
         await db_manager.add_money(user.id, gamble*1.2)
+        await db_manager.add_money_earned(user.id, gamble*1.2)
 
     elif slot1_result == slot2_result == slot3_result == ":gem:":
         #if they are all gems, add the amount they bet  times 10 to their balance
-        await slot_machine.edit(content=f"**{user.name}** won `{gamble*10}`! \n {slot1} : {slot2} : {slot3}")
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*10}**! \n {slot1} : {slot2} : {slot3}")
         await db_manager.add_money(user.id, gamble*10)
+        await db_manager.add_money_earned(user.id, gamble*10)
         
     elif slot1_result == slot2_result == slot3_result == ":crown:":
         #if they are all crowns, add the amount they bet  times 5 to their balance
-        await slot_machine.edit(content=f"**{user.name}** won `{gamble*7.5}`! \n {slot1} : {slot2} : {slot3}")
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*7.5}**! \n {slot1} : {slot2} : {slot3}")
         await db_manager.add_money(user.id, gamble*8)
+        await db_manager.add_money_earned(user.id, gamble*8)
         
     elif slot1_result == slot2_result == slot3_result:
         #if they are the same, add the amount they bet  times 3 to their balance
-        await slot_machine.edit(content=f"**{user.name}** won `{gamble*5}`! \n {slot1} : {slot2} : {slot3}")
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*5}**! \n {slot1} : {slot2} : {slot3}")
         await db_manager.add_money(user.id, gamble*5)
-        
+        await db_manager.add_money_earned(user.id, gamble*5)
+
     else:
         #if they are all different, take the amount they bet from their balance
-        await slot_machine.edit(content=f"**{user.name}** lost `{gamble}`! \n {slot1} : {slot2} : {slot3}")
-        await db_manager.remove_money(user.id, gamble)  
+        await slot_machine.edit(content=f"**{user.name}** lost {cash}**{gamble}**! \n {slot1} : {slot2} : {slot3}")
+        #pass
         
 #create slots_rules function
 #this function will be called when the user types !slots_rules
