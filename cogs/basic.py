@@ -952,6 +952,7 @@ class Basic(commands.Cog, name="basic"):
         :param ctx: The context in which the command was called.
         """
         user_id = ctx.message.author.id
+        await db_manager.add_item_to_inventory(user_id, "lily_of_the_valley", 1)
         user_profile = await db_manager.profile(user_id)
         print(user_profile)
         user_id = user_profile[0]
@@ -976,8 +977,20 @@ class Basic(commands.Cog, name="basic"):
         else:
             embed.add_field(name="Health", value=f"{user_health} / 100", inline=True)
         embed.add_field(name="Money", value=f"{cash}{user_money}", inline=True)
+        #get the badges from the database
+        badges = await db_manager.get_equipped_badges(user_id)
+        #make a feild for the badges and set the title to badges and the value to the badges
+        Userbadges = []
+        for badge in badges:
+            badge_name = badge[2]
+            badge_emote = badge[4]
+            badge = f"{badge_emote} {badge_name} \n"
+            Userbadges.append(badge)
+        
+        #get each badge and add it to the badges feild
+        Userbadges = ''.join(Userbadges)
+        embed.add_field(name="Badges", value=f"{Userbadges}", inline=False)
         #add xp and level
-        embed.add_field(name = chr(173), value = chr(173))
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
         embed.add_field(name="Level", value=f"{user_level}", inline=True)
         #for i in user_items:
@@ -1132,6 +1145,9 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.equip_item(user_id, item)
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item)
+            if item_effect == None or item_effect == "None":
+                await ctx.send(f"You equipped `{item_name}`.")
+                return
             print(item_effect)
             #split the effect by spaces
             item_effect = item_effect.split()
@@ -1245,10 +1261,6 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's frost resistance
                     await db_manager.remove_frost_resistance(user_id, effect_amount)
                     await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
-                    
-            #if the item has no effect
-            else:
-                await ctx.send(f"You equipped `{item_name}`")
         else:
             await ctx.send(f"that is not equippable.")
             

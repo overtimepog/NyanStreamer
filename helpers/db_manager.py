@@ -1665,6 +1665,15 @@ async def get_equipped_weapon(user_id: int) -> list:
         else:
             return None
         
+#get all the equipped items with the item type "Badge"
+async def get_equipped_badges(user_id: int) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Badge'", (user_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+        
 #get equipped weapon damage
 async def get_equipped_weapon_damage(user_id: int) -> int:
         db = DB()
