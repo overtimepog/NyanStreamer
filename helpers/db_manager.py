@@ -2995,6 +2995,20 @@ async def id_of_item_equipped(user_id: int, item_id: str) -> str:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
         
+#check if an item is in the inventory table, if it is return 1, if not return 0
+async def is_item_in_inventory(user_id: int, item_id: str) -> int:
+    """
+    This function will check if an item is in the inventory.
+
+    :param user_id: The ID of the user that should be checked.
+    :param item_id: The ID of the item that should be checked.
+    :return: True if the item is in the inventory, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
+
 #get id of the weapon that is equiped
 async def id_of_weapon_equipped(user_id: int) -> str:
     """
