@@ -327,6 +327,64 @@ class Owner(commands.Cog, name="owner"):
             text=f"There are now {total} {'user' if total == 1 else 'users'} in the blacklist"
         )
         await context.send(embed=embed)
+        
+        
+    @commands.hybrid_command(
+        name="eval",
+        description="Evaluate Python code.",
+    )
+    @app_commands.describe(code="The Python code you want to evaluate")
+    @checks.is_owner()
+    async def eval(self, context: Context, *, code: str) -> None:
+        """
+        Evaluate Python code.
+
+        :param context: The hybrid command context.
+        :param code: The Python code you want to evaluate.
+        """
+        code = code.strip("` ")
+        python = "```py {}```"
+        
+    #give a user an item
+    @commands.hybrid_command(
+        name="giveitem",
+    )
+    @app_commands.describe(user="The user you want to give an item to", item="The item you want to give to the user")
+    @checks.is_owner()
+    async def giveitem(self, context: Context, item: str, user: discord.User,) -> None:
+        """
+        Give a user an item.
+
+        :param context: The hybrid command context.
+        :param user: The user you want to give an item to.
+        :param item: The item you want to give to the user.
+        """
+        await db_manager.add_item_to_inventory(user.id, item, 1)
+        embed = discord.Embed(
+            title="Item given",
+            description=f"**{user.name}** has been given **{item}**",
+            color=0x9C84EF
+        )
+        await context.send(embed=embed)
+        
+    
+    #a command to add money to a user using the add_money function from helpers\db_manager.py
+    @commands.hybrid_command(
+        name="addmoney",
+        description="This command will add money to a user.",
+    )
+    @checks.is_owner()
+    async def addmoney(self, ctx: Context, user: discord.Member, amount: int):
+        """
+        This command will add money to a user.
+
+        :param ctx: The context in which the command was called.
+        :param user: The user that should be given money.
+        :param amount: The amount of money that should be given.
+        """
+        await db_manager.add_money(user.id, amount)
+        await ctx.send(f"You gave {user.mention} `{amount}` bucks.")
+        
 
 
 async def setup(bot):

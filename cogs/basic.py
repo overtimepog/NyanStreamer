@@ -151,6 +151,9 @@ class Basic(commands.Cog, name="basic"):
         :param ctx: The context in which the command was called.
         """
         #get the shop items from the database
+        #create the user if they dont exist
+        if not await db_manager.check_user(ctx.author.id):
+            await db_manager.add_user(ctx.author.id, False)
         items = await db_manager.view_inventory(ctx.author.id)
         #create an embed
         #create muliple embeds if there are more than 10 items in the shop
@@ -506,7 +509,6 @@ class Basic(commands.Cog, name="basic"):
                 await ctx.send(f"Removed item with the ID `{item}` from your items.")
                 return
         await ctx.send(f"Item with the ID `{item}` does not exist in the database or you are not the streamer that owns this item.")
-
 
 #command to view all the streamer items owned by the user from a specific streamer, if they dont have the item, display ??? for the emoji
     @commands.hybrid_command(
@@ -1090,23 +1092,6 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(f"You gave {user.mention} `{amount}`.")
         else:
             await ctx.send(f"You don't have enough money to give this user.")
-
-    #a command to add money to a user using the add_money function from helpers\db_manager.py
-    @commands.hybrid_command(
-        name="addmoney",
-        description="This command will add money to a user.",
-    )
-    @checks.is_owner()
-    async def addmoney(self, ctx: Context, user: discord.Member, amount: int):
-        """
-        This command will add money to a user.
-
-        :param ctx: The context in which the command was called.
-        :param user: The user that should be given money.
-        :param amount: The amount of money that should be given.
-        """
-        await db_manager.add_money(user.id, amount)
-        await ctx.send(f"You gave {user.mention} `{amount}` bucks.")
         
     #a command to equip an item using the equip_item function from helpers\db_manager.py, check if the item has isEquippable set to true, if there are mutiple items of the same type, remove the old one and equip the new one, if there are mutliples of the same item, equip the first one, if the item is already equipped, say that it is already equipped, check that only one of the weapon and armor item type is equipped at a time
     @commands.hybrid_command(
