@@ -23,7 +23,7 @@ from helpers.card import Card
 from helpers.embed import make_embed
 from PIL import Image
 
-cash = "<:cash:1077447099752394864>"
+cash = "<:cash:1077573941515792384>"
 
 # Here we name the cog and create a new class for the cog.
 class Games(commands.Cog, name="games"):

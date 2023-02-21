@@ -22,7 +22,7 @@ from helpers import battle, checks, db_manager, randomEncounter
 
 global i
 i = 0
-cash = "<:cash:1077447099752394864>"
+cash = "<:cash:1077573941515792384>"
 # Here we name the cog and create a new class for the cog.
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):

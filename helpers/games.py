@@ -26,7 +26,7 @@ from discord.ext import commands
 from helpers.card import Card
 from PIL import Image
 
-cash = "<:cash:1077447099752394864>"
+cash = "<:cash:1077573941515792384>"
 
 #slots 2, this time use a new method of creating the slot machine
 async def slots(ctx: Context, user, gamble):
