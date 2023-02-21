@@ -360,9 +360,10 @@ class Owner(commands.Cog, name="owner"):
         :param item: The item you want to give to the user.
         """
         await db_manager.add_item_to_inventory(user.id, item, 1)
+        item_name = await db_manager.get_basic_item_name(item)
         embed = discord.Embed(
             title="Item given",
-            description=f"**{user.name}** has been given **{item}**",
+            description=f"**{user.name}** has been given a **{item_name}**",
             color=0x9C84EF
         )
         await context.send(embed=embed)
