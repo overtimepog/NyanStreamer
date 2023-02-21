@@ -490,7 +490,7 @@ class Basic(commands.Cog, name="basic"):
         description="This command will remove an item from the database.",
     )
     @checks.is_streamer()
-    async def remove_item(self, ctx: Context, item_id: str):
+    async def remove_item(self, ctx: Context, item: str):
         """
         This command will remove an item from the database.
 
@@ -501,11 +501,11 @@ class Basic(commands.Cog, name="basic"):
         #check if the item exists in the database
         items = await db_manager.view_streamer_items(user_id)
         for i in items:
-            if item_id in i:
-                await db_manager.remove_item(item_id)
-                await ctx.send(f"Removed item with the ID `{item_id}` from your items.")
+            if item in i:
+                await db_manager.remove_item(item)
+                await ctx.send(f"Removed item with the ID `{item}` from your items.")
                 return
-        await ctx.send(f"Item with the ID `{item_id}` does not exist in the database or you are not the streamer that owns this item.")
+        await ctx.send(f"Item with the ID `{item}` does not exist in the database or you are not the streamer that owns this item.")
 
 
 #command to view all the streamer items owned by the user from a specific streamer, if they dont have the item, display ??? for the emoji
@@ -952,7 +952,6 @@ class Basic(commands.Cog, name="basic"):
         :param ctx: The context in which the command was called.
         """
         user_id = ctx.message.author.id
-        await db_manager.add_item_to_inventory(user_id, "lily_of_the_valley", 1)
         user_profile = await db_manager.profile(user_id)
         print(user_profile)
         user_id = user_profile[0]
