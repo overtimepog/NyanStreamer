@@ -2967,6 +2967,19 @@ async def is_accessory_equipped(user_id: int) -> int:
         async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_type=? AND isEquipped=?", (user_id, "Accessory", 1)) as cursor:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
+        
+#get basic item sub_type
+async def get_basic_item_sub_type(item_id: str) -> str:
+    """
+    This function will get the sub_type of a basic item.
+
+    :param item_id: The ID of the item that the sub_type should be gotten from.
+    :return: The sub_type of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[21] if result is not None else 0
 
 #check if an item has its isEquipped value set to 1 in the inventory table
 async def id_of_item_equipped(user_id: int, item_id: str) -> str:

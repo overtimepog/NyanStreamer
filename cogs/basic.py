@@ -184,18 +184,188 @@ class Basic(commands.Cog, name="basic"):
         class Select(discord.ui.Select):
             def __init__(self):
                 options=[
-                    discord.SelectOption(label="Option 1",emoji="👌",description="This is option 1!"),
-                    discord.SelectOption(label="Option 2",emoji="✨",description="This is option 2!"),
-                    discord.SelectOption(label="Option 3",emoji="🎭",description="This is option 3!")
+                    discord.SelectOption(label="All"),
+                    discord.SelectOption(label="Weapons"),
+                    discord.SelectOption(label="Armor"),
+                    discord.SelectOption(label="Consumables"),
+                    discord.SelectOption(label="Materials"),
+                    discord.SelectOption(label="Badges"),
                     ]
                 super().__init__(placeholder="Select an option",max_values=1,min_values=1,options=options)
             async def callback(self, interaction: discord.Interaction):
-                if self.values[0] == "Option 1":
-                    await interaction.response.edit_message(content="This is the first option from the entire list!")
-                elif self.values[0] == "Option 2":
-                    await interaction.response.send_message("This is the second option from the list entire wooo!",ephemeral=False)
-                elif self.values[0] == "Option 3":
-                    await interaction.response.send_message("Third One!",ephemeral=True)
+                if self.values[0] == "All":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        inv_embed = discord.Embed(
+                            title="Inventory",
+                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
+                        )
+                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(items):
+                                item = items[j]
+                                item_id = item[1]
+                                item_name = item[2]
+                                item_price = item[3]
+                                item_emoji = item[4]
+                                item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
+                                item_description = await db_manager.get_basic_item_description(item_id)
+                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                        embeds.append(inv_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                        
+                if self.values[0] == "Weapons":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        inv_embed = discord.Embed(
+                            title="Inventory",
+                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
+                        )
+                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(items):
+                                item = items[j]
+                                item_id = item[1]
+                                item_name = item[2]
+                                item_price = item[3]
+                                item_emoji = item[4]
+                                item_type = item[7]
+                                if item_type == "Weapon" or item_type == "Tool":
+                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
+                                    item_description = await db_manager.get_basic_item_description(item_id)
+                                else:
+                                    #dont add the item to the embed
+                                    continue
+                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                        embeds.append(inv_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                    
+                if self.values[0] == "Armor":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        inv_embed = discord.Embed(
+                            title="Inventory",
+                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
+                        )
+                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(items):
+                                item = items[j]
+                                item_id = item[1]
+                                item_name = item[2]
+                                item_price = item[3]
+                                item_emoji = item[4]
+                                item_type = item[7]
+                                item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
+                                if item_type == "Armor" or item_type == "Accessory" or item_sub_type == "Bauble":
+                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
+                                    item_description = await db_manager.get_basic_item_description(item_id)
+                                else:
+                                    #dont add the item to the embed
+                                    continue
+                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                        embeds.append(inv_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                    
+                if self.values[0] == "Consumables":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        inv_embed = discord.Embed(
+                            title="Inventory",
+                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
+                        )
+                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(items):
+                                item = items[j]
+                                item_id = item[1]
+                                item_name = item[2]
+                                item_price = item[3]
+                                item_emoji = item[4]
+                                item_type = item[7]
+                                if item_type == "Consumable":
+                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
+                                    item_description = await db_manager.get_basic_item_description(item_id)
+                                else:
+                                    #dont add the item to the embed
+                                    continue
+                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                        embeds.append(inv_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                    
+                if self.values[0] == "Materials":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        inv_embed = discord.Embed(
+                            title="Inventory",
+                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
+                        )
+                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(items):
+                                item = items[j]
+                                item_id = item[1]
+                                item_name = item[2]
+                                item_price = item[3]
+                                item_emoji = item[4]
+                                item_type = item[7]
+                                if item_type == "Material":
+                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
+                                    item_description = await db_manager.get_basic_item_description(item_id)
+                                else:
+                                    #dont add the item to the embed
+                                    continue
+                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                        embeds.append(inv_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                    
+                if self.values[0] == "Badges":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        inv_embed = discord.Embed(
+                            title="Inventory",
+                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
+                        )
+                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(items):
+                                item = items[j]
+                                item_id = item[1]
+                                item_name = item[2]
+                                item_price = item[3]
+                                item_emoji = item[4]
+                                item_type = item[7]
+                                if item_type == "Badge":
+                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
+                                    item_description = await db_manager.get_basic_item_description(item_id)
+                                else:
+                                    #dont add the item to the embed
+                                    continue
+                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                        embeds.append(inv_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                    
+                    
+               
+                    
                     
         class InvButton(discord.ui.View):
             def __init__(self, current_page, **kwargs):
@@ -899,7 +1069,7 @@ class Basic(commands.Cog, name="basic"):
         name="equip",
         description="This command will equip an item.",
     )
-    async def equip(self, ctx: Context, item_id: str):
+    async def equip(self, ctx: Context, item: str):
         """
         This command will equip an item.
 
@@ -907,12 +1077,12 @@ class Basic(commands.Cog, name="basic"):
         :param item: The item that should be equipped.
         """
         user_id = ctx.message.author.id
-        item_name = await db_manager.get_basic_item_name(item_id)
-        item_type = await db_manager.get_basic_item_type(item_id)
-        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
+        item_name = await db_manager.get_basic_item_name(item)
+        item_type = await db_manager.get_basic_item_type(item)
+        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item)
         print(item_equipped_id)
         print(item_type)
-        if item_equipped_id == item_id:
+        if item_equipped_id == item:
             await ctx.send(f"`{item_name}` is already equipped.")
             return
         if item_type == "Weapon":
@@ -925,11 +1095,11 @@ class Basic(commands.Cog, name="basic"):
             if armor_equipped == True:
                 await ctx.send(f"You already have armor equipped.")
                 return
-        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+        isEquippable = await db_manager.is_basic_item_equipable(item)
         if isEquippable == 1:
-            await db_manager.equip_item(user_id, item_id)
+            await db_manager.equip_item(user_id, item)
             #get the item effect
-            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_effect = await db_manager.get_basic_item_effect(item)
             print(item_effect)
             #split the effect by spaces
             item_effect = item_effect.split()
