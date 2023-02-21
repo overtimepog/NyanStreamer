@@ -110,6 +110,12 @@ async def on_ready() -> None:
         print("Syncing commands globally...")
         await bot.tree.sync()
         print("Done syncing commands globally!")
+    #every 12 hours the shop will reset
+    print("Shop will reset in 12 hours")
+    await asyncio.sleep(43200)
+    await db_manager.clear_shop()
+    await db_manager.add_shop_items()
+    
 
 
 @bot.event
