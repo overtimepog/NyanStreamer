@@ -3,7 +3,7 @@
         "item_id": "pickaxe",
         "item_name": "Pickaxe",
         "item_price": 100,
-        "item_emoji": "none",
+        "item_emoji": "<:Pickaxe:1077607355837063280>",
         "item_rarity": "Commond",
         "item_type": "Tool",
         "item_damage": 2,
