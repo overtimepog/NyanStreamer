@@ -15,7 +15,7 @@
         "item_crit_chance": "0%",
         "item_projectile": "None",
         "recipe_id": "None",
-        "item_recipe": [{}],
+        "item_recipe":[{}],
         "isHuntable": false,
         "item_hunt_chance": 0,
         "item_effect": "None",
