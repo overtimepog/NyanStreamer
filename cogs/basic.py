@@ -2052,6 +2052,135 @@ class Basic(commands.Cog, name="basic"):
     @commands.cooldown(1, 7200, commands.BucketType.user)
     async def mine(self, ctx: Context):
         await mine.mine(ctx)
+
+    @commands.hybrid_command(
+        name="use",
+        description="This command will use an item.",
+    )
+    async def use(self, ctx: Context, item_id: str):
+        """
+        This command will use an item.
+        :param ctx: The context in which the command was called.
+        :param item: The item that should be used.
+        """
+        user_id = ctx.message.author.id
+        item_name = await db_manager.get_basic_item_name(item_id)
+        isUsable = await db_manager.is_basic_item_usable(item_id)
+        if isUsable == 1:
+            #remove item from inventory
+            await db_manager.remove_item_from_inventory(user_id, item_id)
+            #STUB - item effects
+            #if the item's name is "Potion", add 10 health to the user
+            #get the items effect
+            item_effect = await db_manager.get_basic_item_effect(item_id)
+            #if the item effect is "None":
+            if item_effect == "None":
+                item_effect = "None"
+            else:
+                #split the item effect by space
+                item_effect = item_effect.split(" ")
+                #get the item effect type
+                item_effect_type = item_effect[0]
+                #get the item effect amount
+                item_effect_amount = item_effect[2]
+            #if the item effect type is "health"
+            if item_effect_type == "heal":
+                #if the user is full health, don't add health and send a message
+                if await db_manager.get_health(user_id) == 100:
+                    await ctx.send("You are already at full health!")
+                    return
+                #add the item effect amount to the users health
+                await db_manager.add_health(user_id, item_effect_amount)
+                await ctx.send(f"You used `{item_name}` and healed for {item_effect_amount} health!")
+
+            #if the item effect is "revive"
+            if item_effect_type == "revive":
+                #if the user is alive, don't revive them and send a message
+                if await db_manager.is_alive(user_id) == True or 1:
+                    await ctx.send("You are already alive!")
+                    return
+                #revive the user
+                await db_manager.set_alive(user_id)
+                #add the item effect amount to the users health
+                await db_manager.add_health(user_id, 100)
+                await ctx.send(f"You used `{item_name}` and revived!")
+                return
+
+            #split the item_id by the "_"
+            chest_name = await db_manager.get_basic_item_name(item_id)
+            item_id = item_id.split("_")
+            luck = await db_manager.get_luck(user_id)
+            #if item[0] is chest
+            if item_id[0] == "chest":
+
+                outcomePhrases = [
+                    "You opened the chest and found ",
+                    "As you pried open the chest, you discovered ",
+                    "With a satisfying creak, the chest opened to reveal ",
+                    "Inside the chest, you found ",
+                    "You eagerly opened the chest to reveal ",
+                    "With bated breath, you lifted the lid of the chest and uncovered ",
+                    "The chest was heavy, but it was worth it when you saw ",
+                    "With a sense of anticipation, you opened the chest and saw ",
+                    "You were rewarded for your efforts with ",
+                    "Inside the chest, you were delighted to find "
+                ]
+
+                #get the chest contents
+                chest_contents = await db_manager.get_chest_contents(item_id)
+                #calculate the chest contents chances
+                #organize the chest items by their chest chance
+                chest_contents.sort(key=lambda x: x[2], reverse=True)
+                #get the user's luck
+                luck = await db_manager.get_luck(ctx.author.id)
+
+                #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
+                roll = random.randint(1, 100) - luck
+                #if the roll is greater than 100, set it to 100
+                if roll > 100:
+                    roll = 100
+
+                #if the roll is less than 1, set it to 1
+                if roll < 1:
+                    roll = 1
+
+
+                lowchanceitems = []
+                for item in chest_contents:
+                    if item[2] <= 0.1:
+                        lowchanceitems.append(item)
+
+                midchanceitems = []
+                for item in chest_contents:
+                    if item[2] > 0.1 and item[2] <= 0.5:
+                        midchanceitems.append(item)
+
+                highchanceitems = []
+                for item in chest_contents:
+                    if item[2] > 0.5 and item[2] <= 1:
+                        highchanceitems.append(item)
+
+                #based on the roll, get the item
+                if roll <= 10:
+                    item = random.choice(lowchanceitems)
+                elif roll > 10 and roll <= 50:
+                    item = random.choice(midchanceitems)
+                elif roll > 50 and roll <= 90:
+                    item = random.choice(highchanceitems)
+                elif roll > 90:
+                    #they found nothing
+                    await ctx.send(f"It seems {chest_name}!")
+                    return
+                
+                await db_manager.add_item_to_inventory(ctx.author.id, item[0])
+                item_name = await db_manager.get_basic_item_name(item[0])
+                item_emoji = await db_manager.get_basic_item_emote(item[0])
+                #tell the user what they got
+                await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {item[1]}")
+                return   
+        else:
+            await ctx.send(f"`{item_name}` is not usable.")
+        
         
 
 
