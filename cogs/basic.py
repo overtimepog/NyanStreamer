@@ -2016,7 +2016,22 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("This user does not exist!, tell them to do /start to start playing!")
             return
         
-        await battle.deathbattle(ctx, ctx.author.id, user.id, ctx.author.name, user.name)
+        #ask the user if they want to fight
+        await ctx.send(f"{user.mention} is Challenging {ctx.author.mention} to a fight! Do you accept? (yes/no)")
+        #wait for a response
+        def check(m):
+            return m.author == user and m.channel == ctx.channel
+        try:
+            msg = await self.bot.wait_for("message", check=check, timeout=60)
+        except asyncio.TimeoutError:
+            await ctx.send("They did not accept the fight!")
+            return
+        if msg.content.lower() == "yes":
+            await ctx.send("The fight has begun!")
+            await battle.deathbattle(ctx, ctx.author.id, user.id, ctx.author.name, user.name)
+        elif msg.content.lower() == "no":
+            await ctx.send("They did not accept the fight!")
+            return
         
     #hunt command
     #command cooldown of 2 hours
