@@ -22,6 +22,8 @@ async def hunt(ctx: Context):
     if isbowThere == False or isbowThere == None or isbowThere == 0:
         await ctx.send("You need a Bow to go Hunting! You can buy one in the shop!")
         return
+    
+    outcomePhrases = ["You ventured deep into the forest and stumbled upon, ", "Traversing the dense woodland, you discovered, ", "Exploring the forest floor, you found, ", "Amidst the trees and undergrowth, you spotted, ", "Making your way through the thicket, you came across, ", "Venturing off the beaten path, you uncovered, ", "You hiked through the forest and found, ", "Wandering among the trees, you chanced upon, ", "Following the sounds of the forest, you encountered, ", "Roaming through the woods, you discovered, ", "You delved into the heart of the forest and found, ", "Tracing the winding trails, you stumbled upon, ", "As you explored the forest canopy, you beheld, "]
 
     #get the hunt chance for each item in the huntitems list
     huntItems = []
@@ -34,8 +36,6 @@ async def hunt(ctx: Context):
     huntItems.sort(key=lambda x: x[1], reverse=True)
     #get the user's luck
     luck = await db_manager.get_luck(ctx.author.id)
-    #make the luck an int
-    luck = int(luck[0])
 
     #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
     roll = random.randint(1, 100) - luck
@@ -72,17 +72,21 @@ async def hunt(ctx: Context):
         item = random.choice(highchanceitems)
     elif roll > 90:
         #they found nothing
-        await ctx.send("You went Hunting and found nothing!")
+        await ctx.send("You went Hunting and found nothing, Lol!")
         return
 
     #get the item's info
+    #roll a number between 1 and 15 to determine how many of the item they get
+    amount = random.randint(1, 5)
+    amount = amount + (luck // 10)
+    if amount < 1:
+        amount = 1
+    if amount > 15:
+        amount = 15
     #grant the item to the user
-    await db_manager.add_item_to_inventory(ctx.author.id, item[0])
+    await db_manager.add_item_to_inventory(ctx.author.id, item[0], amount)
+    item_name = await db_manager.get_basic_item_name(item[0])
+    item_emoji = await db_manager.get_basic_item_emote(item[0])
     #tell the user what they got
-    await ctx.send(f"You went Hunting and found {item[1]}!")
-
-
-
-    
-
-    
+    await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {amount}")
+    return

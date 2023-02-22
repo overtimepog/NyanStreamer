@@ -18,7 +18,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager, randomEncounter
+from helpers import battle, checks, db_manager, randomEncounter, hunt, mine
 
 global i
 i = 0
@@ -1041,6 +1041,7 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.profile(user_id)
             await db_manager.add_money(user_id, 200)
             await db_manager.add_item_to_inventory(user_id, "iron_sword", 1)
+            await db_manager.add_item_to_inventory(user_id, "huntingbow", 1)
             await ctx.send(f"You have started your Journy, Welcome {ctx.message.author.name} to **Dank Streamer**.")
         else:
             await ctx.send("You have already started your journey.")
@@ -2016,6 +2017,27 @@ class Basic(commands.Cog, name="basic"):
             return
         
         await battle.deathbattle(ctx, ctx.author.id, user.id, ctx.author.name, user.name)
+        
+    #hunt command
+    #command cooldown of 2 hours
+    @commands.hybrid_command(
+        name="hunt",
+        description="Hunt for items in the Forest!",
+    )
+    @commands.cooldown(1, 7200, commands.BucketType.user)
+    async def hunt(self, ctx: Context):
+        await hunt.hunt(ctx)
+        
+    #mine command
+    #command cooldown of 2 hours
+    @commands.hybrid_command(
+        name="mine",
+        description="Mine for items in the Caves!",
+    )
+    @commands.cooldown(1, 7200, commands.BucketType.user)
+    async def mine(self, ctx: Context):
+        await mine.mine(ctx)
+        
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
