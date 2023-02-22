@@ -20,7 +20,7 @@ async def hunt(ctx: Context):
     #check if the user has a bow
     isbowThere = await db_manager.is_item_in_inventory(ctx.author.id, "huntingbow")
     if isbowThere == False or isbowThere == None or isbowThere == 0:
-        await ctx.send("You need a Bow to go Hunting! You can buy one in the shop!")
+        await ctx.send("You need a Bow to go Hunting!")
         return
     
     outcomePhrases = ["You ventured deep into the forest and stumbled upon, ", "Traversing the dense woodland, you discovered, ", "Exploring the forest floor, you found, ", "Amidst the trees and undergrowth, you spotted, ", "Making your way through the thicket, you came across, ", "Venturing off the beaten path, you uncovered, ", "You hiked through the forest and found, ", "Wandering among the trees, you chanced upon, ", "Following the sounds of the forest, you encountered, ", "Roaming through the woods, you discovered, ", "You delved into the heart of the forest and found, ", "Tracing the winding trails, you stumbled upon, ", "As you explored the forest canopy, you beheld, "]
@@ -81,8 +81,8 @@ async def hunt(ctx: Context):
     amount = amount + (luck // 10)
     if amount < 1:
         amount = 1
-    if amount > 15:
-        amount = 15
+    if amount > 10:
+        amount = 10
     #grant the item to the user
     await db_manager.add_item_to_inventory(ctx.author.id, item[0], amount)
     item_name = await db_manager.get_basic_item_name(item[0])
