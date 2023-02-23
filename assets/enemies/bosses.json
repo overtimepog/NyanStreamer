@@ -23,5 +23,89 @@
         "enemy_quotes": [{
             "quote": "{enemy_name} calls down a lightning strike on {target} for {damage} damage."
         }]
-    }        
+    },
+    {
+        "enemy_id": "dragon_boss",
+        "enemy_name": "Flamewing, the Fire Dragon",
+        "enemy_health": 1000,
+        "enemy_damage": 50,
+        "enemy_emoji": "<:fire_dragon:123456789>",
+        "enemy_description": "A fierce dragon with scales as red as flames, able to breathe fire and melt everything in its path.",
+        "enemy_rarity": "Legendary",
+        "enemy_type": "Boss",
+        "enemy_xp": 500,
+        "enemy_money": 2000,
+        "enemy_crit_chance": 25,
+        "enemy_drop_id": "flamewing",
+        "enemy_drops": [
+            {
+                "item_id": "dragon_scale",
+                "item_amount": 1,
+                "item_drop_chance": 0.6
+            },
+            {
+                "item_id": "dragon_scale",
+                "item_amount": 2,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "dragon_scale",
+                "item_amount": 3,
+                "item_drop_chance": 0.4
+            },
+            {
+                "item_id": "dragon_scale",
+                "item_amount": 10,
+                "item_drop_chance": 0.05
+            },
+            {
+                "item_id": "dragon_tooth",
+                "item_amount": 1,
+                "item_drop_chance": 0.6
+            },
+            {
+                "item_id": "dragon_tooth",
+                "item_amount": 2,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "dragon_tooth",
+                "item_amount": 3,
+                "item_drop_chance": 0.4
+            },
+            {
+                "item_id": "dragon_tooth",
+                "item_amount": 10,
+                "item_drop_chance": 0.05
+            },
+            {
+                "item_id": "dragon_eye",
+                "item_amount": 1,
+                "item_drop_chance": 0.6
+            },
+            {
+                "item_id": "dragon_eye",
+                "item_amount": 2,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "dragon_eye",
+                "item_amount": 3,
+                "item_drop_chance": 0.4
+            },
+            {
+                "item_id": "dragon_eye",
+                "item_amount": 10,
+                "item_drop_chance": 0.05
+            }
+        ],
+        "enemy_drop_rarity": "Legendary",
+        "enemy_element": "Fire",
+        "quote_id": "dragon_boss",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} unleashes a fiery breath on {target} for {damage} damage."
+            }
+        ]
+    }         
 ]

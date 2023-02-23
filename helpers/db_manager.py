@@ -50,10 +50,8 @@ with open("assets/enemies/bosses.json", "r", encoding="utf8") as f:
 enemies = enemies + creatures + bosses
 
 #Quests
-with open("assets/quests/early_game.json", "r", encoding="utf8") as f:
-    early_game = json.load(f)
-    
-quests = early_game
+with open("assets/quests/quests.json", "r", encoding="utf8") as f:
+    quests = json.load(f)
 
 
 #chests
@@ -895,7 +893,7 @@ async def add_quests() -> None:
             print(f"|{quest['quest_name']}| is already in the database")
             pass
         else:
-            await db.execute("INSERT INTO `quests` (`quest_id`, `quest_name`, `quest_description`, `quest_xp_reward`, `quest_reward`, `quest_reward_amount`, `quest_level_required`, `quest_type`, `quest`, `OnBoard`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (quest['quest_id'], quest['quest_name'], quest['quest_description'], quest['quest_xp_reward'], quest['quest_reward'], quest['quest_reward_amount'], quest['quest_level_required'], quest['quest_type'], quest['quest'], quest['OnBoard']))
+            await db.execute("INSERT INTO `quests` (`quest_id`, `quest_name`, `quest_description`, `quest_xp_reward`, `quest_reward_type`, `quest_reward`, `quest_reward_amount`, `quest_level_required`, `quest_type`, `quest`, `OnBoard`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (quest['quest_id'], quest['quest_name'], quest['quest_description'], quest['quest_xp_reward'], quest['quest_reward_type'], quest['quest_reward'], quest['quest_reward_amount'], quest['quest_level_required'], quest['quest_type'], quest['quest'], quest['OnBoard']))
             print(f"Added |{quest['quest_name']}| to the database")
         
     
@@ -972,7 +970,7 @@ async def get_quest_objective_from_id(quest_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
     if data is not None:
-        return data[8]
+        return data[9]
     else:
         return 0
     
@@ -986,7 +984,7 @@ async def get_quest_reward_type_from_id(quest_id: str) -> str:
         return 0
 
 #get the quest reward amount from its ID
-async def get_quest_reward_amount_from_id(quest_id: str) -> str:
+async def get_quest_reward_from_id(quest_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
     if data is not None:
@@ -1027,7 +1025,7 @@ async def get_quest_level_required(quest_id: str) -> int:
     db = DB()
     data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
     if data is not None:
-        return data[6]
+        return data[7]
     else:
         return 0
     
@@ -1036,7 +1034,7 @@ async def get_quest_type(quest_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
     if data is not None:
-        return data[7]
+        return data[8]
     else:
         return None
     

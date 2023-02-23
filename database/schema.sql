@@ -172,6 +172,7 @@ CREATE TABLE IF NOT EXISTS `quests` (
   `quest_name` varchar(255) NOT NULL,
   `quest_description` varchar(255) NOT NULL,
   `quest_xp_reward` int(11) NOT NULL,
+  `quest_reward_type` varchar(255) NOT NULL,
   `quest_reward` varchar(255) NOT NULL,
   `quest_reward_amount` int(11) NOT NULL,
   `quest_level_required` int(11) NOT NULL,
