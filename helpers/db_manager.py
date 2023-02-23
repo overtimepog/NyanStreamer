@@ -3006,6 +3006,20 @@ async def is_accessory_equipped(user_id: int) -> int:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
         
+#check if an item sub_type is equiped
+async def is_item_sub_type_equipped(user_id: int, item_sub_type: str) -> int:
+    """
+    This function will check if an item sub_type is equiped.
+
+    :param user_id: The ID of the user that should be checked.
+    :param item_sub_type: The sub_type of the item that should be checked.
+    :return: True if the item sub_type is equiped, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_sub_type=? AND isEquipped=?", (user_id, item_sub_type, 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
+        
 #get basic item sub_type
 async def get_basic_item_sub_type(item_id: str) -> str:
     """

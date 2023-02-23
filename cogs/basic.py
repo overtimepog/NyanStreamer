@@ -1109,6 +1109,7 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.message.author.id
         item_name = await db_manager.get_basic_item_name(item)
         item_type = await db_manager.get_basic_item_type(item)
+        item_sub_type = await db_manager.get_basic_item_sub_type(item)
         item_equipped_id = await db_manager.id_of_item_equipped(user_id, item)
         print(item_equipped_id)
         print(item_type)
@@ -1119,12 +1120,44 @@ class Basic(commands.Cog, name="basic"):
             weapon_equipped = await db_manager.is_weapon_equipped(user_id)
             if weapon_equipped == True:
                 await ctx.send(f"You already have a weapon equipped.")
+                return 
+        
+        if item_sub_type == "Ring":
+            ring_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Ring")
+            if ring_equipped == True:
+                await ctx.send(f"You already have a ring equipped.")
                 return
-        elif item_type == "Armor":
-            armor_equipped = await db_manager.is_armor_equipped(user_id)
-            if armor_equipped == True:
-                await ctx.send(f"You already have armor equipped.")
+            
+        if item_sub_type == "Necklace":
+            necklace_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Necklace")
+            if necklace_equipped == True:
+                await ctx.send(f"You already have a necklace equipped.")
                 return
+            
+        if item_sub_type == "Helmet":
+            helmet_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Helmet")
+            if helmet_equipped == True:
+                await ctx.send(f"You already have a helmet equipped.")
+                return
+            
+        if item_sub_type == "Chestplate":
+            chestplate_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Chestplate")
+            if chestplate_equipped == True:
+                await ctx.send(f"You already have a chestplate equipped.")
+                return
+            
+        if item_sub_type == "Leggings":
+            leggings_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Leggings")
+            if leggings_equipped == True:
+                await ctx.send(f"You already have leggings equipped.")
+                return
+            
+        if item_sub_type == "Boots":
+            boots_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Boots")
+            if boots_equipped == True:
+                await ctx.send(f"You already have boots equipped.")
+                return
+            
         isEquippable = await db_manager.is_basic_item_equipable(item)
         if isEquippable == 1:
             await db_manager.equip_item(user_id, item)
