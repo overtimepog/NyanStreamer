@@ -225,8 +225,7 @@ CREATE TABLE IF NOT EXISTS `enemy_drops` (
   `enemy_id` varchar(20) NOT NULL,
   `item_id` varchar(20) NOT NULL,
   `item_amount` int(11) NOT NULL,
-  `item_drop_chance` int(11) NOT NULL,
-  PRIMARY KEY (`enemy_id`,`item_id`)
+  `item_drop_chance` int(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `inventory` (

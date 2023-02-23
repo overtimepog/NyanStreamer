@@ -10,7 +10,7 @@ import sys
 import aiosqlite
 import aiohttp
 
-from helpers import db_manager, randomEncounter
+from helpers import db_manager
 
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")

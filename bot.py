@@ -20,7 +20,7 @@ from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
 
 import exceptions
-from helpers import db_manager, randomEncounter
+from helpers import db_manager
 import twitch
 
 if not os.path.isfile("config.json"):

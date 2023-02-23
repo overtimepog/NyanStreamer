@@ -18,7 +18,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager, randomEncounter, hunt, mine
+from helpers import battle, checks, db_manager, hunt, mine
 
 global i
 i = 0
