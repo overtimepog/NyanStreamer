@@ -4,7 +4,7 @@
         "enemy_name": "Rat",
         "enemy_health": 10,
         "enemy_damage": 3,
-        "enemy_emoji": "\ud83d\udc00",
+        "enemy_emoji": "<a:Rat:1078761460211130428>",
         "enemy_description": "A rat. It's not very strong, but it's annoying as hell.",
         "enemy_rarity": "Common",
         "enemy_type": "Animal",
@@ -16,7 +16,19 @@
             "item_id": "rat_tail",
             "item_amount": 1,
             "item_drop_chance": 1
-        }],
+        },
+        {
+            "item_id": "rat_tail",
+            "item_amount": 2,
+            "item_drop_chance": 0.5
+        },
+        {
+            "item_id": "rat_tail",
+            "item_amount": 3,
+            "item_drop_chance": 0.25
+        }
+    
+    ],
         "enemy_drop_rarity": "Common",
         "enemy_element": "None",
         "quote_id": "rat",
@@ -31,5 +43,49 @@
                 "quote": "{enemy_name} scratches {target} dealing {damage} damage."
             }
         ]
-    }      
+    },
+    {
+        "enemy_id": "fairy",
+        "enemy_name": "Fairy",
+        "enemy_health": 20,
+        "enemy_damage": 5,
+        "enemy_emoji": "<a:Fairy:1078899776612999219>",
+        "enemy_description": "A small and delicate creature that can be found in the woods, dont let its size fool you, it can be quite dangerous.",
+        "enemy_rarity": "Rare",
+        "enemy_type": "Magical",
+        "enemy_xp": 50,
+        "enemy_money": 50,
+        "enemy_crit_chance": 5,
+        "enemy_drop_id": "fairy",
+        "enemy_drops": [
+            {
+            "item_id": "magic_powder",
+            "item_amount": 1,
+            "item_drop_chance": 1
+            },
+            {
+            "item_id": "magic_powder",
+            "item_amount": 2,
+            "item_drop_chance": 0.5
+            },
+            {
+            "item_id": "magic_powder",
+            "item_amount": 3,
+            "item_drop_chance": 0.25
+            }
+    ],
+        "enemy_drop_rarity": "Common",
+        "enemy_element": "Light",
+        "quote_id": "fairy",
+        "enemy_quotes": [{
+                "quote": "{enemy_name} casts a spell on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} shines brightly blinding {target} and dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} sings a magical melody and {target} takes {damage} damage."
+            }
+        ]
+    }    
 ]

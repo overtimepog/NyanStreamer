@@ -107,5 +107,50 @@
                 "quote": "{enemy_name} unleashes a fiery breath on {target} for {damage} damage."
             }
         ]
-    }         
+    },
+    {
+        "enemy_id": "malik_mindflayer",
+        "enemy_name": "Malik the Mindflayer",
+        "enemy_health": 1500,
+        "enemy_damage": 100,
+        "enemy_emoji": "<:Malik_Mindflayer:1234567890>",
+        "enemy_description": "A powerful mindflayer, rumored to have destroyed entire armies with a single thought.",
+        "enemy_rarity": "Legendary",
+        "enemy_type": "Aberration",
+        "enemy_xp": 1000,
+        "enemy_money": 5000,
+        "enemy_crit_chance": 5,
+        "enemy_drop_id": "malik_mindflayer",
+        "enemy_drops": [
+            {
+                "item_id": "arcane_crystal",
+                "item_amount": 5,
+                "item_drop_chance": 0.8
+            },
+            {
+                "item_id": "magic_powder",
+                "item_amount": 10,
+                "item_drop_chance": 1
+            },
+            {
+                "item_id": "dragon_amulet",
+                "item_amount": 1,
+                "item_drop_chance": 0.2
+            }
+        ],
+        "enemy_drop_rarity": "Legendary",
+        "enemy_element": "Psychic",
+        "quote_id": "malik_mindflayer",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} blasts {target} with a psychic wave, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses its mind to crush {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} flays the mind of {target}, dealing {damage} damage."
+            }
+        ]
+    }             
 ]
