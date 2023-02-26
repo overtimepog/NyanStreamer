@@ -2213,6 +2213,139 @@ class Basic(commands.Cog, name="basic"):
                 return   
         else:
             await ctx.send(f"`{item_name}` is not usable.")
+            
+            
+    #explore command
+    @commands.hybrid_command()
+    async def explore(self, ctx: Context, structure: str):
+        log = await db_manager.get_explorer_log(ctx.guild.id)
+        for entry in log:
+            if entry[0] == ctx.author.id:
+                await ctx.send("You have already explored this structure, wait till a new one appears!")
+                return
+        #get the current structure in the channel
+        await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
+        structure_outcomes = await db_manager.get_structure_outcomes(structure)
+        msg = ctx.message
+        #get the structure outcomes
+        luck = await db_manager.get_luck(msg.author.id)
+        #for each outcome, calculate the chance of it happening based on the outcome chance and the users luck
+            #get the hunt chance for each item in the huntitems list
+        outcomes = []
+        for outcome in structure_outcomes:
+            print(outcome)
+            print(len(outcome))
+            #`structure_quote` varchar(255) NOT NULL,
+            #`structure_state` varchar(255) NOT NULL,
+            #`outcome_chance` int(11) NOT NULL,
+            #`outcome_type` varchar(255) NOT NULL,
+            #`outcome` varchar(255) NOT NULL,
+            #`outcome_amount` varchar(11) NOT NULL,
+            #`outcome_money` varchar(11) NOT NULL,
+            #`outcome_xp` varchar(11) NOT NULL,
+
+            quote = outcome[1]
+            state = outcome[2]
+            outcome_chance = outcome[3]
+            outcome_type = outcome[4]
+            outcome_thing = outcome[5]
+            outcome_amount = outcome[6]
+            outcome_money = outcome[7]
+            outcome_xp = outcome[8]
+            #add the outcome to the outcomes list
+            outcomes.append([quote, state, outcome_chance, outcome_type, outcome_thing, outcome_amount, outcome_money, outcome_xp])
+        
+        #sort the outcomes list by the chance of the outcome happening
+        outcomes.sort(key=lambda x: x[2], reverse=True)
+
+        #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
+        roll = random.randint(1, 100) - luck
+        #if the roll is greater than 100, set it to 100
+        if roll > 100:
+            roll = 100
+
+        #if the roll is less than 1, set it to 1
+        if roll < 1:
+            roll = 1
+
+        #get the items with the hunt chance 0.01 or lower
+        lowchanceitems = []
+        for item in outcomes:
+            if item[2] <= 0.1:
+                lowchanceitems.append(item)
+
+        midchanceitems = []
+        for item in outcomes:
+            if item[2] > 0.1 and item[2] <= 0.5:
+                midchanceitems.append(item)
+
+        highchanceitems = []
+        for item in outcomes:
+            if item[2] > 0.5 and item[2] <= 1:
+                highchanceitems.append(item)
+
+        #based on the roll, get the item
+        if roll <= 10:
+            item = random.choice(lowchanceitems)
+        elif roll > 10 and roll <= 50:
+            item = random.choice(midchanceitems)
+        elif roll > 50 and roll <= 100:
+            item = random.choice(highchanceitems)
+        
+        #get the info of the item
+        outcome_quote = item[0]
+        outcome_state = item[1]
+        outcome_chance = item[2]
+        outcome_type = item[3]
+        outcome_thing = item[4]
+        outcome_amount = item[5]
+        outcome_money = item[6]
+        outcome_xp = item[7]
+        
+        #the outcome_types are: item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, battle
+        #if the outcome type is item_gain
+        if outcome_type == "item_gain":
+            #send a message saying the outcome, and the item gained
+            await ctx.send(f"{outcome_quote} You Found, {outcome_amount} {outcome_thing}!")
+            #add the item to the users inventory
+            await db_manager.add_item_to_inventory(msg.author.id, outcome_thing, outcome_amount)
+        #if the outcome type is item_loss
+        elif outcome_type == "item_loss":
+            #send a message saying the outcome, and the item lost
+            await ctx.send(f"{outcome_quote} You Lost, {outcome_amount} {outcome_thing}!")
+            #remove the item from the users inventory
+            await db_manager.remove_item_from_inventory(msg.author.id, outcome_thing, outcome_amount)
+        #if the outcome type is health_loss
+        elif outcome_type == "health_loss":
+            #send a message saying the outcome, and the health lost
+            await ctx.send(f"{outcome_quote} You Lost, {outcome_amount} health!")
+            #remove the health from the users health
+            await db_manager.remove_health(msg.author.id, outcome_amount)
+        #if the outcome type is health_gain
+        elif outcome_type == "health_gain":
+            #send a message saying the outcome, and the health gained
+            await ctx.send(f"{outcome_quote} You Gained, {outcome_amount} health!")
+            #add the health to the users health
+            await db_manager.add_health(msg.author.id, outcome_amount)
+        #if the outcome type is money_gain
+        elif outcome_type == "money_gain":
+            #send a message saying the outcome, and the money gained
+            await ctx.send(f"{outcome_quote} You Gained, {outcome_amount} money!")
+            #add the money to the users money
+            await db_manager.add_money(msg.author.id, outcome_amount)
+        #if the outcome type is money_loss
+        elif outcome_type == "money_loss":
+            #send a message saying the outcome, and the money lost
+            await ctx.send(f"{outcome_quote} You Lost, {outcome_amount} money!")
+            #remove the money from the users money
+            await db_manager.remove_money(msg.author.id, outcome_amount)
+        #if the outcome type is battle
+        elif outcome_type == "battle":
+            #send a message saying the outcome
+            await ctx.send(f"{outcome_quote}")
+            #start a battle
+            outcome_name = db_manager.get_enemy_name(outcome_thing)
+            await battle.deathbattle_monster(ctx, msg.author.id, msg.author.name, outcome_thing, outcome_name)
         
         
 

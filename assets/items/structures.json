@@ -3,15 +3,15 @@
       {
         "structure_id": "castle",
         "structure_name": "Castle",
-        "structure_image": "castle.png",
+        "structure_image": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/a1e143b3-96c3-4cc1-af4c-64ff0d9829e3/de9ld10-02d36cd5-6e7e-4596-b6de-ca57e1278cd9.png/v1/fill/w_1280,h_720,q_80,strp/pixel_castle_landscape_by_baukjespirit_de9ld10-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzIwIiwicGF0aCI6IlwvZlwvYTFlMTQzYjMtOTZjMy00Y2MxLWFmNGMtNjRmZjBkOTgyOWUzXC9kZTlsZDEwLTAyZDM2Y2Q1LTZlN2UtNDU5Ni1iNmRlLWNhNTdlMTI3OGNkOS5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.9P858V3_-cXqTP87nfijXdUZ7ZAZRktlg2NalqBmGPA",
         "structure_description": "A grand castle with towering walls and majestic architecture.",
         "structure_outcomesID": "castle",
         "structure_outcomes": [
           {
             "structure_quote": "The castle stands proud and regal.",
             "structure_state": "success",
-            "outcome_chance": 70,
-            "outcome_type": "item_gain",
+            "outcome_chance": 0.7,
+            "outcome_type": "money_gain",
             "outcome_output": "money",
             "outcome_amount": 100,
             "outcome_money": 0,
@@ -20,51 +20,51 @@
           {
             "structure_quote": "The castle is in ruins, but its treasures remain hidden.",
             "structure_state": "success",
-            "outcome_chance": 30,
+            "outcome_chance": 0.3,
             "outcome_type": "item_gain",
             "outcome_output": "diamond",
-            "outcome_amount": 1,
+            "outcome_amount": "1",
             "outcome_money": 0,
             "outcome_xp": 0
           },
           {
-            "structure_quote": "The castle is heavily guarded by a powerful enemy.",
-            "structure_state": "success",
-            "outcome_chance": 10,
+            "structure_quote": "The castle is heavily guarded by a powerful enemy and you made the grave mistake of bumping into it.",
+            "structure_state": "loss",
+            "outcome_chance": 0.1,
             "outcome_type": "battle",
             "outcome_output": "dragon",
-            "outcome_amount": 0,
+            "outcome_amount": "0",
             "outcome_money": 0,
             "outcome_xp": 0
           },
           {
             "structure_quote": "You have stumbled into a trap and been injured.",
             "structure_state": "loss",
-            "outcome_chance": 10,
-            "outcome_type": "health",
+            "outcome_chance": 0.1,
+            "outcome_type": "health_loss",
             "outcome_output": "loss",
-            "outcome_amount": 10,
+            "outcome_amount": "10",
             "outcome_money": 0,
             "outcome_xp": 0
           },
           {
             "structure_quote": "You have lost an item in the castle's treacherous halls.",
             "structure_state": "loss",
-            "outcome_chance": 5,
+            "outcome_chance": 0.05,
             "outcome_type": "item_loss",
             "outcome_output": "sword",
-            "outcome_amount": 1,
+            "outcome_amount": "1",
             "outcome_money": 0,
             "outcome_xp": 0
           },
           {
             "structure_quote": "You have found a rare artifact in the castle's dungeons.",
             "structure_state": "success",
-            "outcome_chance": 5,
+            "outcome_chance": 0.05,
             "outcome_type": "item_gain",
             "outcome_output": "artifact",
-            "outcome_amount": 1,
-            "outcome_money": 0,
+            "outcome_amount": "1",
+            "outcome_money": "0",
             "outcome_xp": 0
           }
         ]
@@ -72,27 +72,27 @@
       {
         "structure_id": "tavern",
         "structure_name": "Tavern",
-        "structure_image": "tavern.png",
+        "structure_image": "https://steamuserimages-a.akamaihd.net/ugc/94977361885800186/E6CA1994F390F39EEC2B14F4D4456E1E082E41E6/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=#000000&letterbox=false",
         "structure_description": "A cozy tavern with a warm fireplace and lively atmosphere.",
         "structure_outcomesID": "tavern",
         "structure_outcomes": [
           {
             "structure_quote": "The tavern is bustling with activity.",
             "structure_state": "success",
-            "outcome_chance": 80,
+            "outcome_chance": 0.8,
             "outcome_type": "item_gain",
             "outcome_output": "ale",
-            "outcome_amount": 3,
+            "outcome_amount": "3",
             "outcome_money": 20,
             "outcome_xp": 10
           },
           {
             "structure_quote": "The tavern is quiet and empty.",
             "structure_state": "success",
-            "outcome_chance": 20,
+            "outcome_chance": 0.2,
             "outcome_type": "item_gain",
             "outcome_output": "bread",
-            "outcome_amount": 1,
+            "outcome_amount": "1",
             "outcome_money": 10,
             "outcome_xp": 5
           }

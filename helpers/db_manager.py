@@ -1809,15 +1809,114 @@ async def get_chest_contents(chest_id: str) -> list:
         else:
             return None
         
-#get the structure outcomes from the structure ID
-async def get_structure_outcomes(structure_id: str) -> list:
+#get all structures
+async def get_structures() -> list:
         db = DB()
-        data = await db.execute(f"SELECT * FROM `structure_outcomes` WHERE structure_id = ?", (structure_id,), fetch="one")
+        data = await db.execute(f"SELECT * FROM `structures`", fetch="all")
         if data is not None:
             return data
         else:
             return None
         
+#get the structure outcomes from the structure ID
+async def get_structure_outcomes(structure_id: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `structure_outcomes` WHERE structure_id = ?", (structure_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+        
+#add a structure to the current structures table
+async def add_current_structure(server_id: str, structure_id: str) -> None:
+        db = DB()
+        await db.execute(f"INSERT INTO `current_structures` (server_id, structure_id) VALUES (?, ?)", (server_id, structure_id))
+        return None
+    
+#remove a structure from the current structures table
+async def remove_current_structure(server_id: str) -> None:
+        db = DB()
+        await db.execute(f"DELETE FROM `current_structures` WHERE server_id = ?", (server_id))
+        return None
+    
+#edit a structure in the current structures table
+async def edit_current_structure(server_id: str, structure_id: str) -> None:
+        db = DB()
+        await db.execute(f"UPDATE `current_structures` SET structure_id = ? WHERE server_id = ?", (structure_id, server_id))
+        return None
+    
+#get the current structure from the server ID
+async def get_current_structure(server_id: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `current_structures` WHERE server_id = ?", (server_id,), fetch="one")
+        if data is not None:
+            return data
+        else:
+            return None
+        
+#add a user to a servers explorer log
+async def add_explorer_log(server_id: str, user_id: int) -> None:
+        db = DB()
+        await db.execute(f"INSERT INTO `explorer_log` (server_id, user_id) VALUES (?, ?)", (server_id, user_id))
+        return None
+
+#remove a user from a servers explorer log
+async def remove_explorer_log(server_id: str, user_id: int) -> None:
+        db = DB()
+        await db.execute(f"DELETE FROM `explorer_log` WHERE server_id = ? AND user_id = ?", (server_id, user_id))
+        return None
+    
+#get the explorer log for a server
+async def get_explorer_log(server_id: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `explorer_log` WHERE server_id = ?", (server_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+        
+#reset the explorer log for a server
+async def reset_explorer_log(server_id: str) -> None:
+        db = DB()
+        await db.execute(f"DELETE FROM `explorer_log` WHERE server_id = ?", (server_id,))
+        return None
+    
+        
+#get structure from structure ID
+async def get_structure(structure_id: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `structures` WHERE structure_id = ?", (structure_id,), fetch="one")
+        if data is not None:
+            return data
+        else:
+            return None
+        
+#get structure_name from structure ID
+async def get_structure_name(structure_id: str) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `structures` WHERE structure_id = ?", (structure_id,), fetch="one")
+        if data is not None:
+            return data[1]
+        else:
+            return None
+
+#get the structure structure_image from the structure ID
+async def get_structure_image(structure_id: str) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `structures` WHERE structure_id = ?", (structure_id,), fetch="one")
+        if data is not None:
+            return data[2]
+        else:
+            return None
+        
+#get the structure structure_description from the structure ID
+async def get_structure_description(structure_id: str) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `structures` WHERE structure_id = ?", (structure_id,), fetch="one")
+        if data is not None:
+            return data[3]
+        else:
+            return None
         
 #check if the user_id is a user
 async def check_user(user_id: int) -> int:
@@ -2503,7 +2602,7 @@ async def add_streamer_item_to_user(user_id: int, streamer_item_id: str) -> int:
   
 
 #remove an item from the inventory table, uses the usersID from the users table and the item ID from the streamer_items table, if the item already exists in the inventory table, it will remove 1 from the item_amount
-async def remove_item_from_inventory(user_id: int, item_id: str) -> int:
+async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) -> int:
     """
     This function will remove an item from the inventory table.
 
@@ -2516,7 +2615,7 @@ async def remove_item_from_inventory(user_id: int, item_id: str) -> int:
             result = await cursor.fetchone()
             if result is not None:
                 #if the item already exists in the inventory table, remove 1 from the item_amount
-                await db.execute("UPDATE inventory SET item_amount = item_amount - 1 WHERE user_id=? AND item_id=?", (user_id, item_id))
+                await db.execute("UPDATE inventory SET item_amount = item_amount - ? WHERE user_id=? AND item_id=?", (amount, user_id, item_id))
                 await db.commit()
                 #if the item_amount is 0, remove the item from the inventory table
                 async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:

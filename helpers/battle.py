@@ -13,7 +13,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot, Context
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
-from helpers import db_manager, randomEncounter
+from helpers import db_manager
 
 #-------------------Death Battle-------------------#
 async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
