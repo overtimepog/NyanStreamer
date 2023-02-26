@@ -2072,7 +2072,7 @@ class Basic(commands.Cog, name="basic"):
         name="hunt",
         description="Hunt for items in the Forest!",
     )
-    @commands.cooldown(1, 7200, commands.BucketType.user)
+    @commands.cooldown(1, 1800, commands.BucketType.user)
     async def hunt(self, ctx: Context):
         await hunt.hunt(ctx)
         
@@ -2082,7 +2082,7 @@ class Basic(commands.Cog, name="basic"):
         name="mine",
         description="Mine for items in the Caves!",
     )
-    @commands.cooldown(1, 7200, commands.BucketType.user)
+    @commands.cooldown(1, 1800, commands.BucketType.user)
     async def mine(self, ctx: Context):
         await mine.mine(ctx)
 
@@ -2202,7 +2202,7 @@ class Basic(commands.Cog, name="basic"):
                     item = random.choice(highchanceitems)
                 elif roll > 90:
                     #they found nothing
-                    await ctx.send(f"It seems {chest_name}!")
+                    await ctx.send(f"It seems {chest_name} ened up being empty!")
                     return
                 
                 await db_manager.add_item_to_inventory(ctx.author.id, item[0])
