@@ -66,5 +66,65 @@
             "quote": "None"
         }],
         "item_sub_type": "Potion"
-    }
+    },
+    {
+        "item_id": "bread",
+        "item_name": "Bread",
+        "item_price": 10,
+        "item_emoji": "\ud83c\udf5e",
+        "item_rarity": "Common",
+        "item_type": "Consumable",
+        "item_damage": 0,
+        "isUsable": true,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A fresh loaf of bread. Good for filling your belly.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [{}],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "None",
+        "item_quotes": [
+            {
+                "quote": "This bread is so fresh, it's still warm."
+            }
+        ],
+        "item_sub_type": "None"
+    },    
+    {
+        "item_id": "ale",
+        "item_name": "Ale",
+        "item_price": 50,
+        "item_emoji": "\ud83c\udf7a",
+        "item_rarity": "Common",
+        "item_type": "Drink",
+        "item_damage": 0,
+        "isUsable": true,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A foamy mug of ale. It'll make you feel warm and fuzzy inside.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [{}],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "None",
+        "item_quotes": [
+            {
+                "quote": "This ale has a nice, malty flavor."
+            }
+        ],
+        "item_sub_type": "None"
+    }    
 ]

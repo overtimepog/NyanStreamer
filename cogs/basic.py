@@ -155,6 +155,9 @@ class Basic(commands.Cog, name="basic"):
         if not await db_manager.check_user(ctx.author.id):
             await db_manager.add_user(ctx.author.id, False)
         items = await db_manager.view_inventory(ctx.author.id)
+        if items == []:
+            await ctx.send("Your inventory is empty.")
+            return
         #create an embed
         #create muliple embeds if there are more than 10 items in the shop
         # Calculate number of pages based on number of items
@@ -925,7 +928,7 @@ class Basic(commands.Cog, name="basic"):
         for i in user_inventory:
             if item_id in i:
                 #check if the user has enough of the item
-                item_amount = i[7]
+                item_amount = i[6]
                 item_amount = int(item_amount)
                 if item_amount >= amount:
                     item_price = i[3]
@@ -2072,7 +2075,7 @@ class Basic(commands.Cog, name="basic"):
         name="hunt",
         description="Hunt for items in the Forest!",
     )
-    @commands.cooldown(1, 1800, commands.BucketType.user)
+    @commands.cooldown(1, 600, commands.BucketType.user)
     async def hunt(self, ctx: Context):
         await hunt.hunt(ctx)
         
@@ -2082,7 +2085,7 @@ class Basic(commands.Cog, name="basic"):
         name="mine",
         description="Mine for items in the Caves!",
     )
-    @commands.cooldown(1, 1800, commands.BucketType.user)
+    @commands.cooldown(1, 600, commands.BucketType.user)
     async def mine(self, ctx: Context):
         await mine.mine(ctx)
 
@@ -2301,15 +2304,17 @@ class Basic(commands.Cog, name="basic"):
         
         #the outcome_types are: item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, battle
         #if the outcome type is item_gain
+        #get the outcome_icon
+        outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
         if outcome_type == "item_gain":
             #send a message saying the outcome, and the item gained
-            await ctx.send(f"{outcome_quote} You Found, {outcome_amount} {outcome_thing}!")
+            await ctx.send(f"{outcome_quote} You Found, {outcome_amount} {outcome_icon}{outcome_thing}!")
             #add the item to the users inventory
             await db_manager.add_item_to_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is item_loss
         elif outcome_type == "item_loss":
             #send a message saying the outcome, and the item lost
-            await ctx.send(f"{outcome_quote} You Lost, {outcome_amount} {outcome_thing}!")
+            await ctx.send(f"{outcome_quote} You Lost, {outcome_amount} {outcome_icon}{outcome_thing}!")
             #remove the item from the users inventory
             await db_manager.remove_item_from_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is health_loss
@@ -2327,13 +2332,13 @@ class Basic(commands.Cog, name="basic"):
         #if the outcome type is money_gain
         elif outcome_type == "money_gain":
             #send a message saying the outcome, and the money gained
-            await ctx.send(f"{outcome_quote} You Gained, {outcome_amount} money!")
+            await ctx.send(f"{outcome_quote} You Gained, {cash}{outcome_amount} money!")
             #add the money to the users money
             await db_manager.add_money(msg.author.id, outcome_amount)
         #if the outcome type is money_loss
         elif outcome_type == "money_loss":
             #send a message saying the outcome, and the money lost
-            await ctx.send(f"{outcome_quote} You Lost, {outcome_amount} money!")
+            await ctx.send(f"{outcome_quote} You Lost, {cash}{outcome_amount} money!")
             #remove the money from the users money
             await db_manager.remove_money(msg.author.id, outcome_amount)
         #if the outcome type is battle
