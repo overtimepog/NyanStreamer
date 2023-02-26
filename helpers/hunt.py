@@ -17,12 +17,6 @@ from helpers import db_manager, battle
 
 async def hunt(ctx: Context):
     firsthuntitems = await db_manager.view_huntable_items()
-    #check if the user has a bow
-    isbowThere = await db_manager.is_item_in_inventory(ctx.author.id, "huntingbow")
-    if isbowThere == False or isbowThere == None or isbowThere == 0:
-        await ctx.send("You need a Bow to go Hunting!")
-        return
-    
     outcomePhrases = ["You ventured deep into the forest and stumbled upon, ", "Traversing the dense woodland, you discovered, ", "Exploring the forest floor, you found, ", "Amidst the trees and undergrowth, you spotted, ", "Making your way through the thicket, you came across, ", "Venturing off the beaten path, you uncovered, ", "You hiked through the forest and found, ", "Wandering among the trees, you chanced upon, ", "Following the sounds of the forest, you encountered, ", "Roaming through the woods, you discovered, ", "You delved into the heart of the forest and found, ", "Tracing the winding trails, you stumbled upon, ", "As you explored the forest canopy, you beheld, "]
 
     #get the hunt chance for each item in the huntitems list

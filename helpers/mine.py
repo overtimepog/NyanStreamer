@@ -24,12 +24,6 @@ async def mine(ctx: Context):
     # get all mineable items from the database
     minable_items = await db_manager.view_mineable_items()
 
-    # check if the user has a pickaxe
-    is_pickaxe_there = await db_manager.is_item_in_inventory(ctx.author.id, "pickaxe")
-    if not is_pickaxe_there:
-        await ctx.send("You need a pickaxe to mine! You can buy one in the shop.")
-        return
-
     # possible phrases to describe the outcome
     outcome_phrases = [
         "You mined deep into the earth and found ",

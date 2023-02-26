@@ -2077,7 +2077,15 @@ class Basic(commands.Cog, name="basic"):
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
     async def hunt(self, ctx: Context):
-        await hunt.hunt(ctx)
+        #restset the cooldown
+            #check if the user has a bow
+        isbowThere = await db_manager.is_item_in_inventory(ctx.author.id, "huntingbow")
+        if isbowThere == False or isbowThere == None or isbowThere == 0:
+            await ctx.send("You need a Bow to go Hunting!")
+            self.hunt.reset_cooldown(ctx)
+            return
+        else:
+            await hunt.hunt(ctx)
         
     #mine command
     #command cooldown of 2 hours
@@ -2087,7 +2095,14 @@ class Basic(commands.Cog, name="basic"):
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
     async def mine(self, ctx: Context):
-        await mine.mine(ctx)
+        # check if the user has a pickaxe
+        is_pickaxe_there = await db_manager.is_item_in_inventory(ctx.author.id, "pickaxe")
+        if not is_pickaxe_there:
+            await ctx.send("You need a pickaxe to mine! You can buy one in the shop.")
+            self.mine.reset_cooldown(ctx)
+            return
+        else:
+            await mine.mine(ctx)
 
     @commands.hybrid_command(
         name="use",
