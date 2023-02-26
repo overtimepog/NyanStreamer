@@ -125,60 +125,61 @@ async def on_ready() -> None:
         else:
             print("The channel #dankStreamer-structures already exists in " + bot_guild.name)
             
-        #every 5 hours a structure will spawn in the channel named "dankstreamer-structures"
-    print("A structure will spawn every 2.5 hours")
-    @tasks.loop(hours=2.5)
-    async def structure_spawn_task() -> None:
-        #get the structures channel
-        for bot_guild in bot.guilds:
-            if bot_guild.id == 1070882685855211641:
-                print("Skipping " + bot_guild.name + " because it's the Connections server")
-                continue
-            #reset the guilds current structure
-            channel = discord.utils.get(bot_guild.text_channels, name="dankstreamer-structures")
-            if channel is None:
-                print("The channel #dankStreamer-structures does not exist in " + bot_guild.name)
-                continue
-            
-            if await db_manager.get_current_structure(bot_guild.id) is not None:
-                print("A structure is already spawned in " + bot_guild.name)
-                continue
-            
-            print("Spawned a structure in " + bot_guild.name)
-            #get a random structure
-            structureschoices = await db_manager.get_structures()
-            structure = random.choice(structureschoices)
-            structureid = structure[0]
-            structure_name = structure[1]
-            #send the structure
-            message = await channel.send(content=f"A {structure_name} has Appeared")
-                #print(structure_outcomes)
-            #get the strucure info using the db_manager
-            structure_info = await db_manager.get_structure(structureid)
-            #get the structure name
-            structure_name = structure_info[1]
-            #get the structure description
-            structure_description = structure_info[3]
-            #get the structure image
-            structure_image = structure_info[2]
-            #creare an embed to show the structure info
-            embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}", color=0x00ff00)
-            embed.set_image(url=f"{structure_image}")
-            embed.set_footer(text=f"Use /explore {structureid} to explore this structure.")
-            await channel.send(embed=embed)
-            await db_manager.edit_current_structure(bot_guild.id, structureid)
     structure_spawn_task.start()
-    
-    #every 12 hours the shop will reset, create a task to do this
-    print("Shop will reset in 12 hours")
-    @tasks.loop(hours=12.0)
-    async def shop_reset_task() -> None:
-        await db_manager.clear_shop()
-        await db_manager.add_shop_items()
-        print("Shop has been reset")
     shop_reset_task.start()
     
 
+        #every 5 hours a structure will spawn in the channel named "dankstreamer-structures"
+print("A structure will spawn every 2.5 hours")
+@tasks.loop(hours=2.5)
+async def structure_spawn_task() -> None:
+    #get the structures channel
+    for bot_guild in bot.guilds:
+        if bot_guild.id == 1070882685855211641:
+            print("Skipping " + bot_guild.name + " because it's the Connections server")
+            continue
+        #reset the guilds current structure
+        channel = discord.utils.get(bot_guild.text_channels, name="dankstreamer-structures")
+        if channel is None:
+            print("The channel #dankStreamer-structures does not exist in " + bot_guild.name)
+            continue
+        
+        if await db_manager.get_current_structure(bot_guild.id) is not None:
+            print("A structure is already spawned in " + bot_guild.name)
+            continue
+        
+        print("Spawned a structure in " + bot_guild.name)
+        #get a random structure
+        structureschoices = await db_manager.get_structures()
+        structure = random.choice(structureschoices)
+        structureid = structure[0]
+        structure_name = structure[1]
+        #send the structure
+        message = await channel.send(content=f"A {structure_name} has Appeared")
+            #print(structure_outcomes)
+        #get the strucure info using the db_manager
+        structure_info = await db_manager.get_structure(structureid)
+        #get the structure name
+        structure_name = structure_info[1]
+        #get the structure description
+        structure_description = structure_info[3]
+        #get the structure image
+        structure_image = structure_info[2]
+        #creare an embed to show the structure info
+        embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}", color=0x00ff00)
+        embed.set_image(url=f"{structure_image}")
+        embed.set_footer(text=f"Use /explore {structureid} to explore this structure.")
+        await channel.send(embed=embed)
+        await db_manager.edit_current_structure(bot_guild.id, structureid)
+
+
+#every 12 hours the shop will reset, create a task to do this
+print("Shop will reset in 12 hours")
+@tasks.loop(hours=12.0)
+async def shop_reset_task() -> None:
+    await db_manager.clear_shop()
+    await db_manager.add_shop_items()
+    print("Shop has been reset")
 
 
 @tasks.loop(minutes=1.0)
