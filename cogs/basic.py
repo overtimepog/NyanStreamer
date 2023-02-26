@@ -2217,12 +2217,9 @@ class Basic(commands.Cog, name="basic"):
             
     #explore command
     @commands.hybrid_command()
+    #command cooldown of 45 minutes
+    @commands.cooldown(1, 2700, commands.BucketType.user)
     async def explore(self, ctx: Context, structure: str):
-        log = await db_manager.get_explorer_log(ctx.guild.id)
-        for entry in log:
-            if entry[0] == ctx.author.id:
-                await ctx.send("You have already explored this structure, wait till a new one appears!")
-                return
         #get the current structure in the channel
         await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
         structure_outcomes = await db_manager.get_structure_outcomes(structure)
