@@ -2238,6 +2238,11 @@ class Basic(commands.Cog, name="basic"):
     #command cooldown of 45 minutes
     @commands.cooldown(1, 2700, commands.BucketType.user)
     async def explore(self, ctx: Context, structure: str):
+        #check if the user exists in the database
+        if await db_manager.check_user(ctx.author.id) == 0:
+            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
+            await self.explore.reset_cooldown(ctx)
+            return
         #get the current structure in the channel
         await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
         structure_outcomes = await db_manager.get_structure_outcomes(structure)
