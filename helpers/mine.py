@@ -115,8 +115,14 @@ async def mine(ctx: Context):
         amount = 15
     #grant the item to the user
     await db_manager.add_item_to_inventory(ctx.author.id, item[0], amount)
-    item_name = await db_manager.get_basic_item_name(item[0])
-    item_emoji = await db_manager.get_basic_item_emote(item[0])
+    item_id = item[0]
+    item_id = str(item_id)
+    if item_id.split("_")[0] == "chest":
+        item_emoji = await db_manager.get_chest_icon(item_id)
+        item_name = await db_manager.get_chest_name(item_id)
+    else:
+        item_emoji = await db_manager.get_basic_item_emote(item_id)
+        item_name = await db_manager.get_basic_item_name(item_id)
     #tell the user what they got
     await ctx.send(random.choice(outcome_phrases) + f"{item_emoji} **{item_name}** - {amount}")
     quest_id = await db_manager.get_user_quest(ctx.author.id)
