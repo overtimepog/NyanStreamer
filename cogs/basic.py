@@ -2321,39 +2321,42 @@ class Basic(commands.Cog, name="basic"):
         #if the outcome type is item_gain
         #get the outcome_icon
         outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
+        #remove the line breaks from the outcome_quote
+        outcome_quote = str(outcome_quote)
+        outcome_quote = outcome_quote.strip()
         if outcome_type == "item_gain":
             #send a message saying the outcome, and the item gained
-            await ctx.send(f"{outcome_quote} You Found, {outcome_amount} {outcome_icon}{outcome_thing}!")
+            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon}{outcome_thing}")
             #add the item to the users inventory
             await db_manager.add_item_to_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is item_loss
         elif outcome_type == "item_loss":
             #send a message saying the outcome, and the item lost
-            await ctx.send(f"{outcome_quote} You Lost, {outcome_amount} {outcome_icon}{outcome_thing}!")
+            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon}{outcome_thing}")
             #remove the item from the users inventory
             await db_manager.remove_item_from_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is health_loss
         elif outcome_type == "health_loss":
             #send a message saying the outcome, and the health lost
-            await ctx.send(f"{outcome_quote} You Lost, {outcome_amount} health!")
+            await ctx.send(f"{outcome_quote} - {outcome_amount} health!")
             #remove the health from the users health
             await db_manager.remove_health(msg.author.id, outcome_amount)
         #if the outcome type is health_gain
         elif outcome_type == "health_gain":
             #send a message saying the outcome, and the health gained
-            await ctx.send(f"{outcome_quote} You Gained, {outcome_amount} health!")
+            await ctx.send(f"{outcome_quote} + {outcome_amount} health!")
             #add the health to the users health
             await db_manager.add_health(msg.author.id, outcome_amount)
         #if the outcome type is money_gain
         elif outcome_type == "money_gain":
             #send a message saying the outcome, and the money gained
-            await ctx.send(f"{outcome_quote} You Gained, {cash}{outcome_amount} money!")
+            await ctx.send(f"{outcome_quote} + {cash}{outcome_amount}")
             #add the money to the users money
             await db_manager.add_money(msg.author.id, outcome_amount)
         #if the outcome type is money_loss
         elif outcome_type == "money_loss":
             #send a message saying the outcome, and the money lost
-            await ctx.send(f"{outcome_quote} You Lost, {cash}{outcome_amount} money!")
+            await ctx.send(f"{outcome_quote} - {cash}{outcome_amount}")
             #remove the money from the users money
             await db_manager.remove_money(msg.author.id, outcome_amount)
         #if the outcome type is battle

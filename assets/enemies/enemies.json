@@ -87,5 +87,50 @@
                 "quote": "{enemy_name} sings a magical melody and {target} takes {damage} damage."
             }
         ]
-    }    
+    },
+    {
+        "enemy_id": "skeleton_horde",
+        "enemy_name": "Skeleton Horde",
+        "enemy_health": 50,
+        "enemy_damage": 10,
+        "enemy_emoji": "",
+        "enemy_description": "A group of skeletons wielding sharp weapons.",
+        "enemy_rarity": "Rare",
+        "enemy_type": "Undead",
+        "enemy_xp": 25,
+        "enemy_money": 50,
+        "enemy_crit_chance": 0.2,
+        "enemy_drop_id": "skeleton_horde",
+        "enemy_drops": [
+            {
+                "item_id": "bone",
+                "item_amount": 3,
+                "item_drop_chance": 1
+            },
+            {
+                "item_id": "bone",
+                "item_amount": 5,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "iron_sword",
+                "item_amount": 1,
+                "item_drop_chance": 0.25
+            }
+        ],
+        "enemy_drop_rarity": "Rare",
+        "enemy_element": "Dark",
+        "quote_id": "skeleton_horde",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} slashes at {target} with its sharp weapons dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} swings its weapons at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} charges at {target} with its bony arms dealing {damage} damage."
+            }
+        ]
+    }     
 ]

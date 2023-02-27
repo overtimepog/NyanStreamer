@@ -113,7 +113,7 @@
         "enemy_name": "Malik the Mindflayer",
         "enemy_health": 1500,
         "enemy_damage": 100,
-        "enemy_emoji": "<:Malik_Mindflayer:1234567890>",
+        "enemy_emoji": "<a:malik:1079592323219984415>",
         "enemy_description": "A powerful mindflayer, rumored to have destroyed entire armies with a single thought.",
         "enemy_rarity": "Legendary",
         "enemy_type": "Aberration",
