@@ -2119,7 +2119,7 @@ class Basic(commands.Cog, name="basic"):
         isUsable = await db_manager.is_basic_item_usable(item_id)
         if isUsable == 1:
             #remove item from inventory
-            await db_manager.remove_item_from_inventory(user_id, item_id)
+            await db_manager.remove_item_from_inventory(user_id, item_id, 1)
             #STUB - item effects
             #if the item's name is "Potion", add 10 health to the user
             #get the items effect
@@ -2136,8 +2136,9 @@ class Basic(commands.Cog, name="basic"):
                 item_effect_amount = item_effect[2]
             #if the item effect type is "health"
             if item_effect_type == "heal":
+                userHealth = await db_manager.get_health(user_id)
                 #if the user is full health, don't add health and send a message
-                if await db_manager.get_health(user_id) == 100:
+                if userHealth == 100:
                     await ctx.send("You are already at full health!")
                     return
                 #add the item effect amount to the users health
@@ -2306,11 +2307,20 @@ class Basic(commands.Cog, name="basic"):
 
         #based on the roll, get the item
         if roll <= 10:
-            item = random.choice(lowchanceitems)
+            try:
+                item = random.choice(lowchanceitems)
+            except(IndexError):
+                item = random.choice(outcomes)
         elif roll > 10 and roll <= 50:
-            item = random.choice(midchanceitems)
+            try:
+                item = random.choice(midchanceitems)
+            except(IndexError):
+                item = random.choice(lowchanceitems)
         elif roll > 50 and roll <= 100:
-            item = random.choice(highchanceitems)
+            try:
+                item = random.choice(highchanceitems)
+            except(IndexError):
+                item = random.choice(midchanceitems)
         
         #get the info of the item
         outcome_quote = item[0]
@@ -2330,14 +2340,16 @@ class Basic(commands.Cog, name="basic"):
         outcome_quote = str(outcome_quote)
         outcome_quote = outcome_quote.strip()
         if outcome_type == "item_gain":
+            outcome_name = await db_manager.get_basic_item_name(outcome_thing)
             #send a message saying the outcome, and the item gained
-            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon}{outcome_thing}")
+            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}**")
             #add the item to the users inventory
             await db_manager.add_item_to_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is item_loss
         elif outcome_type == "item_loss":
+            outcome_name = await db_manager.get_basic_item_name(outcome_thing)
             #send a message saying the outcome, and the item lost
-            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon}{outcome_thing}")
+            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}**")
             #remove the item from the users inventory
             await db_manager.remove_item_from_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is health_loss

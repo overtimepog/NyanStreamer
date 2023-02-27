@@ -59,11 +59,20 @@ async def hunt(ctx: Context):
 
     #based on the roll, get the item
     if roll <= 10:
-        item = random.choice(lowchanceitems)
+        try:
+            item = random.choice(lowchanceitems)
+        except(IndexError):
+            item = random.choice(huntItems)
     elif roll > 10 and roll <= 50:
-        item = random.choice(midchanceitems)
+        try:
+            item = random.choice(midchanceitems)
+        except(IndexError):
+            item = random.choice(lowchanceitems)
     elif roll > 50 and roll <= 90:
-        item = random.choice(highchanceitems)
+        try:
+            item = random.choice(highchanceitems)
+        except(IndexError):
+            item = random.choice(midchanceitems)
     elif roll > 90:
         #they found nothing
         await ctx.send("You went Hunting and found nothing, Lol!")

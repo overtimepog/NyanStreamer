@@ -175,7 +175,7 @@ async def structure_spawn_task() -> None:
 
 #every 12 hours the shop will reset, create a task to do this
 print("Shop will reset in 12 hours")
-@tasks.loop(hours=12.0)
+@tasks.loop(hours=5)
 async def shop_reset_task() -> None:
     await db_manager.clear_shop()
     await db_manager.add_shop_items()

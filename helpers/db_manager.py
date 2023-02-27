@@ -2532,23 +2532,28 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                     async with db.execute("SELECT * FROM chests WHERE chest_id=?", (item_id,)) as cursor:
                         result = await cursor.fetchone()
                         if result is not None:
-                            item_id = result[0]
-                            item_name = result[1]
-                            item_price = result[2]
-                            item_emoji = result[3]
-                            item_rarity = result[4]
-                            item_type = result[5]
-                            item_damage = result[6]
-                            isUsable = result[7]
-                            inShop = result[8]
-                            isEquippable = result[9]
-                            item_description = result[10]
-                            item_element = result[11]
-                            item_crit_chance = result[12]
-                            item_projectile = result[13]
-                            isEquipped = 0
-                            #add the item to the inventory table
-                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
+                            #   chest_id int(11) NOT NULL,
+                            #   chest_name varchar(255) NOT NULL,
+                            #   chest_price varchar(255) NOT NULL,
+                            #   chest_emoji varchar(255) NOT NULL,
+                            #   chest_rarity varchar(255) NOT NULL,
+                            #   chest_type varchar(255) NOT NULL,
+                            #   chest_description varchar(255) NOT NULL,
+                            #   key_id varchar(255) NOT NULL,
+                            #   chest_contentsID varchar(255) NOT NULL,
+                            
+                            #get the data from the chest table
+                            chest_id = result[0]
+                            chest_name = result[1]
+                            chest_price = result[2]
+                            chest_emoji = result[3]
+                            chest_rarity = result[4]
+                            chest_type = result[5]
+                            chest_description = result[6]
+                            key_id = result[7]
+                            chest_contentsID = result[8]
+                            #add the chest to the inventory table, setting the values that are not in the chest table to 0
+                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, chest_id, chest_name, chest_price, chest_emoji, chest_rarity, item_amount, chest_type, 0, 0, "None", 0, "None"))
                             await db.commit()
                             return 1
                         else:

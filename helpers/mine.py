@@ -85,11 +85,20 @@ async def mine(ctx: Context):
 
     # based on the roll, get the item
     if roll <= 10:
-        item = random.choice(low_chance_items)
+        try:
+            item = random.choice(low_chance_items)
+        except(IndexError):
+            item = random.choice(mine_items)
     elif roll > 10 and roll <= 50:
-        item = random.choice(mid_chance_items)
+        try:
+            item = random.choice(mid_chance_items)
+        except(IndexError):
+            item = random.choice(low_chance_items)
     elif roll > 50 and roll <= 90:
-        item = random.choice(high_chance_items)
+        try:
+            item = random.choice(high_chance_items)
+        except(IndexError):
+            item = random.choice(mid_chance_items)
     else:
         # they found nothing
         await ctx.send("You mined for hours, but found nothing.")
