@@ -1800,6 +1800,24 @@ async def check_chest(item_id: str) -> int:
         else:
             return 0
         
+#get the chest icon from the chest ID
+async def get_chest_icon(chest_id: str) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `chests` WHERE chest_id = ?", (chest_id,), fetch="one")
+        if data is not None:
+            return data[2]
+        else:
+            return None
+
+#get chest name
+async def get_chest_name(chest_id: str) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `chests` WHERE chest_id = ?", (chest_id,), fetch="one")
+        if data is not None:
+            return data[1]
+        else:
+            return None
+        
 #get the chests chest_contents list from the chest ID
 async def get_chest_contents(chest_id: str) -> list:
         db = DB()

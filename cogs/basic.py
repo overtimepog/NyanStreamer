@@ -2335,19 +2335,30 @@ class Basic(commands.Cog, name="basic"):
         #the outcome_types are: item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, battle
         #if the outcome type is item_gain
         #get the outcome_icon
-        outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
         #remove the line breaks from the outcome_quote
+        outcome_thing = str(outcome_thing)
         outcome_quote = str(outcome_quote)
         outcome_quote = outcome_quote.strip()
         if outcome_type == "item_gain":
-            outcome_name = await db_manager.get_basic_item_name(outcome_thing)
+            #if outcome things first word is chest, then add a to the end of the outcome_quote
+            if outcome_thing.split("_")[0] == "chest":
+                outcome_icon = await db_manager.get_chest_icon(outcome_thing)
+                outcome_name = await db_manager.get_chest_name(outcome_thing)
+            else:
+                outcome_name = await db_manager.get_basic_item_name(outcome_thing)
+                outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
             #send a message saying the outcome, and the item gained
             await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}**")
             #add the item to the users inventory
             await db_manager.add_item_to_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is item_loss
         elif outcome_type == "item_loss":
-            outcome_name = await db_manager.get_basic_item_name(outcome_thing)
+            if outcome_thing.split("_")[0] == "chest":
+                outcome_icon = await db_manager.get_chest_icon(outcome_thing)
+                outcome_name = await db_manager.get_chest_name(outcome_thing)
+            else:
+                outcome_name = await db_manager.get_basic_item_name(outcome_thing)
+                outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
             #send a message saying the outcome, and the item lost
             await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}**")
             #remove the item from the users inventory
