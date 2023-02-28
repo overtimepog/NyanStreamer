@@ -1621,3 +1621,10 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
                             await db_manager.add_item_to_inventory(userID, quest_reward, quest_reward_amount)
                             await ctx.send(f"You have completed the quest and been rewarded with {quest_reward_amount} {quest_reward}, and {quest_xp_reward} xp!")
         return userID
+    
+    
+    
+    
+#create a function to spawn a monster
+async def spawn_monster(ctx, monsterID):
+    pass
