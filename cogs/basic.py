@@ -2547,8 +2547,15 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.add_item_to_inventory(ctx.author.id, item, 1)
             
             
-        
-        
+#attack command
+    @commands.hybrid_command()
+    async def attack(self, ctx: Context, enemy: str):
+        """Attack an enemy"""
+        userID = ctx.author.id
+        userName = ctx.author.name
+        monsterID = enemy
+        monsterName = await db_manager.get_enemy_name(enemy)
+        battle.attack(ctx, userID, userName, monsterID, monsterName)
         
 
 
