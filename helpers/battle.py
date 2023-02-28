@@ -1256,6 +1256,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                     #replace the {enemy} with the monsters name
                     enemyPromt = enemyPromt.replace("{enemy_name}", monsterName)
                     #CONVERT THE PROMTS TO A STRING
+                    enemyPromt = str(enemyPromt)
             if crit_chance <= monster_crit_chance:
                 #double the damage
                 damage = damage * 2
@@ -1359,3 +1360,264 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #set the user not in combat
                 await db_manager.set_not_in_combat(userID)
                 return userID
+            
+            
+            
+#a function for just a regular attack, basically the turn system, but its one turn only, and it doesnt have the turn count, its just the user attacking the monster then the monster attacking the user and thats it
+async def attack(ctx: Context, userID, userName, monsterID, monsterName):
+    #calculate the damage the user does
+    try:
+        user_weapon = await db_manager.get_equipped_weapon(userID)
+    except(IndexError, TypeError):
+        await ctx.send("You dont have a weapon equipped!")
+        return
+    
+    try: 
+        user_armor = await db_manager.get_equipped_armor(userID)
+    except(IndexError, TypeError):
+        user_armor = 0
+        
+    try:
+        user_defense = user_armor[8]
+    except(IndexError, TypeError):
+        user_defense = 0
+        
+    user_weapon = user_weapon[1]
+    user_weapon_name = user_weapon[2]
+    user_weapon_emoji = user_weapon[4]
+    user_weapon_damage = user_weapon[8]
+    user_weapon_damage = int(user_weapon_damage)
+    user_damage_boost = await db_manager.get_damage_boost(userID)
+    user_damage_boost = int(user_damage_boost)
+    user_weapon_damage = user_weapon_damage + user_damage_boost
+    
+    #get the monsters health
+    monsterHealth = await db_manager.get_enemy_health(monsterID)
+    monsterDamage = await db_manager.get_enemy_damage(monsterID)
+    #convert it to int 
+    monsterHealth = int(monsterHealth[0])
+    
+    #calculate the damage the user does
+    user_damage = user_weapon_damage
+    #calculate the damage the monster does
+    monsterDamage = int(monsterDamage[0])
+    
+    #deal the damage to the monster
+    monsterHealth = monsterHealth - user_damage
+    #send a message to the channel the quoute 
+    
+    #if the monster or user is not dead
+    user_weapon_quotes = await db_manager.get_item_quotes(user_weapon)
+    user1Promt = random.choice(user_weapon_quotes)
+    if user1Promt == user_weapon:
+        user1Promt = random.choice(user_weapon_quotes)
+    user1Promt = str(user1Promt)
+    user1Promt = user1Promt.replace("{user}", userName)
+    user1Promt = user1Promt.replace("{target}", monsterName)
+    user1Promt = user1Promt.replace("{damage}", str(user_damage))
+    monster_attack = await db_manager.get_enemy_damage(monsterID)
+    #monsters defence is half of their health
+    monster_defence = await db_manager.get_enemy_health(monsterID)
+    #convert the defence to int
+    monster_defence = int(monster_defence[0])
+    #divide the defence by 5
+    monster_defence = monster_defence / 5
+    #convert the defence to int
+    monster_defence = int(monster_defence)
+    #calculate the damage the the user does
+    user_damage = user_weapon_damage - monster_defence
+    #deal the damage to the monster
+    monsterHealth = monsterHealth - user_damage
+    #send a message to the channel the quoute 
+    await db_manager.set_enemy_health(monsterID, monsterHealth)
+    await ctx.send(user1Promt)
+    #wait 3 seconds
+    await asyncio.sleep(3)
+    
+    enemyPromts = await db_manager.get_enemy_quotes(monsterID)
+    #if the promts are empty, set them to a default message
+    if enemyPromts == None or enemyPromts == "" or enemyPromts == [] or enemyPromts == "None" or enemyPromts == monsterID:
+        enemyPromt = f"{monsterName} attacked {userName} for {monsterDamage} damage."
+        enemyPromt = enemyPromt.replace("{damage}", str(monsterDamage))
+        #replace the {target} with the users name
+        enemyPromt = enemyPromt.replace("{target}", userName)
+        #replace the {enemy} with the monsters name
+        enemyPromt = enemyPromt.replace("{enemy_name}", monsterName)
+    else:
+        #pick a random enemy promt
+        enemyPromt = random.choice(enemyPromts)
+        if enemyPromt == monsterID:
+            enemyPromt = f"{monsterName} attacked {userName} for {monsterDamage} damage."
+            enemyPromt = str(enemyPromt)
+            #replace the {damage} with the damage
+            enemyPromt = enemyPromt.replace("{damage}", str(monsterDamage))
+            #replace the {target} with the users name
+            enemyPromt = enemyPromt.replace("{target}", userName)
+            #replace the {enemy} with the monsters name
+            enemyPromt = enemyPromt.replace("{enemy_name}", monsterName)
+        else:
+            enemyPromt = str(enemyPromt)
+            #replace the {damage} with the damage
+            enemyPromt = enemyPromt.replace("{damage}", str(monsterDamage))
+            #replace the {target} with the users name
+            enemyPromt = enemyPromt.replace("{target}", userName)
+            #replace the {enemy} with the monsters name
+            enemyPromt = enemyPromt.replace("{enemy_name}", monsterName)
+            #CONVERT THE PROMTS TO A STRING
+            enemyPromt = str(enemyPromt)
+    #send the message to the channel
+    
+    
+    #deal the damage to the user
+    monsterDamage = monsterDamage - user_defense
+    #get the users dodge chance
+    user_dodge_chance = await db_manager.get_dodge_chance(userID)
+    #convert the dodge chance to int
+    user_dodge_chance = int(user_dodge_chance)
+    #get a random number between 1 and 100
+    random_number = random.randint(1, 100)
+    #if the random number is less than or equal to the dodge chance
+    if random_number <= user_dodge_chance:
+        #send a message saying the user dodged the attack
+        await ctx.send(f"{userName} dodged {monsterName}'s attack!")
+        #return
+        return
+    await db_manager.remove_health(userID, monsterDamage)
+    await ctx.send(enemyPromt)
+    
+    #get the users health
+    userHealth = await db_manager.get_health(userID)
+    #convert it to int 
+    userHealth = int(userHealth[0])
+    #if the users health is less than or equal to 0, end the fight
+    if userHealth <= 0:
+        #get the monsters name
+        #convert the name to str
+        monster_name = str(monster_name)
+        #send a message to the channel saying the user has died
+        await ctx.send(userName + " has died!")
+        #set the users health to 0
+        await db_manager.set_health(userID, 0)
+        #set the user as dead 
+        await db_manager.set_dead(userID)
+        #set the user not in combat
+        await db_manager.set_not_in_combat(userID)
+        return userID
+    #get the monsters health
+    monsterHealth = await db_manager.get_enemy_health(monsterID)
+    #convert it to int
+    monsterHealth = int(monsterHealth[0])
+    #if the monsters health is less than or equal to 0, end the fight
+    if monsterHealth <= 0:
+        monster_drop = await db_manager.get_enemy_drop(monsterID)
+        monster_drop_chance = await db_manager.get_enemy_drop_chance(monsterID)
+        monster_drop_min = await db_manager.get_enemy_drop_amount_min(monsterID)
+        monster_drop_max = await db_manager.get_enemy_drop_amount_max(monsterID)
+        #get the monsters name
+        #convert the name to str
+        monster_name = str(monster_name)
+        #send a message to the channel saying the user has died
+        await ctx.send(monster_name + " has died!")
+        #set the monsters health to 0
+        await db_manager.set_enemy_health(monsterID, 0)
+        #set the user not in combat
+        await db_manager.set_not_in_combat(userID)
+        #do loot, quest, and xp stuff
+        #get the users level
+        userLevel = await db_manager.get_level(userID)
+        #convert it to int
+        userLevel = int(userLevel[0])
+        #get all the info on the drop item
+        #TODO - Fix this to work with new system
+        item_name = await db_manager.get_basic_item_name(monster_drop)
+        item_price = await db_manager.get_basic_item_price(monster_drop)
+        item_type = await db_manager.get_basic_item_type(monster_drop)
+        item_emoji = await db_manager.get_basic_item_emote(monster_drop)
+        item_rarity = await db_manager.get_basic_item_rarity(monster_drop)
+        #convert the item name to str
+        item_name = str(item_name)
+        #convert the item price to int
+        item_price = int(item_price)
+        #convert the item type to str
+        item_type = str(item_type)
+        #convert the item emoji to str
+        item_emoji = str(item_emoji)
+        #convert the item rarity to sr
+        item_rarity = str(item_rarity)
+
+
+        #TODO - Fix this to work with new system
+        #calculate the how many items the user will get
+        #get the drop chance
+        monster_drop_chance = int(monster_drop_chance)
+        #get the drop min and max
+        monster_drop_min = int(monster_drop_min)
+        monster_drop_max = int(monster_drop_max)
+        #get a random number between the min and max
+        drop_amount = random.randint(monster_drop_min, monster_drop_max)
+        #get a random number between 1 and 100
+        drop_chance = random.randint(1, 100)
+        #if the drop chance is less than or equal to the monsters drop chance
+        if drop_chance <= monster_drop_chance:
+            #give the user the drop
+            await db_manager.add_item_to_inventory(userID, monster_drop, drop_amount)
+            #send a message to the channel saying the user got the drop
+            await ctx.send(userName + " has gotten " + str(drop_amount) + " " + monster_drop + "!")
+        if await db_manager.can_level_up(userID):
+            #if the user can level up, level them up
+            await db_manager.add_level(userID, 1)
+            #set the users xp to 0
+            await db_manager.set_xp(userID, 0)
+            #send a message to the channel saying the user has leveled up
+            #get the users new level
+            new_level = await db_manager.get_level(userID)
+            #remove the () and , from the level
+            new_level = str(new_level)
+            new_level = new_level.replace("(", "")
+            new_level = new_level.replace(")", "")
+            new_level = new_level.replace(",", "")
+            #convert the level to int
+            new_level = int(new_level)
+            await ctx.send(userName + " has leveled up! They are now level " + str(new_level) + "!")
+            #get the users quest
+        #check if the user has a quest
+        has_quest = await db_manager.check_user_has_any_quest(userID)
+        #if the user has a quest
+        if has_quest:
+            quest_id = await db_manager.get_user_quest(userID)
+            objective = await db_manager.get_quest_objective_from_id(quest_id)
+            quest_type = await db_manager.get_quest_type(quest_id)
+            #if the quest type is kill
+            if quest_type == "kill":
+                #get the string of the monster name from the objective 
+                objective = objective.split(" ")
+                objective = objective[1]
+                #if the objective is the same as the monster id
+                if objective == monsterID:
+                    #add 1 to the quest progress
+                    await db_manager.update_quest_progress(userID, quest_id, 1)
+                    #get the quest progress
+                    quest_progress = await db_manager.get_quest_progress(userID)
+                    #get the quest total
+                    quest_total = await db_manager.get_quest_total_from_id(quest_id)
+                    #if the quest progress is greater than or equal to the quest total
+                    if quest_progress >= quest_total:
+                        #get the quest reward type and amount
+                        quest_reward_type = await db_manager.get_quest_reward_type_from_id(quest_id)
+                        quest_reward_amount = await db_manager.get_quest_reward_amount_from_id(quest_id)
+                        #get the quest reward from the quest id
+                        quest_reward = await db_manager.get_quest_reward_from_id(quest_id)
+                        quest_xp_reward = await db_manager.get_quest_xp_reward_from_id(quest_id)
+                        #add the quest xp reward to the users xp
+                        await db_manager.add_xp(userID, quest_xp_reward)
+                        #if the quest reward type is gold, add the amount to the users gold
+                        if quest_reward_type == "gold":
+                            await db_manager.add_money(userID, quest_reward_amount)
+                            await ctx.send(f"You have completed the quest and been rewarded with {quest_reward_amount} gold!, and {quest_xp_reward} xp!")
+                        #if the quest reward type is item get all the info on the item and add it to the users inventory
+                        elif quest_reward_type == "item":
+                            #get all the info on the item
+                            #add the item to the users inventory
+                            await db_manager.add_item_to_inventory(userID, quest_reward, quest_reward_amount)
+                            await ctx.send(f"You have completed the quest and been rewarded with {quest_reward_amount} {quest_reward}, and {quest_xp_reward} xp!")
+        return userID

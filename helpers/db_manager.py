@@ -203,6 +203,15 @@ async def remove_enemy_health(enemy_id: str, amount: int) -> None:
     else:
         await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_health`) VALUES (?, ?)", (enemy_id, 100))
 
+#set enemy health
+async def set_enemy_health(enemy_id: str, amount: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `enemies` SET `enemy_health` = ? WHERE `enemy_id` = ?", (amount, enemy_id))
+    else:
+        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_health`) VALUES (?, ?)", (enemy_id, 100))
+
 #add get the xp of an enemy
 async def get_enemy_xp(enemy_id: str) -> int:
     db = DB()
@@ -995,6 +1004,15 @@ async def get_quest_reward_type_from_id(quest_id: str) -> str:
     data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
     if data is not None:
         return data[4]
+    else:
+        return 0
+    
+#get quest reward amount from quest ID
+async def get_quest_reward_amount_from_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[6]
     else:
         return 0
 
