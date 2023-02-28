@@ -45,7 +45,7 @@ async def mine(ctx: Context):
     mine_items = []
     for item in minable_items:
         item_id = item[0]
-        mine_chance = item[17]
+        mine_chance = item[19]
         mine_items.append([item_id, mine_chance])
 
     # organize the mine items by their mine chance

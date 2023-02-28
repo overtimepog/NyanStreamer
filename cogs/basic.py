@@ -930,7 +930,7 @@ class Basic(commands.Cog, name="basic"):
         name="sell",
         description="This command will sell an item from your inventory.",
     )
-    async def sell(self, ctx: Context, item_id: str, amount: int):
+    async def sell(self, ctx: Context, item: str, amount: int):
         """
         This command will sell an item from your inventory.
 
@@ -1314,7 +1314,7 @@ class Basic(commands.Cog, name="basic"):
         name="unequip",
         description="This command will unequip an item.",
     )
-    async def unequip(self, ctx: Context, item_id: str):
+    async def unequip(self, ctx: Context, item: str):
         """
         This command will unequip an item.
 
@@ -2140,7 +2140,7 @@ class Basic(commands.Cog, name="basic"):
         name="use",
         description="This command will use an item.",
     )
-    async def use(self, ctx: Context, item_id: str):
+    async def use(self, ctx: Context, item: str):
         """
         This command will use an item.
         :param ctx: The context in which the command was called.
