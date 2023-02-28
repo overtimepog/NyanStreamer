@@ -153,8 +153,10 @@ class Basic(commands.Cog, name="basic"):
         #get the shop items from the database
         #create the user if they dont exist
         if not await db_manager.check_user(ctx.author.id):
-            await db_manager.add_user(ctx.author.id, False)
+            await ctx.send("You have not Started your adventure yet, use /start to start your adventure.")
+            return
         items = await db_manager.view_inventory(ctx.author.id)
+        print(items)
         if items == []:
             await ctx.send("Your inventory is empty.")
             return
@@ -188,11 +190,11 @@ class Basic(commands.Cog, name="basic"):
                         continue
                     item_description = await db_manager.get_basic_item_description(item_id)
                     equippedItems = await db_manager.get_equipped_items(ctx.author.id)
-                    for i in equippedItems:
-                        if i[1] == item_id:
-                            inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                        else:
-                            inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                    isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
+                    if isEquipped == 1:
+                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                    else:
+                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
             embeds.append(inv_embed)
         
         class Select(discord.ui.Select):
@@ -231,14 +233,13 @@ class Basic(commands.Cog, name="basic"):
                                     continue
                                 item_description = await db_manager.get_basic_item_description(item_id)
                                 #check if the item is equiped
-                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
-                                for i in equippedItems:
-                                    if i[1] == item_id:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                    else:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
+                                if isEquipped == 1:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                else:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
-                    await interaction.response.edit_message(embed=embeds[current_page])
+                        await interaction.response.edit_message(embed=embeds[current_page])
                         
                 if self.values[0] == "Weapons":
                     embeds = []
@@ -267,12 +268,11 @@ class Basic(commands.Cog, name="basic"):
                                 else:
                                     #dont add the item to the embed
                                     continue
-                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
-                                for i in equippedItems:
-                                    if i[1] == item_id:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                    else:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
+                                if isEquipped == 1:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                else:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                     
@@ -303,12 +303,11 @@ class Basic(commands.Cog, name="basic"):
                                 else:
                                     #dont add the item to the embed
                                     continue
-                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
-                                for i in equippedItems:
-                                    if i[1] == item_id:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                    else:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
+                                if isEquipped == 1:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                else:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                     
@@ -340,12 +339,11 @@ class Basic(commands.Cog, name="basic"):
                                 else:
                                     #dont add the item to the embed
                                     continue
-                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
-                                for i in equippedItems:
-                                    if i[1] == item_id:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                    else:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
+                                if isEquipped == 1:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                else:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                     
@@ -438,12 +436,11 @@ class Basic(commands.Cog, name="basic"):
                                 else:
                                     #dont add the item to the embed
                                     continue
-                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
-                                for i in equippedItems:
-                                    if i[1] == item_id:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                    else:
-                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
+                                if isEquipped == 1:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                else:
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                     
@@ -1380,6 +1377,10 @@ class Basic(commands.Cog, name="basic"):
         if item_equipped_id == item:
             #remove the item effect
             item_effect = await db_manager.get_basic_item_effect(item)
+            if item_effect == "None":
+                await db_manager.unequip_item(user_id, item)
+                await ctx.send(f"You unequiped `{item_name}`.")
+                return
             #split the effect by spaces
             item_effect = item_effect.split()
             #get the effect, the effect type, and the effect amount
