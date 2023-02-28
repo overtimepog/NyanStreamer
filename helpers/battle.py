@@ -1511,10 +1511,68 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     monsterHealth = int(monsterHealth[0])
     #if the monsters health is less than or equal to 0, end the fight
     if monsterHealth <= 0:
-        monster_drop = await db_manager.get_enemy_drop(monsterID)
-        monster_drop_chance = await db_manager.get_enemy_drop_chance(monsterID)
-        monster_drop_min = await db_manager.get_enemy_drop_amount_min(monsterID)
-        monster_drop_max = await db_manager.get_enemy_drop_amount_max(monsterID)
+        monster_drops = await db_manager.get_enemy_drops(monsterID) 
+        luck = await db_manager.get_luck(userID)
+        drops = []
+        for drop in monster_drops:
+            item = drop[0]
+            drop_amount = drop[1]
+            drop_chance = drop[2]
+            drop_chance = int(drop_chance)
+            drop_amount = int(drop_amount)
+            drops.append([item, drop_chance, drop_amount])
+
+    #organize the hunt items by their hunt chance
+    drops.sort(key=lambda x: x[1], reverse=True)
+    #get the user's luck
+    luck = await db_manager.get_luck(ctx.author.id)
+
+    #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
+    roll = random.randint(1, 100) - luck
+    #if the roll is greater than 100, set it to 100
+    if roll > 100:
+        roll = 100
+    
+    #if the roll is less than 1, set it to 1
+    if roll < 1:
+        roll = 1
+    
+    #get the items with the hunt chance 0.01 or lower
+    lowchanceitems = []
+    for item in drops:
+        if item[1] <= 0.1:
+            lowchanceitems.append(item)
+
+    midchanceitems = []
+    for item in drops:
+        if item[1] > 0.1 and item[1] <= 0.5:
+            midchanceitems.append(item)
+
+    highchanceitems = []
+    for item in drops:
+        if item[1] > 0.5 and item[1] <= 1:
+            highchanceitems.append(item)
+
+    #based on the roll, get the item
+    if roll <= 10:
+        try:
+            item = random.choice(lowchanceitems)
+        except(IndexError):
+            item = random.choice(drops)
+    elif roll > 10 and roll <= 50:
+        try:
+            item = random.choice(midchanceitems)
+        except(IndexError):
+            item = random.choice(lowchanceitems)
+    elif roll > 50 and roll <= 100:
+        try:
+            item = random.choice(highchanceitems)
+        except(IndexError):
+            item = random.choice(midchanceitems)
+        
+        
+            
+        
         #get the monsters name
         #convert the name to str
         monster_name = str(monster_name)
@@ -1531,40 +1589,15 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         userLevel = int(userLevel[0])
         #get all the info on the drop item
         #TODO - Fix this to work with new system
-        item_name = await db_manager.get_basic_item_name(monster_drop)
-        item_price = await db_manager.get_basic_item_price(monster_drop)
-        item_type = await db_manager.get_basic_item_type(monster_drop)
-        item_emoji = await db_manager.get_basic_item_emote(monster_drop)
-        item_rarity = await db_manager.get_basic_item_rarity(monster_drop)
-        #convert the item name to str
-        item_name = str(item_name)
-        #convert the item price to int
-        item_price = int(item_price)
-        #convert the item type to str
-        item_type = str(item_type)
-        #convert the item emoji to str
-        item_emoji = str(item_emoji)
-        #convert the item rarity to sr
-        item_rarity = str(item_rarity)
-
+        #pick a random item from the list of drops, based on the drop chance and the users luck
 
         #TODO - Fix this to work with new system
-        #calculate the how many items the user will get
-        #get the drop chance
-        monster_drop_chance = int(monster_drop_chance)
-        #get the drop min and max
-        monster_drop_min = int(monster_drop_min)
-        monster_drop_max = int(monster_drop_max)
-        #get a random number between the min and max
-        drop_amount = random.randint(monster_drop_min, monster_drop_max)
-        #get a random number between 1 and 100
-        drop_chance = random.randint(1, 100)
         #if the drop chance is less than or equal to the monsters drop chance
-        if drop_chance <= monster_drop_chance:
-            #give the user the drop
-            await db_manager.add_item_to_inventory(userID, monster_drop, drop_amount)
-            #send a message to the channel saying the user got the drop
-            await ctx.send(userName + " has gotten " + str(drop_amount) + " " + monster_drop + "!")
+        #give the user the drop
+        emote = await db_manager.get_basic_item_emote(item[0])
+        await db_manager.add_item_to_inventory(userID, item[0], item[2])
+        #send a message to the channel saying the user got the drop
+        await ctx.send(userName + " has gotten " + str(item[2]) + " " + emote + item[0] + "!")
         if await db_manager.can_level_up(userID):
             #if the user can level up, level them up
             await db_manager.add_level(userID, 1)
@@ -1629,4 +1662,9 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     
 #create a function to spawn a monster
 async def spawn_monster(ctx, monsterID):
-    pass
+    #get all the info on the monster, and make it an embed
+    monster_name = await db_manager.get_enemy_name(monsterID)
+    monster_hp = await db_manager.get_enemy_health(monsterID)
+    monster_attack = await db_manager.get_enemy_damage(monsterID)
+    monster_emoji = await db_manager.get_enemy_emoji(monsterID)
+    

@@ -192,6 +192,18 @@ async def get_enemy_damage(enemy_id: str) -> int:
         users = await db.execute(f"SELECT `enemy_damage` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
         return users
     
+#get enemy emoji
+async def get_enemy_emoji(enemy_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `enemy_emoji` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        return users
+    else:
+        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_emoji`) VALUES (?, ?)", (enemy_id, "👹"))
+        users = await db.execute(f"SELECT `enemy_emoji` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+        return users
+    
     
 
 #remove health from an enemy
@@ -1163,6 +1175,16 @@ async def get_enemy_drop(enemy_id: str) -> str:
         return data[11]
     else:
         return None
+    
+#get enemy drops from the enemy_drops table from the enemy ID
+async def get_enemy_drops(enemy_id: str) -> list:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemy_drops` WHERE enemy_id = ?", (enemy_id,), fetch="all")
+    if data is not None:
+        return data
+    else:
+        return None
+    
     
 #get the enemy drop chance from its ID
 async def get_enemy_drop_chance(enemy_id: str) -> int:
