@@ -891,6 +891,30 @@ class Basic(commands.Cog, name="basic"):
                             await db_manager.remove_shop_item_amount(item, amount)
                             #add the item to the users inventory
                             await db_manager.add_item_to_inventory(user_id, item, amount)
+                            #if the user has a quest, check it
+                            userquestID = await db_manager.get_user_quest(user_id)
+                            if userquestID != "None":
+                                questItem = await db_manager.get_quest_item_from_id(userquestID)
+                                if questItem == item:
+                                    await db_manager.update_quest_progress(user_id, userquestID, amount)
+                                #now check if the user has completed the quest
+                                questProgress = await db_manager.get_quest_progress(user_id, userquestID)
+                                questAmount = await db_manager.get_quest_total_from_id(userquestID)
+                                questRewardType = await db_manager.get_quest_reward_type_from_id(userquestID)
+                                if questProgress >= questAmount:
+                                    #give the user the reward
+                                    if questRewardType == "Money":
+                                        questReward = await db_manager.get_quest_reward_from_id(userquestID)
+                                        await db_manager.add_money(user_id, questReward)
+                                        await ctx.send(f"You completed the quest and got `{questReward}` bucks!")
+                                    if questRewardType == "Item":
+                                        questReward = await db_manager.get_quest_reward_from_id(userquestID)
+                                        await db_manager.add_item_to_inventory(user_id, questReward, 1)
+                                        await ctx.send(f"You completed the quest and got `{questReward}`!")
+                                    #remove the quest from the user
+                                    await db_manager.mark_quest_completed(user_id, userquestID)
+
+                            
                             #remove the price from the users money
                             await db_manager.remove_money(user_id, total_price)
                             await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
@@ -2079,6 +2103,10 @@ class Basic(commands.Cog, name="basic"):
     async def hunt(self, ctx: Context):
         #restset the cooldown
             #check if the user has a bow
+        if await db_manager.check_user(ctx.author.id) == 0:
+            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
+            await self.hunt.reset_cooldown(ctx)
+            return
         isbowThere = await db_manager.is_item_in_inventory(ctx.author.id, "huntingbow")
         if isbowThere == False or isbowThere == None or isbowThere == 0:
             await ctx.send("You need a Bow to go Hunting!")
@@ -2095,6 +2123,10 @@ class Basic(commands.Cog, name="basic"):
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
     async def mine(self, ctx: Context):
+        if await db_manager.check_user(ctx.author.id) == 0:
+            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
+            await self.mine.reset_cooldown(ctx)
+            return
         # check if the user has a pickaxe
         is_pickaxe_there = await db_manager.is_item_in_inventory(ctx.author.id, "pickaxe")
         if not is_pickaxe_there:
@@ -2114,6 +2146,10 @@ class Basic(commands.Cog, name="basic"):
         :param ctx: The context in which the command was called.
         :param item: The item that should be used.
         """
+        if await db_manager.check_user(ctx.author.id) == 0:
+            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
+            await self.use.reset_cooldown(ctx)
+            return
         user_id = ctx.message.author.id
         item_name = await db_manager.get_basic_item_name(item_id)
         isUsable = await db_manager.is_basic_item_usable(item_id)
@@ -2236,8 +2272,8 @@ class Basic(commands.Cog, name="basic"):
             
     #explore command
     @commands.hybrid_command()
-    #command cooldown of 45 minutes
-    @commands.cooldown(1, 2700, commands.BucketType.user)
+    #command cooldown of 5 minutes
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def explore(self, ctx: Context, structure: str):
         #check if the user exists in the database
         if await db_manager.check_user(ctx.author.id) == 0:
@@ -2392,8 +2428,55 @@ class Basic(commands.Cog, name="basic"):
             #send a message saying the outcome
             await ctx.send(f"{outcome_quote}")
             #start a battle
-            outcome_name = db_manager.get_enemy_name(outcome_thing)
+            outcome_name = await db_manager.get_enemy_name(outcome_thing)
             await battle.deathbattle_monster(ctx, msg.author.id, msg.author.name, outcome_thing, outcome_name)
+            
+    #craft command
+    @commands.hybrid_command()
+    async def craft(self, ctx: Context, item: str):
+        """Craft an item"""
+        #get the users inventory
+        inventory = await db_manager.view_inventory(ctx.author.id)
+        #if the user has no items
+        if inventory == None or [] or [ ]:
+            #send a message saying the user has no items
+            await ctx.send("You have no items in your Inventory!")
+            return
+        #get the item info
+        item_info = await db_manager.view_basic_item(item)
+        print(item_info)
+        #if the item is not found
+        if item_info == None or [] or [ ]:
+            #send a message saying the item is not found
+            await ctx.send("Item not found!")
+            return
+        #if the item is found
+        else:
+            #get the item name
+            item_name = item_info[0][1]
+            #get the item emote
+            item_emote = item_info[0][3]
+            #get the item recipe
+            item_recipe = await db_manager.get_item_recipe(item)
+            hasRecipe = await db_manager.check_item_recipe(item)
+            if hasRecipe == False:
+                await ctx.send(f"You can not craft {item_emote} **{item_name}**!")
+                return
+            for item in item_recipe:
+            #check if the user has the items needed to craft the item
+                if item in inventory:
+                    #if the user has the items, remove the items from the users inventory
+                    await db_manager.remove_item_from_inventory(ctx.author.id, item_recipe[0], item_recipe[1])
+                    #add the item to the users inventory
+                else:
+                    #if the user does not have the items, send a message saying they do not have the items
+                    await ctx.send(f"You do not have the items needed to craft {item_emote} **{item_name}**!")
+                    #give the user the items back
+                    return
+            await db_manager.add_item_to_inventory(ctx.author.id, item, 1)
+            
+            
+        
         
         
 

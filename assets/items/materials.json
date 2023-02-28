@@ -522,5 +522,33 @@
                 "quote": "None"
             }],
             "item_sub_type": "Chain"
-        }               
+        },
+        {
+            "item_id": "ectoplasm",
+            "item_name": "Ectoplasm",
+            "item_price": 50,
+            "item_emoji": "<:Ectoplasm:123456789>",
+            "item_rarity": "Uncommon",
+            "item_type": "Material",
+            "item_damage": 0,
+            "isUsable": false,
+            "inShop": true,
+            "isEquippable": false,
+            "item_description": "A slimy, translucent substance left behind by ghosts.",
+            "item_element": "Ghost",
+            "item_crit_chance": "0%",
+            "item_projectile": "None",
+            "recipe_id": "None",
+            "item_recipe": [],
+            "isHuntable": false,
+            "item_hunt_chance": 0,
+            "item_effect": "None",
+            "isMineable": false,
+            "item_mine_chance": 0,
+            "quote_id": "None",
+            "item_quotes": [{
+                "quote": "{user} collects some ectoplasm from the remains of a ghost."
+            }],
+            "item_sub_type": "None"
+        }             
 ]

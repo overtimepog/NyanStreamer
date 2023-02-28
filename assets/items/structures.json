@@ -3,7 +3,7 @@
         {
             "structure_id": "dungeon",
             "structure_name": "Dungeon",
-            "structure_image": "https://i.imgur.com/w91Tr6r.jpg",
+            "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
             "structure_description": "A dark, foreboding dungeon filled with traps and treasures.",
             "structure_outcomesID": "dungeon",
             "structure_outcomes": [
@@ -102,8 +102,8 @@
         {
             "structure_id": "haunted_forest",
             "structure_name": "Haunted Forest",
-            "structure_image": "https://i.imgur.com/3qHqZpx.jpg",
-            "structure_description": "A dense forest rumored to be haunted by restless spirits.",
+            "structure_image": "https://i.pinimg.com/736x/4b/19/58/4b19586618d1f3233abfca2f5a4411ac.jpg",
+            "structure_description": "A dense forest rumored to be haunted by restless spirits and the undead.",
             "structure_outcomesID": "haunted_forest",
             "structure_outcomes": [
               {
@@ -117,7 +117,7 @@
                 "outcome_xp": 0
               },
               {
-                "structure_quote": "You've stumbled upon an abandoned cabin!",
+                "structure_quote": "You've stumbled upon an abandoned cabin, it has a Chest inside!",
                 "structure_state": "success",
                 "outcome_chance": 0.25,
                 "outcome_type": "item_gain",
@@ -162,7 +162,7 @@
                 "outcome_chance": 0.1,
                 "outcome_type": "health_loss",
                 "outcome_output": "curse",
-                "outcome_amount": 50,
+                "outcome_amount": 10,
                 "outcome_money": 0,
                 "outcome_xp": 0
               },
@@ -172,13 +172,12 @@
                 "outcome_chance": 0.15,
                 "outcome_type": "health_gain",
                 "outcome_output": "altar",
-                "outcome_amount": 50,
+                "outcome_amount": 10,
                 "outcome_money": 0,
                 "outcome_xp": 0
               }
             ]
-          }
-                 
+          }        
     ]
 }
   

@@ -929,7 +929,21 @@ async def get_quest_from_id(quest_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
     if data is not None:
-        return data[8]
+        quest = data[9]
+        quest = str(quest)
+        #get the second part of the quest, the part that is the enemy or item
+        quest = quest.split(" ")[1]
+        return quest
+    else:
+        return 0
+    
+#get quest item / enemy from quest ID
+async def get_quest_item_from_id(quest_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
+    if data is not None:
+        return data[9]
+    
     else:
         return 0
     
@@ -938,7 +952,7 @@ async def get_quest_reward_from_id(quest_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
     if data is not None:
-        return data[4]
+        return data[5]
     else:
         return 0
     
@@ -947,8 +961,8 @@ async def get_quest_total_from_id(quest_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `quests` WHERE quest_id = ?", (quest_id,), fetch="one")
     if data is not None:
-        #get data[8] and remove all letters and spaces from it
-        quest = data[8]
+        #get data[9] and remove all letters and spaces from it
+        quest = data[9]
         quest = str(quest)
         quest = quest.replace(" ", "")
         #remove all letters
@@ -956,6 +970,7 @@ async def get_quest_total_from_id(quest_id: str) -> str:
         return quest
     else:
         return 0
+    
 #get what quest a user has 
 async def get_user_quest(user_id: int) -> str:
     db = DB()
@@ -2440,7 +2455,7 @@ async def add_user(user_id: int, isStreamer: bool) -> int:
     :param user_id: The ID of the user that should be added.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, isStreamer, False, False, False, False, False, False, False, 0, 1, "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, 0, 100, isStreamer, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0))
         await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM users")
         async with rows as cursor:

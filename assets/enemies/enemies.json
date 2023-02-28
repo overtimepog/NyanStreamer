@@ -132,5 +132,48 @@
                 "quote": "{enemy_name} charges at {target} with its bony arms dealing {damage} damage."
             }
         ]
-    }     
+    } ,
+    {
+        "enemy_id": "spirit_horde",
+        "enemy_name": "Spirit Horde",
+        "enemy_health": 60,
+        "enemy_damage": 15,
+        "enemy_emoji": "",
+        "enemy_description": "A group of restless spirits looking to possess the living.",
+        "enemy_rarity": "Rare",
+        "enemy_type": "Spirit",
+        "enemy_xp": 30,
+        "enemy_money": 60,
+        "enemy_crit_chance": 0.15,
+        "enemy_drop_id": "spirit_horde",
+        "enemy_drops": [{
+                "item_id": "ectoplasm",
+                "item_amount": 3,
+                "item_drop_chance": 1
+            },
+            {
+                "item_id": "ectoplasm",
+                "item_amount": 5,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "silver_amulet",
+                "item_amount": 1,
+                "item_drop_chance": 0.25
+            }
+        ],
+        "enemy_drop_rarity": "Rare",
+        "enemy_element": "Spirit",
+        "quote_id": "spirit_horde",
+        "enemy_quotes": [{
+                "quote": "{enemy_name} reaches out and tries to possess {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} unleashes a chilling scream dealing {damage} damage to {target}."
+            },
+            {
+                "quote": "{enemy_name} floats towards {target} and attacks with spectral claws dealing {damage} damage."
+            }
+        ]
+    }
 ]
