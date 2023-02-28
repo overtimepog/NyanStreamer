@@ -2475,12 +2475,12 @@ class Basic(commands.Cog, name="basic"):
             #remove the money from the users money
             await db_manager.remove_money(msg.author.id, outcome_amount)
         #if the outcome type is battle
-        elif outcome_type == "battle":
+        elif outcome_type == "spawn":
             #send a message saying the outcome
             await ctx.send(f"{outcome_quote}")
             #start a battle
             outcome_name = await db_manager.get_enemy_name(outcome_thing)
-            await battle.deathbattle_monster(ctx, msg.author.id, msg.author.name, outcome_thing, outcome_name)
+            await battle.spawn_monster(ctx, outcome_thing)
             
     #craft command
     @commands.hybrid_command()
