@@ -184,8 +184,15 @@ class Basic(commands.Cog, name="basic"):
                     item_price = item[3]
                     item_emoji = item[4]
                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
+                    if item_amount == 0:
+                        continue
                     item_description = await db_manager.get_basic_item_description(item_id)
-                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                    equippedItems = await db_manager.get_equipped_items(ctx.author.id)
+                    for i in equippedItems:
+                        if i[1] == item_id:
+                            inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                        else:
+                            inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
             embeds.append(inv_embed)
         
         class Select(discord.ui.Select):
@@ -220,8 +227,16 @@ class Basic(commands.Cog, name="basic"):
                                 item_price = item[3]
                                 item_emoji = item[4]
                                 item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
+                                if item_amount == 0:
+                                    continue
                                 item_description = await db_manager.get_basic_item_description(item_id)
-                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                #check if the item is equiped
+                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
+                                for i in equippedItems:
+                                    if i[1] == item_id:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                    else:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                         
@@ -247,10 +262,17 @@ class Basic(commands.Cog, name="basic"):
                                 if item_type == "Weapon":
                                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
                                     item_description = await db_manager.get_basic_item_description(item_id)
+                                    if item_amount == 0:
+                                        continue
                                 else:
                                     #dont add the item to the embed
                                     continue
-                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
+                                for i in equippedItems:
+                                    if i[1] == item_id:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                    else:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                     
@@ -276,10 +298,17 @@ class Basic(commands.Cog, name="basic"):
                                 if item_type == "Tool":
                                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
                                     item_description = await db_manager.get_basic_item_description(item_id)
+                                    if item_amount == 0:
+                                        continue
                                 else:
                                     #dont add the item to the embed
                                     continue
-                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
+                                for i in equippedItems:
+                                    if i[1] == item_id:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                    else:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                     
@@ -306,10 +335,17 @@ class Basic(commands.Cog, name="basic"):
                                 if item_type == "Armor" or item_type == "Accessory" or item_sub_type == "Bauble":
                                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
                                     item_description = await db_manager.get_basic_item_description(item_id)
+                                    if item_amount == 0:
+                                        continue
                                 else:
                                     #dont add the item to the embed
                                     continue
-                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
+                                for i in equippedItems:
+                                    if i[1] == item_id:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                    else:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                     
@@ -335,6 +371,8 @@ class Basic(commands.Cog, name="basic"):
                                 if item_type == "Consumable":
                                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
                                     item_description = await db_manager.get_basic_item_description(item_id)
+                                    if item_amount == 0:
+                                        continue
                                 else:
                                     #dont add the item to the embed
                                     continue
@@ -364,6 +402,8 @@ class Basic(commands.Cog, name="basic"):
                                 if item_type == "Material":
                                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
                                     item_description = await db_manager.get_basic_item_description(item_id)
+                                    if item_amount == 0:
+                                        continue
                                 else:
                                     #dont add the item to the embed
                                     continue
@@ -393,10 +433,17 @@ class Basic(commands.Cog, name="basic"):
                                 if item_type == "Badge":
                                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
                                     item_description = await db_manager.get_basic_item_description(item_id)
+                                    if item_amount == 0:
+                                        continue
                                 else:
                                     #dont add the item to the embed
                                     continue
-                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                equippedItems = await db_manager.get_equipped_items(ctx.author.id)
+                                for i in equippedItems:
+                                    if i[1] == item_id:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                    else:
+                                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
                         embeds.append(inv_embed)
                     await interaction.response.edit_message(embed=embeds[current_page])
                     
@@ -950,7 +997,11 @@ class Basic(commands.Cog, name="basic"):
         #check if the item exists in the users inventory
         user_inventory = await db_manager.view_inventory(user_id)
         for i in user_inventory:
-            if item_id in i:
+            if item in i:
+                #check if its equipped
+                if i[9] == 1:
+                    await ctx.send(f"You can't sell an equipped item!, unequip it first with `/unequip {item}`")
+                    return
                 #check if the user has enough of the item
                 item_amount = i[6]
                 item_amount = int(item_amount)
@@ -959,7 +1010,7 @@ class Basic(commands.Cog, name="basic"):
                     item_price = int(item_price)
                     total_price = item_price * amount
                     #remove the item from the users inventory
-                    await db_manager.remove_item_from_inventory(user_id, item_id, amount)
+                    await db_manager.remove_item_from_inventory(user_id, item, amount)
                     #add the price to the users money
                     await db_manager.add_money(user_id, total_price)
                     await ctx.send(f"You sold `{amount}` of `{i[2]}` for `{total_price}` bucks.")
@@ -1322,11 +1373,11 @@ class Basic(commands.Cog, name="basic"):
         :param item: The item that should be unequipped.
         """
         user_id = ctx.message.author.id
-        item_name = await db_manager.get_basic_item_name(item_id)
-        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item_id)
-        if item_equipped_id == item_id:
+        item_name = await db_manager.get_basic_item_name(item)
+        item_equipped_id = await db_manager.id_of_item_equipped(user_id, item)
+        if item_equipped_id == item:
             #remove the item effect
-            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_effect = await db_manager.get_basic_item_effect(item)
             #split the effect by spaces
             item_effect = item_effect.split()
             #get the effect, the effect type, and the effect amount
@@ -1418,7 +1469,7 @@ class Basic(commands.Cog, name="basic"):
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's paralysis resistance
                     await db_manager.add_paralysis_resistance(user_id, effect_amount)
-            await db_manager.unequip_item(user_id, item_id)
+            await db_manager.unequip_item(user_id, item)
             await ctx.send(f"You unequipped `{item_name}`")
         else:
             await ctx.send(f"`{item_name}` is not equipped.")
