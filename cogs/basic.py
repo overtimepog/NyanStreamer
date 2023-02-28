@@ -1052,9 +1052,9 @@ class Basic(commands.Cog, name="basic"):
         user_items = await db_manager.view_inventory(user_id)
         embed = discord.Embed(title="Profile", description=f"{ctx.message.author.mention}'s Profile.", color=0x00ff00)
         if user_health == 0:
-            embed.add_field(name="Health", value=f"{user_health} / 100 (Dead)", inline=True)
+            embed.add_field(name="Health", value=f"{user_health} (Dead)", inline=True)
         else:
-            embed.add_field(name="Health", value=f"{user_health} / 100", inline=True)
+            embed.add_field(name="Health", value=f"{user_health}", inline=True)
         embed.add_field(name="Money", value=f"{cash}{user_money}", inline=True)
         #get the badges from the database
         badges = await db_manager.get_equipped_badges(user_id)
@@ -1260,11 +1260,13 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #add the effect amount to the user's health
                     await db_manager.add_health_boost(user_id, effect_amount)
+                    await db_manager.add_health(user_id, effect_amount)
                     await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's health
                     await db_manager.remove_health_boost(user_id, effect_amount)
+                    await db_manager.remove_health(user_id, effect_amount)
                     await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
                     
             #if the effect is damage

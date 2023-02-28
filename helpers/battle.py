@@ -1472,8 +1472,10 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     monsterDamage = monsterDamage - user_defense
     #get the users dodge chance
     user_dodge_chance = await db_manager.get_dodge_chance(userID)
+    luck = await db_manager.get_luck(userID)
     #convert the dodge chance to int
     user_dodge_chance = int(user_dodge_chance)
+    user_dodge_chance = user_dodge_chance + luck
     #get a random number between 1 and 100
     random_number = random.randint(1, 100)
     #if the random number is less than or equal to the dodge chance
