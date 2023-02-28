@@ -1667,4 +1667,5 @@ async def spawn_monster(ctx, monsterID):
     monster_hp = await db_manager.get_enemy_health(monsterID)
     monster_attack = await db_manager.get_enemy_damage(monsterID)
     monster_emoji = await db_manager.get_enemy_emoji(monsterID)
+    pass
     
