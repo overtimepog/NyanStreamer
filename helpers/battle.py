@@ -1493,6 +1493,7 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     userHealth = int(userHealth[0])
     #if the users health is less than or equal to 0, end the fight
     if userHealth <= 0:
+        await db_manager.remove_current_spawn(ctx.guild.id)
         #get the monsters name
         #convert the name to str
         monster_name = str(monster_name)
@@ -1511,6 +1512,8 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     monsterHealth = int(monsterHealth[0])
     #if the monsters health is less than or equal to 0, end the fight
     if monsterHealth <= 0:
+        #remove the monster from the spawn
+        await db_manager.remove_current_spawn(ctx.guild.id)
         monster_drops = await db_manager.get_enemy_drops(monsterID) 
         luck = await db_manager.get_luck(userID)
         drops = []
@@ -1662,6 +1665,8 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     
 #create a function to spawn a monster
 async def spawn_monster(ctx, monsterID):
+    #add the monster to the spawns
+    await db_manager.add_current_spawn(monsterID, ctx.guild.id)
     #get all the info on the monster, and make it an embed
     monster_name = await db_manager.get_enemy_name(monsterID)
     monster_hp = await db_manager.get_enemy_health(monsterID)

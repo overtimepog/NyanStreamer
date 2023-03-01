@@ -102,6 +102,11 @@ CREATE TABLE IF NOT EXISTS `current_structures`(
   `structure_id` varchar(255) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS `spawns`(
+  `enemy_id` varchar(255) NOT NULL,
+  `server_id` int(11) NOT NULL
+)
+
 CREATE TABLE IF NOT EXISTS `explorer_log` (
   `user_id` int(11) NOT NULL,
   `server_id` int(11) NOT NULL

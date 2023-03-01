@@ -1927,6 +1927,27 @@ async def get_current_structure(server_id: str) -> list:
         else:
             return None
         
+#add a monster to the current spawn table, first the monster_id and then the server_id
+async def add_current_spawn(monster_id: str, server_id: str) -> None:
+        db = DB()
+        await db.execute(f"INSERT INTO `current_spawn` (monster_id, server_id) VALUES (?, ?)", (monster_id, server_id))
+        return None
+    
+#remove a monster from the current spawn table
+async def remove_current_spawn(server_id: str) -> None:
+        db = DB()
+        await db.execute(f"DELETE FROM `current_spawn` WHERE server_id = ?", (server_id))
+        return None
+    
+#get the current spawn from the server ID
+async def get_current_spawn(server_id: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `current_spawn` WHERE server_id = ?", (server_id,), fetch="one")
+        if data is not None:
+            return data
+        else:
+            return None
+        
 #add a user to a servers explorer log
 async def add_explorer_log(server_id: str, user_id: int) -> None:
         db = DB()
