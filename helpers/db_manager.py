@@ -1947,6 +1947,16 @@ async def get_current_spawn(server_id: str) -> list:
             return data
         else:
             return None
+    
+#check if a certain monster is in the current spawn table
+async def check_current_spawn(monster_id: str, server_id: str) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `current_spawn` WHERE monster_id = ? AND server_id = ?", (monster_id, server_id), fetch="one")
+        if data is not None:
+            return 1
+        else:
+            return 0
+    
         
 #add a user to a servers explorer log
 async def add_explorer_log(server_id: str, user_id: int) -> None:
