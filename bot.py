@@ -13,6 +13,7 @@ import platform
 import random
 import sys
 import subprocess
+import requests
 
 import aiosqlite
 import discord
@@ -189,6 +190,9 @@ async def status_task() -> None:
     """
     statuses = ["With Streamers!", "/help", "Sub to Overtime"]
     await bot.change_presence(activity=discord.Game(random.choice(statuses)))
+    
+#create a task to regenerate the twitch credentials and save them to the database, every 5 days
+    
 
 
 @bot.event
@@ -237,6 +241,13 @@ async def on_message(message: discord.Message) -> None:
                 has_twitch_user = True
                 #connect the two accounts
                 #if i is more than 2, break the loop
+            
+            if message.content.startswith("NEW ACCESS_TOKEN: "):
+                access_token = message.content.replace("NEW ACCESS_TOKEN: ", "")
+                print(access_token)
+                #update the access token in the database
+                await db_manager.edit_twitchCreds(access_token)
+                print("Updated the access token in the database")
 
             #only if both the discord ID and the twitch ID have been found, connect the two accounts
             if has_twitch and has_discord and has_twitch_user:

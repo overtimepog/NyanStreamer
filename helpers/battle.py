@@ -3,6 +3,7 @@ import json
 import os
 import random
 from io import BytesIO
+import re
 from typing import Any, Optional, Tuple, Union
 
 import aiohttp
@@ -1368,9 +1369,15 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     #calculate the damage the user does
     try:
         user_weapon = await db_manager.get_equipped_weapon(userID)
+        print(user_weapon[0])
+        print(user_weapon[0][1])
+        user_weapon_id = user_weapon[0][1]
+        user_weapon_name = user_weapon[0][2]
+        user_weapon_emoji = user_weapon[0][4]
+        user_weapon_damage = user_weapon[0][8]
+        user_weapon_damage = int(user_weapon_damage)
     except(IndexError, TypeError):
         await ctx.send("You dont have a weapon equipped!")
-        return
     
     try: 
         user_armor = await db_manager.get_equipped_armor(userID)
@@ -1378,37 +1385,38 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         user_armor = 0
         
     try:
-        user_defense = user_armor[8]
+        user_defense = user_armor[0][8]
     except(IndexError, TypeError):
         user_defense = 0
-        
-    user_weapon = user_weapon[1]
-    user_weapon_name = user_weapon[2]
-    user_weapon_emoji = user_weapon[4]
-    user_weapon_damage = user_weapon[8]
-    user_weapon_damage = int(user_weapon_damage)
+    
     user_damage_boost = await db_manager.get_damage_boost(userID)
     user_damage_boost = int(user_damage_boost)
     user_weapon_damage = user_weapon_damage + user_damage_boost
     
     #get the monsters health
-    monsterHealth = await db_manager.get_enemy_health(monsterID)
+    monsterTotalHealth = await db_manager.get_enemy_health(monsterID)
     monsterDamage = await db_manager.get_enemy_damage(monsterID)
     #convert it to int 
-    monsterHealth = int(monsterHealth[0])
+    monsterTotalHealth = int(monsterTotalHealth[0])
     
     #calculate the damage the user does
     user_damage = user_weapon_damage
     #calculate the damage the monster does
     monsterDamage = int(monsterDamage[0])
-    
-    #deal the damage to the monster
-    monsterHealth = monsterHealth - user_damage
     #send a message to the channel the quoute 
     
     #if the monster or user is not dead
-    user_weapon_quotes = await db_manager.get_item_quotes(user_weapon)
-    user1Promt = random.choice(user_weapon_quotes)
+    user_weapon_quotes = await db_manager.get_item_quotes(user_weapon_id)
+    #for each quote, remove the itemid 
+    quotes = []
+    for quote in user_weapon_quotes:
+        quote = str(quote)
+        quote = quote.replace(f"('{user_weapon_id}',", "")
+        quote = quote.replace(")", "")
+        quote = quote.replace("'", "")
+        quotes.append(quote)
+        
+    user1Promt = random.choice(quotes)
     if user1Promt == user_weapon:
         user1Promt = random.choice(user_weapon_quotes)
     user1Promt = str(user1Promt)
@@ -1427,10 +1435,12 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     #calculate the damage the the user does
     user_damage = user_weapon_damage - monster_defence
     #deal the damage to the monster
-    monsterHealth = monsterHealth - user_damage
-    #send a message to the channel the quoute 
-    await db_manager.set_enemy_health(monsterID, monsterHealth)
-    await ctx.send(user1Promt)
+    await db_manager.remove_spawned_monster_health(monsterID, ctx.guild.id, user_damage)
+    currentHealth = await db_manager.get_spawned_monster_health(monsterID, ctx.guild.id)
+    #convert the health to int
+    currentHealth = int(currentHealth[0])
+    #send a message to the channel the quoute
+    await ctx.send(user1Promt + f" {monsterName} has {currentHealth}/{monsterTotalHealth} health left!")
     #wait 3 seconds
     await asyncio.sleep(3)
     
@@ -1507,7 +1517,7 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         await db_manager.set_not_in_combat(userID)
         return userID
     #get the monsters health
-    monsterHealth = await db_manager.get_enemy_health(monsterID)
+    monsterHealth = await db_manager.get_spawned_monster_health(monsterID, ctx.guild.id)
     #convert it to int
     monsterHealth = int(monsterHealth[0])
     #if the monsters health is less than or equal to 0, end the fight
@@ -1525,139 +1535,136 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
             drop_amount = int(drop_amount)
             drops.append([item, drop_chance, drop_amount])
 
-    #organize the hunt items by their hunt chance
-    drops.sort(key=lambda x: x[1], reverse=True)
-    #get the user's luck
-    luck = await db_manager.get_luck(ctx.author.id)
+        #organize the hunt items by their hunt chance
+        drops.sort(key=lambda x: x[1], reverse=True)
+        #get the user's luck
+        luck = await db_manager.get_luck(ctx.author.id)
 
-    #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
-    roll = random.randint(1, 100) - luck
-    #if the roll is greater than 100, set it to 100
-    if roll > 100:
-        roll = 100
-    
-    #if the roll is less than 1, set it to 1
-    if roll < 1:
-        roll = 1
-    
-    #get the items with the hunt chance 0.01 or lower
-    lowchanceitems = []
-    for item in drops:
-        if item[1] <= 0.1:
-            lowchanceitems.append(item)
+        #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
+        roll = random.randint(1, 100) - luck
+        #if the roll is greater than 100, set it to 100
+        if roll > 100:
+            roll = 100
 
-    midchanceitems = []
-    for item in drops:
-        if item[1] > 0.1 and item[1] <= 0.5:
-            midchanceitems.append(item)
+        #if the roll is less than 1, set it to 1
+        if roll < 1:
+            roll = 1
 
-    highchanceitems = []
-    for item in drops:
-        if item[1] > 0.5 and item[1] <= 1:
-            highchanceitems.append(item)
+        #get the items with the hunt chance 0.01 or lower
+        lowchanceitems = []
+        for item in drops:
+            if item[1] <= 0.1:
+                lowchanceitems.append(item)
 
-    #based on the roll, get the item
-    if roll <= 10:
-        try:
-            item = random.choice(lowchanceitems)
-        except(IndexError):
-            item = random.choice(drops)
-    elif roll > 10 and roll <= 50:
-        try:
-            item = random.choice(midchanceitems)
-        except(IndexError):
-            item = random.choice(lowchanceitems)
-    elif roll > 50 and roll <= 100:
-        try:
-            item = random.choice(highchanceitems)
-        except(IndexError):
-            item = random.choice(midchanceitems)
-        
-        
-            
-        
-        #get the monsters name
-        #convert the name to str
-        monster_name = str(monster_name)
-        #send a message to the channel saying the user has died
-        await ctx.send(monster_name + " has died!")
-        #set the monsters health to 0
-        await db_manager.set_enemy_health(monsterID, 0)
-        #set the user not in combat
-        await db_manager.set_not_in_combat(userID)
-        #do loot, quest, and xp stuff
-        #get the users level
-        userLevel = await db_manager.get_level(userID)
-        #convert it to int
-        userLevel = int(userLevel[0])
-        #get all the info on the drop item
-        #TODO - Fix this to work with new system
-        #pick a random item from the list of drops, based on the drop chance and the users luck
+        midchanceitems = []
+        for item in drops:
+            if item[1] > 0.1 and item[1] <= 0.5:
+                midchanceitems.append(item)
 
-        #TODO - Fix this to work with new system
-        #if the drop chance is less than or equal to the monsters drop chance
-        #give the user the drop
-        emote = await db_manager.get_basic_item_emote(item[0])
-        await db_manager.add_item_to_inventory(userID, item[0], item[2])
-        #send a message to the channel saying the user got the drop
-        await ctx.send(userName + " has gotten " + str(item[2]) + " " + emote + item[0] + "!")
-        if await db_manager.can_level_up(userID):
-            #if the user can level up, level them up
-            await db_manager.add_level(userID, 1)
-            #set the users xp to 0
-            await db_manager.set_xp(userID, 0)
-            #send a message to the channel saying the user has leveled up
-            #get the users new level
-            new_level = await db_manager.get_level(userID)
-            #remove the () and , from the level
-            new_level = str(new_level)
-            new_level = new_level.replace("(", "")
-            new_level = new_level.replace(")", "")
-            new_level = new_level.replace(",", "")
-            #convert the level to int
-            new_level = int(new_level)
-            await ctx.send(userName + " has leveled up! They are now level " + str(new_level) + "!")
-            #get the users quest
-        #check if the user has a quest
-        has_quest = await db_manager.check_user_has_any_quest(userID)
-        #if the user has a quest
-        if has_quest:
-            quest_id = await db_manager.get_user_quest(userID)
-            objective = await db_manager.get_quest_objective_from_id(quest_id)
-            quest_type = await db_manager.get_quest_type(quest_id)
-            #if the quest type is kill
-            if quest_type == "kill":
-                #get the string of the monster name from the objective 
-                objective = objective.split(" ")
-                objective = objective[1]
-                #if the objective is the same as the monster id
-                if objective == monsterID:
-                    #add 1 to the quest progress
-                    await db_manager.update_quest_progress(userID, quest_id, 1)
-                    #get the quest progress
-                    quest_progress = await db_manager.get_quest_progress(userID)
-                    #get the quest total
-                    quest_total = await db_manager.get_quest_total_from_id(quest_id)
-                    #if the quest progress is greater than or equal to the quest total
-                    if quest_progress >= quest_total:
-                        #get the quest reward type and amount
-                        quest_reward_type = await db_manager.get_quest_reward_type_from_id(quest_id)
-                        quest_reward_amount = await db_manager.get_quest_reward_amount_from_id(quest_id)
-                        #get the quest reward from the quest id
-                        quest_reward = await db_manager.get_quest_reward_from_id(quest_id)
-                        quest_xp_reward = await db_manager.get_quest_xp_reward_from_id(quest_id)
-                        #add the quest xp reward to the users xp
-                        await db_manager.add_xp(userID, quest_xp_reward)
-                        #if the quest reward type is gold, add the amount to the users gold
-                        if quest_reward_type == "gold":
-                            await db_manager.add_money(userID, quest_reward_amount)
-                            await ctx.send(f"You have completed the quest and been rewarded with {quest_reward_amount} gold!, and {quest_xp_reward} xp!")
-                        #if the quest reward type is item get all the info on the item and add it to the users inventory
-                        elif quest_reward_type == "item":
-                            #get all the info on the item
-                            #add the item to the users inventory
-                            await db_manager.add_item_to_inventory(userID, quest_reward, quest_reward_amount)
-                            await ctx.send(f"You have completed the quest and been rewarded with {quest_reward_amount} {quest_reward}, and {quest_xp_reward} xp!")
+        highchanceitems = []
+        for item in drops:
+            if item[1] > 0.5 and item[1] <= 1:
+                highchanceitems.append(item)
+
+        #based on the roll, get the item
+        if roll <= 10:
+            try:
+                item = random.choice(lowchanceitems)
+            except(IndexError):
+                item = random.choice(drops)
+        elif roll > 10 and roll <= 50:
+            try:
+                item = random.choice(midchanceitems)
+            except(IndexError):
+                item = random.choice(lowchanceitems)
+        elif roll > 50 and roll <= 100:
+            try:
+                item = random.choice(highchanceitems)
+            except(IndexError):
+                item = random.choice(midchanceitems)
+
+
+            #get the monsters name
+            #convert the name to str
+            monster_name = str(monster_name)
+            #send a message to the channel saying the user has died
+            await ctx.send(monster_name + " has died!")
+            #set the monsters health to 0
+            #set the user not in combat
+            await db_manager.set_not_in_combat(userID)
+            #do loot, quest, and xp stuff
+            #get the users level
+            userLevel = await db_manager.get_level(userID)
+            #convert it to int
+            userLevel = int(userLevel[0])
+            #get all the info on the drop item
+            #TODO - Fix this to work with new system
+            #pick a random item from the list of drops, based on the drop chance and the users luck
+
+            #TODO - Fix this to work with new system
+            #if the drop chance is less than or equal to the monsters drop chance
+            #give the user the drop
+            emote = await db_manager.get_basic_item_emote(item[0])
+            await db_manager.add_item_to_inventory(userID, item[0], item[2])
+            #send a message to the channel saying the user got the drop
+            await ctx.send(userName + " has gotten " + str(item[2]) + " " + emote + item[0] + "!")
+            if await db_manager.can_level_up(userID):
+                #if the user can level up, level them up
+                await db_manager.add_level(userID, 1)
+                #set the users xp to 0
+                await db_manager.set_xp(userID, 0)
+                #send a message to the channel saying the user has leveled up
+                #get the users new level
+                new_level = await db_manager.get_level(userID)
+                #remove the () and , from the level
+                new_level = str(new_level)
+                new_level = new_level.replace("(", "")
+                new_level = new_level.replace(")", "")
+                new_level = new_level.replace(",", "")
+                #convert the level to int
+                new_level = int(new_level)
+                await ctx.send(userName + " has leveled up! They are now level " + str(new_level) + "!")
+                #get the users quest
+            #check if the user has a quest
+            has_quest = await db_manager.check_user_has_any_quest(userID)
+            #if the user has a quest
+            if has_quest:
+                quest_id = await db_manager.get_user_quest(userID)
+                objective = await db_manager.get_quest_objective_from_id(quest_id)
+                quest_type = await db_manager.get_quest_type(quest_id)
+                #if the quest type is kill
+                if quest_type == "kill":
+                    #get the string of the monster name from the objective 
+                    objective = objective.split(" ")
+                    objective = objective[1]
+                    #if the objective is the same as the monster id
+                    if objective == monsterID:
+                        #add 1 to the quest progress
+                        await db_manager.update_quest_progress(userID, quest_id, 1)
+                        #get the quest progress
+                        quest_progress = await db_manager.get_quest_progress(userID)
+                        #get the quest total
+                        quest_total = await db_manager.get_quest_total_from_id(quest_id)
+                        #if the quest progress is greater than or equal to the quest total
+                        if quest_progress >= quest_total:
+                            #get the quest reward type and amount
+                            quest_reward_type = await db_manager.get_quest_reward_type_from_id(quest_id)
+                            quest_reward_amount = await db_manager.get_quest_reward_amount_from_id(quest_id)
+                            #get the quest reward from the quest id
+                            quest_reward = await db_manager.get_quest_reward_from_id(quest_id)
+                            quest_xp_reward = await db_manager.get_quest_xp_reward_from_id(quest_id)
+                            #add the quest xp reward to the users xp
+                            await db_manager.add_xp(userID, quest_xp_reward)
+                            #if the quest reward type is gold, add the amount to the users gold
+                            if quest_reward_type == "gold":
+                                await db_manager.add_money(userID, quest_reward_amount)
+                                await ctx.send(f"You have completed the quest and been rewarded with {quest_reward_amount} gold!, and {quest_xp_reward} xp!")
+                            #if the quest reward type is item get all the info on the item and add it to the users inventory
+                            elif quest_reward_type == "item":
+                                #get all the info on the item
+                                #add the item to the users inventory
+                                await db_manager.add_item_to_inventory(userID, quest_reward, quest_reward_amount)
+                                await ctx.send(f"You have completed the quest and been rewarded with {quest_reward_amount} {quest_reward}, and {quest_xp_reward} xp!")
         return userID
     
     
@@ -1666,11 +1673,61 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
 #create a function to spawn a monster
 async def spawn_monster(ctx, monsterID):
     #add the monster to the spawns
-    await db_manager.add_current_spawn(monsterID, ctx.guild.id)
     #get all the info on the monster, and make it an embed
     monster_name = await db_manager.get_enemy_name(monsterID)
+    monster_description = await db_manager.get_enemy_description(monsterID)
     monster_hp = await db_manager.get_enemy_health(monsterID)
     monster_attack = await db_manager.get_enemy_damage(monsterID)
     monster_emoji = await db_manager.get_enemy_emoji(monsterID)
-    pass
+    await db_manager.add_current_spawn(monsterID, ctx.guild.id, monster_hp)
+    #convert evrything to str
+    monster_name = str(monster_name)
+    monster_hp = str(monster_hp)
+    monster_attack = str(monster_attack)
+    monster_emoji = str(monster_emoji)
+    #remove the () and , from the strings
+    monster_name = monster_name.replace("(", "")
+    monster_name = monster_name.replace(")", "")
+    monster_name = monster_name.replace(",", "")
+    #remove the () and , from the description
+    monster_description = monster_description.replace("(", "")
+    monster_description = monster_description.replace(")", "")
+    monster_description = monster_description.replace(",", "")
+    monster_hp = monster_hp.replace("(", "")
+    monster_hp = monster_hp.replace(")", "")
+    monster_hp = monster_hp.replace(",", "")
+    monster_attack = monster_attack.replace("(", "")
+    monster_attack = monster_attack.replace(")", "")
+    monster_attack = monster_attack.replace(",", "")
+    monster_emoji = monster_emoji.replace("(", "")
+    monster_emoji = monster_emoji.replace(")", "")
+    monster_emoji = monster_emoji.replace(",", "")
+    #create the embed, and set the image to the monsters emoji
+    embed = discord.Embed(
+        title = f"{monster_name}",
+        description = f"{monster_description} \n Health: {monster_hp}\nAttack: {monster_attack}",
+        color = discord.Color.red()
+    )
+    #get the numbers in the emoji str <a:malik:1079592323219984415>
+    emoji_numbers = re.findall(r'\d+', monster_emoji)
+    #if there are numbers in the emoji str
+    if emoji_numbers:
+        #if theres an a after the first <, then its a gif
+        if monster_emoji[1] == "a":
+            #set the emoji to the first number in the list
+            emoji = emoji_numbers[0]
+            print(emoji)
+            #set the image to the emoji
+            embed.set_image(url=f"https://cdn.discordapp.com/emojis/{emoji}.gif")
+        #if theres a : after the first <, then its a png
+        elif monster_emoji[1] == ":":
+            #set the emoji to the first number in the list
+            emoji = emoji_numbers[0]
+            print(emoji)
+            #set the image to the emoji
+            embed.set_image(url=f"https://cdn.discordapp.com/emojis/{emoji}.png")
+    #add the footer "use /attack {monster name} to attack the monster"
+    embed.set_footer(text="use /attack " + monsterID + " to attack this monster")
+    #send the embed to the channel
+    await ctx.send(embed=embed)
     

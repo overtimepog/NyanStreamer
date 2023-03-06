@@ -248,18 +248,6 @@ async def get_enemy_money(enemy_id: str) -> int:
         users = await db.execute(f"SELECT `enemy_money` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
         return users
     
-#get the enemy's name
-async def get_enemy_name(enemy_id: str) -> str:
-    db = DB()
-    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
-    if data is not None:
-        users = await db.execute(f"SELECT `enemy_name` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
-        return users
-    else:
-        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_name`) VALUES (?, ?)", (enemy_id, "Unknown"))
-        users = await db.execute(f"SELECT `enemy_name` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
-        return users
-    
 #get the users xp 
 async def get_xp(user_id: int) -> int:
     db = DB()
@@ -1166,6 +1154,15 @@ async def get_enemy_name(enemy_id: str) -> str:
         return data[1]
     else:
         return None
+
+#get the monster description from its ID
+async def get_enemy_description(enemy_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
+    if data is not None:
+        return data[5]
+    else:
+        return None
     
 #get the enemy drop from its ID
 async def get_enemy_drop(enemy_id: str) -> str:
@@ -1237,7 +1234,7 @@ async def get_item_quotes(item_id: str) -> list:
     db = DB()
     data = await db.execute(f"SELECT * FROM `item_quotes` WHERE item_id = ?", (item_id,), fetch="all")
     if data is not None:
-        return data[1]
+        return data
     else:
         return None
     
@@ -1928,19 +1925,37 @@ async def get_current_structure(server_id: str) -> list:
             return None
         
 #add a monster to the current spawn table, first the monster_id and then the server_id
-async def add_current_spawn(monster_id: str, server_id: str) -> None:
+async def add_current_spawn(monster_id: str, server_id: int, monster_health: int) -> None:
         db = DB()
-        await db.execute(f"INSERT INTO `spawns` (monster_id, server_id) VALUES (?, ?)", (monster_id, server_id))
+        await db.execute(f"INSERT INTO `spawns` (monster_id, server_id, monster_health) VALUES (?, ?, ?)", (monster_id, server_id, monster_health))
         return None
     
+#remove the currently spawned monster's health
+async def remove_spawned_monster_health(monster_id: str, server_id: int, damage: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `spawns` WHERE server_id = ? AND monster_id = ?", (server_id, monster_id,), fetch="one")
+    if data is not None:
+        await db.execute(f"UPDATE `spawns` SET `monster_health` = `monster_health` - ? WHERE server_id = ? AND monster_id = ?", (damage, server_id, monster_id))
+        
+        
+#get the currently spawned monster's health
+async def get_spawned_monster_health(monster_id: str, server_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `spawns` WHERE server_id = ? AND monster_id = ?", (server_id, monster_id,), fetch="one")
+    if data is not None:
+        return data[2]
+    else:
+        return None
+
+    
 #remove a monster from the current spawn table
-async def remove_current_spawn(server_id: str) -> None:
+async def remove_current_spawn(server_id: int) -> None:
         db = DB()
         await db.execute(f"DELETE FROM `spawns` WHERE server_id = ?", (server_id))
         return None
     
 #get the current spawn from the server ID
-async def get_current_spawn(server_id: str) -> list:
+async def get_current_spawn(server_id: int) -> list:
         db = DB()
         data = await db.execute(f"SELECT * FROM `spawns` WHERE server_id = ?", (server_id,), fetch="one")
         if data is not None:
@@ -1949,7 +1964,7 @@ async def get_current_spawn(server_id: str) -> list:
             return None
     
 #check if a certain monster is in the current spawn table
-async def check_current_spawn(monster_id: str, server_id: str) -> int:
+async def check_current_spawn(monster_id: str, server_id: int) -> int:
         db = DB()
         data = await db.execute(f"SELECT * FROM `spawns` WHERE monster_id = ? AND server_id = ?", (monster_id, server_id), fetch="one")
         if data is not None:
@@ -2263,9 +2278,10 @@ async def get_enemy_element(enemy_id: int) -> int:
 
 #make a request to the twitch api to get the twitch id of the streamer
 async def get_twitch_id(streamer_channel: str) -> int:
+    code = await get_twitchCode()
 
     headers = {
-    'Authorization': 'Bearer qyo5q800j1un0dr6098r3lj1kg1p3g',
+    'Authorization': f'Bearer {code}',
     'Client-Id': 'gp762nuuoqcoxypju8c569th9wz7q5',
     }
     def remove_prefix(text, prefix):
@@ -2293,9 +2309,10 @@ async def get_twitch_id(streamer_channel: str) -> int:
 
 #make a request to the twitch api to get the broadcaster type of the streamer
 async def get_broadcaster_type(streamer_channel: str) -> str:
-    
+    code = await get_twitchCode()
+
     headers = {
-    'Authorization': 'Bearer qyo5q800j1un0dr6098r3lj1kg1p3g',
+    'Authorization': f'Bearer {code}',
     'Client-Id': 'gp762nuuoqcoxypju8c569th9wz7q5',
     }
     def remove_prefix(text, prefix):
@@ -3414,3 +3431,29 @@ async def get_warnings(user_id: int, server_id: int) -> list:
             for row in result:
                 result_list.append(row)
             return result_list
+        
+        
+#edit twitch creds
+async def edit_twitchCreds(code: str) -> None:
+    """
+    This function will edit the twitch app code.
+
+    :param code: The new code of the twitch app.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE twitch_creds SET code=?", (code,))
+        await db.commit()
+        
+#get the code from the twitch table
+async def get_twitchCode() -> str:
+    """
+    This function will get the twitch app code.
+
+    :return: The twitch app code.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM twitch_creds") as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0

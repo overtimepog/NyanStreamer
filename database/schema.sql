@@ -98,13 +98,18 @@ CREATE TABLE IF NOT EXISTS `structure_outcomes`(
 );
 
 CREATE TABLE IF NOT EXISTS `current_structures`(
-  `server_id` int(11) NOT NULL,
+  `server_id` varchar(255) NOT NULL,
   `structure_id` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `spawns`(
   `monster_id` varchar(255) NOT NULL,
-  `server_id` int(11) NOT NULL
+  `server_id` varchar(255) NOT NULL,
+  `monster_health` varchar(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `twitch_creds` (
+  `code` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `explorer_log` (

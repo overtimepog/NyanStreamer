@@ -2559,14 +2559,15 @@ class Basic(commands.Cog, name="basic"):
         #check if the monster is spawned
         monsterSpawned = await db_manager.check_current_spawn(monsterID, ctx.guild.id)
         #if the monster is spawned
-        if monsterSpawned == 1:
+        #if monsterSpawned == 1:
             #start the battle
-            await battle.attack(ctx, userID, userName, monsterID, monsterName)
+        monsterHealth = await db_manager.get_enemy_health(monsterID)
+        await battle.attack(ctx, userID, userName, monsterID, monsterName)
         #if the monster is not spawned
-        else:
-            #send a message saying the monster is not spawned
-            await ctx.send(f"{monsterName} is not spawned, wait for the current Monster to be defeated!")
-            return
+        #else:
+        #    #send a message saying the monster is not spawned
+        #    await ctx.send(f"{monsterName} is not spawned, wait for the current Monster to be defeated!")
+        #    return
         
 
 
