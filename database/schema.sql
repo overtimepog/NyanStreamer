@@ -104,8 +104,8 @@ CREATE TABLE IF NOT EXISTS `current_structures`(
 
 CREATE TABLE IF NOT EXISTS `spawns`(
   `monster_id` varchar(255) NOT NULL,
-  `server_id` varchar(255) NOT NULL,
-  `monster_health` varchar(255) NOT NULL
+  `server_id` int(11) NOT NULL,
+  `monster_health` int(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `twitch_creds` (

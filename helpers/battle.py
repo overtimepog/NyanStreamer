@@ -1437,8 +1437,8 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     #deal the damage to the monster
     await db_manager.remove_spawned_monster_health(monsterID, ctx.guild.id, user_damage)
     currentHealth = await db_manager.get_spawned_monster_health(monsterID, ctx.guild.id)
+    print(currentHealth)
     #convert the health to int
-    currentHealth = int(currentHealth[0])
     #send a message to the channel the quoute
     await ctx.send(user1Promt + f" {monsterName} has {currentHealth}/{monsterTotalHealth} health left!")
     #wait 3 seconds
@@ -1506,6 +1506,7 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         await db_manager.remove_current_spawn(ctx.guild.id)
         #get the monsters name
         #convert the name to str
+        monster_name = await db_manager.get_enemy_name(monsterID)
         monster_name = str(monster_name)
         #send a message to the channel saying the user has died
         await ctx.send(userName + " has died!")
@@ -1677,9 +1678,13 @@ async def spawn_monster(ctx, monsterID):
     monster_name = await db_manager.get_enemy_name(monsterID)
     monster_description = await db_manager.get_enemy_description(monsterID)
     monster_hp = await db_manager.get_enemy_health(monsterID)
+    monster_hp = int(monster_hp[0])
     monster_attack = await db_manager.get_enemy_damage(monsterID)
+    monster_attack = int(monster_attack[0])
     monster_emoji = await db_manager.get_enemy_emoji(monsterID)
-    await db_manager.add_current_spawn(monsterID, ctx.guild.id, monster_hp)
+    monster_emoji = str(monster_emoji[0])
+    await db_manager.remove_current_spawn(ctx.guild.id)
+    await db_manager.add_current_spawn(ctx.guild.id, monsterID, monster_hp)
     #convert evrything to str
     monster_name = str(monster_name)
     monster_hp = str(monster_hp)
@@ -1718,14 +1723,14 @@ async def spawn_monster(ctx, monsterID):
             emoji = emoji_numbers[0]
             print(emoji)
             #set the image to the emoji
-            embed.set_image(url=f"https://cdn.discordapp.com/emojis/{emoji}.gif")
+            embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.gif")
         #if theres a : after the first <, then its a png
         elif monster_emoji[1] == ":":
             #set the emoji to the first number in the list
             emoji = emoji_numbers[0]
             print(emoji)
             #set the image to the emoji
-            embed.set_image(url=f"https://cdn.discordapp.com/emojis/{emoji}.png")
+            embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.png")
     #add the footer "use /attack {monster name} to attack the monster"
     embed.set_footer(text="use /attack " + monsterID + " to attack this monster")
     #send the embed to the channel

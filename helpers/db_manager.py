@@ -1924,10 +1924,10 @@ async def get_current_structure(server_id: str) -> list:
         else:
             return None
         
-#add a monster to the current spawn table, first the monster_id and then the server_id
-async def add_current_spawn(monster_id: str, server_id: int, monster_health: int) -> None:
+#add a monster to the current spawn table, with the monster's health
+async def add_current_spawn(server_id: str, monster_id: str, monster_health: int) -> None:
         db = DB()
-        await db.execute(f"INSERT INTO `spawns` (monster_id, server_id, monster_health) VALUES (?, ?, ?)", (monster_id, server_id, monster_health))
+        await db.execute(f"INSERT INTO `spawns` (server_id, monster_id, monster_health) VALUES (?, ?, ?)", (server_id, monster_id, monster_health))
         return None
     
 #remove the currently spawned monster's health
@@ -1935,13 +1935,15 @@ async def remove_spawned_monster_health(monster_id: str, server_id: int, damage:
     db = DB()
     data = await db.execute(f"SELECT * FROM `spawns` WHERE server_id = ? AND monster_id = ?", (server_id, monster_id,), fetch="one")
     if data is not None:
-        await db.execute(f"UPDATE `spawns` SET `monster_health` = `monster_health` - ? WHERE server_id = ? AND monster_id = ?", (damage, server_id, monster_id))
+        await db.execute(f"UPDATE `spawns` SET `monster_health` = `monster_health` - ? WHERE server_id = ? AND monster_id = ?", (damage, server_id, monster_id,), fetch="one")
+        return None
         
         
 #get the currently spawned monster's health
 async def get_spawned_monster_health(monster_id: str, server_id: int) -> int:
     db = DB()
     data = await db.execute(f"SELECT * FROM `spawns` WHERE server_id = ? AND monster_id = ?", (server_id, monster_id,), fetch="one")
+    print(data)
     if data is not None:
         return data[2]
     else:
@@ -1951,7 +1953,7 @@ async def get_spawned_monster_health(monster_id: str, server_id: int) -> int:
 #remove a monster from the current spawn table
 async def remove_current_spawn(server_id: int) -> None:
         db = DB()
-        await db.execute(f"DELETE FROM `spawns` WHERE server_id = ?", (server_id))
+        await db.execute(f"DELETE FROM `spawns` WHERE server_id = ?", (server_id,), fetch="one")
         return None
     
 #get the current spawn from the server ID
@@ -1966,7 +1968,7 @@ async def get_current_spawn(server_id: int) -> list:
 #check if a certain monster is in the current spawn table
 async def check_current_spawn(monster_id: str, server_id: int) -> int:
         db = DB()
-        data = await db.execute(f"SELECT * FROM `spawns` WHERE monster_id = ? AND server_id = ?", (monster_id, server_id), fetch="one")
+        data = await db.execute(f"SELECT * FROM `spawns` WHERE monster_id = ? AND server_id = ?", (monster_id, server_id,), fetch="one")
         if data is not None:
             return 1
         else:
