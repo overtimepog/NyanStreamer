@@ -1396,13 +1396,15 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     #get the monsters health
     monsterTotalHealth = await db_manager.get_enemy_health(monsterID)
     monsterDamage = await db_manager.get_enemy_damage(monsterID)
+    #seperate the attack by the - and get a random number between the two
+    monsterDamage = monsterDamage[0]
+    monsterDamage = monsterDamage.split("-")
+    monsterDamage = random.randint(int(monsterDamage[0]), int(monsterDamage[1]))
     #convert it to int 
     monsterTotalHealth = int(monsterTotalHealth[0])
     
     #calculate the damage the user does
     user_damage = user_weapon_damage
-    #calculate the damage the monster does
-    monsterDamage = int(monsterDamage[0])
     #send a message to the channel the quoute 
     
     #if the monster or user is not dead
@@ -1509,7 +1511,7 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         monster_name = await db_manager.get_enemy_name(monsterID)
         monster_name = str(monster_name)
         #send a message to the channel saying the user has died
-        await ctx.send(userName + " has died!")
+        await ctx.send("**"+ userName + "** has died!")
         #set the users health to 0
         await db_manager.set_health(userID, 0)
         #set the user as dead 
@@ -1608,7 +1610,7 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
             emote = await db_manager.get_basic_item_emote(item[0])
             await db_manager.add_item_to_inventory(userID, item[0], item[2])
             #send a message to the channel saying the user got the drop
-            await ctx.send(userName + " has gotten " + str(item[2]) + " " + emote + item[0] + "!")
+            await ctx.send(userName + " has gotten " + str(item[2]) + " " + emote +  "**" + item[0] + "**!")
             if await db_manager.can_level_up(userID):
                 #if the user can level up, level them up
                 await db_manager.add_level(userID, 1)
@@ -1624,7 +1626,7 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
                 new_level = new_level.replace(",", "")
                 #convert the level to int
                 new_level = int(new_level)
-                await ctx.send(userName + " has leveled up! They are now level " + str(new_level) + "!")
+                await ctx.send(userName + " has leveled up! They are now level **" + str(new_level) + "**!")
                 #get the users quest
             #check if the user has a quest
             has_quest = await db_manager.check_user_has_any_quest(userID)
@@ -1680,7 +1682,10 @@ async def spawn_monster(ctx, monsterID):
     monster_hp = await db_manager.get_enemy_health(monsterID)
     monster_hp = int(monster_hp[0])
     monster_attack = await db_manager.get_enemy_damage(monsterID)
-    monster_attack = int(monster_attack[0])
+    #seperate the attack by the - and get a random number between the two
+    monster_attack = monster_attack[0]
+    monster_attack = monster_attack.split("-")
+    monster_attack = random.randint(int(monster_attack[0]), int(monster_attack[1]))
     monster_emoji = await db_manager.get_enemy_emoji(monsterID)
     monster_emoji = str(monster_emoji[0])
     await db_manager.remove_current_spawn(ctx.guild.id)

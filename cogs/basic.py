@@ -2566,7 +2566,7 @@ class Basic(commands.Cog, name="basic"):
         #if the monster is not spawned
         else:
             #send a message saying the monster is not spawned
-            await ctx.send(f"{monsterName} is not spawned, wait for the current Monster to be defeated!")
+            await ctx.send(f"**{monsterName}** is not spawned, wait for the current Monster to be defeated!")
             return
     
     

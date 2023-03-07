@@ -3,7 +3,7 @@
         "enemy_id": "cow",
         "enemy_name": "Cow",
         "enemy_health": 15,
-        "enemy_damage": 2,
+        "enemy_damage": "1-5",
         "enemy_emoji": "\ud83d\udc2e",
         "enemy_description": "A peaceful cow grazing in the fields.",
         "enemy_rarity": "Common",

@@ -181,7 +181,7 @@ async def add_enemy_health(enemy_id: str, amount: int) -> None:
         await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_health`) VALUES (?, ?)", (enemy_id, 100))
         
 #get enemy damage
-async def get_enemy_damage(enemy_id: str) -> int:
+async def get_enemy_damage(enemy_id: str) -> str:
     db = DB()
     data = await db.execute(f"SELECT * FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
     if data is not None:
