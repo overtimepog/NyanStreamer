@@ -35,13 +35,13 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `item_element` varchar(255) NOT NULL,
   `item_crit_chance` int(11) NOT NULL,
   `item_projectile` varchar(255) NOT NULL,
-  `recipe_id` varchar(255) NOT NULL,
-  `isHuntable` boolean NOT NULL,
-  `item_hunt_chance` int(11) NOT NULL,
+  `recipe_id` varchar(255),
+  `isHuntable` boolean,
+  `item_hunt_chance` int(11),
   `item_effect` varchar(255) NOT NULL,
-  `isMineable` boolean NOT NULL,
-  `item_mine_chance` int(11) NOT NULL,
-  `quote_id` varchar(255) NOT NULL,
+  `isMineable` boolean,
+  `item_mine_chance` int(11),
+  `quote_id` varchar(255),
   `item_sub_type` varchar(255) NOT NULL,
   FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)
   FOREIGN KEY (quote_id) REFERENCES item_quotes(item_id)
@@ -105,7 +105,16 @@ CREATE TABLE IF NOT EXISTS `current_structures`(
 CREATE TABLE IF NOT EXISTS `spawns`(
   `monster_id` varchar(255) NOT NULL,
   `server_id` int(11) NOT NULL,
-  `monster_health` int(11) NOT NULL
+  `monster_health` int(11) NOT NULL,
+  `first_damage_dealer` varchar(255),
+  `second_damage_dealer` varchar(255),
+  `third_damage_dealer` varchar(255),
+  `first_damage` int(11),
+  `second_damage` int(11),
+  `third_damage` int(11),
+  `first_damage_dealer_name` varchar(255),
+  `second_damage_dealer_name` varchar(255),
+  `third_damage_dealer_name` varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS `twitch_creds` (
@@ -261,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `isEquipped` boolean NOT NULL,
   `item_element` varchar(255) NOT NULL,
   `item_crit_chance` int(11) NOT NULL,
-  `item_projectile` varchar(255) NOT NULL
+  `item_projectile` varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS `streamer_item_inventory` (

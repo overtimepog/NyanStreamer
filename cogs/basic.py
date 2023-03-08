@@ -2577,6 +2577,23 @@ class Basic(commands.Cog, name="basic"):
         """Spawn an enemy"""
         #start the battle
         await battle.spawn_monster(ctx, enemy)
+        
+#mob command to view the current mob spawned
+    @commands.hybrid_command()
+    async def mob(self, ctx: Context):
+        """View the current mob spawned"""
+        #get the current mob spawned
+        currentSpawn = await db_manager.get_current_spawn(ctx.guild.id)
+        #if there is no mob spawned
+        if currentSpawn == None or [] or [ ]:
+            #send a message saying there is no mob spawned
+            await ctx.send("There is no mob spawned!")
+            return
+        #if there is a mob spawned
+        else:
+            await battle.send_spawned_embed(ctx)
+            #get the mob emote
+            return
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

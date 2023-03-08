@@ -1419,14 +1419,6 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         quotes.append(quote)
         
     user1Promt = random.choice(quotes)
-    if user1Promt == user_weapon:
-        user1Promt = random.choice(user_weapon_quotes)
-    user1Promt = str(user1Promt)
-    user1Promt = user1Promt.replace("{user}", userName)
-    user1Promt = user1Promt.replace("{target}", monsterName)
-    user1Promt = user1Promt.replace("{damage}", str(user_damage))
-    monster_attack = await db_manager.get_enemy_damage(monsterID)
-    #monsters defence is half of their health
     monster_defence = await db_manager.get_enemy_health(monsterID)
     #convert the defence to int
     monster_defence = int(monster_defence[0])
@@ -1436,10 +1428,100 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     monster_defence = int(monster_defence)
     #calculate the damage the the user does
     user_damage = user_weapon_damage - monster_defence
+    if user1Promt == user_weapon:
+        user1Promt = random.choice(user_weapon_quotes)
+    user1Promt = str(user1Promt)
+    user1Promt = user1Promt.replace("{user}", userName)
+    user1Promt = user1Promt.replace("{target}", monsterName)
+    user1Promt = user1Promt.replace("{damage}", str(user_damage))
+    monster_attack = await db_manager.get_enemy_damage(monsterID)
+    #monsters defence is half of their health
+    #get the damage dealers
+    first_damage_dealer = await db_manager.get_firstDamageDealer(monsterID, ctx.guild.id)
+    second_damage_dealer = await db_manager.get_secondDamageDealer(monsterID, ctx.guild.id)
+    third_damage_dealer = await db_manager.get_thirdDamageDealer(monsterID, ctx.guild.id)
+    
+    print(first_damage_dealer)
+    print(second_damage_dealer)
+    print(third_damage_dealer)
+    
+    
+    #get the damage done
+    first_damage = await db_manager.get_firstDamage(monsterID, ctx.guild.id)
+    second_damage = await db_manager.get_secondDamage(monsterID, ctx.guild.id)
+    third_damage = await db_manager.get_thirdDamage(monsterID, ctx.guild.id)
+    print(first_damage)
+    print(second_damage)
+    print(third_damage)
+
+    #check if the damage dealers are NoneType
+    if first_damage_dealer == None:
+        first_damage = 0
+        
+    if second_damage_dealer == None:
+        second_damage = 0
+    
+    if third_damage_dealer == None:
+        third_damage = 0
+        
+    #get the damage dealers
+    first_damage_dealer = await db_manager.get_firstDamageDealer(monsterID, ctx.guild.id)     
+    second_damage_dealer = await db_manager.get_secondDamageDealer(monsterID, ctx.guild.id)     
+    third_damage_dealer = await db_manager.get_thirdDamageDealer(monsterID, ctx.guild.id)
+    
+    #check if the dealers are none
+    if first_damage_dealer is None:
+        first_damage_dealer = userID
+        await db_manager.edit_firstDamageDealer(monsterID, ctx.guild.id, userID)
+        await db_manager.edit_firstDamage(monsterID, ctx.guild.id, user_damage)
+        await db_manager.edit_nameOfFirstDamageDealer(monsterID, ctx.guild.id, userName)
+    elif user_damage > await db_manager.get_firstDamage(monsterID, ctx.guild.id):
+        third_damage_dealer = second_damage_dealer
+        second_damage_dealer = first_damage_dealer
+        first_damage_dealer = userID
+        await db_manager.edit_firstDamageDealer(monsterID, ctx.guild.id, userID)
+        await db_manager.edit_firstDamage(monsterID, ctx.guild.id, user_damage)
+        await db_manager.edit_nameOfFirstDamageDealer(monsterID, ctx.guild.id, userName)
+    elif second_damage_dealer is None:
+        second_damage_dealer = userID
+        await db_manager.edit_secondDamageDealer(monsterID, ctx.guild.id, userID)
+        await db_manager.edit_secondDamage(monsterID, ctx.guild.id, user_damage)
+        await db_manager.edit_nameOfSecondDamageDealer(monsterID, ctx.guild.id, userName)
+    elif user_damage > await db_manager.get_secondDamage(monsterID, ctx.guild.id):
+        third_damage_dealer = second_damage_dealer
+        second_damage_dealer = userID
+        await db_manager.edit_secondDamageDealer(monsterID, ctx.guild.id, userID)
+        await db_manager.edit_secondDamage(monsterID, ctx.guild.id, user_damage)
+        await db_manager.edit_nameOfSecondDamageDealer(monsterID, ctx.guild.id, userName)
+    elif third_damage_dealer is None:
+        third_damage_dealer = userID
+        await db_manager.edit_thirdDamageDealer(monsterID, ctx.guild.id, userID)
+        await db_manager.edit_thirdDamage(monsterID, ctx.guild.id, user_damage)
+        await db_manager.edit_nameOfThirdDamageDealer(monsterID, ctx.guild.id, userName)
+    elif user_damage > await db_manager.get_thirdDamage(monsterID, ctx.guild.id):
+        third_damage_dealer = userID
+        await db_manager.edit_thirdDamageDealer(monsterID, ctx.guild.id, userID)
+        await db_manager.edit_thirdDamage(monsterID, ctx.guild.id, user_damage)
+        await db_manager.edit_nameOfThirdDamageDealer(monsterID, ctx.guild.id, userName)
+        
+    #get the damage dealers and damage
+    first_damage_dealer = await db_manager.get_firstDamageDealer(monsterID, ctx.guild.id)
+    second_damage_dealer = await db_manager.get_secondDamageDealer(monsterID, ctx.guild.id)
+    third_damage_dealer = await db_manager.get_thirdDamageDealer(monsterID, ctx.guild.id)
+    first_damage = await db_manager.get_firstDamage(monsterID, ctx.guild.id)
+    second_damage = await db_manager.get_secondDamage(monsterID, ctx.guild.id)
+    third_damage = await db_manager.get_thirdDamage(monsterID, ctx.guild.id)
+        
+    print(f"{first_damage_dealer} {str(first_damage)}")
+    print(f"{second_damage_dealer} {str(second_damage)}")
+    print(f"{third_damage_dealer} {str(third_damage)}")
+             
     #deal the damage to the monster
     await db_manager.remove_spawned_monster_health(monsterID, ctx.guild.id, user_damage)
     currentHealth = await db_manager.get_spawned_monster_health(monsterID, ctx.guild.id)
     print(currentHealth)
+    if currentHealth <= 0:
+        currentHealth = 0
     #convert the health to int
     #send a message to the channel the quoute
     await ctx.send(user1Promt + f" {monsterName} has {currentHealth}/{monsterTotalHealth} health left!")
@@ -1521,25 +1603,28 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         return userID
     #get the monsters health
     monsterHealth = await db_manager.get_spawned_monster_health(monsterID, ctx.guild.id)
+    if monsterHealth < 0:
+        monsterHealth = 0
+    print("monster health: " + str(monsterHealth))
     #convert it to int
-    monsterHealth = int(monsterHealth[0])
     #if the monsters health is less than or equal to 0, end the fight
     if monsterHealth <= 0:
         #remove the monster from the spawn
-        await db_manager.remove_current_spawn(ctx.guild.id)
+        await ctx.send(f"{monsterName} has died!")
         monster_drops = await db_manager.get_enemy_drops(monsterID) 
         luck = await db_manager.get_luck(userID)
         drops = []
         for drop in monster_drops:
-            item = drop[0]
-            drop_amount = drop[1]
-            drop_chance = drop[2]
-            drop_chance = int(drop_chance)
+            item = drop[1]
+            drop_amount = drop[2]
+            drop_chance = drop[3]
+            drop_chance = float(drop_chance)
             drop_amount = int(drop_amount)
             drops.append([item, drop_chance, drop_amount])
 
         #organize the hunt items by their hunt chance
         drops.sort(key=lambda x: x[1], reverse=True)
+        print(drops)
         #get the user's luck
         luck = await db_manager.get_luck(ctx.author.id)
 
@@ -1585,32 +1670,86 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
                 item = random.choice(highchanceitems)
             except(IndexError):
                 item = random.choice(midchanceitems)
+        
+        
+        #get the damage dealers
+        first_damage_dealer = await db_manager.get_firstDamageDealer(monsterID, ctx.guild.id)     
+        second_damage_dealer = await db_manager.get_secondDamageDealer(monsterID, ctx.guild.id)     
+        third_damage_dealer = await db_manager.get_thirdDamageDealer(monsterID, ctx.guild.id)
+        
+        print(first_damage_dealer)
+        print(second_damage_dealer)
+        print(third_damage_dealer)
 
+        #set None values to default
+        if first_damage_dealer is None:
+            first_damage_dealer = -1
+        if second_damage_dealer is None:
+            second_damage_dealer = -1
+        if third_damage_dealer is None:
+            third_damage_dealer = -1
 
-            #get the monsters name
-            #convert the name to str
-            monster_name = str(monster_name)
-            #send a message to the channel saying the user has died
-            await ctx.send(monster_name + " has died!")
-            #set the monsters health to 0
-            #set the user not in combat
-            await db_manager.set_not_in_combat(userID)
-            #do loot, quest, and xp stuff
-            #get the users level
-            userLevel = await db_manager.get_level(userID)
-            #convert it to int
-            userLevel = int(userLevel[0])
-            #get all the info on the drop item
-            #TODO - Fix this to work with new system
-            #pick a random item from the list of drops, based on the drop chance and the users luck
+        #get the damage dealers names
+        #get the users name
+        
+        first_dealer_name = await db_manager.get_nameOfFirstDamageDealer(monsterID, ctx.guild.id)
+        second_dealer_name = await db_manager.get_nameOfSecondDamageDealer(monsterID, ctx.guild.id)
+        third_dealer_name = await db_manager.get_nameOfThirdDamageDealer(monsterID, ctx.guild.id)
 
-            #TODO - Fix this to work with new system
-            #if the drop chance is less than or equal to the monsters drop chance
-            #give the user the drop
-            emote = await db_manager.get_basic_item_emote(item[0])
-            await db_manager.add_item_to_inventory(userID, item[0], item[2])
-            #send a message to the channel saying the user got the drop
-            await ctx.send(userName + " has gotten " + str(item[2]) + " " + emote +  "**" + item[0] + "**!")
+        
+        #get the damage dealers damage
+        first_dealer_damage = await db_manager.get_firstDamage(monsterID, ctx.guild.id)
+        second_dealer_damage = await db_manager.get_secondDamage(monsterID, ctx.guild.id)
+        third_dealer_damage = await db_manager.get_thirdDamage(monsterID, ctx.guild.id)
+        
+        #assign the items based on damage dealt and chance
+        first_dealer_items = []
+        if first_dealer_damage >= second_dealer_damage and first_dealer_damage >= third_dealer_damage:
+            first_dealer_items = highchanceitems + midchanceitems + lowchanceitems
+        elif first_dealer_damage < second_dealer_damage and second_dealer_damage >= third_dealer_damage:
+            first_dealer_items = midchanceitems + highchanceitems + lowchanceitems
+        else:
+            first_dealer_items = midchanceitems + lowchanceitems + highchanceitems
+        
+        second_dealer_items = []
+        if second_dealer_damage >= first_dealer_damage and second_dealer_damage >= third_dealer_damage:
+            second_dealer_items = midchanceitems + lowchanceitems
+        else:
+            second_dealer_items = lowchanceitems
+        
+        third_dealer_items = midchanceitems + lowchanceitems
+        
+        #iterate through each damage dealer and assign them their items
+        for dealer_id, dealer_name, dealer_damage, dealer_items in zip([first_damage_dealer, second_damage_dealer, third_damage_dealer], [first_dealer_name, second_dealer_name, third_dealer_name], [first_dealer_damage, second_dealer_damage, third_dealer_damage], [first_dealer_items, second_dealer_items, third_dealer_items]):
+            #if the dealer is none, skip
+            if dealer_id is None:
+                continue
+            #if the dealer has no name, skip
+            if dealer_name is None:
+                continue
+            #if the dealer has no damage, skip
+            if dealer_damage is None:
+                continue
+            emote = None
+            item_name = None
+            item_amount = None
+            for item in dealer_items:
+                roll = random.randint(1, 100) - luck
+                if roll > item[1]:
+                    continue
+                emote = await db_manager.get_basic_item_emote(item[0])
+                item_name = await db_manager.get_basic_item_name(item[0])
+                item_amount = item[2]
+                await db_manager.add_item_to_inventory(dealer_id, item[0], item[2])
+                break
+            if emote and item_name and item_amount:
+                await ctx.send(dealer_name + " has gotten " + str(item_amount) + " " + emote +  "**" + item_name + "**!")
+
+            
+            #grant the items based on the damage dealers
+            
+            
+                
             if await db_manager.can_level_up(userID):
                 #if the user can level up, level them up
                 await db_manager.add_level(userID, 1)
@@ -1668,6 +1807,7 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
                                 #add the item to the users inventory
                                 await db_manager.add_item_to_inventory(userID, quest_reward, quest_reward_amount)
                                 await ctx.send(f"You have completed the quest and been rewarded with {quest_reward_amount} {quest_reward}, and {quest_xp_reward} xp!")
+        await db_manager.remove_current_spawn(ctx.guild.id)
         return userID
     
     
@@ -1682,62 +1822,141 @@ async def spawn_monster(ctx, monsterID):
     monster_hp = await db_manager.get_enemy_health(monsterID)
     monster_hp = int(monster_hp[0])
     monster_attack = await db_manager.get_enemy_damage(monsterID)
-    #seperate the attack by the - and get a random number between the two
-    monster_attack = monster_attack[0]
-    monster_attack = monster_attack.split("-")
-    monster_attack = random.randint(int(monster_attack[0]), int(monster_attack[1]))
-    monster_emoji = await db_manager.get_enemy_emoji(monsterID)
-    monster_emoji = str(monster_emoji[0])
-    await db_manager.remove_current_spawn(ctx.guild.id)
-    await db_manager.add_current_spawn(ctx.guild.id, monsterID, monster_hp)
-    #convert evrything to str
-    monster_name = str(monster_name)
-    monster_hp = str(monster_hp)
     monster_attack = str(monster_attack)
-    monster_emoji = str(monster_emoji)
-    #remove the () and , from the strings
-    monster_name = monster_name.replace("(", "")
-    monster_name = monster_name.replace(")", "")
-    monster_name = monster_name.replace(",", "")
-    #remove the () and , from the description
-    monster_description = monster_description.replace("(", "")
-    monster_description = monster_description.replace(")", "")
-    monster_description = monster_description.replace(",", "")
-    monster_hp = monster_hp.replace("(", "")
-    monster_hp = monster_hp.replace(")", "")
-    monster_hp = monster_hp.replace(",", "")
+    #remove the ()
     monster_attack = monster_attack.replace("(", "")
     monster_attack = monster_attack.replace(")", "")
+    #remove the ,
     monster_attack = monster_attack.replace(",", "")
-    monster_emoji = monster_emoji.replace("(", "")
-    monster_emoji = monster_emoji.replace(")", "")
-    monster_emoji = monster_emoji.replace(",", "")
-    #create the embed, and set the image to the monsters emoji
-    embed = discord.Embed(
-        title = f"{monster_name}",
-        description = f"{monster_description} \n Health: {monster_hp}\nAttack: {monster_attack}",
-        color = discord.Color.red()
-    )
-    #get the numbers in the emoji str <a:malik:1079592323219984415>
-    emoji_numbers = re.findall(r'\d+', monster_emoji)
-    #if there are numbers in the emoji str
-    if emoji_numbers:
-        #if theres an a after the first <, then its a gif
-        if monster_emoji[1] == "a":
-            #set the emoji to the first number in the list
-            emoji = emoji_numbers[0]
-            print(emoji)
-            #set the image to the emoji
-            embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.gif")
-        #if theres a : after the first <, then its a png
-        elif monster_emoji[1] == ":":
-            #set the emoji to the first number in the list
-            emoji = emoji_numbers[0]
-            print(emoji)
-            #set the image to the emoji
-            embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.png")
-    #add the footer "use /attack {monster name} to attack the monster"
-    embed.set_footer(text="use /attack " + monsterID + " to attack this monster")
+    monster_attack = monster_attack.replace("'", "")
+    #space out the attack
+    monster_attack = monster_attack.replace("-", " - ")
+    
+    
+    #seperate the attack by the - and get a random number between the two
+    monster_emoji = await db_manager.get_enemy_emoji(monsterID)
+    monster_emoji = str(monster_emoji[0])
+    await db_manager.add_current_spawn(ctx.guild.id, monsterID, monster_hp)
     #send the embed to the channel
+    embed = discord.Embed(
+        title=f"{monster_name}",
+        description=f"**Health:** {monster_hp}/{monster_hp}\n**Attack:** {monster_attack}",
+        color=discord.Color.red()
+    )
+    # If there's an emote for the mob
+    if monster_emoji:
+        # Get the numbers in the emote string
+        emoji_numbers = re.findall(r'\d+', monster_emoji)
+        # If there are numbers in the emote string
+        if emoji_numbers:
+            # If there's an "a" after the first "<", then it's a GIF
+            if monster_emoji[1] == "a":
+                # Set the emote to the first number in the list
+                emoji = emoji_numbers[0]
+                # Set the thumbnail to the emote
+                embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.gif")
+            # If there's a ":" after the first "<", then it's a PNG
+            elif monster_emoji[1] == ":":
+                # Set the emote to the first number in the list
+                emoji = emoji_numbers[0]
+                # Set the thumbnail to the emote
+                embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.png")
+    # Add the footer "use /attack {monster name} to attack the monster"
+    embed.set_footer(text=f"use /attack {monsterID} to attack this monster")
+    field_text = "No damage has been dealt yet."
+    embed.add_field(name="💥 Top Damage Dealers", value=field_text, inline=False)
+    # Send the embed to the channel
     await ctx.send(embed=embed)
+    
+    
+async def send_spawned_embed(ctx: Context):
+    # Get the current mob spawned
+    currentSpawn = await db_manager.get_current_spawn(ctx.guild.id)
+    currentSpawn = currentSpawn[0]
+
+    # If there is no mob spawned
+    if not currentSpawn:
+        # Send a message saying there is no mob spawned
+        await ctx.send("There is no mob spawned!")
+    else:
+        # Get the mob name, health, and emote
+        mobName = await db_manager.get_enemy_name(currentSpawn)
+        mobHealth = await db_manager.get_enemy_health(currentSpawn)
+        mobHealth = int(mobHealth[0])
+        mobAttack = await db_manager.get_enemy_damage(currentSpawn)
+        currentHealth = await db_manager.get_spawned_monster_health(currentSpawn, ctx.guild.id)
+        mobEmoji = await db_manager.get_enemy_emoji(currentSpawn)
+        mobEmoji = str(mobEmoji[0])
+
+        # Convert everything to str
+        mobName = str(mobName)
+        mobHealth = str(mobHealth)
+        mobAttack = str(mobAttack)
+        #remove the ' ' from the attack
+        mobAttack = mobAttack.replace("'", "")
+        #space out the attack
+        mobAttack = mobAttack.replace("-", " - ")
+        mobEmoji = str(mobEmoji)
+
+        # Remove the () and , from the strings
+        mobName = mobName.replace("(", "")
+        mobName = mobName.replace(")", "")
+        mobName = mobName.replace(",", "")
+        mobHealth = mobHealth.replace("(", "")
+        mobHealth = mobHealth.replace(")", "")
+        mobHealth = mobHealth.replace(",", "")
+        mobAttack = mobAttack.replace("(", "")
+        mobAttack = mobAttack.replace(")", "")
+        mobAttack = mobAttack.replace(",", "")
+        mobEmoji = mobEmoji.replace("(", "")
+        mobEmoji = mobEmoji.replace(")", "")
+        mobEmoji = mobEmoji.replace(",", "")
+
+        # Build the embed, and set the image to the monster's emoji
+        embed = discord.Embed(
+            title=f"{mobName}",
+            description=f"**Health:** {currentHealth}/{mobHealth}\n**Attack:** {mobAttack}",
+            color=discord.Color.red()
+        )
+
+        # If there's an emote for the mob
+        if mobEmoji:
+            # Get the numbers in the emote string
+            emoji_numbers = re.findall(r'\d+', mobEmoji)
+            # If there are numbers in the emote string
+            if emoji_numbers:
+                # If there's an "a" after the first "<", then it's a GIF
+                if mobEmoji[1] == "a":
+                    # Set the emote to the first number in the list
+                    emoji = emoji_numbers[0]
+                    # Set the thumbnail to the emote
+                    embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.gif")
+                # If there's a ":" after the first "<", then it's a PNG
+                elif mobEmoji[1] == ":":
+                    # Set the emote to the first number in the list
+                    emoji = emoji_numbers[0]
+                    # Set the thumbnail to the emote
+                    embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.png")
+
+        # Add the footer "use /attack {monster name} to attack the monster"
+        embed.set_footer(text=f"use /attack {currentSpawn} to attack this monster")
+        # Get the top 3 damage dealers
+        first_damage_dealer = await db_manager.get_firstDamageDealer(currentSpawn, ctx.guild.id)
+        second_damage_dealer = await db_manager.get_secondDamageDealer(currentSpawn, ctx.guild.id)
+        third_damage_dealer = await db_manager.get_thirdDamageDealer(currentSpawn, ctx.guild.id)
+        print(first_damage_dealer)
+
+        # Add a field for the top 3 damage dealers
+        field_text = ""
+        if first_damage_dealer != 0 and first_damage_dealer != None and first_damage_dealer != "None":
+            field_text += f"🏆 1st Place: <@{first_damage_dealer}> - They get loot!\n"
+        if second_damage_dealer != 0 and second_damage_dealer != None and second_damage_dealer != "None":
+            field_text += f"🥈 2nd Place: <@{second_damage_dealer}> - They get loot!\n"
+        if third_damage_dealer != 0 and third_damage_dealer != None and third_damage_dealer != "None":
+            field_text += f"🥉 3rd Place: <@{third_damage_dealer}> - They get loot!\n"
+        if not field_text:
+            field_text = "No damage has been dealt yet."
+        embed.add_field(name="💥 Top Damage Dealers", value=field_text, inline=False)
+        # Send the embed to the channel
+        await ctx.send(embed=embed)
     

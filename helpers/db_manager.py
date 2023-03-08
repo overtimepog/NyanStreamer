@@ -639,11 +639,40 @@ async def add_basic_items() -> None:
     for item in basic_items:
         data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item['item_id'],), fetch="one")
         if data is not None:
+            #check if there is a isHuntable, item_hunt_chance, isMineable, item_mine_chance, quote_id, or item_sub_type
+            if 'isHuntable' in item:
+                isHuntable = item['isHuntable']
+            else:
+                isHuntable = False
+            if 'item_hunt_chance' in item:
+                item_hunt_chance = item['item_hunt_chance']
+            else:
+                item_hunt_chance = 0
+            if 'isMineable' in item:
+                isMineable = item['isMineable']
+            else:
+                isMineable = False
+            if 'item_mine_chance' in item:
+                item_mine_chance = item['item_mine_chance']
+            else:
+                item_mine_chance = 0
+            if 'quote_id' in item:
+                quote_id = item['quote_id']
+            else:
+                quote_id = "None"
+            if 'item_sub_type' in item:
+                item_sub_type = item['item_sub_type']
+            else:
+                item_sub_type = "None"
+            if "recipe_id" in item:
+                recipe_id = item['recipe_id']
+            else:
+                recipe_id = "None"
             #delete the item from the database, then add it again
             await db.execute(f"DELETE FROM `basic_items` WHERE item_id = ?", (item['item_id'],))
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, quote_id, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance'], item['quote_id'], item['item_sub_type']))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, quote_id, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], recipe_id, isHuntable, item_hunt_chance, item['item_effect'], isMineable, item_mine_chance, quote_id, item_sub_type))
             print(f"Updated {item['item_name']}")
-            if item['quote_id'] != "None":
+            if quote_id != "None":
                 #remove the old quotes from the database
                 await db.execute(f"DELETE FROM `item_quotes` WHERE item_id = ?", (item['quote_id'],))
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
@@ -651,7 +680,7 @@ async def add_basic_items() -> None:
                     await db.execute(f"INSERT INTO `item_quotes` (`item_id`, `quote`) VALUES (?, ?)", (item['quote_id'], quote['quote']))
                     print(f"Updated Quote: |{quote['quote']}| to the item_quotes for |{item['item_name']}|")
                 print(f"Updated |{item['item_name']}|'s item_quotes to the database")
-            if item['recipe_id'] != "None":
+            if recipe_id != "None":
                 #remove the old recipes from the database
                 await db.execute(f"DELETE FROM `recipes` WHERE item_id = ?", (item['recipe_id'],))
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
@@ -684,7 +713,36 @@ async def add_basic_items() -> None:
             #`item_mine_chance` int(11) NOT NULL,
             
             #add the item to the database
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, quote_id, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], item['recipe_id'], item['isHuntable'], item['item_hunt_chance'], item['item_effect'], item['isMineable'], item['item_mine_chance'], item['quote_id'], item['item_sub_type']))
+            if 'isHuntable' in item:
+                isHuntable = item['isHuntable']
+            else:
+                isHuntable = False
+            if 'item_hunt_chance' in item:
+                item_hunt_chance = item['item_hunt_chance']
+            else:
+                item_hunt_chance = 0
+            if 'isMineable' in item:
+                isMineable = item['isMineable']
+            else:
+                isMineable = False
+            if 'item_mine_chance' in item:
+                item_mine_chance = item['item_mine_chance']
+            else:
+                item_mine_chance = 0
+            if 'quote_id' in item:
+                quote_id = item['quote_id']
+            else:
+                quote_id = "None"
+            if 'item_sub_type' in item:
+                item_sub_type = item['item_sub_type']
+            else:
+                item_sub_type = "None"
+            if "recipe_id" in item:
+                recipe_id = item['recipe_id']
+            else:
+                recipe_id = "None"
+            await db.execute(f"DELETE FROM `basic_items` WHERE item_id = ?", (item['item_id'],))
+            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, quote_id, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], recipe_id, isHuntable, item_hunt_chance, item['item_effect'], isMineable, item_mine_chance, quote_id, item_sub_type))
             print(f"Added |{item['item_name']}| to the database")
             
             #add the items recipe to the database
@@ -692,13 +750,13 @@ async def add_basic_items() -> None:
             # item_id VARCHAR(255) NOT NULL,
             # ingredient_id VARCHAR(255) NOT NULL,
             # ingredient_amount INTEGER NOT NULL
-            if item['quote_id'] != "None":
+            if quote_id != "None":
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for quote in item['item_quotes']:
                     await db.execute(f"INSERT INTO `item_quotes` (`item_id`, `quote`) VALUES (?, ?)", (item['quote_id'], quote['quote']))
                     print(f"Added Quote: |{quote['quote']}| to the item_quotes for |{item['item_name']}|")
                 print(f"Added |{item['item_name']}|'s item_quotes to the database")
-            if item['recipe_id'] != "None":
+            if recipe_id != "None":
                 #for each item in the recipe add it to the database with the item_id being the recipe_id
                 for ingredient in item['item_recipe']:
                     await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (item['recipe_id'], ingredient['ingredient_id'], ingredient['ingredient_amount']))
@@ -3459,3 +3517,262 @@ async def get_twitchCode() -> str:
         async with db.execute("SELECT * FROM twitch_creds") as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
+        
+# `monster_id` varchar(255) NOT NULL,
+# `server_id` int(11) NOT NULL,
+# `monster_health` int(11) NOT NULL,
+# `first_damage_dealer` varchar(255) NOT NULL,
+# `second_damage_dealer` varchar(255) NOT NULL,
+# `third_damage_dealer` varchar(255) NOT NULL,
+# `first_damage` int(11) NOT NULL,
+# `second_damage` int(11) NOT NULL,
+# `third_damage` int(11) NOT NULL,
+# `first_damage_dealer_name` varchar(255),
+# `second_damage_dealer_name` varchar(255),
+# `third_damage_dealer_name` varchar(255)
+
+
+#get the first damage dealer from the spawns table
+async def get_firstDamageDealer(monster_id: str, server_id: int) -> str:
+    """
+    This function will get the first damage dealer from the spawns table.
+
+    :return: The first damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[3] if result is not None else None
+        
+#edit the first damage dealer in the spawns table
+async def edit_firstDamageDealer(monster_id: str, server_id: int, first_damage_dealer: str) -> None:
+    """
+    This function will edit the first damage dealer in the spawns table.
+
+    :param first_damage_dealer: The new first damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET first_damage_dealer=? WHERE monster_id=? AND server_id=?", (first_damage_dealer, monster_id, server_id,))
+        await db.commit()
+        
+#get the second damage dealer from the spawns table
+async def get_secondDamageDealer(monster_id: str, server_id: int) -> str:
+    """
+    This function will get the second damage dealer from the spawns table.
+
+    :return: The second damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[4] if result is not None else None
+        
+#edit the second damage dealer in the spawns table
+async def edit_secondDamageDealer(monster_id: str, server_id: int, second_damage_dealer: str) -> None:
+    """
+    This function will edit the second damage dealer in the spawns table.
+
+    :param second_damage_dealer: The new second damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET second_damage_dealer=? WHERE monster_id=? AND server_id=?", (second_damage_dealer, monster_id, server_id,))
+        await db.commit()
+        
+#get the third damage dealer from the spawns table
+async def get_thirdDamageDealer(monster_id: str, server_id: int) -> str:
+    """
+    This function will get the third damage dealer from the spawns table.
+
+    :return: The third damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[5] if result is not None else None
+        
+#edit the third damage dealer in the spawns table
+async def edit_thirdDamageDealer(monster_id: str, server_id: int, third_damage_dealer: str) -> None:
+    """
+    This function will edit the third damage dealer in the spawns table.
+
+    :param third_damage_dealer: The new third damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET third_damage_dealer=? WHERE monster_id=? AND server_id=?", (third_damage_dealer, monster_id, server_id,))
+        await db.commit()
+        
+        
+#get the first damage from the spawns table
+async def get_firstDamage(monster_id: str, server_id: int) -> int:
+    """
+    This function will get the first damage from the spawns table.
+
+    :return: The first damage.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[6] if result is not None else 0
+        
+#edit the first damage in the spawns table
+async def edit_firstDamage(monster_id: str, server_id: int, first_damage: str) -> None:
+    """
+    This function will edit the first damage in the spawns table.
+
+    :param first_damage: The new first damage.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET first_damage=? WHERE monster_id=? AND server_id=?", (first_damage, monster_id, server_id,))
+        await db.commit()
+        
+#get the second damage from the spawns table
+async def get_secondDamage(monster_id: str, server_id: int) -> int:
+    """
+    This function will get the second damage from the spawns table.
+
+    :return: The second damage.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[7] if result is not None else 0
+        
+#edit the second damage in the spawns table
+async def edit_secondDamage(monster_id: str, server_id: int, second_damage: str) -> None:
+    """
+    This function will edit the second damage in the spawns table.
+
+    :param second_damage: The new second damage.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET second_damage=? WHERE monster_id=? AND server_id=?", (second_damage, monster_id, server_id,))
+        await db.commit()
+        
+#get the third damage from the spawns table
+async def get_thirdDamage(monster_id: str, server_id: int) -> int:
+    """
+    This function will get the third damage from the spawns table.
+
+    :return: The third damage.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[8] if result is not None else 0
+        
+#edit the third damage in the spawns table
+async def edit_thirdDamage(monster_id: str, server_id: int, third_damage: str) -> None:
+    """
+    This function will edit the third damage in the spawns table.
+
+    :param third_damage: The new third damage.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET third_damage=? WHERE monster_id=? AND server_id=?", (third_damage, monster_id, server_id,))
+        await db.commit()
+        
+        
+#get all the damage dealers from the spawns table
+async def get_allDamageDealers(monster_id: str, server_id: int) -> list:
+    """
+    This function will get all the damage dealers from the spawns table.
+
+    :return: All the damage dealers.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return [result[3], result[4], result[5]] if result is not None else []
+        
+        
+#edit name of the first damage dealer in the spawns table
+async def edit_nameOfFirstDamageDealer(monster_id: str, server_id: int, name_of_first_damage_dealer: str) -> None:
+    """
+    This function will edit the name of the first damage dealer in the spawns table.
+
+    :param name_of_first_damage_dealer: The new name of the first damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET first_damage_dealer_name=? WHERE monster_id=? AND server_id=?", (name_of_first_damage_dealer, monster_id, server_id,))
+        await db.commit()
+        
+#edit name of the second damage dealer in the spawns table
+async def edit_nameOfSecondDamageDealer(monster_id: str, server_id: int, name_of_second_damage_dealer: str) -> None:
+    """
+    This function will edit the name of the second damage dealer in the spawns table.
+
+    :param name_of_second_damage_dealer: The new name of the second damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET second_damage_dealer_name=? WHERE monster_id=? AND server_id=?", (name_of_second_damage_dealer, monster_id, server_id,))
+        await db.commit()
+        
+
+#edit name of the third damage dealer in the spawns table
+async def edit_nameOfThirdDamageDealer(monster_id: str, server_id: int, name_of_third_damage_dealer: str) -> None:
+    """
+    This function will edit the name of the third damage dealer in the spawns table.
+
+    :param name_of_third_damage_dealer: The new name of the third damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE spawns SET third_damage_dealer_name=? WHERE monster_id=? AND server_id=?", (name_of_third_damage_dealer, monster_id, server_id,))
+        await db.commit()
+        
+
+#get the name of the first damage dealer from the spawns table
+async def get_nameOfFirstDamageDealer(monster_id: str, server_id: int) -> str:
+    """
+    This function will get the name of the first damage dealer from the spawns table.
+
+    :return: The name of the first damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[9] if result is not None else None
+        
+        
+#get the name of the second damage dealer from the spawns table
+async def get_nameOfSecondDamageDealer(monster_id: str, server_id: int) -> str:
+    """
+    This function will get the name of the second damage dealer from the spawns table.
+
+    :return: The name of the second damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[10] if result is not None else None
+        
+
+#get the name of the third damage dealer from the spawns table
+async def get_nameOfThirdDamageDealer(monster_id: str, server_id: int) -> str:
+    """
+    This function will get the name of the third damage dealer from the spawns table.
+
+    :return: The name of the third damage dealer.
+    """
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[11] if result is not None else None

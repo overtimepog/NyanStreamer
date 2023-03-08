@@ -15,19 +15,19 @@
         "enemy_drops": [{
             "item_id": "rat_tail",
             "item_amount": 1,
-            "item_drop_chance": 1
+            "item_drop_chance": 0.05
         },
+        
         {
             "item_id": "rat_tail",
-            "item_amount": 2,
+            "item_amount": 1,
             "item_drop_chance": 0.5
         },
         {
             "item_id": "rat_tail",
-            "item_amount": 3,
-            "item_drop_chance": 0.25
+            "item_amount": 1,
+            "item_drop_chance": 1
         }
-    
     ],
         "enemy_drop_rarity": "Common",
         "enemy_element": "None",
