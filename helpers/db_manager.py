@@ -1915,7 +1915,7 @@ async def get_chest_icon(chest_id: str) -> str:
         db = DB()
         data = await db.execute(f"SELECT * FROM `chests` WHERE chest_id = ?", (chest_id,), fetch="one")
         if data is not None:
-            return data[2]
+            return data[3]
         else:
             return None
 
@@ -1928,10 +1928,19 @@ async def get_chest_name(chest_id: str) -> str:
         else:
             return None
         
+#get the chest description from the chest ID
+async def get_chest_description(chest_id: str) -> str:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `chests` WHERE chest_id = ?", (chest_id,), fetch="one")
+        if data is not None:
+            return data[6]
+        else:
+            return None
+        
 #get the chests chest_contents list from the chest ID
 async def get_chest_contents(chest_id: str) -> list:
         db = DB()
-        data = await db.execute(f"SELECT * FROM `chest_contents` WHERE chest_id = ?", (chest_id,), fetch="one")
+        data = await db.execute(f"SELECT * FROM `chest_contents` WHERE chest_id = ?", (chest_id,), fetch="all")
         if data is not None:
             return data
         else:

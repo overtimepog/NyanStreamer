@@ -188,7 +188,15 @@ class Basic(commands.Cog, name="basic"):
                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
                     if item_amount == 0:
                         continue
-                    item_description = await db_manager.get_basic_item_description(item_id)
+                    isChest = await db_manager.check_chest(item_id)
+                    if isChest == 1:
+                        item_name = await db_manager.get_chest_name(item_id)
+                        item_emoji = await db_manager.get_chest_icon(item_id)
+                        item_description = await db_manager.get_chest_description(item_id)
+                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                        continue
+                    else:
+                        item_description = await db_manager.get_basic_item_description(item_id)
                     equippedItems = await db_manager.get_equipped_items(ctx.author.id)
                     isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
                     if isEquipped == 1:
@@ -231,7 +239,15 @@ class Basic(commands.Cog, name="basic"):
                                 item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
                                 if item_amount == 0:
                                     continue
-                                item_description = await db_manager.get_basic_item_description(item_id)
+                                isChest = await db_manager.check_chest(item_id)
+                                if isChest == 1:
+                                    item_name = await db_manager.get_chest_name(item_id)
+                                    item_emoji = await db_manager.get_chest_icon(item_id)
+                                    item_description = await db_manager.get_chest_description(item_id)
+                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                                    continue
+                                else:
+                                    item_description = await db_manager.get_basic_item_description(item_id)
                                 #check if the item is equiped
                                 isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
                                 if isEquipped == 1:
@@ -368,9 +384,15 @@ class Basic(commands.Cog, name="basic"):
                                 item_type = item[7]
                                 if item_type == "Consumable":
                                     item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                                    item_description = await db_manager.get_basic_item_description(item_id)
                                     if item_amount == 0:
                                         continue
+                                    isChest = await db_manager.check_chest(item_id)
+                                    if isChest == 1:
+                                        item_name = await db_manager.get_chest_name(item_id)
+                                        item_emoji = await db_manager.get_chest_icon(item_id)
+                                        item_description = await db_manager.get_chest_description(item_id)
+                                    else:
+                                        item_description = await db_manager.get_basic_item_description(item_id)
                                 else:
                                     #dont add the item to the embed
                                     continue
@@ -2208,6 +2230,9 @@ class Basic(commands.Cog, name="basic"):
         else:
             await mine.mine(ctx)
 
+
+    #a cooldown of 2 minutes
+    @commands.cooldown(1, 120, commands.BucketType.user)
     @commands.hybrid_command(
         name="use",
         description="This command will use an item.",
@@ -2222,19 +2247,34 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.use.reset_cooldown(ctx)
             return
+        #check if the item is in the inventory
+        isItemThere = await db_manager.is_item_in_inventory(ctx.author.id, item)
+        if isItemThere == False or isItemThere == None or isItemThere == 0:
+            await ctx.send("You do not have this item!")
+            await self.use.reset_cooldown(ctx)
+            return
         user_id = ctx.message.author.id
-        item_name = await db_manager.get_basic_item_name(item_id)
-        isUsable = await db_manager.is_basic_item_usable(item_id)
+        isChest = await db_manager.check_chest(item)
+        if isChest == 1:
+            item_name = await db_manager.get_chest_name(item)
+            isUsable = 1
+        else: 
+            item_name = await db_manager.get_basic_item_name(item)
+            isUsable = await db_manager.is_basic_item_usable(item)
         if isUsable == 1:
             #remove item from inventory
-            await db_manager.remove_item_from_inventory(user_id, item_id, 1)
+            await db_manager.remove_item_from_inventory(user_id, item, 1)
             #STUB - item effects
             #if the item's name is "Potion", add 10 health to the user
             #get the items effect
-            item_effect = await db_manager.get_basic_item_effect(item_id)
+            item_effect = await db_manager.get_basic_item_effect(item)
             #if the item effect is "None":
             if item_effect == "None":
                 item_effect = "None"
+                item_effect_type = "None"
+            elif isChest == 1:
+                item_effect = "None"
+                item_effect_type = "None"
             else:
                 #split the item effect by space
                 item_effect = item_effect.split(" ")
@@ -2267,11 +2307,12 @@ class Basic(commands.Cog, name="basic"):
                 return
 
             #split the item_id by the "_"
-            chest_name = await db_manager.get_basic_item_name(item_id)
-            item_id = item_id.split("_")
+            chest_name = await db_manager.get_basic_item_name(item)
+            itemID = item
+            item = item.split("_")
             luck = await db_manager.get_luck(user_id)
             #if item[0] is chest
-            if item_id[0] == "chest":
+            if item[0] == "chest":
 
                 outcomePhrases = [
                     "You opened the chest and found ",
@@ -2287,10 +2328,14 @@ class Basic(commands.Cog, name="basic"):
                 ]
 
                 #get the chest contents
-                chest_contents = await db_manager.get_chest_contents(item_id)
+                print(itemID)
+                chest_contents = await db_manager.get_chest_contents(itemID)
+                print(chest_contents)
                 #calculate the chest contents chances
                 #organize the chest items by their chest chance
-                chest_contents.sort(key=lambda x: x[2], reverse=True)
+                chest_contents.sort(key=lambda x: x[3], reverse=True)
+                print("--------------------------------------------")
+                print(chest_contents)
                 #get the user's luck
                 luck = await db_manager.get_luck(ctx.author.id)
 
@@ -2307,17 +2352,17 @@ class Basic(commands.Cog, name="basic"):
 
                 lowchanceitems = []
                 for item in chest_contents:
-                    if item[2] <= 0.1:
+                    if item[3] <= 0.1:
                         lowchanceitems.append(item)
 
                 midchanceitems = []
                 for item in chest_contents:
-                    if item[2] > 0.1 and item[2] <= 0.5:
+                    if item[3] > 0.1 and item[3] <= 0.5:
                         midchanceitems.append(item)
 
                 highchanceitems = []
                 for item in chest_contents:
-                    if item[2] > 0.5 and item[2] <= 1:
+                    if item[3] > 0.5 and item[3] <= 1:
                         highchanceitems.append(item)
 
                 #based on the roll, get the item
@@ -2332,11 +2377,11 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(f"It seems {chest_name} ened up being empty!")
                     return
                 
-                await db_manager.add_item_to_inventory(ctx.author.id, item[0])
-                item_name = await db_manager.get_basic_item_name(item[0])
-                item_emoji = await db_manager.get_basic_item_emote(item[0])
+                await db_manager.add_item_to_inventory(ctx.author.id, item[1], item[2])
+                item_name = await db_manager.get_basic_item_name(item[1])
+                item_emoji = await db_manager.get_basic_item_emote(item[1])
                 #tell the user what they got
-                await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {item[1]}")
+                await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {item[2]}")
                 return   
         else:
             await ctx.send(f"`{item_name}` is not usable.")
