@@ -1,0 +1,46 @@
+this is the Enemy and Boss template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names respond "Enemy Creator Ready" and give ideas of new enemys to be made when you have processed and understood the template
+    {
+        "enemy_id": "rat",
+        "enemy_name": "Rat",
+        "enemy_health": 10,
+        "enemy_damage": "3-5",
+        "enemy_emoji": "<a:Rat:1078761460211130428>",
+        "enemy_description": "A rat. It's not very strong, but it's annoying as hell.",
+        "enemy_rarity": "Common",
+        "enemy_type": "Animal",
+        "enemy_xp": 5,
+        "enemy_money": 5,
+        "enemy_crit_chance": 0,
+        "enemy_drop_id": "rat",
+        "enemy_drops": [{
+            "item_id": "rat_tail",
+            "item_amount": 1,
+            "item_drop_chance": 0.05
+        },
+        
+        {
+            "item_id": "rat_tail",
+            "item_amount": 1,
+            "item_drop_chance": 0.5
+        },
+        {
+            "item_id": "rat_tail",
+            "item_amount": 1,
+            "item_drop_chance": 1
+        }
+    ],
+        "enemy_drop_rarity": "Common",
+        "enemy_element": "None",
+        "quote_id": "rat",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} slashes at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} bites {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} scratches {target} dealing {damage} damage."
+            }
+        ]
+    },

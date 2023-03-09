@@ -1,3 +1,4 @@
+this is the weapon and item template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names respond "Item Creator Ready" and nothing else when you have processed and understood the template
 [
     {
         "item_id": "iron_sword",

@@ -1,0 +1,200 @@
+I am going to give you a bunch of different templates, and you are going to process them all, and create what I ask for based on the templates, once you process, and understand a template, and are ready to create more things from it, say that the specific template module has loaded, only do this at the beginning. Understand that I will give you specific rules for each template but here are a few basic ones
+•Only Enemies and Weapons get quotes, they must be in the format that is displayed in the template and must contain each of the three items in the {}
+•Structures only have the options, (item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, spawn), no others will work
+•There are only three item elements and they can only work on weapons, Fire, Paralysis, and Poison
+once you understand all the rules and conditions, say so 
+this is the Enemy and Boss template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names    {
+        "enemy_id": "rat",
+        "enemy_name": "Rat",
+        "enemy_health": 10,
+        "enemy_damage": "3-5",
+        "enemy_emoji": "<a:Rat:1078761460211130428>",
+        "enemy_description": "A rat. It's not very strong, but it's annoying as hell.",
+        "enemy_rarity": "Common",
+        "enemy_type": "Animal",
+        "enemy_xp": 5,
+        "enemy_money": 5,
+        "enemy_crit_chance": 0,
+        "enemy_drop_id": "rat",
+        "enemy_drops": [{
+            "item_id": "rat_tail",
+            "item_amount": 1,
+            "item_drop_chance": 0.05
+        },
+        
+        {
+            "item_id": "rat_tail",
+            "item_amount": 1,
+            "item_drop_chance": 0.5
+        },
+        {
+            "item_id": "rat_tail",
+            "item_amount": 1,
+            "item_drop_chance": 1
+        }
+    ],
+        "enemy_drop_rarity": "Common",
+        "enemy_element": "None",
+        "quote_id": "rat",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} slashes at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} bites {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} scratches {target} dealing {damage} damage."
+            }
+        ]
+    },
+this is the weapon and item template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names 
+[
+    {
+        "item_id": "iron_sword",
+        "item_name": "Iron Sword",
+        "item_price": 75,
+        "item_emoji": "<:Iron_Sword:1077583210659205130>",
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": 5,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A Basic Sword, good for getting started.",
+        "item_element": "None",
+        "item_crit_chance": "5%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [{
+            "ingredient_id": "stick",
+            "ingredient_amount": 1
+        }, {
+            "ingredient_id": "iron_ingot",
+            "ingredient_amount": 2
+        }],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "iron_sword",
+        "item_quotes": [
+            {
+                "quote": "{user} swings their Sword at {target} and deals {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    }
+]
+this is the Quest template for my game, use it to create more quests when I ask for them, you will always put the created quest code in a codeblock and correct any spelling mistakes    {
+        "quest_id": "gathering_dahilas",
+        "quest_name": "Gathering Dahilas",
+        "quest_description": "The local apothecary is in need of Dahilas for their potions. Help by gathering 10 of them.",
+        "quest_xp_reward": 5,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 10,
+        "quest_level_required": 1,
+        "quest_type": "collect",
+        "quest": "10 dahila",
+        "OnBoard": true
+    }
+this is the structure template for my game structures are areas where players can explore in order to trigger one of the outcomes, use it to create more structures when I ask for them, you will always put the created structure code in a codeblock and correct any spelling mistakes
+        {
+            "structure_id": "dungeon",
+            "structure_name": "Dungeon",
+            "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+            "structure_description": "A dark, foreboding dungeon filled with traps and treasures.",
+            "structure_outcomesID": "dungeon",
+            "structure_outcomes": [
+              {
+                "structure_quote": "You have narrowly avoided a trap and found a hidden chest!",
+                "structure_state": "success",
+                "outcome_chance": 0.3,
+                "outcome_type": "item_gain",
+                "outcome_output": "chest_basic",
+                "outcome_amount": 1,
+                "outcome_money": 0,
+                "outcome_xp": 0
+              },
+              {
+                "structure_quote": "You've disturbed a group of angry skeletons!",
+                "structure_state": "loss",
+                "outcome_chance": 0.2,
+                "outcome_type": "spawn",
+                "outcome_output": "skeleton_horde",
+                "outcome_amount": 0,
+                "outcome_money": 0,
+                "outcome_xp": 0
+              },
+              {
+                "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                "structure_state": "success",
+                "outcome_chance": 0.2,
+                "outcome_type": "money_gain",
+                "outcome_output": "gold",
+                "outcome_amount": 200,
+                "outcome_money": 0,
+                "outcome_xp": 0
+              },
+              {
+                "structure_quote": "You Encountered a lone goblin wandering the Dungeon!",
+                "structure_state": "loss",
+                "outcome_chance": 0.1,
+                "outcome_type": "spawn",
+                "outcome_output": "goblin",
+                "outcome_amount": 0,
+                "outcome_money": 0,
+                "outcome_xp": 0
+              },
+              {
+                "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
+                "structure_state": "boss",
+                "outcome_chance": 0.05,
+                "outcome_type": "spawn",
+                "outcome_output": "malik",
+                "outcome_amount": 0,
+                "outcome_money": 0,
+                "outcome_xp": 0
+              },
+              {
+                "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
+                "structure_state": "success",
+                "outcome_chance": 0.05,
+                "outcome_type": "item_gain",
+                "outcome_output": "amulet_dragon",
+                "outcome_amount": 1,
+                "outcome_money": 0,
+                "outcome_xp": 0
+              },
+              {
+                "structure_quote": "You've found a stash of healing potions!",
+                "structure_state": "success",
+                "outcome_chance": 0.1,
+                "outcome_type": "item_gain",
+                "outcome_output": "potion_healing",
+                "outcome_amount": 3,
+                "outcome_money": 0,
+                "outcome_xp": 0
+              },
+              {
+                "structure_quote": "You've been hit by a poisoned dart and lost some health!",
+                "structure_state": "loss",
+                "outcome_chance": 0.15,
+                "outcome_type": "health_loss",
+                "outcome_output": "",
+                "outcome_amount": 30,
+                "outcome_money": 0,
+                "outcome_xp": 0
+              },
+              {
+                "structure_quote": "You've found a map that leads to a hidden treasure!",
+                "structure_state": "success",
+                "outcome_chance": 0.05,
+                "outcome_type": "item_gain",
+                "outcome_output": "tresure_map",
+                "outcome_amount": 1,
+                "outcome_money": 0,
+                "outcome_xp": 0
+                }    
+            ]
+        },
