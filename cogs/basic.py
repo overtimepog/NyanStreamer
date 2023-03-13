@@ -2525,7 +2525,6 @@ class Basic(commands.Cog, name="basic"):
                     total = await db_manager.get_quest_total_from_id(userquest)
                     #if the progress is less than the total, complete the quest and give the user the reward
                     if progress >= total:
-                        await db_manager.mark_quest_completed(msg.author.id, userquest)
                         #get quest reward type
                         quest_reward_type = await db_manager.get_quest_reward_type_from_id(userquest)
                         #if the quest reward type is item, give the user the item, and if its Money, give the user the money
@@ -2537,17 +2536,14 @@ class Basic(commands.Cog, name="basic"):
                             #add the item to the users inventory
                             await db_manager.add_item_to_inventory(msg.author.id, quest_reward, quest_reward_amount)
                             await ctx.send(f"Congrats {msg.author.mention}, you completed the quest **{await db_manager.get_quest_name_from_id(userquest)}** and got {await db_manager.get_basic_item_emote(quest_reward)} **{await db_manager.get_basic_item_name(quest_reward)}**!")
-                            
                         elif quest_reward_type == "Money":
                             #get quest reward amount
                             quest_reward_amount = await db_manager.get_quest_reward_amount_from_id(userquest)
                             #add the money to the users money
                             await db_manager.add_money(msg.author.id, quest_reward_amount)
                             await ctx.send(f"Congrats {msg.author.mention}, you completed the quest **{await db_manager.get_quest_name_from_id(userquest)}** and got {cash}{quest_reward_amount} Money!")
-                            
-                        
+                    await db_manager.mark_quest_completed(msg.author.id, userquest)
                     
-                
             #add the item to the users inventory
             await db_manager.add_item_to_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is item_loss
