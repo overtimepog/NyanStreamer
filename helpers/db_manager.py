@@ -848,12 +848,24 @@ async def add_shop_items() -> None:
     #clear the shop table
     await db.execute(f"DELETE FROM `shop`")
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
-    #only add 10 items to the shop
-    data = random.sample(data, 10)
+    #add the items to the shop table
     for item in data:
-        ItemAmount = random.randint(1, 15)
-        await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7], item[9], ItemAmount))
-        print(f"Added |{item[1]} x{ItemAmount}| to the shop")
+        item_id = item[1]
+        item_amount = random.randint(1, 10)
+        #CREATE TABLE IF NOT EXISTS `shop` (
+        #  `item_id` varchar(255) NOT NULL,
+        #  `item_name` varchar(255) NOT NULL,
+        #  `item_price` varchar(255) NOT NULL,
+        #  `item_emoji` varchar(255) NOT NULL,
+        #  `item_rarity` varchar(255) NOT NULL,
+        #  `item_type` varchar(255) NOT NULL,
+        #  `item_damage` int(11) NOT NULL,
+        #  `isUsable` boolean NOT NULL,
+        #  `isEquippable` boolean NOT NULL,
+        #  `item_amount` int(11) NOT NULL
+        #);
+        await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item_id, item[2], item[3], item[4], item[5], item[6], item[7], item[8], item[9], item_amount))
+        print(f"Added |{item_id}| to the shop with an amount of |{item_amount}|")
         
 #clear the shop table
 async def clear_shop() -> None:
@@ -2761,6 +2773,39 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
   #`streamer_item_name` varchar(255) NOT NULL,
   #`streamer_item_emoji` varchar(255) NOT NULL, 
   #`streamer_item_rarity` varchar(255) NOT NULL
+  
+#check if a user has an item in their inventory
+async def check_user_has_item(user_id: int, item_id: str) -> int:
+    """
+    This function will check if a user has an item in their inventory.
+
+    :param user_id: The ID of the user that the item should be checked for.
+    :param item_id: The ID of the item that should be checked for.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id = ? AND item_id = ?", (user_id, item_id)) as cursor:
+            result = await cursor.fetchone()
+            if result is not None:
+                return 1
+            else:
+                return 0
+            
+#get the amount of an item that a user has in their inventory
+async def get_user_item_amount(user_id: int, item_id: str) -> int:
+    """
+    This function will get the amount of an item that a user has in their inventory.
+
+    :param user_id: The ID of the user that the item should be checked for.
+    :param item_id: The ID of the item that should be checked for.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id = ? AND item_id = ?", (user_id, item_id)) as cursor:
+            result = await cursor.fetchone()
+            if result is not None:
+                return result[6]
+            else:
+                return 0
+    
   
 async def add_streamer_item_to_user(user_id: int, streamer_item_id: str) -> int:
     """

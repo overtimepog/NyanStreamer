@@ -175,5 +175,39 @@
                 "quote": "{enemy_name} floats towards {target} and attacks with spectral claws dealing {damage} damage."
             }
         ]
+    },
+    {
+        "enemy_id": "wolf",
+        "enemy_name": "Wolf",
+        "enemy_health": 20,
+        "enemy_damage": "4-6",
+        "enemy_emoji": "<a:Wolf:123456789012345678>",
+        "enemy_description": "A fierce wolf with sharp teeth and claws.",
+        "enemy_rarity": "Uncommon",
+        "enemy_type": "Animal",
+        "enemy_xp": 10,
+        "enemy_money": 15,
+        "enemy_crit_chance": 5,
+        "enemy_drop_id": "leather",
+        "enemy_drops": [{
+            "item_id": "leather",
+            "item_amount": 1,
+            "item_drop_chance": 0.5
+        }],
+        "enemy_drop_rarity": "Uncommon",
+        "enemy_element": "None",
+        "quote_id": "wolf",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} bites {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} claws {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} pounces on {target} dealing {damage} damage."
+            }
+        ]
     }
+    
 ]

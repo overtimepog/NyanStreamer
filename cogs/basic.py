@@ -831,6 +831,8 @@ class Basic(commands.Cog, name="basic"):
                 await interaction.response.defer()
                 await message.edit(embed=embeds[self.current_page], view=ShopButton(self.current_page))
         message = await ctx.send(embed=embeds[current_page], view=ShopButton(current_page))
+        
+        
 
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
     @commands.hybrid_command(
@@ -2283,7 +2285,7 @@ class Basic(commands.Cog, name="basic"):
                 #get the item effect amount
                 item_effect_amount = item_effect[2]
             #if the item effect type is "health"
-            if item_effect_type == "heal":
+            if item_effect_type == "health":
                 userHealth = await db_manager.get_health(user_id)
                 #if the user is full health, don't add health and send a message
                 if userHealth == 100:
@@ -2653,20 +2655,48 @@ class Basic(commands.Cog, name="basic"):
             item_recipe = await db_manager.get_item_recipe(item)
             hasRecipe = await db_manager.check_item_recipe(item)
             if hasRecipe == False:
-                await ctx.send(f"You can not craft {item_emote} **{item_name}**!")
+                await ctx.send(f"{item_emote} **{item_name}** does not have a recipe!")
                 return
-            for item in item_recipe:
-            #check if the user has the items needed to craft the item
-                if item in inventory:
-                    #if the user has the items, remove the items from the users inventory
-                    await db_manager.remove_item_from_inventory(ctx.author.id, item_recipe[0], item_recipe[1])
-                    #add the item to the users inventory
-                else:
-                    #if the user does not have the items, send a message saying they do not have the items
-                    await ctx.send(f"You do not have the items needed to craft {item_emote} **{item_name}**!")
-                    #give the user the items back
+            #check if the user has all the required items before crafting
+            for recipe in item_recipe:
+                #get the item name
+                recipe_item = recipe[0]
+                #get the item amount
+                recipe_amount = recipe[1]
+                #check if the user has the item
+                hasItem = await db_manager.check_user_has_item(ctx.author.id, recipe_item)
+                #if the user does not have the item
+                if hasItem == 0:
+                    #send a message saying the user does not have the item
+                    await ctx.send(f"You do not have {recipe_item}!")
                     return
-            await db_manager.add_item_to_inventory(ctx.author.id, item, 1)
+                #if the user does have the item
+                else:
+                    #check if the user has enough of the item
+                    if await db_manager.get_item_amount_from_inventory(ctx.author.id, recipe_item) >= recipe_amount:
+                        hasEnough = True
+                    else:
+                        hasEnough = False
+                    #if the user does not have enough of the item
+                    if hasEnough == False:
+                        #send a message saying the user does not have enough of the item
+                        await ctx.send(f"You do not have enough {recipe_item}!")
+                        return
+            #if the user has all the required items
+            else:
+                #remove the items from the users inventory
+                for recipe in item_recipe:
+                    #get the item name
+                    recipe_item = recipe[0]
+                    #get the item amount
+                    recipe_amount = recipe[1]
+                    #remove the item from the users inventory
+                    await db_manager.remove_item_from_inventory(ctx.author.id, recipe_item, recipe_amount)
+                #add the item to the users inventory
+                await db_manager.add_item_to_inventory(ctx.author.id, item, 1)
+                #send a message saying the user crafted the item
+                await ctx.send(f"You crafted {item_emote} **{item_name}**!")
+                return
             
             
 #attack command

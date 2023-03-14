@@ -23,7 +23,7 @@
             "ingredient_amount": 1
         }],
 
-        "item_effect": "heal + 10",
+        "item_effect": "health + 10",
         "item_sub_type": "Potion"
     },
     {
@@ -68,7 +68,7 @@
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
-        "item_effect": "heal + 3",
+        "item_effect": "health + 3",
         "item_sub_type": "None"
     },    
     {
@@ -86,7 +86,7 @@
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
-        "item_effect": "heal + 1",
+        "item_effect": "health + 1",
         "item_sub_type": "None"
     }    
 ]

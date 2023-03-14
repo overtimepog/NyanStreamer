@@ -4,7 +4,12 @@ I am going to give you a bunch of different templates, and you are going to proc
 •Structures only have the options, (item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, spawn), no others will work
 •There are only three item elements and they can only work on weapons, Fire, Paralysis, and Poison, if the item effect would be "Burn", Replace it with "Fire"
 •Put Everything in a codeblock
+•Finish all code, no code is allowed to randomly cut off, finish it always
 •Every item needs "item_damage", even if its 0, it needs to be there
+•Item effects must be formated like so {effect} +/- {number}, EX. health + 10
+
+each rule is marked with a • and must be followed at all times when generating with the tenplates
+
         this is the Enemy and Boss template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names    {
                 "enemy_id": "rat",
                 "enemy_name": "Rat",
@@ -252,5 +257,4 @@ I am going to give you a bunch of different templates, and you are going to proc
                 ]
             }
         ]
-
-once you understand the rules, marked by a • at the beginning, tell me the rule, followed by a check emoji, and after all the rules are understood, tell me that you are ready to create
+once you understand the rules, marked by a • at the beginning, say the rule and say what it means for you and all generated content, followed by a check emoji, and after all the rules are understood tell me you have understood all the rules and, tell me that you are ready to create
