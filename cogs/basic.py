@@ -169,6 +169,7 @@ class Basic(commands.Cog, name="basic"):
 
         # Create a list of embeds with 5 items per embed
         embeds = []
+        #regenerate the number of pages
         for i in range(num_pages):
             start_idx = i * 5
             end_idx = start_idx + 5
@@ -763,7 +764,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
         
     
-    #shop command that shows the shop
+    #STUB - shop command that shows the shop
     @commands.hybrid_command(
         name="shop",
         description="This command will show the shop.",
@@ -775,12 +776,12 @@ class Basic(commands.Cog, name="basic"):
         :param ctx: The context in which the command was called.
         """
         #get the shop items from the database
-        items = await db_manager.display_shop_items()
+        shopitems = await db_manager.display_shop_items()
         #pick random items from the shop to display
         #create an embed
         #create muliple embeds if there are more than 10 items in the shop
         # Calculate number of pages based on number of items
-        num_pages = (len(items) // 5) + (1 if len(items) % 5 > 0 else 0)
+        num_pages = (len(shopitems) // 5) + (1 if len(shopitems) % 5 > 0 else 0)
         
         current_page = 0
 
@@ -791,45 +792,311 @@ class Basic(commands.Cog, name="basic"):
             end_idx = start_idx + 5
             shop_embed = discord.Embed(
                 title="Shop",
-                description="This is the shop, you can buy items here with `/buy itemid` EX. `/buy iron_sword`.",
+                description="This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`.",
             )
             shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
             for j in range(start_idx, end_idx):
-                if j < len(items):
-                    item = items[j]
+                if j < len(shopitems):
+                    item = shopitems[j]
                     item_id = item[0]
                     item_name = item[1]
                     item_price = item[2]
                     item_emoji = item[3]
+                    item_rarity = item[4]
+                    item_type = item[5]
+                    item_damage = item[6]
+                    is_usable = item[7]
+                    is_equippable = item[8]
+                    item_amount = item[9]
                     item_description = await db_manager.get_basic_item_description(item_id)
                     item_amount = await db_manager.get_shop_item_amount(item_id)
-                    shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price} ({item_amount})", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
+                    if await db_manager.check_chest(item_id):
+                        item_name = await db_manager.get_chest_name(item_id)
+                        item_emoji = await db_manager.get_chest_icon(item_id)
+                        item_description = await db_manager.get_chest_description(item_id)
+                        item_amount = await db_manager.get_shop_item_amount(item_id)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price} ({item_amount})", value=f'**{item_description}** \n Type: `Chests` \n ID:`{item_id}`', inline=False)
+                    else:
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price} ({item_amount})", value=f'**{item_description}** \n Type: `{item[5]}` \n ID:`{item_id}`', inline=False)
             embeds.append(shop_embed)
+            
+        class Select(discord.ui.Select):
+            def __init__(self):
+                options=[
+                    discord.SelectOption(label="All"),
+                    discord.SelectOption(label="Weapons"),
+                    discord.SelectOption(label="Tools"),
+                    discord.SelectOption(label="Armor"),
+                    discord.SelectOption(label="Consumables"),
+                    discord.SelectOption(label="Materials"),
+                    discord.SelectOption(label="Badges"),
+                    ]
+                super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
+
+            async def callback(self, interaction: discord.Interaction):
+                if self.values[0] == "All":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        shop_embed = discord.Embed(
+                            title="Shop",
+                            description="Welcome to the shop! Use /buy to buy an item.",
+                        )
+                        shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        shop_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(shopitems):
+                                item = shopitems[j]
+                                item_id = item[0]
+                                item_name = item[1]
+                                item_price = item[2]
+                                item_emoji = item[3]
+                                item_rarity = item[4]
+                                item_type = item[5]
+                                item_damage = item[6]
+                                is_usable = item[7]
+                                is_equippable = item[8]
+                                item_amount = item[9]
+                                item_description = await db_manager.get_basic_item_description(item_id)
+                                if item_type == "Weapon":
+                                    item_type = "Weapons"
+                                if await db_manager.check_chest(item_id):
+                                    item_name = await db_manager.get_chest_name(item_id)
+                                    item_emoji = await db_manager.get_chest_icon(item_id)
+                                    item_description = await db_manager.get_chest_description(item_id)
+                                    item_type = "Chests"
+                                shop_embed.add_field(name=f"{item_emoji}{item_name} - {item_price} Coins", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}`', inline=False)
+                        embeds.append(shop_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+
+                elif self.values[0] == "Weapons":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        shop_embed = discord.Embed(
+                            title="Shop",
+                            description="Welcome to the shop! Use /buy to buy an item.",
+                        )
+                        shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        shop_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(shopitems):
+                                item = shopitems[j]
+                                item_id = item[0]
+                                item_name = item[1]
+                                item_price = item[2]
+                                item_emoji = item[3]
+                                item_rarity = item[4]
+                                item_type = item[5]
+                                item_damage = item[6]
+                                is_usable = item[7]
+                                is_equippable = item[8]
+                                item_amount = item[9]
+                                item_description = await db_manager.get_basic_item_description(item_id)
+                                if item_type != "Weapon":
+                                    #don't add the item to the embed
+                                    continue
+                                shop_embed.add_field(name=f"{item_emoji}{item_name} - {item_price} Coins", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}`', inline=False)
+                        embeds.append(shop_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+
+                elif self.values[0] == "Tools":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        shop_embed = discord.Embed(
+                            title="Shop",
+                            description="Welcome to the shop! Use /buy to buy an item.",
+                        )
+                        shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        shop_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(shopitems):
+                                item = shopitems[j]
+                                item_id = item[0]
+                                item_name = item[1]
+                                item_price = item[2]
+                                item_emoji = item[3]
+                                item_rarity = item[4]
+                                item_type = item[5]
+                                item_damage = item[6]
+                                is_usable = item[7]
+                                is_equippable = item[8]
+                                item_amount = item[9]
+                                item_description = await db_manager.get_basic_item_description(item_id)
+                                if item_type != "Tool":
+                                    #don't add the item to the embed
+                                    continue
+                                shop_embed.add_field(name=f"{item_emoji}{item_name} - {item_price} Coins", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}`', inline=False)
+                        embeds.append(shop_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                
+                elif self.values[0] == "Armor":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        shop_embed = discord.Embed(
+                            title="Shop",
+                            description="Welcome to the shop! Use /buy to buy an item.",
+                        )
+                        shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        shop_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(shopitems):
+                                item = shopitems[j]
+                                item_id = item[0]
+                                item_name = item[1]
+                                item_price = item[2]
+                                item_emoji = item[3]
+                                item_rarity = item[4]
+                                item_type = item[5]
+                                item_damage = item[6]
+                                is_usable = item[7]
+                                is_equippable = item[8]
+                                item_amount = item[9]
+                                item_description = await db_manager.get_basic_item_description(item_id)
+                                if item_type != "Armor":
+                                    #don't add the item to the embed
+                                    continue
+                                shop_embed.add_field(name=f"{item_emoji}{item_name} - {item_price} Coins", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}`', inline=False)
+                        embeds.append(shop_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                
+                elif self.values[0] == "Consumables":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        shop_embed = discord.Embed(
+                            title="Shop",
+                            description="Welcome to the shop! Use /buy to buy an item.",
+                        )
+                        shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        shop_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(shopitems):
+                                item = shopitems[j]
+                                item_id = item[0]
+                                item_name = item[1]
+                                item_price = item[2]
+                                item_emoji = item[3]
+                                item_rarity = item[4]
+                                item_type = item[5]
+                                item_damage = item[6]
+                                is_usable = item[7]
+                                is_equippable = item[8]
+                                item_amount = item[9]
+                                item_description = await db_manager.get_basic_item_description(item_id)
+                                if item_type != "Consumable":
+                                    #don't add the item to the embed
+                                    continue
+                                shop_embed.add_field(name=f"{item_emoji}{item_name} - {item_price} Coins", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}`', inline=False)
+                        embeds.append(shop_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                
+                elif self.values[0] == "Materials":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        shop_embed = discord.Embed(
+                            title="Shop",
+                            description="Welcome to the shop! Use /buy to buy an item.",
+                        )
+                        shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        shop_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(shopitems):
+                                item = shopitems[j]
+                                item_id = item[0]
+                                item_name = item[1]
+                                item_price = item[2]
+                                item_emoji = item[3]
+                                item_rarity = item[4]
+                                item_type = item[5]
+                                item_damage = item[6]
+                                is_usable = item[7]
+                                is_equippable = item[8]
+                                item_amount = item[9]
+                                item_description = await db_manager.get_basic_item_description(item_id)
+                                if item_type != "Material":
+                                    #don't add the item to the embed
+                                    continue
+                                shop_embed.add_field(name=f"{item_emoji}{item_name} - {item_price} Coins", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}`', inline=False)
+                        embeds.append(shop_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                
+                elif self.values[0] == "Badges":
+                    embeds = []
+                    for i in range(num_pages):
+                        start_idx = i * 5
+                        end_idx = start_idx + 5
+                        shop_embed = discord.Embed(
+                            title="Shop",
+                            description="Welcome to the shop! Use /buy to buy an item.",
+                        )
+                        shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+                        shop_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                        for j in range(start_idx, end_idx):
+                            if j < len(shopitems):
+                                item = shopitems[j]
+                                item_id = item[0]
+                                item_name = item[1]
+                                item_price = item[2]
+                                item_emoji = item[3]
+                                item_rarity = item[4]
+                                item_type = item[5]
+                                item_damage = item[6]
+                                is_usable = item[7]
+                                is_equippable = item[8]
+                                item_amount = item[9]
+                                item_description = await db_manager.get_basic_item_description(item_id)
+                                if item_type != "Badge":
+                                    #don't add the item to the embed
+                                    continue
+                                shop_embed.add_field(name=f"{item_emoji}{item_name} - {item_price} Coins", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}`', inline=False)
+                        embeds.append(shop_embed)
+                    await interaction.response.edit_message(embed=embeds[current_page])
+                
+                #continue with elif clauses for other options (Tools, Armor, Consumables, Materials, Badges)
+
+
+            
             
         class ShopButton(discord.ui.View):
             def __init__(self, current_page, **kwargs):
                 super().__init__(**kwargs)
                 self.current_page = current_page
+                self.add_item(Select())
             @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
             async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 self.current_page = 0
                 await interaction.response.defer()
-                await message.edit(embed=embeds[self.current_page], view=ShopButton(self.current_page))
+                await message.edit(embed=embeds[self.current_page])
             @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
             async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 self.current_page -= 1
                 await interaction.response.defer()
-                await message.edit(embed=embeds[self.current_page], view=ShopButton(self.current_page))
+                await message.edit(embed=embeds[self.current_page])
             @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
             async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 self.current_page += 1
                 await interaction.response.defer()
-                await message.edit(embed=embeds[self.current_page], view=ShopButton(self.current_page))
+                await message.edit(embed=embeds[self.current_page])
             @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
             async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 self.current_page = num_pages - 1
                 await interaction.response.defer()
-                await message.edit(embed=embeds[self.current_page], view=ShopButton(self.current_page))
+                await message.edit(embed=embeds[self.current_page])
+            def __end__(self, current_page, **kwargs):
+                super().__end__(**kwargs)
+                self.current_page = current_page
+                self.add_item(Select())
+                
         message = await ctx.send(embed=embeds[current_page], view=ShopButton(current_page))
         
         

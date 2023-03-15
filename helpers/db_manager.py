@@ -850,7 +850,7 @@ async def add_shop_items() -> None:
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
     #add the items to the shop table
     for item in data:
-        item_id = item[1]
+        item_id = item[0]
         item_amount = random.randint(1, 10)
         #CREATE TABLE IF NOT EXISTS `shop` (
         #  `item_id` varchar(255) NOT NULL,
@@ -864,7 +864,7 @@ async def add_shop_items() -> None:
         #  `isEquippable` boolean NOT NULL,
         #  `item_amount` int(11) NOT NULL
         #);
-        await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item_id, item[2], item[3], item[4], item[5], item[6], item[7], item[8], item[9], item_amount))
+        await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7], item[8], item_amount))
         print(f"Added |{item_id}| to the shop with an amount of |{item_amount}|")
         
 #clear the shop table
