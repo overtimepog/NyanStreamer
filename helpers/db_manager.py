@@ -1660,7 +1660,7 @@ async def display_shop_items() -> list:
             return None
         
 #get a list of all items in a specific item_type from the shop table
-async def get_all_shop_items_off_one_type(item_type: str) -> list:
+async def display_shop_items_by_type(item_type: str) -> list:
         db = DB()
         data = await db.execute(f"SELECT * FROM `shop` WHERE item_type = ?", (item_type,), fetch="all")
         if data is not None:
@@ -2667,6 +2667,20 @@ async def view_inventory(user_id: int) -> list:
     """
     db = DB()
     data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ?", (user_id,), fetch="all")
+    if data is not None:
+        return data
+    else:
+        return []
+    
+#view all of users inventory, for a specific item type
+async def view_inventory_by_type(user_id: int, item_type: str) -> list:
+    """
+    This function will view all items in a users imventory.
+
+    :return: A list of all items in a users imventory.
+    """
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_type = ?", (user_id, item_type), fetch="all")
     if data is not None:
         return data
     else:

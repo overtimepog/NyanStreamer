@@ -77,7 +77,7 @@
         "item_price": 50,
         "item_emoji": "\ud83c\udf7a",
         "item_rarity": "Common",
-        "item_type": "Drink",
+        "item_type": "Consumable",
         "item_damage": 0,
         "isUsable": true,
         "inShop": true,
