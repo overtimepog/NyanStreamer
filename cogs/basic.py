@@ -139,7 +139,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(embed=embed)
 
 #command to view inventory of a user, using the view_inventory function from helpers\db_manager.py
-#STUB - Inventory
+#ANCHOR - Inventory
     @commands.hybrid_command(
         name="inventory",
         description="This command will view your inventory.",
@@ -661,11 +661,11 @@ class Basic(commands.Cog, name="basic"):
         #create the item
         #if the streamer has more than 5 items and is an affilate, the item will not be created
         if broadcast_type == "affiliate" and len(items) >= 5:
-            await ctx.send("You have reached the maximum amount of items for an affiliate.")
+            await ctx.send("You have reached the maximum amount of custom items for an affiliate.")
             return
         #if the streamer has more than 10 items and is a partner, the item will not be created
         elif broadcast_type == "partner" and len(items) >= 10:
-            await ctx.send("You have reached the maximum amount of items for a partner.")
+            await ctx.send("You have reached the maximum amount of custom items for a partner.")
             return
         else:
             await db_manager.create_streamer_item(streamer_prefix, channel, item_name, item_emoji)
@@ -883,7 +883,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
         
     
-    #STUB - shop command that shows the shop
+    #ANCHOR - shop command that shows the shop
     @commands.hybrid_command(
         name="shop",
         description="This command will show the shop.",
@@ -2401,7 +2401,7 @@ class Basic(commands.Cog, name="basic"):
         else:
             await mine.mine(ctx)
 
-
+    #ANCHOR use command
     #a cooldown of 2 minutes
     @commands.cooldown(1, 120, commands.BucketType.user)
     @commands.hybrid_command(
@@ -2421,7 +2421,7 @@ class Basic(commands.Cog, name="basic"):
         #check if the item is in the inventory
         isItemThere = await db_manager.is_item_in_inventory(ctx.author.id, item)
         if isItemThere == False or isItemThere == None or isItemThere == 0:
-            await ctx.send("You do not have this item!")
+            await ctx.send("You don't have this item!")
             await self.use.reset_cooldown(ctx)
             return
         user_id = ctx.message.author.id
@@ -2435,7 +2435,6 @@ class Basic(commands.Cog, name="basic"):
         if isUsable == 1:
             #remove item from inventory
             await db_manager.remove_item_from_inventory(user_id, item, 1)
-            #STUB - item effects
             #if the item's name is "Potion", add 10 health to the user
             #get the items effect
             item_effect = await db_manager.get_basic_item_effect(item)
@@ -2545,7 +2544,7 @@ class Basic(commands.Cog, name="basic"):
                     item = random.choice(highchanceitems)
                 elif roll > 90:
                     #they found nothing
-                    await ctx.send(f"It seems {chest_name} ened up being empty!")
+                    await ctx.send(f"It seems {chest_name} ended up being empty!")
                     return
                 
                 await db_manager.add_item_to_inventory(ctx.author.id, item[1], item[2])
