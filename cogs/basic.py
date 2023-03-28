@@ -145,376 +145,14 @@ class Basic(commands.Cog, name="basic"):
         description="This command will view your inventory.",
     )
     async def inventory(self, ctx: Context):
-        """
-        This command will show you your inventory.
-
-        :param ctx: The context in which the command was called.
-        """
-        #get the shop items from the database
-        #create the user if they dont exist
-        if not await db_manager.check_user(ctx.author.id):
-            await ctx.send("You have not Started your adventure yet, use /start to start your adventure.")
-            return
-        items = await db_manager.view_inventory(ctx.author.id)
-        print(items)
-        if items == []:
-            await ctx.send("Your inventory is empty.")
-            return
-        #create an embed
-        #create muliple embeds if there are more than 10 items in the shop
-        # Calculate number of pages based on number of items
-        num_pages = (len(items) // 5) + (1 if len(items) % 5 > 0 else 0)
-        
-        current_page = 0
-
-        # Create a list of embeds with 5 items per embed
-        embeds = []
-        #regenerate the number of pages
-        for i in range(num_pages):
-            start_idx = i * 5
-            end_idx = start_idx + 5
-            inv_embed = discord.Embed(
-                title="Inventory",
-                description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
-            )
-            inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-            inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-            for j in range(start_idx, end_idx):
-                if j < len(items):
-                    item = items[j]
-                    item_id = item[1]
-                    item_name = item[2]
-                    item_price = item[3]
-                    item_emoji = item[4]
-                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                    if item_amount == 0:
-                        continue
-                    isChest = await db_manager.check_chest(item_id)
-                    if isChest == 1:
-                        item_name = await db_manager.get_chest_name(item_id)
-                        item_emoji = await db_manager.get_chest_icon(item_id)
-                        item_description = await db_manager.get_chest_description(item_id)
-                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                        continue
-                    else:
-                        item_description = await db_manager.get_basic_item_description(item_id)
-                    equippedItems = await db_manager.get_equipped_items(ctx.author.id)
-                    isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
-                    if isEquipped == 1:
-                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                    else:
-                        inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                    embeds.append(inv_embed)
-        
-        class Select(discord.ui.Select):
-            def __init__(self):
-                options=[
-                    discord.SelectOption(label="All"),
-                    discord.SelectOption(label="Weapons"),
-                    discord.SelectOption(label="Tools"),
-                    discord.SelectOption(label="Armor"),
-                    discord.SelectOption(label="Consumables"),
-                    discord.SelectOption(label="Materials"),
-                    discord.SelectOption(label="Badges"),
-                    ]
-                super().__init__(placeholder="Select an option",max_values=1,min_values=1,options=options)
-            async def callback(self, interaction: discord.Interaction):
-                if self.values[0] == "All":
-                    embeds = []
-                    for i in range(num_pages):
-                        start_idx = i * 5
-                        end_idx = start_idx + 5
-                        inv_embed = discord.Embed(
-                            title="Inventory",
-                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
-                        )
-                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-                        for j in range(start_idx, end_idx):
-                            if j < len(items):
-                                item = items[j]
-                                item_id = item[1]
-                                item_name = item[2]
-                                item_price = item[3]
-                                item_emoji = item[4]
-                                item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                                if item_amount == 0:
-                                    continue
-                                isChest = await db_manager.check_chest(item_id)
-                                if isChest == 1:
-                                    item_name = await db_manager.get_chest_name(item_id)
-                                    item_emoji = await db_manager.get_chest_icon(item_id)
-                                    item_description = await db_manager.get_chest_description(item_id)
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                    continue
-                                else:
-                                    item_description = await db_manager.get_basic_item_description(item_id)
-                                #check if the item is equiped
-                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
-                                if isEquipped == 1:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                else:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                embeds.append(inv_embed)
-                        await interaction.response.edit_message(embed=embeds[current_page])
-                        
-                if self.values[0] == "Weapons":
-                    embeds = []
-                    for i in range(num_pages):
-                        start_idx = i * 5
-                        end_idx = start_idx + 5
-                        inv_embed = discord.Embed(
-                            title="Inventory",
-                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
-                        )
-                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-                        for j in range(start_idx, end_idx):
-                            if j < len(items):
-                                item = items[j]
-                                item_id = item[1]
-                                item_name = item[2]
-                                item_price = item[3]
-                                item_emoji = item[4]
-                                item_type = item[7]
-                                if item_type == "Weapon":
-                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                                    item_description = await db_manager.get_basic_item_description(item_id)
-                                    if item_amount == 0:
-                                        continue
-                                else:
-                                    #dont add the item to the embed
-                                    continue
-                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
-                                if isEquipped == 1:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                else:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                embeds.append(inv_embed)
-                    await interaction.response.edit_message(embed=embeds[current_page])
-                    
-                if self.values[0] == "Tools":
-                    embeds = []
-                    for i in range(num_pages):
-                        start_idx = i * 5
-                        end_idx = start_idx + 5
-                        inv_embed = discord.Embed(
-                            title="Inventory",
-                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
-                        )
-                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-                        for j in range(start_idx, end_idx):
-                            if j < len(items):
-                                item = items[j]
-                                item_id = item[1]
-                                item_name = item[2]
-                                item_price = item[3]
-                                item_emoji = item[4]
-                                item_type = item[7]
-                                if item_type == "Tool":
-                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                                    item_description = await db_manager.get_basic_item_description(item_id)
-                                    if item_amount == 0:
-                                        continue
-                                else:
-                                    #dont add the item to the embed
-                                    continue
-                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
-                                if isEquipped == 1:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                else:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                embeds.append(inv_embed)
-                    await interaction.response.edit_message(embed=embeds[current_page])
-                    
-                if self.values[0] == "Armor":
-                    embeds = []
-                    for i in range(num_pages):
-                        start_idx = i * 5
-                        end_idx = start_idx + 5
-                        inv_embed = discord.Embed(
-                            title="Inventory",
-                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
-                        )
-                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-                        for j in range(start_idx, end_idx):
-                            if j < len(items):
-                                item = items[j]
-                                item_id = item[1]
-                                item_name = item[2]
-                                item_price = item[3]
-                                item_emoji = item[4]
-                                item_type = item[7]
-                                item_sub_type = await db_manager.get_basic_item_sub_type(item_id)
-                                if item_type == "Armor" or item_type == "Accessory" or item_sub_type == "Bauble":
-                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                                    item_description = await db_manager.get_basic_item_description(item_id)
-                                    if item_amount == 0:
-                                        continue
-                                else:
-                                    #dont add the item to the embed
-                                    continue
-                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
-                                if isEquipped == 1:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                else:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                embeds.append(inv_embed)
-                    await interaction.response.edit_message(embed=embeds[current_page])
-                    
-                if self.values[0] == "Consumables":
-                    embeds = []
-                    for i in range(num_pages):
-                        start_idx = i * 5
-                        end_idx = start_idx + 5
-                        inv_embed = discord.Embed(
-                            title="Inventory",
-                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
-                        )
-                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-                        for j in range(start_idx, end_idx):
-                            if j < len(items):
-                                item = items[j]
-                                item_id = item[1]
-                                item_name = item[2]
-                                item_price = item[3]
-                                item_emoji = item[4]
-                                item_type = item[7]
-                                if item_type == "Consumable":
-                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                                    if item_amount == 0:
-                                        continue
-                                    isChest = await db_manager.check_chest(item_id)
-                                    if isChest == 1:
-                                        item_name = await db_manager.get_chest_name(item_id)
-                                        item_emoji = await db_manager.get_chest_icon(item_id)
-                                        item_description = await db_manager.get_chest_description(item_id)
-                                    else:
-                                        item_description = await db_manager.get_basic_item_description(item_id)
-                                else:
-                                    #dont add the item to the embed
-                                    continue
-                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                embeds.append(inv_embed)
-                    await interaction.response.edit_message(embed=embeds[current_page])
-                    
-                if self.values[0] == "Materials":
-                    embeds = []
-                    for i in range(num_pages):
-                        start_idx = i * 5
-                        end_idx = start_idx + 5
-                        inv_embed = discord.Embed(
-                            title="Inventory",
-                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
-                        )
-                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-                        for j in range(start_idx, end_idx):
-                            if j < len(items):
-                                item = items[j]
-                                item_id = item[1]
-                                item_name = item[2]
-                                item_price = item[3]
-                                item_emoji = item[4]
-                                item_type = item[7]
-                                if item_type == "Material":
-                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                                    item_description = await db_manager.get_basic_item_description(item_id)
-                                    if item_amount == 0:
-                                        continue
-                                else:
-                                    #dont add the item to the embed
-                                    continue
-                                inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                embeds.append(inv_embed)
-                    await interaction.response.edit_message(embed=embeds[current_page])
-                    
-                if self.values[0] == "Badges":
-                    embeds = []
-                    for i in range(num_pages):
-                        start_idx = i * 5
-                        end_idx = start_idx + 5
-                        inv_embed = discord.Embed(
-                            title="Inventory",
-                            description="Your inventory, use /use to use an item. and /equip to equip an item.  ",
-                        )
-                        inv_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-                        inv_embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-                        for j in range(start_idx, end_idx):
-                            if j < len(items):
-                                item = items[j]
-                                item_id = item[1]
-                                item_name = item[2]
-                                item_price = item[3]
-                                item_emoji = item[4]
-                                item_type = item[7]
-                                if item_type == "Badge":
-                                    item_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, item_id)
-                                    item_description = await db_manager.get_basic_item_description(item_id)
-                                    if item_amount == 0:
-                                        continue
-                                else:
-                                    #dont add the item to the embed
-                                    continue
-                                isEquipped = await db_manager.check_item_equipped(ctx.author.id, item_id)
-                                if isEquipped == 1:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount} - Equipped", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                else:
-                                    inv_embed.add_field(name=f"{item_emoji}{item_name} - {item_amount}", value=f'**{item_description}** \n ID:`{item_id}`', inline=False)
-                                embeds.append(inv_embed)
-                    await interaction.response.edit_message(embed=embeds[current_page])
-                    
-                    
-               
-                    
-                    
-        class InvButton(discord.ui.View):
-            def __init__(self, current_page, **kwargs):
-                super().__init__(**kwargs)
-                self.current_page = current_page
-                self.add_item(Select())
-            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
-            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = 0
-                await interaction.response.defer()
-                await message.edit(embed=embeds[self.current_page])
-            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
-            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page -= 1
-                await interaction.response.defer()
-                await message.edit(embed=embeds[self.current_page])
-            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
-            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page += 1
-                await interaction.response.defer()
-                await message.edit(embed=embeds[self.current_page])
-            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
-            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = num_pages - 1
-                await interaction.response.defer()
-                await message.edit(embed=embeds[self.current_page])
-            def __end__(self, current_page, **kwargs):
-                super().__end__(**kwargs)
-                self.current_page = current_page
-                self.add_item(Select())
-                
-        message = await ctx.send(embed=embeds[current_page], view=InvButton(current_page))
-    
-    
-    async def inventory(self, ctx: Context):
-    # Get the user's inventory from the database
-        items = await db_manager.view_inventory(ctx.author.id)
-        
-        #check if the user has any items
-        if len(items) == 0:
+        # Get user inventory items from the database
+        inventory_items = await db_manager.view_inventory(ctx.author.id)
+        if inventory_items == []:
             await ctx.send("You have no items in your inventory.")
             return
 
         # Calculate number of pages based on number of items
-        num_pages = (len(items) // 5) + (1 if len(items) % 5 > 0 else 0)
+        num_pages = (len(inventory_items) // 5) + (1 if len(inventory_items) % 5 > 0 else 0)
 
         current_page = 0
 
@@ -527,8 +165,8 @@ class Basic(commands.Cog, name="basic"):
                 start_idx = i * 5
                 end_idx = start_idx + 5
                 inventory_embed = discord.Embed(
-                    title=f"{ctx.author.name}'s Inventory",
-                    description="This is your inventory. Use `/equip itemid` or `/use itemid` to interact with your items.",
+                    title="Inventory",
+                    description=f"{ctx.author.name}'s Inventory \n Commands: \n /equip ID: equips an item based on its id \n /unequip ID: will unequip an item based on its ID.",
                 )
                 inventory_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -545,82 +183,77 @@ class Basic(commands.Cog, name="basic"):
                     item_element = item[10]
                     item_crit_chance = item[11]
                     item_projectile = item[12]
+                    item_description = await db_manager.get_basic_item_description(item_id)
 
-                    inventory_embed.add_field(
-                        name=f"{item_emoji}{item_name} x{item_amount}",
-                        value=f"**Type:** `{item_type}` \n **ID:** `{item_id}`",
-                        inline=False,
-                    )
+                    inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
 
                 embeds.append(inventory_embed)
 
             return embeds
 
         # Create a list of embeds with 5 items per embed
-        embeds = await create_embeds(items)
-
+        embeds = await create_embeds(inventory_items)
         class Select(discord.ui.Select):
-            def __init__(self):
-                options = [
-                    discord.SelectOption(label="All"),
-                    discord.SelectOption(label="Weapon"),
-                    discord.SelectOption(label="Tool"),
-                    discord.SelectOption(label="Armor"),
-                    discord.SelectOption(label="Consumable"),
-                    discord.SelectOption(label="Material"),
-                    discord.SelectOption(label="Badge"),
-                ]
-                super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
+                def __init__(self):
+                    options=[
+                        discord.SelectOption(label="All"),
+                        discord.SelectOption(label="Weapon"),
+                        discord.SelectOption(label="Tool"),
+                        discord.SelectOption(label="Armor"),
+                        discord.SelectOption(label="Consumable"),
+                        discord.SelectOption(label="Material"),
+                        discord.SelectOption(label="Badge"),
+                    ]
+                    super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
 
-            async def callback(self, interaction: discord.Interaction):
-                selected_item_type = self.values[0]
+                async def callback(self, interaction: discord.Interaction):
+                    selected_item_type = self.values[0]
 
-                if selected_item_type == "All":
-                    filtered_items = items
-                else:
-                    filtered_items = [item for item in items if item[7] == selected_item_type]
-                    
-                filtered_embeds = await create_embeds(filtered_items)
-                new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
-                await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+                    if selected_item_type == "All":
+                        filtered_items = await db_manager.view_inventory(interaction.user.id)
+                    else:
+                        filtered_items = [item for item in await db_manager.view_inventory(interaction.user.id) if item[7] == selected_item_type]
+
+                    filtered_embeds = await create_embeds(filtered_items)
+                    new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
+                    await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
 
         class InventoryButton(discord.ui.View):
-            def __init__(self, current_page, embeds, **kwargs):
-                super().__init__(**kwargs)
-                self.current_page = current_page
-                self.embeds = embeds
-                self.add_item(Select())
+                def __init__(self, current_page, embeds, **kwargs):
+                    super().__init__(**kwargs)
+                    self.current_page = current_page
+                    self.embeds = embeds
+                    self.add_item(Select())
 
-            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
-            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = 0
-                await interaction.response.defer()
-                await interaction.message.edit(embed=self.embeds[self.current_page])
-
-            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
-            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                if self.current_page > 0:
-                    self.current_page -= 1
+                @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+                async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = 0
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
 
-            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
-            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                if self.current_page < len(self.embeds) - 1:
-                    self.current_page += 1
+                @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+                async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page > 0:
+                        self.current_page -= 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+                async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page < len(self.embeds) - 1:
+                        self.current_page += 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+                async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = len(self.embeds) - 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
 
-            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
-            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = len(self.embeds) - 1
-                await interaction.response.defer()
-                await interaction.message.edit(embed=self.embeds[self.current_page])
+        view = InventoryButton(current_page=0, embeds=embeds)
+        await ctx.send(embed=embeds[0], view=view)
 
-        inventory_view = InventoryButton(current_page=0, embeds=embeds)
-        await ctx.send(embed=embeds[current_page], view=inventory_view)
-
-               
 
     #command to create a new item in the database item table, using the create_streamer_item function from helpers\db_manager.py
     #`streamer_prefix` varchar(20) NOT NULL,
@@ -1098,7 +731,7 @@ class Basic(commands.Cog, name="basic"):
                             user_inventory = await db_manager.view_inventory(user_id)
                             for i in user_inventory:
                                 if item in i:
-                                    await ctx.send(f"You already have this weapon!")
+                                    await ctx.send(f"You already have this Weapon!")
                                     return
                             #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
                             if amount > 1:
@@ -1110,7 +743,7 @@ class Basic(commands.Cog, name="basic"):
                             user_inventory = await db_manager.view_inventory(user_id)
                             for i in user_inventory:
                                 if item in i:
-                                    await ctx.send(f"You already have this armor!")
+                                    await ctx.send(f"You already have this Armor!")
                                     return
                             #if the user is trying to buy more than 1 of the same weapon, tell them they can only buy 1
                             if amount > 1:
@@ -1123,7 +756,7 @@ class Basic(commands.Cog, name="basic"):
                             return
                         #if the user has enough money, continue with the purchase
                         else:
-                            ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
+                            await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
                             #remove the item from the shop
                             await db_manager.remove_shop_item_amount(item, amount)
                             #add the item to the users inventory
