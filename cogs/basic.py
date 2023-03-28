@@ -2304,7 +2304,7 @@ class Basic(commands.Cog, name="basic"):
                 outcome_name = await db_manager.get_basic_item_name(outcome_thing)
                 outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
             #send a message saying the outcome, and the item gained
-            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}** ...And + {outcome_xp} XP!")
+            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}** ...And + ⭐{outcome_xp} XP!")
             #remove the health from the users health
             await db_manager.add_xp(msg.author.id, outcome_xp)
             #check if the user leveled up
@@ -2338,13 +2338,13 @@ class Basic(commands.Cog, name="basic"):
                             quest_reward_amount = await db_manager.get_quest_reward_amount_from_id(userquest)
                             #add the item to the users inventory
                             await db_manager.add_item_to_inventory(msg.author.id, quest_reward, quest_reward_amount)
-                            await ctx.send(f"Congrats {msg.author.mention}, you completed the quest **{await db_manager.get_quest_name_from_id(userquest)}** and got {await db_manager.get_basic_item_emote(quest_reward)} **{await db_manager.get_basic_item_name(quest_reward)}**!")
+                            await ctx.send(f"Congrats {msg.author.mention}, you completed the quest **{await db_manager.get_quest_name_from_quest_id(userquest)}** and got x{quest_reward_amount} {await db_manager.get_basic_item_emote(quest_reward)} **{await db_manager.get_basic_item_name(quest_reward)}**!")
                         elif quest_reward_type == "Money":
                             #get quest reward amount
                             quest_reward_amount = await db_manager.get_quest_reward_amount_from_id(userquest)
                             #add the money to the users money
                             await db_manager.add_money(msg.author.id, quest_reward_amount)
-                            await ctx.send(f"Congrats {msg.author.mention}, you completed the quest **{await db_manager.get_quest_name_from_id(userquest)}** and got {cash}{quest_reward_amount} Money!")
+                            await ctx.send(f"Congrats {msg.author.mention}, you completed the quest **{await db_manager.get_quest_name_from_quest_id(userquest)}** and got {cash}{quest_reward_amount} Money!")
                     await db_manager.mark_quest_completed(msg.author.id, userquest)
                     
             #add the item to the users inventory
@@ -2358,7 +2358,7 @@ class Basic(commands.Cog, name="basic"):
                 outcome_name = await db_manager.get_basic_item_name(outcome_thing)
                 outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
             #send a message saying the outcome, and the item lost
-            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}** ...And + {outcome_xp} XP!")
+            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}** ...And + ⭐{outcome_xp} XP")
             #remove the health from the users health
             await db_manager.add_xp(msg.author.id, outcome_xp)
             #check if the user leveled up
@@ -2371,7 +2371,7 @@ class Basic(commands.Cog, name="basic"):
         #if the outcome type is health_loss
         elif outcome_type == "health_loss":
             #send a message saying the outcome, and the health lost
-            await ctx.send(f"{outcome_quote} - {outcome_amount} health! ...And + {outcome_xp} XP!")
+            await ctx.send(f"{outcome_quote} - {outcome_amount} health! ...And + ⭐{outcome_xp} XP")
             #remove the health from the users health
             await db_manager.add_xp(msg.author.id, outcome_xp)
             #check if the user leveled up
@@ -2383,7 +2383,7 @@ class Basic(commands.Cog, name="basic"):
         #if the outcome type is health_gain
         elif outcome_type == "health_gain":
             #send a message saying the outcome, and the health gained
-            await ctx.send(f"{outcome_quote} + {outcome_amount} health! ...And + {outcome_xp} XP!")
+            await ctx.send(f"{outcome_quote} + {outcome_amount} health! ...And + ⭐{outcome_xp} XP")
             #remove the health from the users health
             await db_manager.add_xp(msg.author.id, outcome_xp)
             #check if the user leveled up
@@ -2396,7 +2396,7 @@ class Basic(commands.Cog, name="basic"):
         #if the outcome type is money_gain
         elif outcome_type == "money_gain":
             #send a message saying the outcome, and the money gained
-            await ctx.send(f"{outcome_quote} + {cash}{outcome_amount} ...And + {outcome_xp} XP!")
+            await ctx.send(f"{outcome_quote} + {cash}{outcome_amount} ...And + ⭐{outcome_xp} XP")
                         #remove the health from the users health
             await db_manager.add_xp(msg.author.id, outcome_xp)
             #check if the user leveled up
@@ -2409,7 +2409,7 @@ class Basic(commands.Cog, name="basic"):
         #if the outcome type is money_loss
         elif outcome_type == "money_loss":
             #send a message saying the outcome, and the money lost
-            await ctx.send(f"{outcome_quote} - {cash}{outcome_amount} ...And + {outcome_xp} XP!")
+            await ctx.send(f"{outcome_quote} - {cash}{outcome_amount} ...And + ⭐{outcome_xp} XP")
                         #remove the health from the users health
             await db_manager.add_xp(msg.author.id, outcome_xp)
             #check if the user leveled up

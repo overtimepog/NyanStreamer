@@ -3319,6 +3319,18 @@ async def get_item_recipe(item_id: str) -> list:
         async with db.execute("SELECT * FROM recipes WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchall()
             return result if result is not None else 0
+
+#get every item with a recipe
+async def get_all_recipes() -> list:
+    """
+    This function will get all the recipes.
+
+    :return: All the recipes.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM recipes") as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else 0
         
 #check the inventory of a user for any items with the item_type Armor and if they are equiped with the item_type Armor
 async def is_armor_equipped(user_id: int) -> int:
