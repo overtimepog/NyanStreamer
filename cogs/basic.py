@@ -2431,73 +2431,48 @@ class Basic(commands.Cog, name="basic"):
     @commands.hybrid_command()
     async def craft(self, ctx: Context, item: str):
         """Craft an item"""
-        #get the users inventory
+        # Get the user's inventory
         inventory = await db_manager.view_inventory(ctx.author.id)
-        #if the user has no items
-        if inventory == None or [] or [ ]:
-            #send a message saying the user has no items
-            await ctx.send("You have no items in your Inventory!")
+        # If the user has no items
+        if not inventory:
+            # Send a message saying the user has no items
+            await ctx.send("You have no items in your inventory!")
             return
-        #get the item info
+
+        # Get the item info
         item_info = await db_manager.view_basic_item(item)
         print(item_info)
-        #if the item is not found
-        if item_info == None or [] or [ ]:
-            #send a message saying the item is not found
+        # If the item is not found
+        if not item_info:
+            # Send a message saying the item is not found
             await ctx.send("Item not found!")
             return
-        #if the item is found
-        else:
-            #get the item name
-            item_name = item_info[0][1]
-            #get the item emote
-            item_emote = item_info[0][3]
-            #get the item recipe
-            item_recipe = await db_manager.get_item_recipe(item)
-            hasRecipe = await db_manager.check_item_recipe(item)
-            if hasRecipe == False:
-                await ctx.send(f"{item_emote} **{item_name}** does not have a recipe!")
+
+        # Get the item name, emote, and recipe
+        item_name = item_info[0][1]
+        item_emote = item_info[0][3]
+        item_recipe = await db_manager.get_item_recipe(item)
+        has_recipe = await db_manager.check_item_recipe(item)
+
+        # If the item does not have a recipe
+        if not has_recipe:
+            await ctx.send(f"{item_emote} **{item_name}** does not have a recipe!")
+            return
+
+        # Check if the user has all the required items before crafting
+        for recipe_item, recipe_amount in item_recipe:
+            # Check if the user has the item and enough quantity of it
+            if not await db_manager.check_user_has_item(ctx.author.id, recipe_item, recipe_amount):
+                # Send a message saying the user does not have the item or enough quantity of it
+                await ctx.send(f"You do not have enough {recipe_item}!")
                 return
-            #check if the user has all the required items before crafting
-            for recipe in item_recipe:
-                #get the item name
-                recipe_item = recipe[0]
-                #get the item amount
-                recipe_amount = recipe[1]
-                #check if the user has the item
-                hasItem = await db_manager.check_user_has_item(ctx.author.id, recipe_item)
-                #if the user does not have the item
-                if hasItem == 0:
-                    #send a message saying the user does not have the item
-                    await ctx.send(f"You do not have {recipe_item}!")
-                    return
-                #if the user does have the item
-                else:
-                    #check if the user has enough of the item
-                    if await db_manager.get_item_amount_from_inventory(ctx.author.id, recipe_item) >= recipe_amount:
-                        hasEnough = True
-                    else:
-                        hasEnough = False
-                    #if the user does not have enough of the item
-                    if hasEnough == False:
-                        #send a message saying the user does not have enough of the item
-                        await ctx.send(f"You do not have enough {recipe_item}!")
-                        return
-            #if the user has all the required items
-            else:
-                #remove the items from the users inventory
-                for recipe in item_recipe:
-                    #get the item name
-                    recipe_item = recipe[0]
-                    #get the item amount
-                    recipe_amount = recipe[1]
-                    #remove the item from the users inventory
-                    await db_manager.remove_item_from_inventory(ctx.author.id, recipe_item, recipe_amount)
-                #add the item to the users inventory
-                await db_manager.add_item_to_inventory(ctx.author.id, item, 1)
-                #send a message saying the user crafted the item
-                await ctx.send(f"You crafted {item_emote} **{item_name}**!")
-                return
+
+        # Remove required items from the user's inventory and give them the crafted item
+        for recipe_item, recipe_amount in item_recipe:
+            await db_manager.remove_item_from_inventory(ctx.author.id, recipe_item, recipe_amount)
+        await db_manager.add_item_to_inventory(ctx.author.id, item_name, item_emote)
+        await ctx.send(f"{item_emote} **{item_name}** has been crafted!")
+
             
             
 #attack command
@@ -2546,6 +2521,28 @@ class Basic(commands.Cog, name="basic"):
             await battle.send_spawned_embed(ctx)
             #get the mob emote
             return
+        
+#recipe book command, to view all the recipes
+    @commands.hybrid_command()
+    async def recipebook(self, ctx: Context):
+        """View all the recipes"""
+        #get all the recipes
+        recipes = await db_manager.get_all_recipes()
+        print(recipes)
+        #if there are no recipes
+        if recipes == None or [] or [ ]:
+            #send a message saying there are no recipes
+            await ctx.send("There are no recipes!")
+            return
+        #if there are recipes
+        else:
+            #send an embed of all the recipes
+            embed = discord.Embed(title="Recipe Book", description="All the recipes in the game!", color=0x00ff00)
+            for recipe in recipes:
+                embed.add_field(name=f"{recipe[0]}", value=f"{recipe[1]}", inline=False)
+            await ctx.send(embed=embed)
+            
+
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
