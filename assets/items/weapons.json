@@ -14,7 +14,7 @@
         "item_element": "None",
         "item_crit_chance": "5%",
         "item_projectile": "None",
-        "recipe_id": "None",
+        "recipe_id": "iron_sword",
         "item_recipe": [{
             "ingredient_id": "stick",
             "ingredient_amount": 1

@@ -2523,24 +2523,128 @@ class Basic(commands.Cog, name="basic"):
             return
         
 #recipe book command, to view all the recipes
-    @commands.hybrid_command()
+    @commands.hybrid_command(
+        name="recipebook",
+        description="This command will view all the recipes.",
+    )
     async def recipebook(self, ctx: Context):
-        """View all the recipes"""
-        #get all the recipes
+        # Get all the recipes from the database
         recipes = await db_manager.get_all_recipes()
-        print(recipes)
-        #if there are no recipes
-        if recipes == None or [] or [ ]:
-            #send a message saying there are no recipes
+
+        # If there are no recipes, send a message saying there are no recipes
+        if not recipes:
             await ctx.send("There are no recipes!")
             return
-        #if there are recipes
-        else:
-            #send an embed of all the recipes
-            embed = discord.Embed(title="Recipe Book", description="All the recipes in the game!", color=0x00ff00)
-            for recipe in recipes:
-                embed.add_field(name=f"{recipe[0]}", value=f"{recipe[1]}", inline=False)
-            await ctx.send(embed=embed)
+
+        # Calculate number of pages based on number of recipes
+        num_pages = (len(recipes) // 5) + (1 if len(recipes) % 5 > 0 else 0)
+        current_page = 0
+
+        # Create a function to generate embeds from a list of recipes
+        async def create_embeds(recipe_list):
+            recipes_dict = {}
+            for recipe in recipe_list:
+                recipe_id = recipe[0]
+                item_id = recipe[1]
+                item_quantity = recipe[2]
+                recipe_emote = await db_manager.get_basic_item_emote(recipe_id)
+                item_emote = await db_manager.get_basic_item_emote(item_id)
+                item_name = await db_manager.get_basic_item_name(item_id)
+                recipe_name = await db_manager.get_basic_item_name(recipe_id)
+                if recipe_id not in recipes_dict:
+                    recipes_dict[recipe_id] = {'recipe_emote': recipe_emote, 'recipe_name': recipe_name, 'items': []}
+                recipes_dict[recipe_id]['items'].append({'name': item_name, 'emote': item_emote, 'quantity': item_quantity})
+
+            num_pages = (len(recipes_dict) // 5) + (1 if len(recipes_dict) % 5 > 0 else 0)
+            embeds = []
+
+            for i in range(num_pages):
+                start_idx = i * 5
+                end_idx = start_idx + 5
+                recipe_embed = discord.Embed(
+                    title="Recipe Book",
+                    description="All the recipes in the game!",
+                    color=0x000000,
+                )
+                recipe_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+
+                for recipe_id, recipe_data in list(recipes_dict.items())[start_idx:end_idx]:
+                    recipe_emote = recipe_data['recipe_emote']
+                    recipe_name = recipe_data['recipe_name']
+                    recipe_items = recipe_data['items']
+                    recipe_items_string = "\n".join([f"{item['quantity']}x {item['emote']}{item['name']}" for item in recipe_items])
+                    recipe_embed.add_field(name=f"{recipe_emote}{recipe_name} (`{recipe_id}`)", value=recipe_items_string, inline=False)
+
+                embeds.append(recipe_embed)
+
+            return embeds
+
+
+        embeds = await create_embeds(recipes)
+        class Select(discord.ui.Select):
+            def __init__(self):
+                options = [
+                    discord.SelectOption(label="All"),
+                    discord.SelectOption(label="Weapon"),
+                    discord.SelectOption(label="Tool"),
+                    discord.SelectOption(label="Armor"),
+                    discord.SelectOption(label="Consumable"),
+                    discord.SelectOption(label="Material"),
+                ]
+                super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
+
+            async def callback(self, interaction: discord.Interaction):
+                selected_item_type = self.values[0]
+
+                if selected_item_type == "All":
+                    filtered_recipes = await db_manager.get_all_recipes()
+                else:
+                    filtered_recipes = []
+                    all_recipes = await db_manager.get_all_recipes()
+
+                    for recipe in all_recipes:
+                        item_type = await db_manager.get_basic_item_type(recipe[0])
+                        if item_type == selected_item_type or selected_item_type == "All":
+                            filtered_recipes.append(recipe)
+
+
+                filtered_embeds = await create_embeds(filtered_recipes)
+                new_view = RecipebookButton(current_page=0, embeds=filtered_embeds)
+                await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+            
+        class RecipebookButton(discord.ui.View):
+            def __init__(self, current_page, embeds, **kwargs):
+                super().__init__(**kwargs)
+                self.current_page = current_page
+                self.embeds = embeds
+                self.add_item(Select())
+            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = 0
+                await interaction.response.defer()
+                await interaction.message.edit(embed=self.embeds[self.current_page])
+            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page > 0:
+                    self.current_page -= 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page < len(self.embeds) - 1:
+                    self.current_page += 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = len(self.embeds) - 1
+                await interaction.response.defer()
+                await interaction.message.edit(embed=self.embeds[self.current_page])
+
+        view = RecipebookButton(current_page=0, embeds=embeds)
+        await ctx.send(embed=embeds[0], view=view)
+
+
             
 
 

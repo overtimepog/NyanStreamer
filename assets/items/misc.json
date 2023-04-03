@@ -31,9 +31,9 @@
         "item_id": "amulet_dragon",
         "item_name": "Amulet of the Dragon",
         "item_price": 3000,
-        "item_emoji": "<:Dragon_Amulet:123456789>",
+        "item_emoji": "<:Dragon_Amulet:1092440654572965888>",
         "item_rarity": "Legendary",
-        "item_type": "Accessory",
+        "item_type": "Armor",
         "item_damage": 0,
         "isUsable": false,
         "inShop": false,
@@ -42,7 +42,7 @@
         "item_element": "None",
         "item_crit_chance": "5",
         "item_projectile": "None",
-        "recipe_id": "amulet_dragon_recipe",
+        "recipe_id": "amulet_dragon",
         "item_recipe": [
             {
                 "ingredient_id": "dragon_eye",

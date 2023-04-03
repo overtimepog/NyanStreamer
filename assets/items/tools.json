@@ -19,7 +19,7 @@
             "ingredient_id": "stick",
             "ingredient_amount": 2
         }, {
-            "ingredient_id": "stone",
+            "ingredient_id": "iron_ingot",
             "ingredient_amount": 3
         }],
 
@@ -47,7 +47,7 @@
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
-        "recipe_id": "bow",
+        "recipe_id": "huntingbow",
         "item_recipe": [{
             "ingredient_id": "stick",
             "ingredient_amount": 2

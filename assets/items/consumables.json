@@ -16,7 +16,7 @@
         "item_projectile": "None",
         "recipe_id": "healthpotion",
         "item_recipe": [{
-            "ingredient_id": "redmushroom",
+            "ingredient_id": "dahila",
             "ingredient_amount": 2
         }, {
             "ingredient_id": "string",
