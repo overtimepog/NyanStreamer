@@ -6,6 +6,7 @@ I am going to give you a bunch of different templates, and you are going to proc
 •Put Everything in a codeblock
 •Finish all code, no code is allowed to randomly cut off, finish it always
 •Every item needs "item_damage", even if its 0, it needs to be there
+•for Armor, "item_damage", refers to how much damage the armor piece blocks when the user wearing it is attacked, it is still called "item_damage" in the code though
 •Item effects must be formated like so {effect} +/- {number}, EX. health + 10
 
 each rule is marked with a • and must be followed at all times when generating with the tenplates
@@ -92,6 +93,30 @@ each rule is marked with a • and must be followed at all times when generating
                 "item_sub_type": "None"
             }
         ]
+        this is the template for armor items
+            {
+        "item_id": "iron_helmet",
+        "item_name": "Iron Helmet",
+        "item_price": 80,
+        "item_emoji": "<:Iron_Helmet:1077579503804624957>",
+        "item_rarity": "Common",
+        "item_type": "Armor",
+        "item_damage": 5,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A basic iron helmet, used to protect.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "iron_helmet",
+        "item_recipe": [{
+            "ingredient_id": "iron_ingot",
+            "ingredient_amount": 3
+        }],
+        "item_effect": "None",
+        "item_sub_type": "Helmet"
+    },    
         this is the Quest template for my game, use it to create more quests when I ask for them, you will always put the created quest code in a codeblock and correct any spelling mistakes    {
                 "quest_id": "gathering_dahilas",
                 "quest_name": "Gathering Dahilas",

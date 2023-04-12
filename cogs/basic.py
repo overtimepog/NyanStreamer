@@ -1963,7 +1963,7 @@ class Basic(commands.Cog, name="basic"):
             
     #craft command
     @commands.hybrid_command()
-    async def craft(self, ctx: Context, item: str):
+    async def craft(self, ctx: Context, recipe: str):
         """Craft an item"""
         # Get the user's inventory
         inventory = await db_manager.view_inventory(ctx.author.id)
@@ -1974,7 +1974,7 @@ class Basic(commands.Cog, name="basic"):
             return
 
         # Get the item info
-        item_info = await db_manager.view_basic_item(item)
+        item_info = await db_manager.view_basic_item(recipe)
         print(item_info)
         # If the item is not found
         if not item_info:
@@ -1985,8 +1985,8 @@ class Basic(commands.Cog, name="basic"):
         # Get the item name, emote, and recipe
         item_name = item_info[0][1]
         item_emote = item_info[0][3]
-        item_recipe = await db_manager.get_item_recipe(item)
-        has_recipe = await db_manager.check_item_recipe(item)
+        item_recipe = await db_manager.get_item_recipe(recipe)
+        has_recipe = await db_manager.check_item_recipe(recipe)
 
         # If the item does not have a recipe
         if not has_recipe:

@@ -90,5 +90,106 @@
         }],
         "item_effect": "None",
         "item_sub_type": "Boots"
+    },
+    {
+        "item_id": "dragon_scale_helmet",
+        "item_name": "Dragon Scale Helmet",
+        "item_price": 1500,
+        "item_emoji": "<:Dragon_scale_helmet:1095577278395719710>",
+        "item_rarity": "Epic",
+        "item_type": "Armor",
+        "item_damage": 25,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A helmet made from the scales of a powerful dragon, providing excellent protection.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "dragon_scale_helmet",
+        "item_recipe": [
+            {
+                "ingredient_id": "dragon_scale",
+                "ingredient_amount": 3
+            }
+        ],
+        "item_effect": "None",
+        "item_sub_type": "Helmet"
+    },
+    {
+        "item_id": "dragon_scale_chestplate",
+        "item_name": "Dragon Scale Chestplate",
+        "item_price": 2000,
+        "item_emoji": "<:Dragon_scale_chestplate:1095579587125198898>",
+        "item_rarity": "Epic",
+        "item_type": "Armor",
+        "item_damage": 35,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A chestplate made from the scales of a powerful dragon, providing unmatched defense.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "dragon_scale_chestplate",
+        "item_recipe": [
+            {
+                "ingredient_id": "dragon_scale",
+                "ingredient_amount": 5
+            }
+        ],
+        "item_effect": "None",
+        "item_sub_type": "Chestplate"
+    },
+    {
+        "item_id": "dragon_scale_leggings",
+        "item_name": "Dragon Scale Leggings",
+        "item_price": 1800,
+        "item_emoji": "<:Dragon_scale_legings:1095579660215136256>",
+        "item_rarity": "Epic",
+        "item_type": "Armor",
+        "item_damage": 30,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "Leggings made from the scales of a powerful dragon, offering great mobility and protection.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "dragon_scale_leggings",
+        "item_recipe": [
+            {
+                "ingredient_id": "dragon_scale",
+                "ingredient_amount": 4
+            }
+        ],
+        "item_effect": "None",
+        "item_sub_type": "Leggings"
+    },
+    {
+        "item_id": "dragon_scale_boots",
+        "item_name": "Dragon Scale Boots",
+        "item_price": 1200,
+        "item_emoji": "<:Dragon_scale_boots:1095578865625214988>",
+        "item_rarity": "Epic",
+        "item_type": "Armor",
+        "item_damage": 20,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "Boots made from the scales of a powerful dragon, offering great mobility and protection.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "dragon_scale_boots",
+        "item_recipe": [
+            {
+                "ingredient_id": "dragon_scale",
+                "ingredient_amount": 2
+            }
+        ],
+        "item_effect": "None",
+        "item_sub_type": "Boots"
     }
+    
 ]
