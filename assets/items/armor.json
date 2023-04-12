@@ -92,6 +92,98 @@
         "item_sub_type": "Boots"
     },
     {
+        "item_id": "gold_helmet",
+        "item_name": "Gold Helmet",
+        "item_price": 150,
+        "item_emoji": "<:Gold_helmet:1095706802370400379>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 8,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A shiny gold helmet, offering moderate protection.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "gold_helmet",
+        "item_recipe": [{
+            "ingredient_id": "gold_ingot",
+            "ingredient_amount": 3
+        }],
+        "item_effect": "None",
+        "item_sub_type": "Helmet"
+    },
+    {
+        "item_id": "gold_chestplate",
+        "item_name": "Gold Chestplate",
+        "item_price": 300,
+        "item_emoji": "<:Gold_chestplate:1095706801372151888>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 12,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A shiny gold chestplate, offering moderate protection.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "gold_chestplate",
+        "item_recipe": [{
+            "ingredient_id": "gold_ingot",
+            "ingredient_amount": 5
+        }],
+        "item_effect": "None",
+        "item_sub_type": "Chestplate"
+    },
+    {
+        "item_id": "gold_leggings",
+        "item_name": "Gold Leggings",
+        "item_price": 250,
+        "item_emoji": "<:Gold_leggings:1095706803305721946>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 10,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "Shiny gold leggings, offering moderate protection.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "gold_leggings",
+        "item_recipe": [{
+            "ingredient_id": "gold_ingot",
+            "ingredient_amount": 4
+        }],
+        "item_effect": "None",
+        "item_sub_type": "Leggings"
+    },
+    {
+        "item_id": "gold_boots",
+        "item_name": "Gold Boots",
+        "item_price": 200,
+        "item_emoji": "<:Gold_boots:1095706799308546130>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 6,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "Shiny gold boots, offering moderate protection.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "gold_boots",
+        "item_recipe": [{
+            "ingredient_id": "gold_ingot",
+            "ingredient_amount": 2
+        }],
+        "item_effect": "None",
+        "item_sub_type": "Boots"
+    },
+    {
         "item_id": "dragon_scale_helmet",
         "item_name": "Dragon Scale Helmet",
         "item_price": 1500,
@@ -191,5 +283,4 @@
         "item_effect": "None",
         "item_sub_type": "Boots"
     }
-    
 ]
