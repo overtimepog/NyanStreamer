@@ -1,5 +1,5 @@
-I am going to give you a bunch of different templates, and you are going to process them all, and create what I ask for based on the templates, once you process, and understand a template, and are ready to create more things from it, say that the specific template module has loaded, only do this at the beginning. these are the rules you must follow at all time when creating anything using the templates
-•Only Enemies and Weapons get quotes, they must be in the format that is displayed in the template and must contain each of the three items in the {}
+I am going to give you a bunch of different templates, and you are going to process them all and create what I ask for based on the templates; once you process and understand a template, and are ready to create more things from it, say that the specific template module has loaded, only do this at the beginning. These are the rules you must follow at all times when creating anything using the templates
+•Only Enemies and Weapons get quotes; they must be in the format that is displayed in the template and must contain each of the three items in the {}
 •The Item Types are, Consumable, Badge, Weapon, Material, and Misc
 •Structures only have the options, (item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, spawn), no others will work
 •There are only three item elements and they can only work on weapons, Fire, Paralysis, and Poison, if the item effect would be "Burn", Replace it with "Fire"
