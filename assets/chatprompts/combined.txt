@@ -142,24 +142,14 @@ each rule is marked with a • and must be followed at all times when generating
                     "structure_outcomesID": "dungeon",
                     "structure_outcomes": [
                       {
-                        "structure_quote": "You have narrowly avoided a trap and found a hidden chest!",
+                        "structure_quote": "You narrowly avoided a trap and found a hidden chest!",
                         "structure_state": "success",
                         "outcome_chance": 0.3,
                         "outcome_type": "item_gain",
                         "outcome_output": "chest_basic",
                         "outcome_amount": 1,
                         "outcome_money": 0,
-                        "outcome_xp": 0
-                      },
-                      {
-                        "structure_quote": "You've disturbed a group of angry skeletons!",
-                        "structure_state": "loss",
-                        "outcome_chance": 0.2,
-                        "outcome_type": "spawn",
-                        "outcome_output": "skeleton_horde",
-                        "outcome_amount": 0,
-                        "outcome_money": 0,
-                        "outcome_xp": 0
+                        "outcome_xp": 10
                       },
                       {
                         "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
@@ -169,7 +159,7 @@ each rule is marked with a • and must be followed at all times when generating
                         "outcome_output": "gold",
                         "outcome_amount": 200,
                         "outcome_money": 0,
-                        "outcome_xp": 0
+                        "outcome_xp": 10
                       },
                       {
                         "structure_quote": "You Encountered a lone goblin wandering the Dungeon!",
@@ -179,7 +169,7 @@ each rule is marked with a • and must be followed at all times when generating
                         "outcome_output": "goblin",
                         "outcome_amount": 0,
                         "outcome_money": 0,
-                        "outcome_xp": 0
+                        "outcome_xp": 10
                       },
                       {
                         "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
@@ -189,7 +179,7 @@ each rule is marked with a • and must be followed at all times when generating
                         "outcome_output": "malik",
                         "outcome_amount": 0,
                         "outcome_money": 0,
-                        "outcome_xp": 0
+                        "outcome_xp": 10
                       },
                       {
                         "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
@@ -199,17 +189,17 @@ each rule is marked with a • and must be followed at all times when generating
                         "outcome_output": "amulet_dragon",
                         "outcome_amount": 1,
                         "outcome_money": 0,
-                        "outcome_xp": 0
+                        "outcome_xp": 30
                       },
                       {
                         "structure_quote": "You've found a stash of healing potions!",
                         "structure_state": "success",
                         "outcome_chance": 0.1,
                         "outcome_type": "item_gain",
-                        "outcome_output": "potion_healing",
+                        "outcome_output": "healthpotion",
                         "outcome_amount": 3,
                         "outcome_money": 0,
-                        "outcome_xp": 0
+                        "outcome_xp": 20
                       },
                       {
                         "structure_quote": "You've been hit by a poisoned dart and lost some health!",
@@ -219,18 +209,8 @@ each rule is marked with a • and must be followed at all times when generating
                         "outcome_output": "",
                         "outcome_amount": 30,
                         "outcome_money": 0,
-                        "outcome_xp": 0
-                      },
-                      {
-                        "structure_quote": "You've found a map that leads to a hidden treasure!",
-                        "structure_state": "success",
-                        "outcome_chance": 0.05,
-                        "outcome_type": "item_gain",
-                        "outcome_output": "tresure_map",
-                        "outcome_amount": 1,
-                        "outcome_money": 0,
-                        "outcome_xp": 0
-                        }    
+                        "outcome_xp": 10
+                      }  
                     ]
                 },
 
