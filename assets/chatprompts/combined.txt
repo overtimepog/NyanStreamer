@@ -6,6 +6,7 @@ I am going to give you a bunch of different templates, and you are going to proc
 •Every item needs "item_damage", even if its 0, it needs to be there
 •for Armor, "item_damage", refers to how much damage the armor piece blocks when the user wearing it is attacked, it is still called "item_damage" in the code though
 •Item effects must be formated like so {effect} +/- {number}, EX. health + 10
+•There are only specific item effects, they are (health, damage, luck, crit_chance, dodge_chance, fire_resistance, paralysis_resistance, poison_resistance, and frost_resistance), no other effects can be used
 •If you are asked for multiple items, please seperate each of them into its own code block
 •Outcomes need to have xp, the "outcome_xp" can not be 0
 •Put Everything in a codeblock

@@ -134,12 +134,12 @@
         ]
     } ,
     {
-        "enemy_id": "spirit_horde",
-        "enemy_name": "Spirit Horde",
+        "enemy_id": "spirit",
+        "enemy_name": "Spirit",
         "enemy_health": 60,
         "enemy_damage": "10-15",
-        "enemy_emoji": "",
-        "enemy_description": "A group of restless spirits looking to possess the living.",
+        "enemy_emoji": "<a:VengefulSpirit:1096524610931007568>",
+        "enemy_description": "A restless spirit looking to possess the living.",
         "enemy_rarity": "Rare",
         "enemy_type": "Spirit",
         "enemy_xp": 30,
@@ -164,7 +164,7 @@
         ],
         "enemy_drop_rarity": "Rare",
         "enemy_element": "Spirit",
-        "quote_id": "spirit_horde",
+        "quote_id": "spirit",
         "enemy_quotes": [{
                 "quote": "{enemy_name} reaches out and tries to possess {target} dealing {damage} damage."
             },

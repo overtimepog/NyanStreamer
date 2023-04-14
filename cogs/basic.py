@@ -1061,12 +1061,10 @@ class Basic(commands.Cog, name="basic"):
             
         isEquippable = await db_manager.is_basic_item_equipable(item)
         if isEquippable == 1:
-            await db_manager.equip_item(user_id, item)
             #get the item effect
             item_effect = await db_manager.get_basic_item_effect(item)
             if item_effect == None or item_effect == "None":
-                await ctx.send(f"You equipped `{item_name}`.")
-                return
+                message = f"You equipped `{item_name}`."
             print(item_effect)
             #split the effect by spaces
             item_effect = item_effect.split()
@@ -1084,13 +1082,13 @@ class Basic(commands.Cog, name="basic"):
                     #add the effect amount to the user's health
                     await db_manager.add_health_boost(user_id, effect_amount)
                     await db_manager.add_health(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` health."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's health
                     await db_manager.remove_health_boost(user_id, effect_amount)
                     await db_manager.remove_health(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` health.")
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` health."
                     
             #if the effect is damage
             elif effect == "damage":
@@ -1098,12 +1096,12 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #add the effect amount to the user's damage
                     await db_manager.add_damage_boost(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` damage."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's damage
                     await db_manager.remove_damage_boost(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage."
                     
             #if the effect is luck
             elif effect == "luck":
@@ -1111,12 +1109,12 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #add the effect amount to the user's luck
                     await db_manager.add_luck(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` luck."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's luck
                     await db_manager.remove_luck(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck."
                     
             #if the effect is crit chance
             elif effect == "crit_chance":
@@ -1124,12 +1122,25 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #add the effect amount to the user's crit chance
                     await db_manager.add_crit_chance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` crit chance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's crit chance
                     await db_manager.remove_crit_chance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance."
+                    
+            #if the effect is dodge chance
+            elif effect == "dodge_chance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #add the effect amount to the user's dodge chance
+                    await db_manager.add_dodge_chance(user_id, effect_amount)
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` dodge chance."
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #remove the effect amount from the user's dodge chance
+                    await db_manager.remove_dodge_chance(user_id, effect_amount)
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` dodge chance."
                     
             #if the effect is fire resistance
             elif effect == "fire_resistance":
@@ -1137,12 +1148,12 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #add the effect amount to the user's fire resistance
                     await db_manager.add_fire_resistance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` fire resistance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's fire resistance
                     await db_manager.remove_fire_resistance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance."
                     
             #if the effect is paralsys resistance
             elif effect == "paralysis_resistance":
@@ -1150,12 +1161,12 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #add the effect amount to the user's paralsys resistance
                     await db_manager.add_paralysis_resistance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance.")
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` paralsys resistance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's paralsys resistance
                     await db_manager.remove_paralysis_resistance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance.")
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance."
                     
             #if the effect is poison resistance
             elif effect == "poison_resistance":
@@ -1163,12 +1174,12 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #add the effect amount to the user's poison resistance
                     await db_manager.add_poison_resistance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` poison resistance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's poison resistance
                     await db_manager.remove_poison_resistance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance."
                     
             #if the effect is frost resistance
             elif effect == "frost_resistance":
@@ -1176,12 +1187,14 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #add the effect amount to the user's frost resistance
                     await db_manager.add_frost_resistance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` frost resistance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #remove the effect amount from the user's frost resistance
                     await db_manager.remove_frost_resistance(user_id, effect_amount)
-                    await ctx.send(f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance."
+            await db_manager.equip_item(user_id, item)
+            await ctx.send(message)
         else:
             await ctx.send(f"that is not equippable.")
             
@@ -1213,6 +1226,7 @@ class Basic(commands.Cog, name="basic"):
             effect = item_effect[0]
             effect_add_or_minus = item_effect[1]
             effect_amount = item_effect[2]
+            message = f"You unequipped `{item_name}`."
             #if the effect is health
             if effect == "health":
                 #if the effect is add
@@ -1220,37 +1234,37 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's health
                     await db_manager.remove_health_boost(user_id, effect_amount)
                     await db_manager.remove_health(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you -`{effect_amount}` health.")
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` health."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's health
                     await db_manager.add_health_boost(user_id, effect_amount)
                     await db_manager.add_health(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you +`{effect_amount}` health.")
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` health."
             #if the effect is damage
             elif effect == "damage":
                 #if the effect is add
                 if effect_add_or_minus == "+":
                     #remove the effect amount from the user's damage
                     await db_manager.remove_damage_boost(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you -`{effect_amount}` damage.")
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` damage."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's damage
                     await db_manager.add_damage_boost(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you +`{effect_amount}` damage.")
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` damage."
             #if the effect is luck
             elif effect == "luck":
                 #if the effect is add
                 if effect_add_or_minus == "+":
                     #remove the effect amount from the user's luck
                     await db_manager.remove_luck(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you -`{effect_amount}` luck.")
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` luck."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's luck
                     await db_manager.add_luck(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you +`{effect_amount}` luck.")
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` luck."
                     
             #if the effect is crit chance
             elif effect == "crit_chance":
@@ -1258,12 +1272,25 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #remove the effect amount from the user's crit chance
                     await db_manager.remove_crit_chance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you -`{effect_amount}` crit chance.")
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` crit chance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's crit chance
                     await db_manager.add_crit_chance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you +`{effect_amount}` crit chance.")
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` crit chance."
+                
+            #if the effect is dodge chance
+            elif effect == "dodge_chance":
+                #if the effect is add
+                if effect_add_or_minus == "+":
+                    #remove the effect amount from the user's dodge chance
+                    await db_manager.remove_dodge_chance(user_id, effect_amount)
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` dodge chance."
+                #if the effect is minus
+                elif effect_add_or_minus == "-":
+                    #add the effect amount to the user's dodge chance
+                    await db_manager.add_dodge_chance(user_id, effect_amount)
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` dodge chance."
                 
             #if the effect is fire resistance
             elif effect == "fire_resistance":
@@ -1271,12 +1298,12 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #remove the effect amount from the user's fire resistance
                     await db_manager.remove_fire_resistance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you -`{effect_amount}` fire resistance.")
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` fire resistance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's fire resistance
                     await db_manager.add_fire_resistance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you +`{effect_amount}` fire resistance.")
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` fire resistance."
             
             #if the effect is poison resistance
             elif effect == "poison_resistance":
@@ -1284,12 +1311,12 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #remove the effect amount from the user's poison resistance
                     await db_manager.remove_poison_resistance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you -`{effect_amount}` poison resistance.")
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` poison resistance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's poison resistance
                     await db_manager.add_poison_resistance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you +`{effect_amount}` poison resistance.")
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` poison resistance."
                     
             #if the effect is frost resistance
             elif effect == "frost_resistance":
@@ -1297,12 +1324,12 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #remove the effect amount from the user's frost resistance
                     await db_manager.remove_frost_resistance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you -`{effect_amount}` frost resistance.")
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` frost resistance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's frost resistance
                     await db_manager.add_frost_resistance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you +`{effect_amount}` frost resistance.")
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` frost resistance."
                     
             #if the effect is paralysis resistance
             elif effect == "paralysis_resistance":
@@ -1310,14 +1337,14 @@ class Basic(commands.Cog, name="basic"):
                 if effect_add_or_minus == "+":
                     #remove the effect amount from the user's paralysis resistance
                     await db_manager.remove_paralysis_resistance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you -`{effect_amount}` paralysis resistance.")
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` paralysis resistance."
                 #if the effect is minus
                 elif effect_add_or_minus == "-":
                     #add the effect amount to the user's paralysis resistance
                     await db_manager.add_paralysis_resistance(user_id, effect_amount)
-                    await ctx.send(f"You unequipped `{item_name}`. It gave you +`{effect_amount}` paralysis resistance.")
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` paralysis resistance."
             await db_manager.unequip_item(user_id, item)
-            await ctx.send(f"You unequipped `{item_name}`")
+            await ctx.send(message)
         else:
             await ctx.send(f"`{item_name}` is not equipped.")
             
