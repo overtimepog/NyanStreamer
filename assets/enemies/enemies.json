@@ -208,6 +208,46 @@
                 "quote": "{enemy_name} pounces on {target} dealing {damage} damage."
             }
         ]
-    }
+    },
+    {
+        "enemy_id": "goblin",
+        "enemy_name": "Goblin",
+        "enemy_health": 20,
+        "enemy_damage": "5-7",
+        "enemy_emoji": "<a:goblin:1096490694761271297>",
+        "enemy_description": "A small and mischievous creature, known for its cunning and thievery.",
+        "enemy_rarity": "Common",
+        "enemy_type": "Humanoid",
+        "enemy_xp": 10,
+        "enemy_money": 10,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "goblin",
+        "enemy_drops": [
+            {
+                "item_id": "goblin_ear",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "goblin_talisman",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            }
+        ],
+        "enemy_drop_rarity": "Common",
+        "enemy_element": "None",
+        "quote_id": "goblin",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} swipes at {target} with a dagger, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} throws a small rock at {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts a weak spell at {target}, dealing {damage} damage."
+            }
+        ]
+    }    
     
 ]
