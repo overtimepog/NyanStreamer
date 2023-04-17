@@ -28,7 +28,7 @@ class TwitchBot(commands.Bot):
         # We are logged in and ready to chat and use commands...
         print(f'Logged in as | {self.nick}')
         print(f'User id is | {self.user_id}')
-        join_message = f"Hello! I'm DankStreamer and I'm here to help you with your adventure! Type /help for a list of commands."
+        join_message = f"Hello! I'm DankStreamer and I'm here to help you with your adventure! Type !help for a list of commands."
         self.join_message = join_message
         #check if new streamers have been added to the database
         while True:
@@ -46,7 +46,7 @@ class TwitchBot(commands.Bot):
                 print(f"Joining {streamer_channel_name}...")
             await TwitchBot.join_channels(self, channels)
             print(f"Joined {len(channels)} channels.")
-            await asyncio.sleep(300)
+            await asyncio.sleep(600)
 
     @commands.command()
     async def hello(self, ctx: commands.Context):
@@ -149,6 +149,7 @@ class TwitchBot(commands.Bot):
                     #send a message to the random user saying they have been given an item
                     if itemgiven == 0:
                         await ctx.send(f"{randomViewer} already has {randomItem[2]} in their inventory!, you have been given 5000 coins instead!")
+                        await db_manager.add_money(userDiscordID, 5000)
                         return
                     elif itemgiven == 1:
                         await ctx.send(f"{randomViewer} has been given {randomItem[2]} by {ctx.author.name}!")
@@ -157,8 +158,10 @@ class TwitchBot(commands.Bot):
                 money = random.randint(25, 1000)
                 await db_manager.add_money(userDiscordID, money)
                 await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
+                return
             else:
-                await ctx.send(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!")
+                await print(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!, ReRolling...")
+                await self.drop(ctx)
         else:
             await ctx.send(f"You do not have permission to use this command!")
         

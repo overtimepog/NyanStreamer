@@ -2837,8 +2837,6 @@ async def add_streamer_item_to_user(user_id: int, streamer_item_id: str) -> int:
         async with db.execute("SELECT * FROM streamer_item_inventory WHERE user_id=? AND streamer_item_id=?", (user_id, streamer_item_id)) as cursor:
             result = await cursor.fetchone()
             if result is not None:
-                #give the user 5000 coins
-                await add_money(user_id, 5000)
                 return 0
             else:
                 #streamer item id is just the prefix + the item name
