@@ -9,6 +9,7 @@ I am going to give you a bunch of different templates, and you are going to proc
 •There are only specific item effects, they are (health, damage, luck, crit_chance, dodge_chance, fire_resistance, paralysis_resistance, poison_resistance, and frost_resistance), no other effects can be used
 •If you are asked for multiple items, please seperate each of them into its own code block
 •Outcomes need to have xp, the "outcome_xp" can not be 0
+•The only Quest Types are "collect" and "kill"
 •Put Everything in a codeblock
 •Finish all code, no code is allowed to randomly cut off, finish it always
 

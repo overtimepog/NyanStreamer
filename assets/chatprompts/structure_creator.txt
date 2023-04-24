@@ -14,17 +14,7 @@ this is the structure template for my game structures are areas where players ca
                 "outcome_output": "chest_basic",
                 "outcome_amount": 1,
                 "outcome_money": 0,
-                "outcome_xp": 0
-              },
-              {
-                "structure_quote": "You've disturbed a group of angry skeletons!",
-                "structure_state": "loss",
-                "outcome_chance": 0.2,
-                "outcome_type": "spawn",
-                "outcome_output": "skeleton_horde",
-                "outcome_amount": 0,
-                "outcome_money": 0,
-                "outcome_xp": 0
+                "outcome_xp": 10
               },
               {
                 "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
@@ -34,7 +24,7 @@ this is the structure template for my game structures are areas where players ca
                 "outcome_output": "gold",
                 "outcome_amount": 200,
                 "outcome_money": 0,
-                "outcome_xp": 0
+                "outcome_xp": 10
               },
               {
                 "structure_quote": "You Encountered a lone goblin wandering the Dungeon!",
@@ -44,7 +34,7 @@ this is the structure template for my game structures are areas where players ca
                 "outcome_output": "goblin",
                 "outcome_amount": 0,
                 "outcome_money": 0,
-                "outcome_xp": 0
+                "outcome_xp": 10
               },
               {
                 "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
@@ -54,7 +44,7 @@ this is the structure template for my game structures are areas where players ca
                 "outcome_output": "malik",
                 "outcome_amount": 0,
                 "outcome_money": 0,
-                "outcome_xp": 0
+                "outcome_xp": 10
               },
               {
                 "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
@@ -64,7 +54,7 @@ this is the structure template for my game structures are areas where players ca
                 "outcome_output": "amulet_dragon",
                 "outcome_amount": 1,
                 "outcome_money": 0,
-                "outcome_xp": 0
+                "outcome_xp": 25
               },
               {
                 "structure_quote": "You've found a stash of healing potions!",
@@ -74,7 +64,7 @@ this is the structure template for my game structures are areas where players ca
                 "outcome_output": "potion_healing",
                 "outcome_amount": 3,
                 "outcome_money": 0,
-                "outcome_xp": 0
+                "outcome_xp": 10
               },
               {
                 "structure_quote": "You've been hit by a poisoned dart and lost some health!",
@@ -84,7 +74,7 @@ this is the structure template for my game structures are areas where players ca
                 "outcome_output": "",
                 "outcome_amount": 30,
                 "outcome_money": 0,
-                "outcome_xp": 0
+                "outcome_xp": 10
               },
               {
                 "structure_quote": "You've found a map that leads to a hidden treasure!",
@@ -94,7 +84,7 @@ this is the structure template for my game structures are areas where players ca
                 "outcome_output": "tresure_map",
                 "outcome_amount": 1,
                 "outcome_money": 0,
-                "outcome_xp": 0
+                "outcome_xp": 10
                 }    
             ]
         },
