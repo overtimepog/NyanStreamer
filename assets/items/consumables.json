@@ -57,7 +57,7 @@
         "item_id": "bread",
         "item_name": "Bread",
         "item_price": 10,
-        "item_emoji": "\ud83c\udf5e",
+        "item_emoji": "<:bread1:1101143610465996926>",
         "item_rarity": "Common",
         "item_type": "Consumable",
         "item_damage": 0,
@@ -75,7 +75,7 @@
         "item_id": "ale",
         "item_name": "Ale",
         "item_price": 50,
-        "item_emoji": "\ud83c\udf7a",
+        "item_emoji": "<:ale:1101143122399993856>",
         "item_rarity": "Common",
         "item_type": "Consumable",
         "item_damage": 0,
@@ -86,7 +86,7 @@
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
-        "item_effect": "health + 1",
+        "item_effect": "health + 2",
         "item_sub_type": "None"
     }    
 ]
