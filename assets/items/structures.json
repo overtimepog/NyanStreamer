@@ -137,24 +137,24 @@
                   "outcome_xp": 10
               },
               {
-                  "structure_quote": "You've found a secret room with a powerful enchanted weapon!",
-                  "structure_state": "success",
-                  "outcome_chance": 0.05,
-                  "outcome_type": "item_gain",
-                  "outcome_output": "enchanted_sword",
-                  "outcome_amount": 1,
-                  "outcome_money": 0,
-                  "outcome_xp": 30
-              },
-              {
-                  "structure_quote": "You've stumbled upon a hidden library with ancient scrolls!",
+                  "structure_quote": "You tripped over a weird scroll and decided to pick it up!",
                   "structure_state": "success",
                   "outcome_chance": 0.1,
                   "outcome_type": "item_gain",
                   "outcome_output": "ancient_scroll",
-                  "outcome_amount": 3,
+                  "outcome_amount": 1,
                   "outcome_money": 0,
                   "outcome_xp": 20
+              },
+              {
+                  "structure_quote": "You've stumbled upon a hidden library with ancient scrolls!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.05,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "ancient_scroll",
+                  "outcome_amount": 3,
+                  "outcome_money": 0,
+                  "outcome_xp": 30
               },
               {
                   "structure_quote": "You've been cursed by an ancient statue and lost some health!",
@@ -220,7 +220,7 @@
                   "structure_state": "success",
                   "outcome_chance": 0.05,
                   "outcome_type": "item_gain",
-                  "outcome_output": "precious_gems",
+                  "outcome_output": "diamond",
                   "outcome_amount": 1,
                   "outcome_money": 0,
                   "outcome_xp": 30
@@ -246,7 +246,36 @@
                   "outcome_xp": 10
               }
           ]
-        }
+        },
+        {
+          "structure_id": "demon_portal",
+          "structure_name": "Demon Portal",
+          "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+          "structure_description": "A dark portal that connects to the underworld. Demons are known to emerge from it.",
+          "structure_outcomesID": "demon_portal",
+          "structure_outcomes": [
+              {
+                  "structure_quote": "A demon emerges from the portal!",
+                  "structure_state": "spawn",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "spawn",
+                  "outcome_output": "demon",
+                  "outcome_amount": 0,
+                  "outcome_money": 0,
+                  "outcome_xp": 50
+              },
+              {
+                  "structure_quote": "The portal remains quiet... for now.",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.9,
+                  "outcome_type": "None",
+                  "outcome_output": "",
+                  "outcome_amount": 0,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+              }
+          ]
+      }      
     ]
 }
   

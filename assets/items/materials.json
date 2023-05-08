@@ -608,5 +608,29 @@
             "quote_id": "wooden_handle",
             "item_quotes": [],
             "item_sub_type": "None"
-        }                      
+        },
+        {
+            "item_id": "ancient_scroll",
+            "item_name": "Ancient Scroll",
+            "item_price": 50,
+            "item_emoji": "<:Ancient_Scroll:1077583210659205130>",
+            "item_rarity": "Rare",
+            "item_type": "Material",
+            "item_damage": 0,
+            "isUsable": false,
+            "inShop": false,
+            "isEquippable": false,
+            "item_description": "An old scroll filled with ancient knowledge. It's used in crafting powerful items.",
+            "item_element": "None",
+            "item_crit_chance": "0%",
+            "item_projectile": "None",
+            "recipe_id": "None",
+            "item_recipe": [],
+            "item_effect": "None",
+            "isMineable": true,
+            "item_mine_chance": 0.05,
+            "quote_id": "None",
+            "item_quotes": [],
+            "item_sub_type": "None"
+        }                         
 ]
