@@ -104,6 +104,11 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #convert it to str
             user1_weapon_name = str(user1_weapon_name)
             user1_damage = user1_weapon[0][8]
+            user1_damage = str(user1_damage)
+            #split it by the - 
+            user1_damage = user1_damage.split("-")
+            #get a random number between the two numbers
+            user1_damage = random.randint(int(user1_damage[0]), int(user1_damage[1]))
             user1_weapon_subtype = user1_weapon[0][10]
             #convert subtype to str
             user1_weapon_subtype = str(user1_weapon_subtype)
@@ -130,6 +135,11 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             #convert it to str
             user2_weapon_name = str(user2_weapon_name)
             user2_damage = user2_weapon[0][8]
+            user2_damage = str(user2_damage)
+            #split it by the - 
+            user2_damage = user2_damage.split("-")
+            #get a random number between the two numbers
+            user2_damage = random.randint(int(user2_damage[0]), int(user2_damage[1]))
             user2_weapon_subtype = user2_weapon[0][10]
             #convert subtype to str
             user2_weapon_subtype = str(user2_weapon_subtype)
@@ -702,6 +712,11 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #convert it to str
                 user1_weapon_name = str(user1_weapon_name)
                 user1_damage = user1_weapon[0][8]
+                user1_damage = str(user1_damage)
+                #split the user1_damage by the - 
+                user1_damage = user1_damage.split("-")
+                #get a random number between the two numbers
+                user1_damage = random.randint(int(user1_damage[0]), int(user1_damage[1]))
                 user1_weapon_subtype = user1_weapon[0][10]
                 #convert subtype to str
                 user1_weapon_subtype = str(user1_weapon_subtype)
@@ -1375,7 +1390,11 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         user_weapon_name = user_weapon[0][2]
         user_weapon_emoji = user_weapon[0][4]
         user_weapon_damage = user_weapon[0][8]
-        user_weapon_damage = int(user_weapon_damage)
+        user_weapon_damage = str(user_weapon_damage)
+        #split the damage by the -
+        user_weapon_damage = user_weapon_damage.split("-")
+        #get a random number between the two
+        user_weapon_damage = random.randint(int(user_weapon_damage[0]), int(user_weapon_damage[1]))
     except(IndexError, TypeError):
         await ctx.send("You dont have a weapon equipped!")
     

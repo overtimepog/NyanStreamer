@@ -74,7 +74,7 @@ each rule is marked with a • and must be followed at all times when generating
                 "item_emoji": "<:Iron_Sword:1077583210659205130>",
                 "item_rarity": "Common",
                 "item_type": "Weapon",
-                "item_damage": 5,
+                "item_damage": "5-7",
                 "isUsable": false,
                 "inShop": true,
                 "isEquippable": true,
