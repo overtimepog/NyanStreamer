@@ -12,6 +12,7 @@ I am going to give you a bunch of different templates, and you are going to proc
 •Outcomes need to have xp, the "outcome_xp" can not be 0
 •The only Quest Types are "collect" and "kill"
 •Put Everything in a codeblock
+•If asked to coninue, start the codeblock from where it was left off
 •Finish all code, no code is allowed to randomly cut off, finish it always
 
 each rule is marked with a • and must be followed at all times when generating with the tenplates
