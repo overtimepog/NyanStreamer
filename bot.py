@@ -111,23 +111,8 @@ async def on_ready() -> None:
         print("Syncing commands globally...")
         await bot.tree.sync()
         print("Done syncing commands globally!")
-        
-    #for each server the bot is in, check if they have a channel called "dankStreamer-structures" if not, create it
-    for bot_guild in bot.guilds:
-        #check if the channel exists anywhere in the server
-        #print(bot_guild.text_channels)
-        #print(bot_guild.fetch_channels)
-        channel = discord.utils.get(bot_guild.text_channels, name="dankstreamer-structures")
-        print(channel)
-        if channel is None:
-            #create the channel
-            await bot_guild.create_text_channel("dankStreamer-structures")
-            print("Created the channel #dankStreamer-structures in " + bot_guild.name)
-        else:
-            print("The channel #dankStreamer-structures already exists in " + bot_guild.name)
-            
-    structure_spawn_task.start()
     shop_reset_task.start()
+    structure_spawn_task.start()
     
 
         #every 5 hours a structure will spawn in the channel named "dankstreamer-structures"
@@ -136,20 +121,20 @@ print("A structure will spawn every 1 hour")
 async def structure_spawn_task() -> None:
     #get the structures channel
     for bot_guild in bot.guilds:
-        if bot_guild.id == 1070882685855211641:
-            print("Skipping " + bot_guild.name + " because it's the Connections server")
-            continue
+        #if bot_guild.id == 1070882685855211641:
+        #    print("Skipping " + bot_guild.name + " because it's the Connections server")
+        #    continue
         #reset the guilds current structure
-        channel = discord.utils.get(bot_guild.text_channels, name="dankstreamer-structures")
+        channel = discord.utils.get(bot_guild.text_channels, topic="dankstreamer-structures")
         if channel is None:
-            print("The channel #dankStreamer-structures does not exist in " + bot_guild.name)
+            #print("A channel with the topic dankstreamer-structures does not exist in " + bot_guild.name)
             continue
         
         if await db_manager.get_current_structure(bot_guild.id) is not None:
-            print("A structure is already spawned in " + bot_guild.name)
+            #print("A structure is already spawned in " + bot_guild.name)
             continue
         
-        print("Spawned a structure in " + bot_guild.name)
+        #print("Spawned a structure in " + bot_guild.name)
         #get a random structure
         structureschoices = await db_manager.get_structures()
         structure = random.choice(structureschoices)
