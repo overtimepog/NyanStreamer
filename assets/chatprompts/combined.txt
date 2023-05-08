@@ -4,7 +4,7 @@ I am going to give you a bunch of different templates, and you are going to proc
 •The Item Types are, Consumable, Badge, Weapon, Material, and Misc
 •Structures only have the options, (item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, spawn), no others will work
 •There are only three item elements and they can only work on weapons, Fire, Paralysis, and Poison, if the item effect would be "Burn", Replace it with "Fire"
-•If possible, dont use item elements, create unique weapons
+•If possible, dont use item elements, create weapons with the item_element of None
 •Every item needs "item_damage", even if its 0, it needs to be there
 •for Armor, "item_damage", refers to how much damage the armor piece blocks when the user wearing it is attacked, it is still called "item_damage" in the code though
 •Item effects must be formated like so {effect} +/- {number}, EX. health + 10
@@ -12,6 +12,7 @@ I am going to give you a bunch of different templates, and you are going to proc
 •If you are asked for multiple items, please seperate each of them into its own code block
 •Outcomes need to have xp, the "outcome_xp" can not be 0
 •The only Quest Types are "collect" and "kill"
+•Mana does not exist, nothing to do with mana should be created
 •Put Everything in a codeblock
 •If asked to coninue, start the codeblock from where it was left off
 •Finish all code, no code is allowed to randomly cut off, finish it always
