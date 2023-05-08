@@ -180,7 +180,7 @@
                   "structure_state": "success",
                   "outcome_chance": 0.25,
                   "outcome_type": "item_gain",
-                  "outcome_output": "iron_ore",
+                  "outcome_output": "iron_ingot",
                   "outcome_amount": 5,
                   "outcome_money": 0,
                   "outcome_xp": 15
