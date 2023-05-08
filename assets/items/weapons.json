@@ -32,5 +32,114 @@
             }
         ],
         "item_sub_type": "None"
+    },
+    {
+        "item_id": "iron_battle_axe",
+        "item_name": "Iron Battle Axe",
+        "item_price": 120,
+        "item_emoji": "<:Iron_BattleAxe:1105135998582669433>",
+        "item_rarity": "Uncommon",
+        "item_type": "Weapon",
+        "item_damage": 12,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A mighty iron battle axe, capable of dealing significant damage.",
+        "item_element": "None",
+        "item_crit_chance": "10%",
+        "item_projectile": "None",
+        "recipe_id": "iron_battle_axe",
+        "item_recipe": [
+            {
+                "ingredient_id": "wooden_handle",
+                "ingredient_amount": 1
+            },
+            {
+                "ingredient_id": "iron_ingot",
+                "ingredient_amount": 3
+            }
+        ],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "iron_battle_axe",
+        "item_quotes": [
+            {
+                "quote": "{user} swings their Iron Battle Axe at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} cleaves through {target} with their Iron Battle Axe, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} delivers a powerful strike with their Iron Battle Axe, inflicting {damage} damage on {target}!"
+            },
+            {
+                "quote": "{user} unleashes a devastating blow with their Iron Battle Axe, causing {damage} damage to {target}!"
+            },
+            {
+                "quote": "{user} slashes {target} with the sharp edge of their Iron Battle Axe, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} charges forward and strikes {target} with the Iron Battle Axe, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} swings the Iron Battle Axe in a wide arc, hitting {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} lands a critical hit with their Iron Battle Axe, dealing {damage} damage to {target}!"
+            }
+        ],
+        "item_sub_type": "None"
+    },
+    {
+        "item_id": "iron_dagger",
+        "item_name": "Iron Dagger",
+        "item_price": 60,
+        "item_emoji": "<:Iron_Dagger:1105136033252790433>",
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": 7,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A small and lightweight iron blade, perfect for quick and stealthy attacks.",
+        "item_element": "None",
+        "item_crit_chance": "12%",
+        "item_projectile": "None",
+        "recipe_id": "iron_dagger",
+        "item_recipe": [
+            {
+                "ingredient_id": "iron_ingot",
+                "ingredient_amount": 1
+            },
+            {
+                "ingredient_id": "wooden_handle",
+                "ingredient_amount": 1
+            }
+        ],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "iron_dagger",
+        "item_quotes": [
+            {
+                "quote": "{user} swiftly slashes at {target} with their Iron Dagger, dealing {damage} damage!"
+            },
+
+            {
+                "quote": "{user} stabs {target} with their Iron Dagger, inflicting {damage} damage!"
+            },
+
+            {
+                "quote": "{user} lunges forward and pierces {target} with their Iron Dagger, dealing {damage} damage!"
+            },
+
+            {
+                "quote": "{user} delivers a quick and precise strike with their Iron Dagger, causing {damage} damage to {target}!"
+            }
+
+        ],
+            "item_sub_type": "None"
     }
+    
 ]

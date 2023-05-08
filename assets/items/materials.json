@@ -579,5 +579,34 @@
             "quote_id": "goblin_ear",
             "item_quotes": [],
             "item_sub_type": "None"
-        }                     
+        },
+        {
+            "item_id": "wooden_handle",
+            "item_name": "Wooden Handle",
+            "item_price": 15,
+            "item_emoji": "<:Wooden_Handle:>",
+            "item_rarity": "Common",
+            "item_type": "Material",
+            "item_damage": 0,
+            "isUsable": false,
+            "inShop": true,
+            "isEquippable": false,
+            "item_description": "A simple wooden handle, often used as a component for crafting weapons.",
+            "item_element": "None",
+            "item_crit_chance": "0%",
+            "item_projectile": "None",
+            "recipe_id": "wooden_handle",
+            "item_recipe": [
+                {
+                    "ingredient_id": "stick",
+                    "ingredient_amount": 2
+                }
+            ],
+            "item_effect": "None",
+            "isMineable": false,
+            "item_mine_chance": 0,
+            "quote_id": "wooden_handle",
+            "item_quotes": [],
+            "item_sub_type": "None"
+        }                      
 ]

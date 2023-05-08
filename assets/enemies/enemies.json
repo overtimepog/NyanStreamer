@@ -145,7 +145,7 @@
         "enemy_xp": 30,
         "enemy_money": 60,
         "enemy_crit_chance": 0.15,
-        "enemy_drop_id": "spirit_horde",
+        "enemy_drop_id": "spirit",
         "enemy_drops": [{
                 "item_id": "ectoplasm",
                 "item_amount": 3,
