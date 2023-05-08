@@ -88,6 +88,164 @@
                 "outcome_xp": 10
                 }    
             ]
+        },
+        {
+          "structure_id": "ancient_temple",
+          "structure_name": "Ancient Temple",
+          "structure_image": "https://example.com/ancient_temple.jpg",
+          "structure_description": "An ancient temple shrouded in mystery and filled with hidden treasures.",
+          "structure_outcomesID": "ancient_temple",
+          "structure_outcomes": [
+              {
+                  "structure_quote": "You found a hidden chamber filled with ancient relics!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.3,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "ancient_relic",
+                  "outcome_amount": 1,
+                  "outcome_money": 0,
+                  "outcome_xp": 15
+              },
+              {
+                  "structure_quote": "You've been ambushed by temple guardians!",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.2,
+                  "outcome_type": "spawn",
+                  "outcome_output": "temple_guardian",
+                  "outcome_amount": 0,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+              },
+              {
+                  "structure_quote": "You've discovered a hidden altar with valuable offerings!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "money_gain",
+                  "outcome_output": "gold",
+                  "outcome_amount": 300,
+                  "outcome_money": 0,
+                  "outcome_xp": 20
+              },
+              {
+                  "structure_quote": "You've triggered a trap and narrowly escaped injury!",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.15,
+                  "outcome_type": "health_loss",
+                  "outcome_output": "",
+                  "outcome_amount": 25,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+              },
+              {
+                  "structure_quote": "You've found a secret room with a powerful enchanted weapon!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.05,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "enchanted_sword",
+                  "outcome_amount": 1,
+                  "outcome_money": 0,
+                  "outcome_xp": 30
+              },
+              {
+                  "structure_quote": "You've stumbled upon a hidden library with ancient scrolls!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "ancient_scroll",
+                  "outcome_amount": 3,
+                  "outcome_money": 0,
+                  "outcome_xp": 20
+              },
+              {
+                  "structure_quote": "You've been cursed by an ancient statue and lost some health!",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "health_loss",
+                  "outcome_output": "",
+                  "outcome_amount": 20,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+              }
+          ]
+        },
+        {
+          "structure_id": "abandoned_mine",
+          "structure_name": "Abandoned Mine",
+          "structure_image": "https://example.com/abandoned_mine.jpg",
+          "structure_description": "An old mine that has been long abandoned, but still holds valuable resources.",
+          "structure_outcomesID": "abandoned_mine",
+          "structure_outcomes": [
+              {
+                  "structure_quote": "You found a rich vein of iron ore!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.25,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "iron_ore",
+                  "outcome_amount": 5,
+                  "outcome_money": 0,
+                  "outcome_xp": 15
+              },
+              {
+                  "structure_quote": "You've been attacked by a cave spider!",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.2,
+                  "outcome_type": "spawn",
+                  "outcome_output": "cave_spider",
+                  "outcome_amount": 0,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+              },
+              {
+                  "structure_quote": "You've discovered an old miner's stash of gold nuggets!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.15,
+                  "outcome_type": "money_gain",
+                  "outcome_output": "gold",
+                  "outcome_amount": 150,
+                  "outcome_money": 0,
+                  "outcome_xp": 20
+              },
+              {
+                  "structure_quote": "You've triggered a cave-in and narrowly escaped being crushed!",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "health_loss",
+                  "outcome_output": "",
+                  "outcome_amount": 30,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+              },
+              {
+                  "structure_quote": "You've found a hidden chest containing valuable gems!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.05,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "precious_gems",
+                  "outcome_amount": 1,
+                  "outcome_money": 0,
+                  "outcome_xp": 30
+              },
+              {
+                  "structure_quote": "You've stumbled upon an old mining cart filled with coal!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "coal",
+                  "outcome_amount": 10,
+                  "outcome_money": 0,
+                  "outcome_xp": 20
+              },
+              {
+                  "structure_quote": "You've been exposed to toxic fumes and lost some health!",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.15,
+                  "outcome_type": "health_loss",
+                  "outcome_output": "",
+                  "outcome_amount": 20,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+              }
+          ]
         }
     ]
 }

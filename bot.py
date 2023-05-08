@@ -236,19 +236,23 @@ async def on_message(message: discord.Message) -> None:
 
             #only if both the discord ID and the twitch ID have been found, connect the two accounts
             if has_twitch and has_discord and has_twitch_user:
-                await db_manager.connect_twitch_id(discord_id, twitch_id)
-                await db_manager.connect_twitch_name(discord_id, twitch_username)
-                #send a message to the user saying that the accounts have been connected
-                #dm the user that they are connected
-                #connection embed
-                embed = discord.Embed(title="Connected!", description="Your accounts have been connected!", color=0x00ff00)
-                #add a footer saying the users discord id and twitch id
-                embed.set_footer(text=f"Discord ID: {discord_id} | Twitch ID: {twitch_id}")
-                #send the embed
-                await bot.get_user(int(discord_id)).send(embed=embed)
-                print(f"Connected {discord_id} to {twitch_id}!")
-                #delete the channel
-                await message.channel.delete()
+                try:
+                    await db_manager.connect_twitch_id(discord_id, twitch_id)
+                    await db_manager.connect_twitch_name(discord_id, twitch_username)
+                    #send a message to the user saying that the accounts have been connected
+                    #dm the user that they are connected
+                    #connection embed
+                    embed = discord.Embed(title="Connected!", description="Your accounts have been connected!", color=0x00ff00)
+                    #add a footer saying the users discord id and twitch id
+                    embed.set_footer(text=f"Discord ID: {discord_id} | Twitch ID: {twitch_id}")
+                    #send the embed
+                    await bot.get_user(int(discord_id)).send(embed=embed)
+                    print(f"Connected {discord_id} to {twitch_id}!")
+                    #delete the channel
+                    await message.channel.delete()
+                #catch the discord.errors.NotFound error
+                except discord.errors.NotFound:
+                    print(":)")
     #on AttributeError, the message was not sent from the connections server, so ignore it
     except AttributeError:
         pass
