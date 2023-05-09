@@ -384,128 +384,157 @@ class Basic(commands.Cog, name="basic"):
         description="This command will show the quest board.",
     )
     async def questboard(self, ctx: Context):
-        """
-        This command will show the quest board.
-
-        :param ctx: The context in which the command was called.
-        """
-        #get all the quests from the database
+        # Get all the quests from the database
         quests = await db_manager.get_quests_on_board()
-        embeds = []
-        #create an embed to show the quests
-        #for each quest in the quests, create a page for it
-        for i in quests:
-            #create an embed for the specific quest
-            questembed = discord.Embed(title=f"{i[1]}")
-            #get the quest id
-            quest_id = i[0]
-            quest_id = str(quest_id)
-            #get the quest name
-            quest_name = i[1]
-            quest_name = str(quest_name)
-            #get the quest description
-            quest_description = i[2]
-            quest_description = str(quest_description)
-            #get the quest xp
-            quest_xp = i[3]
-            quest_xp = str(quest_xp)
-            #get the quest reward
-            quest_reward = i[4]
-            quest_reward = str(quest_reward)
-            #get the quest reward amount
-            quest_reward_amount = i[5]
-            quest_reward_amount = str(quest_reward_amount)
-            #get the quest level requirement
-            quest_level_req = i[6]
-            quest_level_req = str(quest_level_req)
-            #get the quest type
-            quest_type = i[7]
-            quest_type = str(quest_type)
-            #get the quest itself
-            quest = i[8]
-            quest = str(quest)
-            #add a field to the embed for this quest
-            questembed.add_field(name=f"**{quest_name}**", value=f"`ID:{quest_id}` \n **Description**: `{quest_description}` \n **XP**: `{quest_xp}` \n **Reward**: `{quest_reward_amount} {quest_reward}` \n **Level Requirement**: `{quest_level_req}` \n **Quest**: `{quest_type} {quest}'s` ", inline=False)
-            
-            #save the embed to a list
-            embeds.append(questembed)
-        
-        #send the first embed, and add reactions to it to switch between the different embeds
-        message = await ctx.send(embed=embeds[0])
-        await message.add_reaction("⏪")
-        await message.add_reaction("⏩")
-        await message.add_reaction("✅")
-        #create a function to check if the reaction is the one we want
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in ["⏪", "⏩" , "✅"]
-        #create a function that whenever the user clicks the check mark, it will add the quest to the users quest list
-        
-        #switch between the different embeds
-        i = 0
-        reaction = None
-        while True:
-            if str(reaction) == "⏪":
-                if i > 0:
-                    i -= 1
-                    await message.edit(embed=embeds[i])
-            elif str(reaction) == "⏩":
-                if i < len(embeds)-1:
-                    i += 1
-                    await message.edit(embed=embeds[i])
-            elif str(reaction) == "✅":
-                #get the quest id from the embed
-                quest_name = embeds[i].title
-                #get the quest id from the database
-                quest_id = await db_manager.get_quest_id_from_quest_name(quest_name)
-                print(quest_id)
-                quest_id = str(quest_id)
-                #get the user id
-                user_id = ctx.message.author.id
-                user_id = str(user_id)
-                #check if the user already has the quest
-                user_has_quest = await db_manager.check_user_has_quest(user_id, quest_id)
-                #check if the user has any quest 
-                user_has_any_quest = await db_manager.check_user_has_any_quest(user_id)
-                isCompleted = await db_manager.check_quest_completed(user_id, quest_id)
-                #check if the user meets the level requirements
-                user_level = await db_manager.get_level(user_id)
-                level_req = await db_manager.get_quest_level_required(quest_id)
-                #convert them to integers
-                user_level = int(user_level[0])
-                level_req = int(level_req)
-                if user_level < level_req:
-                    await ctx.send("You do not meet the level requirements for this quest!")
-                    break
-                #if the user already has the quest, tell them they already have it
-                elif isCompleted == True:
-                    await ctx.send("You already completed this quest!")
-                    break
-                
-                elif user_has_quest == True:
-                    await ctx.send("You already have this quest!")
-                    break
-                #if the user already has a different quest, tell them they already have a quest
-                elif user_has_any_quest == True:
-                    await ctx.send("You already have a quest!, Abondon or Complete your current quest to get a new one!")
-                    break
-                #if the user already completed the quest, tell them they already completed it
+        if quests == []:
+            await ctx.send("There are no quests on the board.")
+            return
 
-                #if the user doesnt have the quest, add it to their quest list
-                else:
-                    #get a quest slot for the user
-                    await db_manager.give_user_quest(user_id, quest_id)
-                    await db_manager.create_quest_progress(user_id, quest_id)
-                    await ctx.send("Quest added to your quest list!")
-                    #remove the quest from the quest board
-                    #await db_manager.remove_quest_from_board(quest_id)
-                    break
-            try:
-                reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
-                await message.remove_reaction(reaction, user)                
-            except asyncio.TimeoutError:
-                break
-            
+        # Calculate number of pages based on number of quests
+        num_pages = (len(quests) // 5) + (1 if len(quests) % 5 > 0 else 0)
+
+        current_page = 0
+
+        # Create a function to generate embeds from a list of quests
+        async def create_embeds(quest_list):
+            num_pages = (len(quest_list) // 5) + (1 if len(quest_list) % 5 > 0 else 0)
+            embeds = []
+        
+            for i in range(num_pages):
+                start_idx = i * 5
+                end_idx = start_idx + 5
+                quest_embed = discord.Embed(
+                    title="Quest Board",
+                    description=f"Quests available for {ctx.author.name}. Use /questinfo <quest_name> for more details.",
+                )
+                quest_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+        
+                for quest in quest_list[start_idx:end_idx]:
+                    quest_id = quest[0]
+                    quest_name = quest[1]
+                    quest_xp = quest[3]
+                    quest_reward = quest[4]
+                    quest_reward_amount = quest[5]
+        
+                    quest_embed.add_field(name=f"**{quest_name}**", value=f"`ID:{quest_id}` \n **XP**: `{quest_xp}` \n **Reward**: `{quest_reward_amount} {quest_reward}`", inline=False)
+        
+                embeds.append(quest_embed)
+        
+            return embeds
+
+        # Create a list of embeds with 5 quests per embed
+        embeds = await create_embeds(quests)
+
+        class QuestBoardButton(discord.ui.View):
+            def __init__(self, current_page, embeds, **kwargs):
+                super().__init__(**kwargs)
+                self.current_page = current_page
+                self.embeds = embeds
+
+            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = 0
+                await interaction.response.defer()
+                await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page > 0:
+                    self.current_page -= 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page < len(self.embeds) - 1:
+                    self.current_page += 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = len(self.embeds) - 1
+                await interaction.response.defer()
+                await interaction.message.edit(embed=self.embeds[self.current_page])
+
+        view = QuestBoardButton(current_page=0, embeds=embeds)
+        await ctx.send(embed=embeds[0], view=view)
+
         #when the user clicks the check mark, add the quest to the users quest list, remove the quest from the quest board, check if the user already has the quest, and if they do, tell them they already have it, and if they dont, add it to their quest list
+    @commands.hybrid_command(
+    name="questinfo",
+    description="Get detailed information about a specific quest.",
+    )
+    async def questinfo(self, ctx: Context, quest_id: int):
+        # Get the quest from the database
+        quest = await db_manager.get_quest_from_id(quest_id)
+        if quest is None:
+            await ctx.send("That quest does not exist.")
+            return
+
+        quest_id, quest_name, quest_description, quest_xp, quest_reward, quest_reward_amount, quest_level_req, quest_type, quest = quest
+
+        # Create an embed with detailed information about the quest
+        quest_embed = discord.Embed(title=f"**{quest_name}**")
+        quest_embed.add_field(name="ID", value=quest_id)
+        quest_embed.add_field(name="Description", value=quest_description)
+        quest_embed.add_field(name="XP", value=quest_xp)
+        quest_embed.add_field(name="Reward", value=f"{quest_reward_amount} {quest_reward}")
+        quest_embed.add_field(name="Level Requirement", value=quest_level_req)
+        quest_embed.add_field(name="Quest Type", value=quest_type)
+
+        await ctx.send(embed=quest_embed)
+    
+    @commands.hybrid_command(
+        name="acceptquest",
+        description="Accept a quest from the quest board.",
+    )
+    async def acceptquest(self, ctx: Context, quest_id: int):
+        # Get the quest id from the database
+        quest = await db_manager.get_quest_from_id(quest_id)
+        if quest is None:
+            await ctx.send("That quest does not exist.")
+            return
+
+        quest_id = str(quest_id)
+
+        # Get the user id
+        user_id = ctx.message.author.id
+        user_id = str(user_id)
+
+        # Check if the user already has the quest
+        user_has_quest = await db_manager.check_user_has_quest(user_id, quest_id)
+
+        # Check if the user has any quest 
+        user_has_any_quest = await db_manager.check_user_has_any_quest(user_id)
+
+        isCompleted = await db_manager.check_quest_completed(user_id, quest_id)
+
+        # Check if the user meets the level requirements
+        user_level = await db_manager.get_level(user_id)
+        level_req = await db_manager.get_quest_level_required(quest_id)
+
+        # Convert them to integers
+        user_level = int(user_level[0])
+        level_req = int(level_req)
+
+        if user_level < level_req:
+            await ctx.send("You do not meet the level requirements for this quest!")
+        elif isCompleted == True:
+            await ctx.send("You already completed this quest!")
+        elif user_has_quest == True:
+            await ctx.send("You already have this quest!")
+        elif user_has_any_quest == True:
+            await ctx.send("You already have a quest! Abandon or complete your current quest to get a new one!")
+        else:
+            # If the user doesn't have the quest, add it to their quest list
+            await db_manager.give_user_quest(user_id, quest_id)
+            await db_manager.create_quest_progress(user_id, quest_id)
+            await ctx.send("Quest added to your quest list!")
+            # Remove the quest from the quest board
+            # await db_manager.remove_quest_from_board(quest_id)
+
+        
     #abandon quest hybrid command 
     @commands.hybrid_command(
         name="abandonquest",
