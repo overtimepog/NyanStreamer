@@ -1134,6 +1134,15 @@ async def get_quest_level_required(quest_id: str) -> int:
     else:
         return 0
     
+#get the quests where the level requirement is less than or equal to the users level
+async def get_quests_from_level(user_level: int) -> list:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `quests` WHERE quest_level_required <= ?", (user_level,), fetch="all")
+    if data is not None:
+        return data
+    else:
+        return None
+    
 #get the quest type
 async def get_quest_type(quest_id: str) -> str:
     db = DB()
