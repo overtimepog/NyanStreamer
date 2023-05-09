@@ -256,7 +256,7 @@
           "structure_outcomes": [
               {
                   "structure_quote": "A demon emerges from the portal!",
-                  "structure_state": "spawn",
+                  "structure_state": "success",
                   "outcome_chance": 0.1,
                   "outcome_type": "spawn",
                   "outcome_output": "demon",
