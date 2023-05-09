@@ -219,6 +219,16 @@
                 "item_drop_chance": 0.5
             },
             {
+                "item_id": "goblin_ear",
+                "item_amount": 2,
+                "item_drop_chance": 0.3
+            },
+            {
+                "item_id": "goblin_ear",
+                "item_amount": 3,
+                "item_drop_chance": 0.2
+            },
+            {
                 "item_id": "goblin_talisman",
                 "item_amount": 1,
                 "item_drop_chance": 0.1
@@ -238,6 +248,132 @@
                 "quote": "{enemy_name} casts a weak spell at {target}, dealing {damage} damage."
             }
         ]
+    },
+    {
+        "enemy_id": "demon",
+        "enemy_name": "Demon",
+        "enemy_health": 150,
+        "enemy_damage": "15-20",
+        "enemy_emoji": "<a:Demon:1078761460211130428>",
+        "enemy_description": "A powerful demon from the underworld. It's very dangerous.",
+        "enemy_rarity": "Epic",
+        "enemy_type": "Demon",
+        "enemy_xp": 100,
+        "enemy_money": 200,
+        "enemy_crit_chance": 0.2,
+        "enemy_drop_id": "demon",
+        "enemy_drops": [
+            {
+                "item_id": "demon_skull",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "demon_essence",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "demon_essence",
+                "item_amount": 2,
+                "item_drop_chance": 0.3
+            },
+            {
+                "item_id": "demon_essence",
+                "item_amount": 3,
+                "item_drop_chance": 0.2
+            }
+        ],
+        "enemy_drop_rarity": "Epic",
+        "enemy_element": "Fire",
+        "quote_id": "demon",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} slashes at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts a fireball at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses its demonic strength on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses its dark magic on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} breathes fire at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses its demonic powers on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses its hellfire on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses its infernal powers on {target} dealing {damage} damage."
+            }
+        ]
+    },
+    {
+        "enemy_id": "succubus",
+        "enemy_name": "Succubus",
+        "enemy_health": 100,
+        "enemy_damage": "10-15",
+        "enemy_emoji": "<a:Succubus:1078761460211130428>",
+        "enemy_description": "A seductive demon that uses charm to weaken its enemies.",
+        "enemy_rarity": "Rare",
+        "enemy_type": "Demon",
+        "enemy_xp": 50,
+        "enemy_money": 100,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "succubus",
+        "enemy_drops": [
+            {
+                "item_id": "demon_essence",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "demon_essence",
+                "item_amount": 2,
+                "item_drop_chance": 0.3
+            },
+            {
+                "item_id": "demon_essence",
+                "item_amount": 3,
+                "item_drop_chance": 0.2
+            }
+        ],
+        "enemy_drop_rarity": "Rare",
+        "enemy_element": "None",
+        "quote_id": "succubus",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} seduces {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts a charm spell on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses her whip on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} blows a kiss at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses her allure on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses her dark magic on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses her demonic powers on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses her seductive powers on {target} dealing {damage} damage."
+            }
+        ]
     }    
+
     
 ]

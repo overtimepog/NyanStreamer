@@ -142,119 +142,294 @@
             "item_sub_type": "None"
     },
     {
-            "item_id": "book_of_demons",
-            "item_name": "The Book of Demons",
-            "item_price": 1000,
-            "item_emoji": "<:Book_of_Demons:1087583210659205130>",
-            "item_rarity": "Legendary",
-            "item_type": "Weapon",
-            "item_damage": "20-35",
-            "isUsable": false,
-            "inShop": false,
-            "isEquippable": true,
-            "item_description": "An ancient book filled with dark magic. It's said to contain the power of demons.",
-            "item_element": "None",
-            "item_crit_chance": "15%",
-            "item_projectile": "None",
-            "recipe_id": "book_of_demons",
-            "item_recipe": [
-                {
-                    "ingredient_id": "ancient_scroll",
-                    "ingredient_amount": 3
-                }, 
-                {
-                    "ingredient_id": "demon_essence",
-                    "ingredient_amount": 5
-                }
-            ],
-            "item_effect": "None",
-            "isMineable": false,
-            "item_mine_chance": 0,
-            "quote_id": "book_of_demons",
-            "item_quotes": [
-                {
-                    "quote": "{user} summons a demon from The Book of Demons at {target} and deals {damage} damage!"
-                },
-                {
-                    "quote": "{user} casts a dark spell from The Book of Demons, causing {damage} damage to {target}!"
-                },
-                {
-                    "quote": "{user} reads an incantation from The Book of Demons, a shadowy figure attacks {target} dealing {damage} damage!"
-                },
-                {
-                    "quote": "{user} uses The Book of Demons, a wave of dark energy engulfs {target} causing {damage} damage!"
-                },
-                {
-                    "quote": "{user} brandishes The Book of Demons, a pillar of darkness descends on {target} dealing {damage} damage!"
-                },
-                {
-                    "quote": "{user} unleashes the power of The Book of Demons, dark energy engulfs {target} dealing {damage} damage!"
-                },
-                {
-                    "quote": "{user} invokes a spell from The Book of Demons, a dark explosion hits {target} for {damage} damage!"
-                },
-                {
-                    "quote": "{user} calls upon The Book of Demons, a burst of shadow scorches {target} causing {damage} damage!"
-                }
-            ],
-            "item_sub_type": "None"
+        "item_id": "flame_grimoire",
+        "item_name": "Flame Grimoire",
+        "item_price": 200,
+        "item_emoji": "<:Fire_Grimoire:1105483389592682536>",
+        "item_rarity": "Rare",
+        "item_type": "Weapon",
+        "item_damage": "10-15",
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A powerful grimoire imbued with the essence of fire.",
+        "item_element": "Fire",
+        "item_crit_chance": "10%",
+        "item_projectile": "None",
+        "recipe_id": "flame_grimoire",
+        "item_recipe": [
+            {
+                "ingredient_id": "ancient_scroll",
+                "ingredient_amount": 1
+            }, 
+            {
+                "ingredient_id": "fire_rune",
+                "ingredient_amount": 4
+            }
+        ],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "flame_grimoire",
+        "item_quotes": [
+            {
+                "quote": "{user} casts a fire spell from the Flame Grimoire at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} summons a flame from the Flame Grimoire, scorching {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} reads an incantation from the Flame Grimoire, a fireball hits {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} uses the Flame Grimoire, a wave of fire engulfs {target} causing {damage} damage!"
+            },
+            {
+                "quote": "{user} brandishes the Flame Grimoire, a pillar of fire descends on {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} unleashes the power of the Flame Grimoire, fire engulfs {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} invokes a spell from the Flame Grimoire, a fiery explosion hits {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} calls upon the Flame Grimoire, a burst of flame scorches {target} causing {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+},
+{
+    "item_id": "water_grimoire",
+    "item_name": "Water Grimoire",
+    "item_price": 200,
+    "item_emoji": "<:Water_Grimoire:1105484217472778403>",
+    "item_rarity": "Rare",
+    "item_type": "Weapon",
+    "item_damage": "10-15",
+    "isUsable": false,
+    "inShop": false,
+    "isEquippable": true,
+    "item_description": "A powerful grimoire imbued with the essence of water.",
+    "item_element": "Water",
+    "item_crit_chance": "10%",
+    "item_projectile": "None",
+    "recipe_id": "water_grimoire",
+    "item_recipe": [
+        {
+            "ingredient_id": "ancient_scroll",
+            "ingredient_amount": 1
+        }, 
+        {
+            "ingredient_id": "water_rune",
+            "ingredient_amount": 4
+        }
+    ],
+    "item_effect": "None",
+    "isMineable": false,
+    "item_mine_chance": 0,
+    "quote_id": "water_grimoire",
+    "item_quotes": [
+        {
+            "quote": "{user} casts a water spell from the Water Grimoire at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} summons a wave from the Water Grimoire, drenching {target} for {damage} damage!"
+        },
+        {
+            "quote": "{user} reads an incantation from the Water Grimoire, a water jet hits {target} dealing {damage} damage!"
+        },
+        {
+            "quote": "{user} uses the Water Grimoire, a tidal wave engulfs {target} causing {damage} damage!"
+        },
+        {
+            "quote": "{user} brandishes the Water Grimoire, a water vortex descends on {target} dealing {damage} damage!"
+        },
+        {
+            "quote": "{user} unleashes the power of the Water Grimoire, water engulfs {target} dealing {damage} damage!"
+        },
+        {
+            "quote": "{user} invokes a spell from the Water Grimoire, a water explosion hits {target} for {damage} damage!"
+        },
+        {
+            "quote": "{user} calls upon the Water Grimoire, a burst of water drenches {target} causing {damage} damage!"
+        }
+    ],
+    "item_sub_type": "None"
     },
     {
-            "item_id": "flame_grimoire",
-            "item_name": "Flame Grimoire",
-            "item_price": 200,
-            "item_emoji": "<:Flame_Grimoire:1087583210659205130>",
-            "item_rarity": "Rare",
-            "item_type": "Weapon",
-            "item_damage": "10-15",
-            "isUsable": false,
-            "inShop": false,
-            "isEquippable": true,
-            "item_description": "A powerful grimoire imbued with the essence of fire.",
-            "item_element": "Fire",
-            "item_crit_chance": "10%",
-            "item_projectile": "None",
-            "recipe_id": "flame_grimoire",
-            "item_recipe": [
-                {
-                    "ingredient_id": "ancient_scroll",
-                    "ingredient_amount": 1
-                }, 
-                {
-                    "ingredient_id": "fire_rune",
-                    "ingredient_amount": 4
-                }
-            ],
-            "item_effect": "None",
-            "isMineable": false,
-            "item_mine_chance": 0,
-            "quote_id": "flame_grimoire",
-            "item_quotes": [
-                {
-                    "quote": "{user} casts a fire spell from the Flame Grimoire at {target} and deals {damage} damage!"
-                },
-                {
-                    "quote": "{user} summons a flame from the Flame Grimoire, scorching {target} for {damage} damage!"
-                },
-                {
-                    "quote": "{user} reads an incantation from the Flame Grimoire, a fireball hits {target} dealing {damage} damage!"
-                },
-                {
-                    "quote": "{user} uses the Flame Grimoire, a wave of fire engulfs {target} causing {damage} damage!"
-                },
-                {
-                    "quote": "{user} brandishes the Flame Grimoire, a pillar of fire descends on {target} dealing {damage} damage!"
-                },
-                {
-                    "quote": "{user} unleashes the power of the Flame Grimoire, fire engulfs {target} dealing {damage} damage!"
-                },
-                {
-                    "quote": "{user} invokes a spell from the Flame Grimoire, a fiery explosion hits {target} for {damage} damage!"
-                },
-                {
-                    "quote": "{user} calls upon the Flame Grimoire, a burst of flame scorches {target} causing {damage} damage!"
-                }
-            ],
-            "item_sub_type": "None"
+        "item_id": "air_grimoire",
+        "item_name": "Air Grimoire",
+        "item_price": 200,
+        "item_emoji": "<:Air_Grimoire:1105484359676469330>",
+        "item_rarity": "Rare",
+        "item_type": "Weapon",
+        "item_damage": "10-15",
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A powerful grimoire imbued with the essence of air.",
+        "item_element": "Air",
+        "item_crit_chance": "10%",
+        "item_projectile": "None",
+        "recipe_id": "air_grimoire",
+        "item_recipe": [
+            {
+                "ingredient_id": "ancient_scroll",
+                "ingredient_amount": 1
+            }, 
+            {
+                "ingredient_id": "air_rune",
+                "ingredient_amount": 4
+            }
+        ],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "air_grimoire",
+        "item_quotes": [
+            {
+                "quote": "{user} casts an air spell from the Air Grimoire at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} summons a gust from the Air Grimoire, blasting {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} reads an incantation from the Air Grimoire, a wind blade hits {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} uses the Air Grimoire, a whirlwind engulfs {target} causing {damage} damage!"
+            },
+            {
+                "quote": "{user} brandishes the Air Grimoire, a tornado descends on {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} unleashes the power of the Air Grimoire, wind engulfs {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} invokes a spell from the Air Grimoire, an air explosion hits {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} calls upon the Air Grimoire, a burst of wind blasts {target} causing {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    },
+    {
+        "item_id": "earth_grimoire",
+        "item_name": "Earth Grimoire",
+        "item_price": 200,
+        "item_emoji": "<:Earth_Grimoire:1105484487804080178>",
+        "item_rarity": "Rare",
+        "item_type": "Weapon",
+        "item_damage": "10-15",
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A powerful grimoire imbued with the essence of earth.",
+        "item_element": "Earth",
+        "item_crit_chance": "10%",
+        "item_projectile": "None",
+        "recipe_id": "earth_grimoire",
+        "item_recipe": [
+            {
+                "ingredient_id": "ancient_scroll",
+                "ingredient_amount": 1
+            }, 
+            {
+                "ingredient_id": "earth_rune",
+                "ingredient_amount": 4
+            }
+        ],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "earth_grimoire",
+        "item_quotes": [
+            {
+                "quote": "{user} casts an earth spell from the Earth Grimoire at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} summons a rock from the Earth Grimoire, smashing {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} reads an incantation from the Earth Grimoire, a stone spike hits {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} uses the Earth Grimoire, an earthquake shakes {target} causing {damage} damage!"
+            },
+            {
+                "quote": "{user} brandishes the Earth Grimoire, a landslide descends on {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} unleashes the power of the Earth Grimoire, rocks engulf {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} invokes a spell from the Earth Grimoire, an earth explosion hits {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} calls upon the Earth Grimoire, a burst of stone smashes {target} causing {damage} damage!"
+            }
+        ],
+    "item_sub_type": "None"
+    },
+    {
+        "item_id": "book_of_demons",
+        "item_name": "The Book of Demons",
+        "item_price": 1000,
+        "item_emoji": "<:BookOfDemons:1105483288904224928>",
+        "item_rarity": "Legendary",
+        "item_type": "Weapon",
+        "item_damage": "20-35",
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "An ancient book filled with dark magic. It's said to contain the power of demons.",
+        "item_element": "None",
+        "item_crit_chance": "15%",
+        "item_projectile": "None",
+        "recipe_id": "book_of_demons",
+        "item_recipe": [
+            {
+                "ingredient_id": "ancient_scroll",
+                "ingredient_amount": 3
+            }, 
+            {
+                "ingredient_id": "demon_essence",
+                "ingredient_amount": 5
+            }
+        ],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "book_of_demons",
+        "item_quotes": [
+            {
+                "quote": "{user} summons a demon from The Book of Demons at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} casts a dark spell from The Book of Demons, causing {damage} damage to {target}!"
+            },
+            {
+                "quote": "{user} reads an incantation from The Book of Demons, a shadowy figure attacks {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} uses The Book of Demons, a wave of dark energy engulfs {target} causing {damage} damage!"
+            },
+            {
+                "quote": "{user} brandishes The Book of Demons, a pillar of darkness descends on {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} unleashes the power of The Book of Demons, dark energy engulfs {target} dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} invokes a spell from The Book of Demons, a dark explosion hits {target} for {damage} damage!"
+            },
+            {
+                "quote": "{user} calls upon The Book of Demons, a burst of shadow scorches {target} causing {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
     }    
+
 ]    
