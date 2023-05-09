@@ -399,28 +399,64 @@ class Basic(commands.Cog, name="basic"):
         async def create_embeds(quest_list):
             num_pages = (len(quest_list) // 5) + (1 if len(quest_list) % 5 > 0 else 0)
             embeds = []
-        
+
             for i in range(num_pages):
                 start_idx = i * 5
                 end_idx = start_idx + 5
                 quest_embed = discord.Embed(
                     title="Quest Board",
-                    description=f"Quests available for {ctx.author.name}. Use /questinfo <quest_name> for more details.",
+                    description=f"Quests available for {ctx.author.name}. Use /questinfo <quest_id> to get more details.",
                 )
                 quest_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-        
+
                 for quest in quest_list[start_idx:end_idx]:
                     quest_id = quest[0]
                     quest_name = quest[1]
                     quest_xp = quest[3]
                     quest_reward = quest[4]
                     quest_reward_amount = quest[5]
-        
-                    quest_embed.add_field(name=f"**{quest_name}**", value=f"`ID:{quest_id}` \n **XP**: `{quest_xp}` \n **Reward**: `{quest_reward_amount} {quest_reward}`", inline=False)
-        
+                    quest_type = quest[7]
+                    quest = quest[8]
+
+                    # Format the quest type and quest
+                    if quest_type == "collect":
+                        quest_type = "Collect"
+                        quest_parts = quest.split(" ")
+                        item_id = quest_parts[1]
+                        item_name = await db_manager.get_basic_item_name(item_id)
+                        item_emoji = await db_manager.get_basic_item_emote(item_id)
+                        quest = f"**{quest_parts[0]}** {item_emoji}{item_name}"
+                    
+                    elif quest_type == "kill":
+                            quest_type = "Kill"
+                            quest_parts = quest.split(" ")
+                            enemy_id = quest_parts[1]
+                            enemy_name = await db_manager.get_enemy_name(enemy_id)
+                            enemy_emoji = await db_manager.get_enemy_emoji(enemy_id)
+                            #clear the () and , from the enemy emoji
+                            enemy_emoji = str(enemy_emoji)
+                            enemy_emoji = enemy_emoji.replace("(", "")
+                            enemy_emoji = enemy_emoji.replace(")", "")
+                            enemy_emoji = enemy_emoji.replace(",", "")
+                            #remove the ' on each side of the emoji
+                            enemy_emoji = enemy_emoji.replace("'", "")
+                            quest = f"**{quest_parts[0]}** {enemy_emoji}{enemy_name}"
+
+                    # Replace "Money" with cash emoji
+                    if quest_reward == "Money":
+                        quest_reward = f"{cash} {quest_reward_amount}"
+                    else:
+                        # If the reward is an item, get the item name from the database
+                        item_name = await db_manager.get_basic_item_name(quest_reward)
+                        item_emoji = await db_manager.get_basic_item_emote(quest_reward)
+                        quest_reward = f"{item_emoji}{item_name} x{quest_reward_amount}"
+
+                    quest_embed.add_field(name=f"**{quest_name}**", value=f"ID | `{quest_id}` \n **Quest**: {quest_type} {quest} \n **XP**: {quest_xp} \n **Reward**: {quest_reward} \n", inline=False)
+
                 embeds.append(quest_embed)
-        
+
             return embeds
+
 
         # Create a list of embeds with 5 quests per embed
         embeds = await create_embeds(quests)
@@ -465,7 +501,7 @@ class Basic(commands.Cog, name="basic"):
     name="questinfo",
     description="Get detailed information about a specific quest.",
     )
-    async def questinfo(self, ctx: Context, quest_id: int):
+    async def questinfo(self, ctx: Context, quest_id: str):
         # Get the quest from the database
         quest = await db_manager.get_quest_from_id(quest_id)
         if quest is None:

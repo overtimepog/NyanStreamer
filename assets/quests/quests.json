@@ -63,5 +63,57 @@
         "quest_type": "kill",
         "quest": "1 earth_elemental",
         "OnBoard": true
-    }     
+    },
+    {
+        "quest_id": "collect_fire_runes",
+        "quest_name": "Gather the Flames",
+        "quest_description": "The local wizard needs Fire Runes for a spell. Collect 5 for him.",
+        "quest_xp_reward": 50,
+        "quest_reward_type": "Item",
+        "quest_reward": "flame_grimoire",
+        "quest_reward_amount": 1,
+        "quest_level_required": 5,
+        "quest_type": "collect",
+        "quest": "5 fire_rune",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "collect_water_runes",
+        "quest_name": "Gather the Waves",
+        "quest_description": "The local wizard needs Water Runes for a spell. Collect 5 for him.",
+        "quest_xp_reward": 50,
+        "quest_reward_type": "Item",
+        "quest_reward": "water_grimoire",
+        "quest_reward_amount": 1,
+        "quest_level_required": 5,
+        "quest_type": "collect",
+        "quest": "5 water_rune",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "collect_air_runes",
+        "quest_name": "Gather the Winds",
+        "quest_description": "The local wizard needs Air Runes for a spell. Collect 5 for him.",
+        "quest_xp_reward": 50,
+        "quest_reward_type": "Item",
+        "quest_reward": "air_grimoire",
+        "quest_reward_amount": 1,
+        "quest_level_required": 5,
+        "quest_type": "collect",
+        "quest": "5 air_rune",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "collect_earth_runes",
+        "quest_name": "Gather the Stones",
+        "quest_description": "The local wizard needs Earth Runes for a spell. Collect 5 for him.",
+        "quest_xp_reward": 50,
+        "quest_reward_type": "Item",
+        "quest_reward": "earth_grimoire",
+        "quest_reward_amount": 1,
+        "quest_level_required": 5,
+        "quest_type": "collect",
+        "quest": "5 earth_rune",
+        "OnBoard": true
+    }                 
 ]
