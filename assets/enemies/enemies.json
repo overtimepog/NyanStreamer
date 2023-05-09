@@ -12,17 +12,7 @@
         "enemy_money": 5,
         "enemy_crit_chance": 0,
         "enemy_drop_id": "rat",
-        "enemy_drops": [{
-            "item_id": "rat_tail",
-            "item_amount": 1,
-            "item_drop_chance": 0.05
-        },
-        
-        {
-            "item_id": "rat_tail",
-            "item_amount": 1,
-            "item_drop_chance": 0.5
-        },
+        "enemy_drops": [
         {
             "item_id": "rat_tail",
             "item_amount": 1,

@@ -584,7 +584,7 @@
             "item_id": "wooden_handle",
             "item_name": "Wooden Handle",
             "item_price": 15,
-            "item_emoji": "<:Wooden_Handle:>",
+            "item_emoji": "<:handle:1105470695707791370>",
             "item_rarity": "Common",
             "item_type": "Material",
             "item_damage": 0,
@@ -632,5 +632,80 @@
             "quote_id": "None",
             "item_quotes": [],
             "item_sub_type": "None"
-        }                         
-]
+        },
+        {
+            "item_id": "demon_essence",
+            "item_name": "Demon Essence",
+            "item_price": 500,
+            "item_emoji": "<:Demon_Essence:1077583210659205130>",
+            "item_rarity": "Epic",
+            "item_type": "Material",
+            "item_damage": 0,
+            "isUsable": false,
+            "inShop": false,
+            "isEquippable": false,
+            "item_description": "A potent essence extracted from a demon. It pulses with dark energy.",
+            "item_element": "None",
+            "item_crit_chance": "0%",
+            "item_projectile": "None",
+            "recipe_id": "None",
+            "item_recipe": [],
+            "isHuntable": false,
+            "item_hunt_chance": 0,
+            "item_effect": "None",
+            "isMineable": false,
+            "item_mine_chance": 0,
+            "quote_id": "demon_essence",
+            "item_quotes": [
+                {
+                    "quote": "{user} feels a chill as they hold the Demon Essence."
+                },
+                {
+                    "quote": "{user} carefully stores the Demon Essence away for later."
+                },
+                {
+                    "quote": "{user} is unsettled by the Demon Essence's dark aura."
+                },
+                {
+                    "quote": "{user} wonders what they could create with the Demon Essence."
+                },
+                {
+                    "quote": "{user} is careful not to spill any of the Demon Essence."
+                },
+                {
+                    "quote": "{user} feels a strange pull from the Demon Essence."
+                },
+                {
+                    "quote": "{user} is intrigued by the Demon Essence's potential uses."
+                },
+                {
+                    "quote": "{user} is careful not to let the Demon Essence corrupt them."
+                }
+            ],
+            "item_sub_type": "None"
+        },
+        {
+            "item_id": "demon_skull",
+            "item_name": "Demon Skull",
+            "item_price": 1000,
+            "item_emoji": "<:Demon_Skull:1077583210659205130>",
+            "item_rarity": "Epic",
+            "item_type": "Material",
+            "item_damage": 0,
+            "isUsable": false,
+            "inShop": false,
+            "isEquippable": false,
+            "item_description": "The skull of a powerful demon. It radiates a dark energy.",
+            "item_element": "None",
+            "item_crit_chance": "0%",
+            "item_projectile": "None",
+            "recipe_id": "None",
+            "item_recipe": [],
+            "isHuntable": false,
+            "item_hunt_chance": 0,
+            "item_effect": "None",
+            "isMineable": false,
+            "item_mine_chance": 0,
+            "item_sub_type": "None"
+        }        
+    ]

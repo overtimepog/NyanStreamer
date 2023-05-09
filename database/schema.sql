@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `item_description` varchar(255) NOT NULL,
   `item_element` varchar(255) NOT NULL,
   `item_crit_chance` int(11) NOT NULL,
-  `item_projectile` varchar(255) NOT NULL,
+  `item_projectile` varchar(255),
   `recipe_id` varchar(255),
   `isHuntable` boolean,
   `item_hunt_chance` int(11),
