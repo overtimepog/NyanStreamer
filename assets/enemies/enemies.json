@@ -373,7 +373,245 @@
                 "quote": "{enemy_name} uses her seductive powers on {target} dealing {damage} damage."
             }
         ]
-    }    
-
-    
+    },
+    {
+        "enemy_id": "fire_elemental",
+        "enemy_name": "Fire Elemental",
+        "enemy_health": 100,
+        "enemy_damage": "15-20",
+        "enemy_emoji": "<:Fire_Elemental:1105483389592682536>",
+        "enemy_description": "A powerful entity composed of pure fire.",
+        "enemy_rarity": "Rare",
+        "enemy_type": "Elemental",
+        "enemy_xp": 50,
+        "enemy_money": 50,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "fire_elemental",
+        "enemy_drops": [
+            {
+                "item_id": "fire_rune",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "fire_rune",
+                "item_amount": 2,
+                "item_drop_chance": 0.3
+            },
+            {
+                "item_id": "fire_rune",
+                "item_amount": 3,
+                "item_drop_chance": 0.2
+            }
+        ],
+        "enemy_drop_rarity": "Rare",
+        "enemy_element": "Fire",
+        "quote_id": "fire_elemental",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} blasts a fireball at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} engulfs {target} in flames dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} scorches {target} with intense heat dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} summons a pillar of fire on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} creates a wave of fire that hits {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts a fire spell that burns {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} unleashes a fiery explosion on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} sends a burst of flame at {target} causing {damage} damage."
+            }
+        ]
+    },
+    {
+        "enemy_id": "water_elemental",
+        "enemy_name": "Water Elemental",
+        "enemy_health": 100,
+        "enemy_damage": "15-20",
+        "enemy_emoji": "<:Water_Elemental:1105484217472778403>",
+        "enemy_description": "A powerful entity composed of pure water.",
+        "enemy_rarity": "Rare",
+        "enemy_type": "Elemental",
+        "enemy_xp": 50,
+        "enemy_money": 50,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "water_elemental",
+        "enemy_drops": [
+            {
+                "item_id": "water_rune",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "water_rune",
+                "item_amount": 2,
+                "item_drop_chance": 0.3
+            },
+            {
+                "item_id": "water_rune",
+                "item_amount": 3,
+                "item_drop_chance": 0.2
+            }
+        ],
+        "enemy_drop_rarity": "Rare",
+        "enemy_element": "Water",
+        "quote_id": "water_elemental",
+        "enemy_quotes": [
+        {
+            "quote": "{enemy_name} blasts a water jet at {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} engulfs {target} in a water vortex dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} drenches {target} with a tidal wave dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} summons a water pillar on {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} creates a wave of water that hits {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} casts a water spell that soaks {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} unleashes a water explosion on {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} sends a burst of water at {target} causing {damage} damage."
+        }
+        ]
+    },
+    {
+        "enemy_id": "air_elemental",
+        "enemy_name": "Air Elemental",
+        "enemy_health": 100,
+        "enemy_damage": "15-20",
+        "enemy_emoji": "<:Air_Elemental:1105484359676469330>",
+        "enemy_description": "A powerful entity composed of pure air.",
+        "enemy_rarity": "Rare",
+        "enemy_type": "Elemental",
+        "enemy_xp": 50,
+        "enemy_money": 50,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "air_elemental",
+        "enemy_drops": [
+            {
+                "item_id": "air_rune",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "air_rune",
+                "item_amount": 2,
+                "item_drop_chance": 0.3
+            },
+            {
+                "item_id": "air_rune",
+                "item_amount": 3,
+                "item_drop_chance": 0.2
+            }
+        ],
+        "enemy_drop_rarity": "Rare",
+        "enemy_element": "Air",
+        "quote_id": "air_elemental",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} blasts a gust of wind at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} engulfs {target} in a whirlwind dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} strikes {target} with a wind blade dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} summons a tornado on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} creates a wind wave that hits {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts an air spell that blasts {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} unleashes a wind explosion on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} sends a burst of air at {target} causing {damage} damage."
+            }
+        ]
+    },
+    {
+        "enemy_id": "earth_elemental",
+        "enemy_name": "Earth Elemental",
+        "enemy_health": 100,
+        "enemy_damage": "15-20",
+        "enemy_emoji": "<:Earth_Elemental:1105484487804080178>",
+        "enemy_description": "A powerful entity composed of pure earth.",
+        "enemy_rarity": "Rare",
+        "enemy_type": "Elemental",
+        "enemy_xp": 50,
+        "enemy_money": 50,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "earth_elemental",
+        "enemy_drops": [
+            {
+                "item_id": "earth_rune",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "earth_rune",
+                "item_amount": 2,
+                "item_drop_chance": 0.3
+            },
+            {
+                "item_id": "earth_rune",
+                "item_amount": 3,
+                "item_drop_chance": 0.2
+            }
+        ],
+        "enemy_drop_rarity": "Rare",
+        "enemy_element": "Earth",
+        "quote_id": "earth_elemental",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} blasts a rock at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} engulfs {target} in a landslide dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} strikes {target} with a stone spike dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} summons an earthquake under {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} creates a rock wave that hits {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts an earth spell that smashes {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} unleashes a rock explosion on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} sends a burst of stone at {target} causing {damage} damage."
+            }
+        ]
+    }
 ]

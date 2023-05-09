@@ -275,7 +275,56 @@
                   "outcome_xp": 10
               }
           ]
-      }      
-    ]
+        },
+        {
+          "structure_id": "elemental_altar",
+          "structure_name": "Elemental Altar",
+          "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+          "structure_description": "An ancient altar used to summon powerful elemental entities.",
+          "structure_outcomesID": "elemental_altar",
+          "structure_outcomes": [
+            {
+                "structure_quote": "You've summoned a Fire Elemental!",
+                "structure_state": "spawn",
+                "outcome_chance": 0.25,
+                "outcome_type": "spawn",
+                "outcome_output": "fire_elemental",
+                "outcome_amount": 0,
+                "outcome_money": 0,
+                "outcome_xp": 10
+            },
+            {
+                "structure_quote": "You've summoned a Water Elemental!",
+                "structure_state": "spawn",
+                "outcome_chance": 0.25,
+                "outcome_type": "spawn",
+                "outcome_output": "water_elemental",
+                "outcome_amount": 0,
+                "outcome_money": 0,
+                "outcome_xp": 10
+            },
+            {
+                "structure_quote": "You've summoned an Air Elemental!",
+                "structure_state": "spawn",
+                "outcome_chance": 0.25,
+                "outcome_type": "spawn",
+                "outcome_output": "air_elemental",
+                "outcome_amount": 0,
+                "outcome_money": 0,
+                "outcome_xp": 10
+            },
+            {
+                "structure_quote": "You've summoned an Earth Elemental!",
+                "structure_state": "spawn",
+                "outcome_chance": 0.25,
+                "outcome_type": "spawn",
+                "outcome_output": "earth_elemental",
+                "outcome_amount": 0,
+                "outcome_money": 0,
+                "outcome_xp": 10
+            }
+          ]
+        } 
+    ] 
 }
   

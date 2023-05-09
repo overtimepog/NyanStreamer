@@ -11,6 +11,57 @@
         "quest_type": "collect",
         "quest": "10 dahila",
         "OnBoard": true
-    }
-        
+    },
+    {
+        "quest_id": "kill_fire_elemental",
+        "quest_name": "Extinguish the Flame",
+        "quest_description": "A Fire Elemental has been causing havoc. Defeat it to restore peace.",
+        "quest_xp_reward": 100,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 200,
+        "quest_level_required": 10,
+        "quest_type": "kill",
+        "quest": "1 fire_elemental",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "kill_water_elemental",
+        "quest_name": "Calm the Storm",
+        "quest_description": "A Water Elemental has been flooding the lands. Defeat it to stop the deluge.",
+        "quest_xp_reward": 100,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 200,
+        "quest_level_required": 10,
+        "quest_type": "kill",
+        "quest": "1 water_elemental",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "kill_air_elemental",
+        "quest_name": "Still the Winds",
+        "quest_description": "An Air Elemental has been stirring up tornadoes. Defeat it to bring back calm.",
+        "quest_xp_reward": 100,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 200,
+        "quest_level_required": 10,
+        "quest_type": "kill",
+        "quest": "1 air_elemental",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "kill_earth_elemental",
+        "quest_name": "Quell the Quake",
+        "quest_description": "An Earth Elemental has been causing earthquakes. Defeat it to stabilize the land.",
+        "quest_xp_reward": 100,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 200,
+        "quest_level_required": 10,
+        "quest_type": "kill",
+        "quest": "1 earth_elemental",
+        "OnBoard": true
+    }     
 ]
