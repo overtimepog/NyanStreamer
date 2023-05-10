@@ -503,7 +503,7 @@
             "item_quotes": [{
                 "quote": "None"
             }],
-            "item_sub_type": "Chain"
+            "item_sub_type": "None"
         },
         {
             "item_id": "ectoplasm",
