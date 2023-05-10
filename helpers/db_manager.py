@@ -769,7 +769,7 @@ async def add_basic_items() -> None:
 async def print_items() -> None:
     #get the items
     for item in basic_items:
-        print("Type:" + item['item_type'] + " | ID:"+ item['item_id'] + " Rarity:" + item['item_rarity'])
+        print("Type:" + item['item_type'] + " SubType:" + item['item_sub_type'] + "| ID:" + item['item_id'] + " Rarity:" + item['item_rarity'])
 
 async def add_structures() -> None:
     db = DB()
