@@ -4,7 +4,7 @@
         "enemy_name": "Lich King",
         "enemy_health": 500,
         "enemy_damage": "20-40",
-        "enemy_emoji": "<a:Lich:1077461871646494833>",
+        "enemy_emoji": "<a:litch:1105662358413651998>",
         "enemy_description": "The ruler of the underworld, risen from the dead to claim his throne.",
         "enemy_rarity": "Epic",
         "enemy_type": "Boss",
