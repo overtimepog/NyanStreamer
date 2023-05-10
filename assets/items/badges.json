@@ -68,13 +68,12 @@
         "item_crit_chance": "0%",
         "item_projectile": "None",
         "recipe_id": "None",
-        "item_recipe": [
-        ],
+        "item_recipe": [],
         "isHuntable": true,
-        "item_hunt_chance": 0.01,
-        "item_effect": "None",
+        "item_hunt_chance": 0.001,
+        "item_effect": "health + 20",
         "isMineable": true,
-        "item_mine_chance": 0.01,
+        "item_mine_chance": 0.001,
         "item_sub_type": "Plushie"
     }    
 ]

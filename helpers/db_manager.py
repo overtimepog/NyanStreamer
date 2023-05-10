@@ -1546,82 +1546,82 @@ async def get_paralysis_resistance(user_id: int) -> int:
 #add dodge chance
 async def add_dodge_chance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET dodge_chance = dodge_chance + ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET dodge_chance = dodge_chance + ? WHERE user_id = ?", (amount, user_id))
 
 #remove dodge chance
 async def remove_dodge_chance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET dodge_chance = dodge_chance - ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET dodge_chance = dodge_chance - ? WHERE user_id = ?", (amount, user_id))
     
 #add crit chance
 async def add_crit_chance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET crit_chance = crit_chance + ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET crit_chance = crit_chance + ? WHERE user_id = ?", (amount, user_id))
     
 #remove crit chance
 async def remove_crit_chance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET crit_chance = crit_chance - ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET crit_chance = crit_chance - ? WHERE user_id = ?", (amount, user_id))
     
 #add damage boost
 async def add_damage_boost(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET damage_boost = damage_boost + ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET damage_boost = damage_boost + ? WHERE user_id = ?", (amount, user_id))
     
 #remove damage boost
 async def remove_damage_boost(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET damage_boost = damage_boost - ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET damage_boost = damage_boost - ? WHERE user_id = ?", (amount, user_id))
     
 #add health boost
 async def add_health_boost(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET health_boost = health_boost + ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET health_boost = health_boost + ? WHERE user_id = ?", (amount, user_id))
     
 #remove health boost
 async def remove_health_boost(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET health_boost = health_boost - ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET health_boost = health_boost - ? WHERE user_id = ?", (amount, user_id))
     
 #add fire resistance
 async def add_fire_resistance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET fire_resistance = fire_resistance + ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET fire_resistance = fire_resistance + ? WHERE user_id = ?", (amount, user_id))
     
 #remove fire resistance
 async def remove_fire_resistance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET fire_resistance = fire_resistance - ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET fire_resistance = fire_resistance - ? WHERE user_id = ?", (amount, user_id))
     
 #add poison resistance
 async def add_poison_resistance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET poison_resistance = poison_resistance + ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET poison_resistance = poison_resistance + ? WHERE user_id = ?", (amount, user_id))
     
 #remove poison resistance
 async def remove_poison_resistance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET poison_resistance = poison_resistance - ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET poison_resistance = poison_resistance - ? WHERE user_id = ?", (amount, user_id))
     
 #add frost resistance
 async def add_frost_resistance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET frost_resistance = frost_resistance + ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET frost_resistance = frost_resistance + ? WHERE user_id = ?", (amount, user_id))
     
 #remove frost resistance
 async def remove_frost_resistance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET frost_resistance = frost_resistance - ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET frost_resistance = frost_resistance - ? WHERE user_id = ?", (amount, user_id))
     
 #add paralysis resistance
 async def add_paralysis_resistance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET paralysis_resistance = paralysis_resistance + ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET paralysis_resistance = paralysis_resistance + ? WHERE user_id = ?", (amount, user_id))
     
 #remove paralysis resistance
 async def remove_paralysis_resistance(user_id: int, amount: int) -> None:
     db = DB()
-    await db.execute("UPDATE `stats` SET paralysis_resistance = paralysis_resistance - ? WHERE user_id = ?", (amount, user_id))
+    await db.execute("UPDATE `users` SET paralysis_resistance = paralysis_resistance - ? WHERE user_id = ?", (amount, user_id))
     
 #check if an item has a recipe
 async def check_item_recipe(item_id: str) -> bool:

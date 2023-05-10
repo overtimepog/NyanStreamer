@@ -185,7 +185,7 @@ class Basic(commands.Cog, name="basic"):
                     item_projectile = item[12]
                     item_description = await db_manager.get_basic_item_description(item_id)
 
-                    inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID:`{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+                    inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
 
                 embeds.append(inventory_embed)
 
@@ -280,10 +280,10 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.message.author.id
         #get the streamer prefix
         streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
-        print(streamer_prefix)
+        #print(streamer_prefix)
         #get streamer broadcast type
         channel = await db_manager.get_streamer_channel_from_user_id(user_id)
-        print(channel)
+        #print(channel)
         broadcast_type = await db_manager.get_broadcaster_type(channel)
         #check if the item exists in the database
         items = await db_manager.view_streamer_items(channel)
@@ -348,10 +348,10 @@ class Basic(commands.Cog, name="basic"):
         streamer = streamer.lower()
         #get the streamer prefix
         streamer_prefix = await db_manager.get_streamerPrefix_with_channel(streamer)
-        print(streamer_prefix)
+        #print(streamer_prefix)
         #get the streamer prefix of the user
         user_streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
-        print(user_streamer_prefix)
+        #print(user_streamer_prefix)
         #if streamer_prefix != user_streamer_prefix:
         #get streamer broadcast type
         #get the items from the database
@@ -921,7 +921,7 @@ class Basic(commands.Cog, name="basic"):
         """
         user_id = ctx.message.author.id
         user_profile = await db_manager.profile(user_id)
-        print(user_profile)
+        #print(user_profile)
         user_id = user_profile[0]
         user_money = user_profile[1]
         user_health = user_profile[2]
@@ -1077,8 +1077,8 @@ class Basic(commands.Cog, name="basic"):
         item_type = await db_manager.get_basic_item_type(item)
         item_sub_type = await db_manager.get_basic_item_sub_type(item)
         item_equipped_id = await db_manager.id_of_item_equipped(user_id, item)
-        print(item_equipped_id)
-        print(item_type)
+        #print(item_equipped_id)
+        #print(item_type)
         if item_equipped_id == item:
             await ctx.send(f"`{item_name}` is already equipped.")
             return
@@ -1130,16 +1130,16 @@ class Basic(commands.Cog, name="basic"):
             item_effect = await db_manager.get_basic_item_effect(item)
             if item_effect == None or item_effect == "None":
                 message = f"You equipped `{item_name}`."
-            print(item_effect)
+            #print(item_effect)
             #split the effect by spaces
             item_effect = item_effect.split()
             #get the effect, the effect type, and the effect amount
             effect = item_effect[0]
-            print(effect)
+            #print(effect)
             effect_add_or_minus = item_effect[1]
-            print(effect_add_or_minus)
+            #print(effect_add_or_minus)
             effect_amount = item_effect[2]
-            print(effect_amount)
+            #print(effect_amount)
             #if the effect is health
             if effect == "health":
                 #if the effect is add
@@ -1757,14 +1757,14 @@ class Basic(commands.Cog, name="basic"):
                 ]
 
                 #get the chest contents
-                print(itemID)
+                #print(itemID)
                 chest_contents = await db_manager.get_chest_contents(itemID)
-                print(chest_contents)
+                #print(chest_contents)
                 #calculate the chest contents chances
                 #organize the chest items by their chest chance
                 chest_contents.sort(key=lambda x: x[3], reverse=True)
-                print("--------------------------------------------")
-                print(chest_contents)
+                #print("--------------------------------------------")
+                #print(chest_contents)
                 #get the user's luck
                 luck = await db_manager.get_luck(ctx.author.id)
 
@@ -1836,8 +1836,8 @@ class Basic(commands.Cog, name="basic"):
             #get the hunt chance for each item in the huntitems list
         outcomes = []
         for outcome in structure_outcomes:
-            print(outcome)
-            print(len(outcome))
+            #print(outcome)
+            #print(len(outcome))
             #`structure_quote` varchar(255) NOT NULL,
             #`structure_state` varchar(255) NOT NULL,
             #`outcome_chance` int(11) NOT NULL,
@@ -2067,7 +2067,7 @@ class Basic(commands.Cog, name="basic"):
 
         # Get the item info
         item_info = await db_manager.view_basic_item(recipe)
-        print(item_info)
+        #print(item_info)
         # If the item is not found
         if not item_info:
             # Send a message saying the item is not found
