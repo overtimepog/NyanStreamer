@@ -40,7 +40,9 @@ with open("assets/items/misc.json", "r", encoding="utf8") as f:
     misc = json.load(f)
 with open ("assets/items/badges.json", "r", encoding="utf8") as f:
     badges = json.load(f)
-basic_items = weapons + materials + tools + armor + consumables + misc + badges
+with open ("assets/items/pets.json", "r", encoding="utf8") as f:
+    pets = json.load(f)
+basic_items = weapons + materials + tools + armor + consumables + misc + badges + pets
     
 #Enemies
 with open("assets/enemies/enemies.json", "r", encoding="utf8") as f:
@@ -769,7 +771,10 @@ async def add_basic_items() -> None:
 async def print_items() -> None:
     #get the items
     for item in basic_items:
-        print("Type:" + item['item_type'] + " SubType:" + item['item_sub_type'] + "| ID:" + item['item_id'] + " Rarity:" + item['item_rarity'])
+        if item['item_sub_type'] == 'None':
+            print("Type:" + item['item_type'] + " | ID:" + item['item_id'] + " Rarity:" + item['item_rarity'])
+        else:
+            print("Type:" + item['item_type'] + " SubType:" + item['item_sub_type'] + " | ID:" + item['item_id'] + " Rarity:" + item['item_rarity'])
 
 async def add_structures() -> None:
     db = DB()
@@ -1810,6 +1815,16 @@ async def get_equipped_badges(user_id: int) -> list:
             return data
         else:
             return None
+    
+#get the equiped pet of a user
+async def get_equipped_pet(user_id: int) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isEquipped = 1 AND item_type = 'Pet'", (user_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+
     
 #get all the pets in a users inventory
 async def get_users_pets(user_id: int) -> list:
@@ -3380,6 +3395,18 @@ async def is_weapon_equipped(user_id: int) -> int:
     """
     async with aiosqlite.connect("database/database.db") as db:
         async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_type=? AND isEquipped=?", (user_id, "Weapon", 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
+        
+async def is_pet_equipped(user_id: int) -> int:
+    """
+    This function will check if a user has a weapon equiped.
+
+    :param user_id: The ID of the user that should be checked.
+    :return: True if the user has a weapon equiped, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_type=? AND isEquipped=?", (user_id, "Pet", 1)) as cursor:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
         

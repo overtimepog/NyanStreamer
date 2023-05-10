@@ -23,6 +23,14 @@ from helpers import battle, checks, db_manager, hunt, mine
 global i
 i = 0
 cash = "<:cash:1077573941515792384>"
+rarity_colors = {
+    "Common": 0x808080,  # Grey
+    "Uncommon": 0x319236,  # Green
+    "Rare": 0x4c51f7,  # Blue
+    "Epic": 0x9d4dbb,  # Purple
+    "Legendary": 0xf3af19,  # Gold
+    # Add more rarities and colors as needed
+}
 # Here we name the cog and create a new class for the cog.
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
@@ -203,6 +211,7 @@ class Basic(commands.Cog, name="basic"):
                         discord.SelectOption(label="Consumable"),
                         discord.SelectOption(label="Material"),
                         discord.SelectOption(label="Badge"),
+                        discord.SelectOption(label="Pet"),
                     ]
                     super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
 
@@ -216,7 +225,12 @@ class Basic(commands.Cog, name="basic"):
 
                     filtered_embeds = await create_embeds(filtered_items)
                     new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
-                    await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+                    try:
+                        await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+                    #catch IndexError 
+                    except(IndexError):
+                        await interaction.response.defer()
+                    
 
         class InventoryButton(discord.ui.View):
                 def __init__(self, current_page, embeds, **kwargs):
@@ -955,9 +969,26 @@ class Basic(commands.Cog, name="basic"):
         
         #get each badge and add it to the badges feild
         Userbadges = ''.join(Userbadges)
-        if Userbadges == " ":
-            Userbadges = "You dont Have any Badges Displayed, please equip one from your inventory"
-        embed.add_field(name="Badges", value=f"{Userbadges}", inline=False)
+        if Userbadges:
+            embed.add_field(name="Badges", value=f"{Userbadges}", inline=False)
+        
+        inventory_items = await db_manager.view_inventory(user.id)
+        
+        pet_items = [item for item in inventory_items if item[7] == "Pet"]
+
+        # Find the equipped pet
+        equipped_pet = next((pet for pet in pet_items if pet[9] == 1), None)
+    
+        if equipped_pet is not None:
+            pet_id = equipped_pet[1]
+            pet_name = equipped_pet[2]
+            pet_emoji = equipped_pet[4]
+            pet_rarity = equipped_pet[5]
+            pet_amount = equipped_pet[6]
+            pet_description = await db_manager.get_basic_item_description(pet_id)
+    
+            embed.add_field(name=f"Pet", value=f'{pet_emoji}{pet_name}', inline=False)
+        
         #add xp and level
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
         embed.add_field(name="Level", value=f"{user_level}", inline=True)
@@ -1047,6 +1078,7 @@ class Basic(commands.Cog, name="basic"):
                             discord.SelectOption(label="Consumable"),
                             discord.SelectOption(label="Material"),
                             discord.SelectOption(label="Badge"),
+                            discord.SelectOption(label="Pet"),
                         ]
                         super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
 
@@ -1060,7 +1092,11 @@ class Basic(commands.Cog, name="basic"):
 
                         filtered_embeds = await create_embeds(filtered_items)
                         new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
-                        await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+                        try:
+                            await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+                    #catch IndexError 
+                        except(IndexError):
+                            await interaction.response.defer()
 
             class InventoryButton(discord.ui.View):
                     def __init__(self, current_page, embeds, **kwargs):
@@ -1097,7 +1133,100 @@ class Basic(commands.Cog, name="basic"):
 
             view = InventoryButton(current_page=0, embeds=embeds)
             await ctx.send(embed=embeds[0], view=view)
-        
+             
+        async def display_pets(ctx, user):
+            # Get user inventory items from the database
+            inventory_items = await db_manager.view_inventory(user.id)
+            if inventory_items == []:
+                await ctx.send(f"{user.name} has no items in their inventory")
+                return
+
+            # Filter out items that are not pets
+            pet_items = [item for item in inventory_items if item[7] == "Pet"]
+
+            # Calculate number of pages based on number of pets
+            num_pages = len(pet_items)
+
+            current_page = 0
+            
+
+            rarity_colors = {
+                "Common": 0x808080,  # Grey
+                "Uncommon": 0x319236,  # Green
+                "Rare": 0x4c51f7,  # Blue
+                "Epic": 0x9d4dbb,  # Purple
+                "Legendary": 0xf3af19,  # Gold
+                # Add more rarities and colors as needed
+            }
+
+            # Create a function to generate embeds from a list of pets
+            async def create_embeds(pet_list):
+                embeds = []
+                for i, pet in enumerate(pet_list):
+                    pet_rarity = pet[5]
+                    pet_color = rarity_colors.get(pet_rarity, 0x000000)
+
+                for i, pet in enumerate(pet_list):
+                    pet_embed = discord.Embed(
+                        title=f"{ctx.author.name}'s {pet[2]}",
+                        color=pet_color
+                    )
+                    pet_rarity = pet[5]
+                    pet_embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{pet[4].split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
+                    pet_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+
+                    pet_id = pet[1]
+                    pet_name = pet[2]
+                    pet_emoji = pet[4]
+                    pet_rarity = pet[5]
+                    pet_amount = pet[6]
+                    is_equipped = pet[9]
+                    pet_description = await db_manager.get_basic_item_description(pet_id)
+
+                    pet_embed.add_field(name=f"{pet_name} - x{pet_amount} \n", value=f'**{pet_description}** \n ID | `{pet_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+
+                    embeds.append(pet_embed)
+
+                return embeds
+
+            # Create a list of embeds with 1 pet per embed
+            embeds = await create_embeds(pet_items)
+
+            class PetButton(discord.ui.View):
+                def __init__(self, current_page, embeds, **kwargs):
+                    super().__init__(**kwargs)
+                    self.current_page = current_page
+                    self.embeds = embeds
+
+                @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+                async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = 0
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+                async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page > 0:
+                        self.current_page -= 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+                async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page < len(self.embeds) - 1:
+                        self.current_page += 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+                async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = len(self.embeds) - 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            view = PetButton(current_page=0, embeds=embeds)
+            await ctx.send(embed=embeds[0], view=view)
+
         class ProfileView(discord.ui.View):
             def __init__(self, ctx):
                 super().__init__()
@@ -1112,7 +1241,8 @@ class Basic(commands.Cog, name="basic"):
             @discord.ui.button(label="Pets", custom_id="profile_pets")
             async def pets_button(self, interaction: discord.Interaction, button: discord.ui.Button):
                 # Handle the "Pets" button click here.
-                await interaction.response.send_message("Pets button clicked!")
+                await display_pets(self.ctx, self.user)
+                await interaction.response.defer()
 
         view = ProfileView(ctx)
         await ctx.send(embed=embed, view=view)
@@ -1168,12 +1298,12 @@ class Basic(commands.Cog, name="basic"):
 
 #a command to give a user money using the add_money function from helpers\db_manager.py
     @commands.hybrid_command(
-        name="give",
-        description="This command will give a user money.",
+        name="pay",
+        description="This command will give a user some of your money.",
     )
-    async def give(self, ctx: Context, user: discord.Member, amount: int):
+    async def pay(self, ctx: Context, user: discord.Member, amount: int):
         """
-        This command will give a user money.
+        This command will pay a user money.
 
         :param ctx: The context in which the command was called.
         :param user: The user that should be given money.
@@ -1214,6 +1344,12 @@ class Basic(commands.Cog, name="basic"):
             weapon_equipped = await db_manager.is_weapon_equipped(user_id)
             if weapon_equipped == True:
                 await ctx.send(f"You already have a weapon equipped.")
+                return 
+            
+        if item_type == "Pet":
+            weapon_equipped = await db_manager.is_pet_equipped(user_id)
+            if weapon_equipped == True:
+                await ctx.send(f"You can only have 1 pet equipped at a time.")
                 return 
         
         if item_sub_type == "Ring":
