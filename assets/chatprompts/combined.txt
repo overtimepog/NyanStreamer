@@ -15,7 +15,7 @@ I am going to give you a bunch of different templates, and you are going to proc
 •Mana does not exist, nothing to do with mana should be created
 •If an item has a recipe, its recpie_id needs to be the same as the item_id
 •Put Everything in a codeblock
-•Badges are Equippable
+•Badges and Pets are Equippable
 •chests need chest contents and chests arent allowed to be empty
 •If asked to coninue, start the codeblock from where it was left off
 •Finish all code, no code is allowed to randomly cut off, finish it always
