@@ -951,7 +951,7 @@ class Basic(commands.Cog, name="basic"):
         for badge in badges:
             badge_name = badge[2]
             badge_emote = badge[4]
-            badge = f"{badge_emote} {badge_name} \n"
+            badge = f"{badge_emote}{badge_name} \n"
             Userbadges.append(badge)
         
         #get each badge and add it to the badges feild

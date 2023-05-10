@@ -51,5 +51,30 @@
         ],
         "item_effect": "None",
         "item_sub_type": "None"
+    },
+    {
+        "item_id": "aspen_plushie",
+        "item_name": "Aspen Plushie",
+        "item_price": 1000,
+        "item_emoji": "<:AspenFrostPlush:1105686844273860668>",
+        "item_rarity": "Legendary",
+        "item_type": "Badge",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A cute plushie of Aspen. It's soft, cuddly, and extremely rare.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [
+        ],
+        "isHuntable": true,
+        "item_hunt_chance": 0.01,
+        "item_effect": "None",
+        "isMineable": true,
+        "item_mine_chance": 0.01,
+        "item_sub_type": "Plushie"
     }    
 ]
