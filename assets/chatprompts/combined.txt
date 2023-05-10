@@ -16,6 +16,7 @@ I am going to give you a bunch of different templates, and you are going to proc
 •If an item has a recipe, its recpie_id needs to be the same as the item_id
 •Put Everything in a codeblock
 •Badges are Equippable
+•chests need chest contents and chests arent allowed to be empty
 •If asked to coninue, start the codeblock from where it was left off
 •Finish all code, no code is allowed to randomly cut off, finish it always
 
@@ -213,7 +214,7 @@ each rule is marked with a • and must be followed at all times when generating
                     ]
                 },
 
-        this is the template to create chests, chests need chest contents and chest isnt allowed to be empty
+        this is the template to create chests
         [    
             {
                 "chest_id": "chest_basic",
@@ -264,4 +265,29 @@ each rule is marked with a • and must be followed at all times when generating
                 ]
             }
         ]
+        this is for pets
+            {
+                "item_id": "winged_cash_pet",
+                "item_name": "Winged Cash",
+                "item_price": 10000,
+                "item_emoji": "<a:flyingcash:1105664583680655491>",
+                "item_rarity": "Legendary",
+                "item_type": "Pet",
+                "item_damage": 0,
+                "isUsable": false,
+                "inShop": false,
+                "isEquippable": true,
+                "item_description": "A Flying stack of Cash, how neat!",
+                "item_element": "None",
+                "item_crit_chance": "0%",
+                "item_projectile": "None",
+                "recipe_id": "None",
+                "item_recipe": [],
+                "isHuntable": false,
+                "item_hunt_chance": 0,
+                "item_effect": "luck + 15",
+                "isMineable": false,
+                "item_mine_chance": 0,
+                "item_sub_type": "None"
+            }
 once you understand the rules, marked by a • at the beginning, say the rule and say what it means for you and all generated content, followed by a check emoji, and after all the rules are understood tell me you have understood all the rules and, tell me that you are ready to create
