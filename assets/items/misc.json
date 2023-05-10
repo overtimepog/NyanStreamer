@@ -33,7 +33,7 @@
         "item_price": 50,
         "item_emoji": "<:Goblin_Talisman:1078761460211130431>",
         "item_rarity": "Uncommon",
-        "item_type": "Misc",
+        "item_type": "Armor",
         "item_damage": 0,
         "isUsable": false,
         "inShop": false,
@@ -54,7 +54,7 @@
             }
         ],
         "isHuntable": true,
-        "item_hunt_chance": 0.05,
+        "item_hunt_chance": 0.1,
         "item_effect": "luck + 5",
         "isMineable": false,
         "item_mine_chance": 0,
@@ -117,7 +117,7 @@
         "isUsable": false,
         "inShop": false,
         "isEquippable": false,
-        "item_description": "A key dropped from the Skeleton King, used to open powerful locked doors and chests.",
+        "item_description": "A key dropped from the Litch, used to open powerful locked doors and chests.",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
@@ -132,6 +132,6 @@
         "item_quotes": [{
             "quote": "None"
         }],
-        "item_sub_type": "Quest Item"
+        "item_sub_type": "None"
     }  
 ]
