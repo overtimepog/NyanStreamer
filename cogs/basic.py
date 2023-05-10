@@ -907,19 +907,19 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(f"You don't have enough `{i[2]}` to sell `{amount}`.")
                     return
         await ctx.send(f"Item doesn't exist in your inventory.")
-
+        
 #view a users profile using the view_profile function from helpers\db_manager.py
     @commands.hybrid_command(
         name="profile",
         description="This command will view your profile.",
     )
-    async def profile(self, ctx: Context):
+    async def profile(self, ctx: Context, user: discord.User):
         """
         This command will view your profile.
 
         :param ctx: The context in which the command was called.
         """
-        user_id = ctx.message.author.id
+        user_id = user.id
         user_profile = await db_manager.profile(user_id)
         #print(user_profile)
         user_id = user_profile[0]
@@ -936,9 +936,8 @@ class Basic(commands.Cog, name="basic"):
         xp_needed = await db_manager.xp_needed(user_id)
         #convert the xp needed to a string
         xp_needed = str(xp_needed)
-        
         user_items = await db_manager.view_inventory(user_id)
-        embed = discord.Embed(title="Profile", description=f"{ctx.message.author.mention}'s Profile.", color=0x00ff00)
+        embed = discord.Embed(title="Profile", description=f"{user.mention}'s Profile.", color=0x00ff00)
         if user_health == 0:
             embed.add_field(name="Health", value=f"{user_health} (Dead)", inline=True)
         else:
@@ -980,7 +979,7 @@ class Basic(commands.Cog, name="basic"):
             quest_progress = await db_manager.get_quest_progress(user_id, user_quest)
             quest_progress = str(quest_progress)
             embed.add_field(name="Current Quest", value=f"`{quest_name} - {quest_progress}/{questTotal}`", inline=False)
-        embed.set_thumbnail(url=ctx.message.author.avatar.url)
+        embed.set_thumbnail(url=user.avatar.url)
         if isStreamer == 1:
             isStreamer = "Yes"
         elif isStreamer == 0:
@@ -988,8 +987,135 @@ class Basic(commands.Cog, name="basic"):
         if user_twitch_name == None or user_twitch_name == "" or user_twitch_name == "None":
             user_twitch_name = "Not Connected"
         embed.set_footer(text=f"User ID: {user_id} | Twitch: {user_twitch_name} | Streamer: {isStreamer}")
+        
+        async def display_inventory(ctx, user):
+            # Get user inventory items from the database
+            inventory_items = await db_manager.view_inventory(user.id)
+            if inventory_items == []:
+                await ctx.send(f"{user.name} has no items in their inventory")
+                return
 
-        await ctx.send(embed=embed)
+            # Calculate number of pages based on number of items
+            num_pages = (len(inventory_items) // 5) + (1 if len(inventory_items) % 5 > 0 else 0)
+
+            current_page = 0
+
+            # Create a function to generate embeds from a list of items
+            async def create_embeds(item_list):
+                num_pages = (len(item_list) // 5) + (1 if len(item_list) % 5 > 0 else 0)
+                embeds = []
+
+                for i in range(num_pages):
+                    start_idx = i * 5
+                    end_idx = start_idx + 5
+                    inventory_embed = discord.Embed(
+                        title="Inventory",
+                        description=f"{ctx.author.name}'s Inventory \n",
+                    )
+                    inventory_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+
+                    for item in item_list[start_idx:end_idx]:
+                        item_id = item[1]
+                        item_name = item[2]
+                        item_price = item[3]
+                        item_emoji = item[4]
+                        item_rarity = item[5]
+                        item_amount = item[6]
+                        item_type = item[7]
+                        item_damage = item[8]
+                        is_equipped = item[9]
+                        item_element = item[10]
+                        item_crit_chance = item[11]
+                        item_projectile = item[12]
+                        item_description = await db_manager.get_basic_item_description(item_id)
+
+                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+
+                    embeds.append(inventory_embed)
+
+                return embeds
+
+            # Create a list of embeds with 5 items per embed
+            embeds = await create_embeds(inventory_items)
+            class Select(discord.ui.Select):
+                    def __init__(self):
+                        options=[
+                            discord.SelectOption(label="All"),
+                            discord.SelectOption(label="Weapon"),
+                            discord.SelectOption(label="Tool"),
+                            discord.SelectOption(label="Armor"),
+                            discord.SelectOption(label="Consumable"),
+                            discord.SelectOption(label="Material"),
+                            discord.SelectOption(label="Badge"),
+                        ]
+                        super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
+
+                    async def callback(self, interaction: discord.Interaction):
+                        selected_item_type = self.values[0]
+
+                        if selected_item_type == "All":
+                            filtered_items = await db_manager.view_inventory(interaction.user.id)
+                        else:
+                            filtered_items = [item for item in await db_manager.view_inventory(interaction.user.id) if item[7] == selected_item_type]
+
+                        filtered_embeds = await create_embeds(filtered_items)
+                        new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
+                        await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+
+            class InventoryButton(discord.ui.View):
+                    def __init__(self, current_page, embeds, **kwargs):
+                        super().__init__(**kwargs)
+                        self.current_page = current_page
+                        self.embeds = embeds
+                        self.add_item(Select())
+
+                    @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+                    async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                        self.current_page = 0
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                    @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+                    async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                        if self.current_page > 0:
+                            self.current_page -= 1
+                            await interaction.response.defer()
+                            await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                    @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+                    async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                        if self.current_page < len(self.embeds) - 1:
+                            self.current_page += 1
+                            await interaction.response.defer()
+                            await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                    @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+                    async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                        self.current_page = len(self.embeds) - 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            view = InventoryButton(current_page=0, embeds=embeds)
+            await ctx.send(embed=embeds[0], view=view)
+        
+        class ProfileView(discord.ui.View):
+            def __init__(self, ctx):
+                super().__init__()
+                self.ctx = ctx
+                self.user = user
+
+            @discord.ui.button(label="Inventory", custom_id="profile_inv")
+            async def inv_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+                await display_inventory(self.ctx, self.user)
+                await interaction.response.defer()
+
+            @discord.ui.button(label="Pets", custom_id="profile_pets")
+            async def pets_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+                # Handle the "Pets" button click here.
+                await interaction.response.send_message("Pets button clicked!")
+
+        view = ProfileView(ctx)
+        await ctx.send(embed=embed, view=view)
         
     #hybrid command to start the user on their journy, this will create a profile for the user using the profile function from helpers\db_manager.py and give them 200 bucks
     @commands.hybrid_command(
