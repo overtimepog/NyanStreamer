@@ -956,6 +956,8 @@ class Basic(commands.Cog, name="basic"):
         
         #get each badge and add it to the badges feild
         Userbadges = ''.join(Userbadges)
+        if Userbadges == " ":
+            Userbadges = "You dont Have any Badges Displayed, please equip one from your inventory"
         embed.add_field(name="Badges", value=f"{Userbadges}", inline=False)
         #add xp and level
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)

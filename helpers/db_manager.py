@@ -1810,6 +1810,16 @@ async def get_equipped_badges(user_id: int) -> list:
             return data
         else:
             return None
+    
+#get all the pets in a users inventory
+async def get_users_pets(user_id: int) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_type = 'Pet'", (user_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+    
         
 #get equipped weapon damage
 async def get_equipped_weapon_damage(user_id: int) -> int:
