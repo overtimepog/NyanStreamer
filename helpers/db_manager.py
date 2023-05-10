@@ -765,6 +765,12 @@ async def add_basic_items() -> None:
                     print(f"Added Ingredient: |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
                 print(f"Added |{item['item_name']}|'s recipe to the database")
 
+#print the items by type
+async def print_items() -> None:
+    #get the items
+    for item in basic_items:
+        print("Type:" + item['item_type'] + " | ID:"+ item['item_id'] + " Rarity:" + item['item_rarity'])
+
 async def add_structures() -> None:
     db = DB()
     # Insert data into structures table

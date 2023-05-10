@@ -377,6 +377,8 @@ async def load_cogs() -> None:
 
 asyncio.run(init_db())
 asyncio.run(load_cogs())
+print("All ITEMS")
+asyncio.run(db_manager.print_items())
 print("\n" + "---------Basic Items----------")
 asyncio.run(db_manager.add_basic_items())
 print("\n" + "---------Chests----------")
