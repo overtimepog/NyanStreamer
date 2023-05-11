@@ -430,6 +430,57 @@
             }
         ],
         "item_sub_type": "None"
-    }    
+    },
+    {
+        "item_id": "death_knight_sword",
+        "item_name": "Death Knight's Sword",
+        "item_price": 1000,
+        "item_emoji": "<:DeathKnightSword:1077583210659205130>",
+        "item_rarity": "Legendary",
+        "item_type": "Weapon",
+        "item_damage": "25-35",
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "The Death Knight's formidable sword, imbued with dark magic.",
+        "item_element": "None",
+        "item_crit_chance": "10%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "death_knight_sword",
+        "item_quotes": [
+            {
+                "quote": "{user} swings the Death Knight's Sword at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} unleashes a flurry of attacks with the Death Knight's Sword on {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} casts a death spell with the Death Knight's Sword on {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} uses the Death Knight's Sword to drain {target}'s life, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} strikes {target} with a chilling touch of the Death Knight's Sword, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} uses a death grip with the Death Knight's Sword on {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} casts a shadow bolt with the Death Knight's Sword at {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} slashes at {target} with the Death Knight's Sword, dealing {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    }      
 
 ]    

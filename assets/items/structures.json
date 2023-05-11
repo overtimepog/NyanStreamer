@@ -324,7 +324,87 @@
                 "outcome_xp": 10
             }
           ]
-        } 
+        },
+        {
+            "structure_id": "death_knight_lair",
+            "structure_name": "Death Knight's Lair",
+            "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+            "structure_description": "A dark, foreboding lair that is home to the formidable Death Knight.",
+            "structure_outcomesID": "death_knight_lair",
+            "structure_outcomes": [
+                {
+                    "structure_quote": "You narrowly avoided a trap and found a hidden chest!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.3,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "chest_basic",
+                    "outcome_amount": 1,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.2,
+                    "outcome_type": "money_gain",
+                    "outcome_output": "Money",
+                    "outcome_amount": 200,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You Encountered the Death Knight in his lair!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "spawn",
+                    "outcome_output": "death_knight",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
+                    "structure_state": "boss",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "spawn",
+                    "outcome_output": "malik_mindflayer",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "amulet_dragon",
+                    "outcome_amount": 1,
+                    "outcome_money": 0,
+                    "outcome_xp": 30
+                },
+                {
+                    "structure_quote": "You've found a stash of healing potions!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "healthpotion",
+                    "outcome_amount": 3,
+                    "outcome_money": 0,
+                    "outcome_xp": 20
+                },
+                {
+                    "structure_quote": "You've been hit by a poisoned dart and lost some health!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.15,
+                    "outcome_type": "health_loss",
+                    "outcome_output": "",
+                    "outcome_amount": 30,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                }  
+            ]
+        }
+        
     ] 
 }
   

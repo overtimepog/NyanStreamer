@@ -47,11 +47,9 @@ basic_items = weapons + materials + tools + armor + consumables + misc + badges 
 #Enemies
 with open("assets/enemies/enemies.json", "r", encoding="utf8") as f:
     enemies = json.load(f)
-with open("assets/enemies/creatures.json", "r", encoding="utf8") as f:
-    creatures = json.load(f)
 with open("assets/enemies/bosses.json", "r", encoding="utf8") as f:
     bosses = json.load(f)
-enemies = enemies + creatures + bosses
+enemies = enemies  + bosses
 
 #Quests
 with open("assets/quests/quests.json", "r", encoding="utf8") as f:

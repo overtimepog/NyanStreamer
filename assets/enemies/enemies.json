@@ -613,5 +613,70 @@
                 "quote": "{enemy_name} sends a burst of stone at {target} causing {damage} damage."
             }
         ]
-    }
+    },
+    {
+        "enemy_id": "death_knight",
+        "enemy_name": "Death Knight",
+        "enemy_health": 200,
+        "enemy_damage": "20-30",
+        "enemy_emoji": "<a:deathKnight:1105662354487779328>",
+        "enemy_description": "A formidable Death Knight, feared by many for its deadly skills.",
+        "enemy_rarity": "Legendary",
+        "enemy_type": "Undead",
+        "enemy_xp": 100,
+        "enemy_money": 500,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "death_knight",
+        "enemy_drops": [
+            {
+                "item_id": "death_knight_sword",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            },
+            {
+                "item_id": "arcane_crystal",
+                "item_amount": 1,
+                "item_drop_chance": 0.3
+            },
+            {
+                "item_id": "demon_essence",
+                "item_amount": 1,
+                "item_drop_chance": 0.2
+            },
+            {
+                "item_id": "demon_skull",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            }
+        ],
+        "enemy_drop_rarity": "Legendary",
+        "enemy_element": "None",
+        "quote_id": "death_knight",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} slashes at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts a death spell on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} summons undead minions to attack {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses a dark aura to drain {target}'s life, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} strikes {target} with a chilling touch, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} unleashes a flurry of attacks on {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} uses a death grip on {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts a shadow bolt at {target}, dealing {damage} damage."
+            }
+        ]
+    }    
 ]
