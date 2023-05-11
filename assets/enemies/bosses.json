@@ -27,9 +27,9 @@
     {
         "enemy_id": "dragon_boss",
         "enemy_name": "Flamewing, the Fire Dragon",
-        "enemy_health": 1000,
+        "enemy_health": 600,
         "enemy_damage": "30-55",
-        "enemy_emoji": "<:fire_dragon:123456789>",
+        "enemy_emoji": "<a:flameWing:1105976319386320938>",
         "enemy_description": "A fierce dragon with scales as red as flames, able to breathe fire and melt everything in its path.",
         "enemy_rarity": "Legendary",
         "enemy_type": "Boss",
@@ -111,7 +111,7 @@
     {
         "enemy_id": "malik_mindflayer",
         "enemy_name": "Malik the Mindflayer",
-        "enemy_health": 1500,
+        "enemy_health": 1000,
         "enemy_damage": "90-150",
         "enemy_emoji": "<a:malik:1079592323219984415>",
         "enemy_description": "A powerful mindflayer, rumored to have destroyed entire armies with a single thought.",
