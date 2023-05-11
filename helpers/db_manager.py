@@ -770,20 +770,20 @@ async def print_items() -> None:
     #get the items
     for item in basic_items:
         if item['item_sub_type'] == 'None':
-            print("Type:" + item['item_type'] + " | ID:" + item['item_id'] + " Rarity:" + item['item_rarity'])
+            print("Type: " + item['item_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'])
         else:
-            print("Type:" + item['item_type'] + " SubType:" + item['item_sub_type'] + " | ID:" + item['item_id'] + " Rarity:" + item['item_rarity'])
+            print("Type: " + item['item_type'] + " SubType: " + item['item_sub_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'])
     for chest in chests:
-        print("Type:Chest | ID:" + chest['chest_id'] + " Rarity:" + chest['chest_rarity'])
+        print("Type: Chest | ID: " + chest['chest_id'] + " | Rarity:" + chest['chest_rarity'])
 
     for enemy in enemies:
-        print("Type:Enemy | ID:" + enemy['enemy_id'] + " Rarity:" + enemy['enemy_rarity'])
+        print("Type: Enemy | ID: " + enemy['enemy_id'] + " | Rarity:" + enemy['enemy_rarity'])
 
     for structure in structures['structures']:
-        print("Type:Structure | ID:" + structure['structure_id'])
+        print("Type: Structure | ID: " + structure['structure_id'])
 
     for quest in quests:
-        print("Type:Quest | ID:" + quest['quest_id'])
+        print("Type: Quest | ID: " + quest['quest_id'])
         
 
 async def add_structures() -> None:
