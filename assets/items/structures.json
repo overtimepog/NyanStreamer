@@ -403,6 +403,95 @@
                     "outcome_xp": 10
                 }  
             ]
+        },
+        {
+            "structure_id": "spider_den",
+            "structure_name": "Spider Den",
+            "structure_image": "https://cdn.discordapp.com/attachments/755517144426479786/1106264094589333524/OverTime_32-bit_pixel_art_Spider_Den_a_dark_and_eerie_cave_fill_a32b0e2d-5024-4f42-ba41-e95d6a11bf45.png",
+            "structure_description": "A dark, eerie cave filled with giant spider webs. The home of the Spider Queen.",
+            "structure_outcomesID": "spider_den",
+            "structure_outcomes": [
+                {
+                    "structure_quote": "You've stumbled into a spider's nest and found a hoard of items!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.2,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "spider_venom",
+                    "outcome_amount": 3,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You Encountered a giant spider!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "spawn",
+                    "outcome_output": "giant_spider",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've discovered the Spider Queen's lair!",
+                    "structure_state": "boss",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "spawn",
+                    "outcome_output": "spider_queen",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                "structure_quote": "You've stumbledinto a treasure room filled with rare artifacts!",
+                "structure_state": "success",
+                "outcome_chance": 0.05,
+                "outcome_type": "item_gain",
+                "outcome_output": "queen_spider_venom",
+                "outcome_amount": 1,
+                "outcome_money": 0,
+                "outcome_xp": 30
+                },
+                {
+                "structure_quote": "You've found a stash of spider venom!",
+                "structure_state": "success",
+                "outcome_chance": 0.1,
+                "outcome_type": "item_gain",
+                "outcome_output": "spider_venom",
+                "outcome_amount": 3,
+                "outcome_money": 0,
+                "outcome_xp": 20
+                },
+                {
+                "structure_quote": "You've been hit by a spider's web and lost some health!",
+                "structure_state": "loss",
+                "outcome_chance": 0.15,
+                "outcome_type": "health_loss",
+                "outcome_output": "",
+                "outcome_amount": 30,
+                "outcome_money": 0,
+                "outcome_xp": 10
+                },
+                {
+                "structure_quote": "You've found a hidden chest!",
+                "structure_state": "success",
+                "outcome_chance": 0.3,
+                "outcome_type": "item_gain",
+                "outcome_output": "chest_basic",
+                "outcome_amount": 1,
+                "outcome_money": 0,
+                "outcome_xp": 10
+                },
+                {
+                "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                "structure_state": "success",
+                "outcome_chance": 0.2,
+                "outcome_type": "money_gain",
+                "outcome_output": "gold",
+                "outcome_amount": 200,
+                "outcome_money": 0,
+                "outcome_xp": 10
+                }
+        ]
         }
         
     ] 

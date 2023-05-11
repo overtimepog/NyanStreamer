@@ -152,5 +152,55 @@
                 "quote": "{enemy_name} flays the mind of {target}, dealing {damage} damage."
             }
         ]
-    }             
+    },
+    {
+        "enemy_id": "spider_queen",
+        "enemy_name": "Spider Queen",
+        "enemy_health": 100,
+        "enemy_damage": "20-30",
+        "enemy_emoji": "<a:spiderqueen:1106268058730909847>",
+        "enemy_description": "The Spider Queen. A massive, venomous spider that rules over all other spiders.",
+        "enemy_rarity": "Legendary",
+        "enemy_type": "Animal",
+        "enemy_xp": 50,
+        "enemy_money": 50,
+        "enemy_crit_chance": 0.2,
+        "enemy_drop_id": "spider_queen",
+        "enemy_drops": [
+            {
+                "item_id": "queen_spider_venom",
+                "item_amount": 1,
+                "item_drop_chance": 1
+            }
+        ],
+        "enemy_drop_rarity": "Legendary",
+        "enemy_element": "Poison",
+        "quote_id": "spider_queen",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} bites {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} ensnares {target} in its massive web, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} lunges at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} spits a torrent of venom at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} wraps {target} in its web, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} pounces on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} sinks its massive fangs into {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} leaps at {target} dealing {damage} damage."
+            }
+        ]
+    }      
 ]

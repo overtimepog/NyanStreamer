@@ -678,5 +678,55 @@
                 "quote": "{enemy_name} casts a shadow bolt at {target}, dealing {damage} damage."
             }
         ]
-    }    
+    },
+    {
+        "enemy_id": "giant_spider",
+        "enemy_name": "Giant Spider",
+        "enemy_health": 50,
+        "enemy_damage": "10-15",
+        "enemy_emoji": "<a:spidercool:1106267403584798740>",
+        "enemy_description": "A giant spider. It's venomous and very aggressive.",
+        "enemy_rarity": "Uncommon",
+        "enemy_type": "Animal",
+        "enemy_xp": 20,
+        "enemy_money": 20,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "giant_spider",
+        "enemy_drops": [
+            {
+                "item_id": "spider_venom",
+                "item_amount": 1,
+                "item_drop_chance": 0.5
+            }
+        ],
+        "enemy_drop_rarity": "Uncommon",
+        "enemy_element": "Poison",
+        "quote_id": "giant_spider",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} bites {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} ensnares {target} in its web, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} lunges at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} spits venom at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} wraps {target} in its web, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} pounces on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} sinks its fangs into {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} leaps at {target} dealing {damage} damage."
+            }
+        ]
+    }     
 ]
