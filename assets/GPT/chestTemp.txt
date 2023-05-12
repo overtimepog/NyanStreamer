@@ -1,0 +1,51 @@
+this is the template to create chests
+        [    
+            {
+                "chest_id": "chest_basic",
+                "chest_name": "Chest",
+                "chest_price": 100,
+                "chest_emoji": "<:chest:1061289541027254362>",
+                "chest_rarity": "Common",
+                "chest_type": "Consumable",
+                "chest_description": "A basic chest, found in plenty of places and contains a few items.",
+                "key_id": "None",
+                "chest_contentsID": "chest_basic",
+                "chest_contents": [
+                    {
+                        "item_id": "stick",
+                        "item_amount": 2,
+                        "drop_chance": 0.5
+                    },
+                    {
+                        "item_id": "feather",
+                        "item_amount": 2,
+                        "drop_chance": 0.5
+                    },
+                    {
+                        "item_id": "string",
+                        "item_amount": 2,
+                        "drop_chance": 0.5
+                    },
+                    {
+                        "item_id": "iron_ingot",
+                        "item_amount": 1,
+                        "drop_chance": 0.2
+                    },
+                    {
+                        "item_id": "gold_ingot",
+                        "item_amount": 1,
+                        "drop_chance": 0.1
+                    },
+                    {
+                        "item_id": "diamond",
+                        "item_amount": 1,
+                        "drop_chance": 0.02
+                    },
+                    {
+                        "item_id": "healthpotion",
+                        "item_amount": 1,
+                        "drop_chance": 0.05
+                    }
+                ]
+            }
+        ]

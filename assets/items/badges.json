@@ -29,7 +29,7 @@
     },
     {
         "item_id": "demon_skull_badge",
-        "item_name": "Demon Skull Badge",
+        "item_name": "Demon Slayer",
         "item_price": 2000,
         "item_emoji": "<:DemonBadge:1105478431648518174>",
         "item_rarity": "Epic",
@@ -38,7 +38,7 @@
         "isUsable": false,
         "inShop": false,
         "isEquippable": true,
-        "item_description": "A badge crafted from a Demon Skull. It's said to grant dark powers.",
+        "item_description": "A badge crafted from a Demon Skull. Very Hard to get your hands on",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",

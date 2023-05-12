@@ -1,0 +1,24 @@
+this is the template for armor items
+            {
+        "item_id": "iron_helmet",
+        "item_name": "Iron Helmet",
+        "item_price": 80,
+        "item_emoji": "<:Iron_Helmet:1077579503804624957>",
+        "item_rarity": "Common",
+        "item_type": "Armor",
+        "item_damage": 5,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A basic iron helmet, used to protect.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "iron_helmet",
+        "item_recipe": [{
+            "ingredient_id": "iron_ingot",
+            "ingredient_amount": 3
+        }],
+        "item_effect": "None",
+        "item_sub_type": "Helmet"
+    },    
