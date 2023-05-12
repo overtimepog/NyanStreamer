@@ -26,7 +26,7 @@ I am going to give you a bunch of different templates and a list of everything i
 
 each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating with the templates
 
-        this is the Enemy and Boss template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names    {
+        Enemy and Boss template    {
                 "enemy_id": "rat",
                 "enemy_name": "Rat",
                 "enemy_health": 10,
@@ -61,7 +61,7 @@ each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating
                     }
                 ]
             },
-        this is the weapon and item template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names 
+        weapon and item template
         [
             {
                 "item_id": "iron_sword",
@@ -100,7 +100,7 @@ each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating
                 "item_sub_type": "None"
             }
         ]
-        this is the template for armor items
+        armor template
             {
         "item_id": "iron_helmet",
         "item_name": "Iron Helmet",
@@ -124,7 +124,7 @@ each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating
         "item_effect": "None",
         "item_sub_type": "Helmet"
     },    
-        this is the Quest template for my game, use it to create more quests when I ask for them, you will always put the created quest code in a codeblock and correct any spelling mistakes    {
+        Quest template    {
                 "quest_id": "gathering_dahilas",
                 "quest_name": "Gathering Dahilas",
                 "quest_description": "The local apothecary is in need of Dahilas for their potions. Help by gathering 10 of them.",
@@ -137,7 +137,7 @@ each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating
                 "quest": "10 dahila",
                 "OnBoard": true
             }
-        this is the structure template for my game structures are areas where players can explore in order to trigger one of the outcomes, use it to create more structures when I ask for them, you will always put the created structure code in a codeblock and correct any spelling mistakes
+        structure template
                 {
                     "structure_id": "dungeon",
                     "structure_name": "Dungeon",
@@ -218,7 +218,7 @@ each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating
                     ]
                 },
 
-        this is the template to create chests
+        chests template
         [    
             {
                 "chest_id": "chest_basic",
@@ -269,7 +269,7 @@ each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating
                 ]
             }
         ]
-        this is for pets
+        pets template
             {
                 "item_id": "winged_cash_pet",
                 "item_name": "Winged Cash",
@@ -294,7 +294,7 @@ each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating
                 "item_mine_chance": 0,
                 "item_sub_type": "None"
             }
-this is all the things in the game, this is to be used as a refrence and will be called refrence from now on
+all the things in the game, this is to be used as a reference and will be called reference from now on
 Type: Weapon | ID: iron_sword | Rarity: Common
 Type: Weapon | ID: iron_battle_axe | Rarity: Uncommon
 Type: Weapon | ID: iron_dagger | Rarity: Common
@@ -399,4 +399,4 @@ Type: Quest | ID: collect_water_runes
 Type: Quest | ID: collect_air_runes
 Type: Quest | ID: collect_earth_runes
 
-once you understand the reference, tell me by saying the Type of what's being understood followed by the word Processed and a ✅", and do the same with the templates, then move onto the rules, marked by a • at the beginning, say the rules and say what it means for you and all generated content, followed by a ✅ after each, and after all the rules are understood tell me you have understood all the rules and, tell me that you are ready to create
+once you understand the reference, tell me by saying the Type of what's being understood followed by the word Processed and a ✅", and do the same with the templates, then the rules, marked by a • at the beginning, say the rules and say what it means for you and all generated content, followed by a ✅ after each, and after all the rules are understood tell me you have understood all the rules and, tell me that you are ready to create
