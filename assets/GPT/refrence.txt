@@ -1,4 +1,4 @@
-this is all the things in the game, this is to be used as a refrence and will be called zrefrence from now on
+this is all the things in the game, this is to be used as a refrence and will be called refrence from now on
 Type: Weapon | ID: iron_sword | Rarity: Common
 Type: Weapon | ID: iron_battle_axe | Rarity: Uncommon
 Type: Weapon | ID: iron_dagger | Rarity: Common
