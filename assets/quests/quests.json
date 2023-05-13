@@ -115,5 +115,31 @@
         "quest_type": "collect",
         "quest": "5 earth_rune",
         "OnBoard": true
-    }                 
+    },
+    {
+        "quest_id": "slay_death_knight",
+        "quest_name": "Slay Death Knight",
+        "quest_description": "The Death Knight has been causing trouble in Death's Domain. Slay the Death Knight to restore peace.",
+        "quest_xp_reward": 1000,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 1000,
+        "quest_level_required": 15,
+        "quest_type": "kill",
+        "quest": "1 death_knight",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "defeat_death",
+        "quest_name": "Defeat Death",
+        "quest_description": "Death himself has been spotted in Death's Domain. Defeat him to prove your strength.",
+        "quest_xp_reward": 2000,
+        "quest_reward_type": "Item",
+        "quest_reward": "spectral_sword",
+        "quest_reward_amount": 1,
+        "quest_level_required": 20,
+        "quest_type": "kill",
+        "quest": "1 death",
+        "OnBoard": true
+    }                         
 ]
