@@ -204,7 +204,7 @@
         "enemy_name": "Goblin",
         "enemy_health": 20,
         "enemy_damage": "5-7",
-        "enemy_emoji": "<a:goblin:1096490694761271297>",
+        "enemy_emoji": "<a:GoblinGamin:1106946239515344977>",
         "enemy_description": "A small and mischievous creature, known for its cunning and thievery.",
         "enemy_rarity": "Common",
         "enemy_type": "Humanoid",
