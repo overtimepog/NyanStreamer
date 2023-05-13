@@ -543,6 +543,107 @@
             }
             ],
             "item_sub_type": "None"
-} 
-
+},
+{
+    "item_id": "death_scythe",
+    "item_name": "Death's Scythe",
+    "item_price": 10000,
+    "item_emoji": "<:Death_Scythe:1107048152009293914>",
+    "item_rarity": "Legendary",
+    "item_type": "Weapon",
+    "item_damage": "100-500",
+    "isUsable": false,
+    "inShop": false,
+    "isEquippable": true,
+    "item_description": "The Scythe of Death itself. It's as terrifying as you'd expect.",
+    "item_element": "None",
+    "item_crit_chance": "20%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [],
+    "isHuntable": false,
+    "item_hunt_chance": 0,
+    "item_effect": "None",
+    "isMineable": false,
+    "item_mine_chance": 0,
+    "quote_id": "death_scythe",
+    "item_quotes":[       
+        {
+        "quote": "{user} swings Death's Scythe at {target} and deals {damage} damage!"
+    },
+    {
+        "quote": "{user} summons the power of Death's Scythe, dealing {damage} damage to {target}!"
+    },
+    {
+        "quote": "{user} unleashes a wave of dark energy from Death's Scythe, dealing {damage} damage to {target}!"
+    },
+    {
+        "quote": "{user} slashes through the air with Death's Scythe, causing a shockwave that deals {damage} damage to {target}!"
+    },
+    {
+        "quote": "{user} channels the power of Death's Scythe, dealing a devastating {damage} damage to {target}!"
+    },
+    {
+        "quote": "{user} strikes {target} with a powerful blow from Death's Scythe, dealing {damage} damage!"
+    },
+    {
+        "quote": "{user} swings Death's Scythe with deadly precision, dealing {damage} damage to {target}!"
+    },
+    {
+        "quote": "{user} delivers a swift and deadly strike with Death's Scythe, dealing {damage} damage to {target}!"
+    }
+    ],
+    "item_sub_type": "None"
+},
+{
+    "item_id": "spectral_sword",
+    "item_name": "Spectral Sword",
+    "item_price": 5000,
+    "item_emoji": "<:SpectralSword:1107044677875675256>",
+    "item_rarity": "Epic",
+    "item_type": "Weapon",
+    "item_damage": "50-70",
+    "isUsable": false,
+    "inShop": false,
+    "isEquippable": true,
+    "item_description": "A sword made from spectral energy. It's as eerie as it is deadly.",
+    "item_element": "None",
+    "item_crit_chance": "10%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [],
+    "isHuntable": false,
+    "item_hunt_chance": 0,
+    "item_effect": "None",
+    "isMineable": false,
+    "item_mine_chance": 0,
+    "quote_id": "spectral_sword",
+    "item_quotes": [
+        {
+            "quote": "{user} swings their Spectral Sword at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} thrusts their Spectral Sword at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} slashes their Spectral Sword at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} performs a spinning attack with their Spectral Sword at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} performs a powerful overhead strike with their Spectral Sword at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} performs a quick jab with their Spectral Sword at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} performs a wide sweep with their Spectral Sword at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} performs a precise cut with their Spectral Sword at {target} and deals {damage} damage!"
+        }
+    ],
+    "item_sub_type": "None"
+}
 ]    

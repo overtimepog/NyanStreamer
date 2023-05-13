@@ -10,7 +10,7 @@
         "enemy_type": "Boss",
         "enemy_xp": 100,
         "enemy_money": 600,
-        "enemy_crit_chance": 15,
+        "enemy_crit_chance": 0.15,
         "enemy_drop_id": "lich_king",
         "enemy_drops": [{
             "item_id": "skeleton_key",
@@ -35,7 +35,7 @@
         "enemy_type": "Boss",
         "enemy_xp": 500,
         "enemy_money": 2000,
-        "enemy_crit_chance": 25,
+        "enemy_crit_chance": 0.25,
         "enemy_drop_id": "flamewing",
         "enemy_drops": [
             {
@@ -111,15 +111,15 @@
     {
         "enemy_id": "malik_mindflayer",
         "enemy_name": "Malik the Mindflayer",
-        "enemy_health": 1000,
-        "enemy_damage": "90-150",
+        "enemy_health": 500,
+        "enemy_damage": "30-50",
         "enemy_emoji": "<a:malik:1079592323219984415>",
         "enemy_description": "A powerful mindflayer, rumored to have destroyed entire armies with a single thought.",
         "enemy_rarity": "Legendary",
         "enemy_type": "Aberration",
-        "enemy_xp": 1000,
-        "enemy_money": 5000,
-        "enemy_crit_chance": 5,
+        "enemy_xp": 500,
+        "enemy_money": 500,
+        "enemy_crit_chance": 0.05,
         "enemy_drop_id": "malik_mindflayer",
         "enemy_drops": [
             {
@@ -202,5 +202,55 @@
                 "quote": "{enemy_name} leaps at {target} dealing {damage} damage."
             }
         ]
-    }      
+    },
+    {
+        "enemy_id": "death",
+        "enemy_name": "Death",
+        "enemy_health": 1000,
+        "enemy_damage": "90-150",
+        "enemy_emoji": "<a:death:1105662351597908069>",
+        "enemy_description": "The embodiment of Death itself. It's as terrifying as you'd expect.",
+        "enemy_rarity": "Legendary",
+        "enemy_type": "Undead",
+        "enemy_xp": 1000,
+        "enemy_money": 5000,
+        "enemy_crit_chance": 0.5,
+        "enemy_drop_id": "death",
+        "enemy_drops": [
+            {
+                "item_id": "death_scythe",
+                "item_amount": 1,
+                "item_drop_chance": 1
+            }
+        ],
+        "enemy_drop_rarity": "Legendary",
+        "enemy_element": "None",
+        "quote_id": "death",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} swings its scythe at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} casts a deathly spell on {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} gazes at {target}, causing them to feel the chill of the grave and take {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} summons a swarm of spirits to attack {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} touches {target} with a deathly chill, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} sends a wave of dark energy at {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} calls forth a swarm of spirits to attack {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} touches {target} with a deathly chill, dealing {damage} damage."
+            }
+        ]
+    }       
 ]

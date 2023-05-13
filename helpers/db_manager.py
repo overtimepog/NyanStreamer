@@ -770,14 +770,14 @@ async def print_items() -> None:
     #get the items
     for item in basic_items:
         if item['item_sub_type'] == 'None':
-            print("Type: " + item['item_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'])
+            print("Type: " + item['item_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'] + " | Damage: " + str(item['item_damage']))
         else:
-            print("Type: " + item['item_type'] + " SubType: " + item['item_sub_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'])
+            print("Type: " + item['item_type'] + " SubType: " + item['item_sub_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'] + " | Damage: " + str(item['item_damage']))
     for chest in chests:
         print("Type: Chest | ID: " + chest['chest_id'] + " | Rarity:" + chest['chest_rarity'])
 
     for enemy in enemies:
-        print("Type: Enemy | ID: " + enemy['enemy_id'] + " | Rarity:" + enemy['enemy_rarity'])
+        print("Type: Enemy | ID: " + enemy['enemy_id'] + " | Rarity:" + enemy['enemy_rarity'] + " | Health: " + str(enemy['enemy_health']) + " | Damage: " + str(enemy['enemy_damage']))
 
     for structure in structures['structures']:
         print("Type: Structure | ID: " + structure['structure_id'])

@@ -728,5 +728,125 @@
                 "quote": "{enemy_name} leaps at {target} dealing {damage} damage."
             }
         ]
-    }     
+    },
+    {
+        "enemy_id": "hell_hound",
+        "enemy_name": "Hell Hound",
+        "enemy_health": 200,
+        "enemy_damage": "30-40",
+        "enemy_emoji": "<a:hellhound:1107043898435567656>",
+        "enemy_description": "A hound from the depths of hell. It's as terrifying as you'd expect.",
+        "enemy_rarity": "Epic",
+        "enemy_type": "Demon",
+        "enemy_xp": 100,
+        "enemy_money": 500,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "hell_hound",
+        "enemy_drops": [
+            {
+                "item_id": "hell_hound_fur",
+                "item_amount": 1,
+                "item_drop_chance": 1
+            }
+        ],
+        "enemy_drop_rarity": "Epic",
+        "enemy_element": "Fire",
+        "quote_id": "hell_hound",
+        "enemy_quotes": [
+        {
+            "quote": "{enemy_name} breathes fire at {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} bites {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} claws at {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} pounces on {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} howls, sending a shockwave at {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} charges at {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} whips its tail at {target} dealing {damage} damage."
+        },
+        {
+            "quote": "{enemy_name} summons hellfire to attack {target} dealing {damage} damage."
+        }
+    ]
+    },
+    {
+        "enemy_id": "death_knight",
+        "enemy_name": "Death Knight",
+        "enemy_health": 500,
+        "enemy_damage": "40-60",
+        "enemy_emoji": "<a:deathKnight:1105662354487779328>",
+        "enemy_description": "A spectral knight that serves Death. Its presence sends chills down your spine.",
+        "enemy_rarity": "Epic",
+        "enemy_type": "Undead",
+        "enemy_xp": 300,
+        "enemy_money": 500,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "death_knight",
+        "enemy_drops": [
+            {
+                "item_id": "spectral_helmet",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            },
+            {
+                "item_id": "spectral_chestplate",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            },
+            {
+                "item_id": "spectral_leggings",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            },
+            {
+                "item_id": "spectral_boots",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            },
+            {
+                "item_id": "spectral_sword",
+                "item_amount": 1,
+                "item_drop_chance": 0.05
+            }
+            ],
+            "enemy_drop_rarity": "Epic",
+            "enemy_element": "None",
+            "quote_id": "death_knight",
+            "enemy_quotes": [
+            {
+            "quote": "{enemy_name} slashes at {target} dealing {damage} damage."
+            },
+            {
+            "quote": "{enemy_name} thrusts its spectral sword at {target} dealing {damage} damage."
+            },
+            {
+            "quote": "{enemy_name} performs a spinning attack at {target} dealing {damage} damage."
+            },
+            {
+            "quote": "{enemy_name} performs a powerful overhead strike at {target} dealing {damage} damage."
+            },
+            {
+            "quote": "{enemy_name} performs a quick jab at {target} dealing {damage} damage."
+            },
+            {
+            "quote": "{enemy_name} performs a wide sweep at {target} dealing {damage} damage."
+            },
+            {
+            "quote": "{enemy_name} performs a precise cut at {target} dealing {damage} damage."
+            },
+            {
+            "quote": "{enemy_name} lets out a chilling howl, causing {target} to freeze in fear."
+            }
+            ]
+    }
 ]

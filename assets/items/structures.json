@@ -492,7 +492,96 @@
                 "outcome_xp": 10
                 }
         ]
-        }
+        },
+        {
+            "structure_id": "deaths_domain",
+            "structure_name": "Death's Domain",
+            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107050896023629844/OverTime_32-bit_pixel_art_Deaths_Domain_a_dark_and_eerie_realm__7de833f7-5c98-4627-aecf-9b001bbcc685.png",
+            "structure_description": "A dark and eerie realm, where the air is thick with the essence of death. It's as dangerous as it is terrifying.",
+            "structure_outcomesID": "deaths_domain",
+            "structure_outcomes": [
+                {
+                    "structure_quote": "You narrowly avoided a spectral trap and found a hidden chest!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.3,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "chest_basic",
+                    "outcome_amount": 1,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've stumbled into a hidden chamber and found a hoard of spectral gold!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.2,
+                    "outcome_type": "money_gain",
+                    "outcome_output": "gold",
+                    "outcome_amount": 200,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You Encountered a lone Death Knight wandering the Domain!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "spawn",
+                    "outcome_output": "death_knight",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You Encountered a lone Hell Hound wandering the Domain!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "spawn",
+                    "outcome_output": "hell_hound",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
+                    "structure_state": "boss",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "spawn",
+                    "outcome_output": "death",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "spectral_sword",
+                    "outcome_amount": 1,
+                    "outcome_money": 0,
+                    "outcome_xp": 30
+                },
+                {
+                    "structure_quote": "You've found a stash of spectral potions!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "healthpotion",
+                    "outcome_amount": 3,
+                    "outcome_money": 0,
+                    "outcome_xp": 20
+                },
+                {
+                    "structure_quote": "You've been hit by a spectral trap and lost some health!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.15,
+                    "outcome_type": "health_loss",
+                    "outcome_output": "",
+                    "outcome_amount": 30,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                }
+            ]
+        }        
         
     ] 
 }
