@@ -645,5 +645,35 @@
         }
     ],
     "item_sub_type": "None"
-}
+},
+    {
+        "item_id": "frost_giant_hammer",
+        "item_name": "Frost Giant's War Hammer",
+        "item_price": 1000,
+        "item_emoji": "<:FrostGiantsHammer:1107336569528004689>",
+        "item_rarity": "Epic",
+        "item_type": "Weapon",
+        "item_damage": "40-60",
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A massive war hammer once wielded by a Frost Giant. It's incredibly heavy and powerful.",
+        "item_element": "None",
+        "item_crit_chance": "10%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "frost_giant_hammer",
+        "item_quotes": [
+            {
+                "quote": "{user} swings their War Hammer at {target} and deals {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    }
 ]    

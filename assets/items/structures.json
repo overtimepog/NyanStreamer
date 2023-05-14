@@ -640,7 +640,76 @@
                     "outcome_xp": 50
                 }
             ]
-        }        
+        },
+        {
+            "structure_id": "frost_fortress",
+            "structure_name": "Frost Fortress",
+            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107341407204691979/OverTime_32-bit_pixel_art_Frost_Fortress_a_towering_fortress_ma_0a14f6a6-75e2-488e-afb7-eccba5e504fa.png",
+            "structure_description": "A towering fortress made entirely of ice. It's the home of the Ice Queen and her Frost Giants.",
+            "structure_outcomesID": "frost_fortress",
+            "structure_outcomes": [
+                {
+                    "structure_quote": "You narrowly avoided a frost trap and found a hidden chest!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.3,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "chest_basic",
+                    "outcome_amount": 1,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.2,
+                    "outcome_type": "money_gain",
+                    "outcome_output": "gold",
+                    "outcome_amount": 200,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You Encountered a Frost Giant wandering the Frost Fortress!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "spawn",
+                    "outcome_output": "frost_giant",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've discovered the Ice Queen's throne room, but she's not happy to see you!",
+                    "structure_state": "boss",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "spawn",
+                    "outcome_output": "ice_queen",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've found a stash of healing potions!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "healthpotion",
+                    "outcome_amount": 3,
+                    "outcome_money": 0,
+                    "outcome_xp": 20
+                },
+                {
+                    "structure_quote": "You've been hit by a frost trap and lost some health!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.15,
+                    "outcome_type": "health_loss",
+                    "outcome_output": "",
+                    "outcome_amount": 30,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                }  
+            ]
+        }            
     ] 
 }
   

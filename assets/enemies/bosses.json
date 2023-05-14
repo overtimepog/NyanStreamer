@@ -252,5 +252,55 @@
                 "quote": "{enemy_name} touches {target} with a deathly chill, dealing {damage} damage."
             }
         ]
-    }       
+    },
+    {
+        "enemy_id": "ice_queen",
+        "enemy_name": "Ice Queen",
+        "enemy_health": 500,
+        "enemy_damage": "50-70",
+        "enemy_emoji": "<a:icequeen:1107297574869807104>",
+        "enemy_description": "The Ice Queen, ruler of the frost lands. She's incredibly powerful and controls ice magic.",
+        "enemy_rarity": "Legendary",
+        "enemy_type": "Boss",
+        "enemy_xp": 500,
+        "enemy_money": 2000,
+        "enemy_crit_chance": 0.2,
+        "enemy_drop_id": "ice_queen",
+        "enemy_drops": [
+            {
+                "item_id": "frost_queen_crown",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            }
+        ],
+        "enemy_drop_rarity": "Legendary",
+        "enemy_element": "None",
+        "quote_id": "ice_queen",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} casts a powerful frost spell at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} summons a blizzard that engulfs {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} creates a spear of ice and throws it at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} freezes the ground under {target}, causing them to slip and take {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} creates a wall of ice to block {target}'s attack and counterattacks, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} summons an ice golem that attacks {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} creates a storm of hailstones that pelt {target}, dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} encases {target} in a block of ice, dealing {damage} damage."
+            }
+        ]
+    }          
 ]

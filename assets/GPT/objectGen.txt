@@ -101,7 +101,7 @@ each rule is marked with a • and MUST BE FOLLOWED AT ALL TIMES when generating
                 "item_sub_type": "None"
             }
         ]
-        this is the template for armor items
+        this is the template for armor
             {
         "item_id": "iron_helmet",
         "item_name": "Iron Helmet",
@@ -308,8 +308,9 @@ Type: Weapon | ID: death_knight_sword | Rarity: Legendary | Damage: 25-35
 Type: Weapon | ID: poison_dagger | Rarity: Uncommon | Damage: 10-15
 Type: Weapon | ID: death_scythe | Rarity: Legendary | Damage: 100-500
 Type: Weapon | ID: spectral_sword | Rarity: Epic | Damage: 50-70
-Type: Material | ID: rat_tail | Rarity: Common | Damage: 2
-Type: Material | ID: dragon_tooth | Rarity: Legendary | Damage: 20
+Type: Weapon | ID: frost_giant_hammer | Rarity: Epic | Damage: 40-60
+Type: Material | ID: rat_tail | Rarity: Common | Damage: 0
+Type: Material | ID: dragon_tooth | Rarity: Legendary | Damage: 0
 Type: Material | ID: iron_ingot | Rarity: Common | Damage: 0
 Type: Material | ID: gold_ingot | Rarity: Rare | Damage: 0
 Type: Material | ID: arcane_crystal | Rarity: Epic | Damage: 0
@@ -357,6 +358,7 @@ Type: Armor SubType: Helmet | ID: spectral_helmet | Rarity: Epic | Damage: 20
 Type: Armor SubType: Chestplate | ID: spectral_chestplate | Rarity: Epic | Damage: 30
 Type: Armor SubType: Leggings | ID: spectral_leggings | Rarity: Epic | Damage: 25
 Type: Armor SubType: Boots | ID: spectral_boots | Rarity: Epic | Damage: 15
+Type: Armor SubType: Helmet | ID: frost_queen_crown | Rarity: Legendary | Damage: 65
 Type: Consumable SubType: Potion | ID: healthpotion | Rarity: Common | Damage: 10
 Type: Consumable SubType: Potion | ID: revivepotion | Rarity: Rare | Damage: 100
 Type: Consumable | ID: bread | Rarity: Common | Damage: 0
@@ -391,11 +393,13 @@ Type: Enemy | ID: giant_spider | Rarity:Uncommon | Health: 50 | Damage: 10-15
 Type: Enemy | ID: hell_hound | Rarity:Epic | Health: 200 | Damage: 30-40
 Type: Enemy | ID: death_knight | Rarity:Epic | Health: 500 | Damage: 40-60
 Type: Enemy | ID: flame_guardian | Rarity:Legendary | Health: 200 | Damage: 20-30
+Type: Enemy | ID: frost_giant | Rarity:Epic | Health: 200 | Damage: 30-50
 Type: Enemy | ID: lich_king | Rarity:Epic | Health: 500 | Damage: 20-40
 Type: Enemy | ID: flamewing | Rarity:Legendary | Health: 600 | Damage: 30-55
 Type: Enemy | ID: malik_mindflayer | Rarity:Legendary | Health: 500 | Damage: 30-50
 Type: Enemy | ID: spider_queen | Rarity:Legendary | Health: 100 | Damage: 20-30
 Type: Enemy | ID: death | Rarity:Legendary | Health: 1000 | Damage: 90-150
+Type: Enemy | ID: ice_queen | Rarity:Legendary | Health: 500 | Damage: 50-70
 Type: Structure | ID: dungeon
 Type: Structure | ID: ancient_temple
 Type: Structure | ID: abandoned_mine
@@ -405,6 +409,7 @@ Type: Structure | ID: death_knight_lair
 Type: Structure | ID: spider_den
 Type: Structure | ID: deaths_domain
 Type: Structure | ID: volcanic_lair
+Type: Structure | ID: frost_fortress
 Type: Quest | ID: gathering_dahilas
 Type: Quest | ID: kill_fire_elemental
 Type: Quest | ID: kill_water_elemental
@@ -419,5 +424,7 @@ Type: Quest | ID: defeat_death
 Type: Quest | ID: flamewing_hunt
 Type: Quest | ID: collect_dragon_scales
 Type: Quest | ID: find_dragon_heart
+Type: Quest | ID: slay_frost_giant
+Type: Quest | ID: defeat_ice_queen
 
 once you understand the reference, tell me by saying the Type of what's being understood followed by the word Processed and a ✅", and do the same with the templates, then move onto the rules, marked by a • at the beginning, say the rules and say what it means for you and all generated content, followed by a ✅ after each, and after all the rules are understood tell me you have understood all the rules and, tell me that you are ready to create

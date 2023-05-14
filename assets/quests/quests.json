@@ -180,5 +180,31 @@
         "quest_type": "collect",
         "quest": "1 dragon_heart",
         "OnBoard": true
-    }                 
+    },
+    {
+        "quest_id": "slay_frost_giant",
+        "quest_name": "Slay the Frost Giant",
+        "quest_description": "A Frost Giant has been causing trouble in the nearby village. Slay it to restore peace.",
+        "quest_xp_reward": 100,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 500,
+        "quest_level_required": 10,
+        "quest_type": "kill",
+        "quest": "1 frost_giant",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "defeat_ice_queen",
+        "quest_name": "Defeat the Ice Queen",
+        "quest_description": "The Ice Queen has been terrorizing the kingdom with her ice magic. Defeat her to end her reign of terror.",
+        "quest_xp_reward": 500,
+        "quest_reward_type": "Item",
+        "quest_reward": "frost_queen_crown",
+        "quest_reward_amount": 1,
+        "quest_level_required": 20,
+        "quest_type": "kill",
+        "quest": "1 ice_queen",
+        "OnBoard": true
+    }    
 ]

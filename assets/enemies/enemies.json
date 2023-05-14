@@ -903,5 +903,55 @@
                 "quote": "{enemy_name} sends a flurry of fireballs at {target} dealing {damage} damage."
             }
         ]
+    },
+    {
+        "enemy_id": "frost_giant",
+        "enemy_name": "Frost Giant",
+        "enemy_health": 200,
+        "enemy_damage": "30-50",
+        "enemy_emoji": "<a:frostGiant:1107298264535011368>",
+        "enemy_description": "A towering Frost Giant. It's incredibly strong and has a chilling aura.",
+        "enemy_rarity": "Epic",
+        "enemy_type": "Giant",
+        "enemy_xp": 150,
+        "enemy_money": 500,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "frost_giant",
+        "enemy_drops": [
+            {
+                "item_id": "frost_giant_hammer",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            }
+        ],
+        "enemy_drop_rarity": "Epic",
+        "enemy_element": "None",
+        "quote_id": "frost_giant",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} swings its massive club at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} stomps on the ground, causing icicles to shoot up and hit {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} throws a huge snowball at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} breathes out a chilling wind at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} charges at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} slams its fists into the ground, causing a shockwave that hits {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} hurls a chunk of ice at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} roars, causing a blizzard that hits {target} dealing {damage} damage."
+            }
+        ]        
     }    
 ]
