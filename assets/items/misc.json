@@ -137,7 +137,7 @@
     {
         "item_id": "void_pearl",
         "item_name": "Void Pearl",
-        "item_price": 10000,
+        "item_price": 1000,
         "item_emoji": "<:voidPearl:1107115568420638771>",
         "item_rarity": "Rare",
         "item_type": "Misc",
@@ -161,7 +161,7 @@
     {
         "item_id": "dragon_heart",
         "item_name": "Dragon Heart",
-        "item_price": 5000,
+        "item_price": 50000,
         "item_emoji": "<:dragonHeart:1107120020078743663>",
         "item_rarity": "Legendary",
         "item_type": "Misc",
