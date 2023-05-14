@@ -848,5 +848,60 @@
             "quote": "{enemy_name} lets out a chilling howl, causing {target} to freeze in fear."
             }
             ]
-    }
+    },
+    {
+        "enemy_id": "flame_guardian",
+        "enemy_name": "Flame Guardian",
+        "enemy_health": 200,
+        "enemy_damage": "20-30",
+        "enemy_emoji": "<a:flameLnacer:1107104622826504192>",
+        "enemy_description": "A powerful guardian of the Flamewing's Lair. Its fiery attacks are not to be underestimated.",
+        "enemy_rarity": "Legendary",
+        "enemy_type": "Elemental",
+        "enemy_xp": 50,
+        "enemy_money": 100,
+        "enemy_crit_chance": 0.1,
+        "enemy_drop_id": "flame_guardian",
+        "enemy_drops": [
+            {
+                "item_id": "flame_scale",
+                "item_amount": 1,
+                "item_drop_chance": 1
+            },
+            {
+                "item_id": "flame_gem",
+                "item_amount": 1,
+                "item_drop_chance": 0.1
+            }
+        ],
+        "enemy_drop_rarity": "Legendary",
+        "enemy_element": "Fire",
+        "quote_id": "flame_guardian",
+        "enemy_quotes": [
+            {
+                "quote": "{enemy_name} hurls a fireball at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} engulfs {target} in flames dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} slashes at {target} with fiery claws dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} breathes fire at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} summons a ring of fire around {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} creates a wave of fire towards {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} engulfs itself in flames, charging at {target} dealing {damage} damage."
+            },
+            {
+                "quote": "{enemy_name} sends a flurry of fireballs at {target} dealing {damage} damage."
+            }
+        ]
+    }    
 ]
