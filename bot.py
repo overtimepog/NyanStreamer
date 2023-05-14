@@ -117,7 +117,7 @@ async def on_ready() -> None:
 
         #every 5 hours a structure will spawn in the channel named "dankstreamer-structures"
 print("A structure will spawn every 1 hour")
-@tasks.loop(hours=1)
+@tasks.loop(minutes=30)
 async def structure_spawn_task() -> None:
     #get the structures channel
     for bot_guild in bot.guilds:
