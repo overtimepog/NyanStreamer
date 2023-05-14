@@ -365,6 +365,8 @@ Type: Misc SubType: Bauble | ID: clover | Rarity: Legendary | Damage: 0
 Type: Armor SubType: Bauble | ID: goblin_talisman | Rarity: Uncommon | Damage: 0
 Type: Armor SubType: Necklace | ID: amulet_dragon | Rarity: Legendary | Damage: 0
 Type: Misc | ID: skeleton_key | Rarity: Epic | Damage: 0
+Type: Misc | ID: void_pearl | Rarity: Rare | Damage: 0
+Type: Misc | ID: dragon_heart | Rarity: Legendary | Damage: 0
 Type: Badge | ID: devSlayer | Rarity: Legendary | Damage: 0
 Type: Badge | ID: demon_skull_badge | Rarity: Epic | Damage: 0
 Type: Badge SubType: Plushie | ID: aspen_plushie | Rarity: Legendary | Damage: 0
@@ -388,6 +390,7 @@ Type: Enemy | ID: death_knight | Rarity:Legendary | Health: 200 | Damage: 20-30
 Type: Enemy | ID: giant_spider | Rarity:Uncommon | Health: 50 | Damage: 10-15
 Type: Enemy | ID: hell_hound | Rarity:Epic | Health: 200 | Damage: 30-40
 Type: Enemy | ID: death_knight | Rarity:Epic | Health: 500 | Damage: 40-60
+Type: Enemy | ID: flame_guardian | Rarity:Legendary | Health: 200 | Damage: 20-30
 Type: Enemy | ID: lich_king | Rarity:Epic | Health: 500 | Damage: 20-40
 Type: Enemy | ID: flamewing | Rarity:Legendary | Health: 600 | Damage: 30-55
 Type: Enemy | ID: malik_mindflayer | Rarity:Legendary | Health: 500 | Damage: 30-50
@@ -401,6 +404,7 @@ Type: Structure | ID: elemental_altar
 Type: Structure | ID: death_knight_lair
 Type: Structure | ID: spider_den
 Type: Structure | ID: deaths_domain
+Type: Structure | ID: volcanic_lair
 Type: Quest | ID: gathering_dahilas
 Type: Quest | ID: kill_fire_elemental
 Type: Quest | ID: kill_water_elemental
@@ -412,5 +416,8 @@ Type: Quest | ID: collect_air_runes
 Type: Quest | ID: collect_earth_runes
 Type: Quest | ID: slay_death_knight
 Type: Quest | ID: defeat_death
+Type: Quest | ID: flamewing_hunt
+Type: Quest | ID: collect_dragon_scales
+Type: Quest | ID: find_dragon_heart
 
 once you understand the reference, tell me by saying the Type of what's being understood followed by the word Processed and a ✅", and do the same with the templates, then move onto the rules, marked by a • at the beginning, say the rules and say what it means for you and all generated content, followed by a ✅ after each, and after all the rules are understood tell me you have understood all the rules and, tell me that you are ready to create

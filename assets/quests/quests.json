@@ -141,5 +141,44 @@
         "quest_type": "kill",
         "quest": "1 death",
         "OnBoard": true
-    }                         
+    },
+    {
+        "quest_id": "flamewing_hunt",
+        "quest_name": "Hunt the Flamewing",
+        "quest_description": "The legendary Flamewing has been terrorizing the nearby villages. It's time someone put an end to its reign.",
+        "quest_xp_reward": 100,
+        "quest_reward_type": "Item",
+        "quest_reward": "dragon_eye",
+        "quest_reward_amount": 1,
+        "quest_level_required": 10,
+        "quest_type": "kill",
+        "quest": "1 flamewing",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "collect_dragon_scales",
+        "quest_name": "Collect Dragon Scales",
+        "quest_description": "A local blacksmith is in need of Dragon Scales for their work. Help by gathering 5 of them.",
+        "quest_xp_reward": 50,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 500,
+        "quest_level_required": 8,
+        "quest_type": "collect",
+        "quest": "5 dragon_scale",
+        "OnBoard": true
+    },
+    {
+        "quest_id": "find_dragon_heart",
+        "quest_name": "Find the Dragon Heart",
+        "quest_description": "A powerful artifact known as the Dragon Heart is said to be hidden in the Volcanic Lair. Find it.",
+        "quest_xp_reward": 150,
+        "quest_reward_type": "Item",
+        "quest_reward": "dragon_heart",
+        "quest_reward_amount": 1,
+        "quest_level_required": 12,
+        "quest_type": "collect",
+        "quest": "1 dragon_heart",
+        "OnBoard": true
+    }                 
 ]

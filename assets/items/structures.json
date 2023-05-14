@@ -581,8 +581,66 @@
                     "outcome_xp": 10
                 }
             ]
+        },
+        {
+            "structure_id": "volcanic_lair",
+            "structure_name": "Volcanic Lair",
+            "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+            "structure_description": "A fiery lair that houses the legendary Flamewing. The heat is almost unbearable.",
+            "structure_outcomesID": "volcanic_lair",
+            "structure_outcomes": [
+                {
+                    "structure_quote": "You've discovered a hidden alcove glittering with precious artifacts, among them a rare Dragon Eye!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "dragon_eye",
+                    "outcome_amount": 1,
+                    "outcome_money": 0,
+                    "outcome_xp": 30
+                },
+                {
+                    "structure_quote": "You've stumbled upon a treasure room filled with rare artifacts, among them the legendary Dragon Heart!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.01,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "dragon_heart",
+                    "outcome_amount": 1,
+                    "outcome_money": 0,
+                    "outcome_xp": 50
+                },
+                {
+                    "structure_quote": "You've found a stash of Dragon Scales!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "dragon_scale",
+                    "outcome_amount": 5,
+                    "outcome_money": 0,
+                    "outcome_xp": 30
+                },
+                {
+                    "structure_quote": "You've been hit by a burst of flame and lost some health!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.15,
+                    "outcome_type": "health_loss",
+                    "outcome_output": "",
+                    "outcome_amount": 30,
+                    "outcome_money": 0,
+                    "outcome_xp": 10
+                },
+                {
+                    "structure_quote": "You've encountered the legendary Flamewing!",
+                    "structure_state": "boss",
+                    "outcome_chance": 0.05,
+                    "outcome_type": "spawn",
+                    "outcome_output": "flamewing",
+                    "outcome_amount": 0,
+                    "outcome_money": 0,
+                    "outcome_xp": 50
+                }
+            ]
         }        
-        
     ] 
 }
   
