@@ -370,6 +370,7 @@ Type: Badge | ID: demon_skull_badge | Rarity: Epic | Damage: 0
 Type: Badge SubType: Plushie | ID: aspen_plushie | Rarity: Legendary | Damage: 0
 Type: Pet | ID: winged_cash_pet | Rarity: Legendary | Damage: 0
 Type: Pet | ID: tree_in_bottle_pet | Rarity: Epic | Damage: 0
+Type: Pet | ID: slime_girl_pet | Rarity: Rare | Damage: 0
 Type: Chest | ID: chest_basic | Rarity:Common
 Type: Enemy | ID: rat | Rarity:Common | Health: 10 | Damage: 3-5
 Type: Enemy | ID: fairy | Rarity:Rare | Health: 20 | Damage: 1-5
@@ -388,7 +389,7 @@ Type: Enemy | ID: giant_spider | Rarity:Uncommon | Health: 50 | Damage: 10-15
 Type: Enemy | ID: hell_hound | Rarity:Epic | Health: 200 | Damage: 30-40
 Type: Enemy | ID: death_knight | Rarity:Epic | Health: 500 | Damage: 40-60
 Type: Enemy | ID: lich_king | Rarity:Epic | Health: 500 | Damage: 20-40
-Type: Enemy | ID: dragon_boss | Rarity:Legendary | Health: 600 | Damage: 30-55
+Type: Enemy | ID: flamewing | Rarity:Legendary | Health: 600 | Damage: 30-55
 Type: Enemy | ID: malik_mindflayer | Rarity:Legendary | Health: 500 | Damage: 30-50
 Type: Enemy | ID: spider_queen | Rarity:Legendary | Health: 100 | Damage: 20-30
 Type: Enemy | ID: death | Rarity:Legendary | Health: 1000 | Damage: 90-150

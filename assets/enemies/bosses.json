@@ -25,7 +25,7 @@
         }]
     },
     {
-        "enemy_id": "dragon_boss",
+        "enemy_id": "flamewing",
         "enemy_name": "Flamewing, the Fire Dragon",
         "enemy_health": 600,
         "enemy_damage": "30-55",
@@ -101,7 +101,7 @@
         ],
         "enemy_drop_rarity": "Legendary",
         "enemy_element": "Fire",
-        "quote_id": "dragon_boss",
+        "quote_id": "flamewing",
         "enemy_quotes": [
             {
                 "quote": "{enemy_name} unleashes a fiery breath on {target} for {damage} damage."
