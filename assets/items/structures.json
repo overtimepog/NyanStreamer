@@ -3,7 +3,7 @@
         {
             "structure_id": "dungeon",
             "structure_name": "Dungeon",
-            "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107345515781292062/OverTime_32-bit_pixel_art_Dungeon_a_dark_and_damp_underground_l_50b73e59-ac38-4118-8864-6c8446222283.png",
             "structure_description": "A dark, foreboding dungeon filled with traps and treasures.",
             "structure_outcomesID": "dungeon",
             "structure_outcomes": [
@@ -92,7 +92,7 @@
         {
           "structure_id": "ancient_temple",
           "structure_name": "Ancient Temple",
-          "structure_image": "https://example.com/ancient_temple.jpg",
+          "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107346785971732700/OverTime_32-bit_pixel_art_Ancient_Temple_a_grand_structure_of_o_f0007aee-ad4c-4d93-a863-0a28e676b0d9.png",
           "structure_description": "An ancient temple shrouded in mystery and filled with hidden treasures.",
           "structure_outcomesID": "ancient_temple",
           "structure_outcomes": [
@@ -171,7 +171,7 @@
         {
           "structure_id": "abandoned_mine",
           "structure_name": "Abandoned Mine",
-          "structure_image": "https://example.com/abandoned_mine.jpg",
+          "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107347338667774144/OverTime_32-bit_pixel_art_Abandoned_Mine_a_desolate_place_with__8a0748a4-d6fd-45fb-9044-3f65606bd63e.png",
           "structure_description": "An old mine that has been long abandoned, but still holds valuable resources.",
           "structure_outcomesID": "abandoned_mine",
           "structure_outcomes": [
@@ -250,7 +250,7 @@
         {
           "structure_id": "demon_portal",
           "structure_name": "Demon Portal",
-          "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+          "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107348194326761572/OverTime_32-bit_pixel_art_Demon_Portal_a_swirling_vortex_of_dar_fac423ca-08e5-4b6e-bccf-047bacc832df.png",
           "structure_description": "A dark portal that connects to the underworld. Demons are known to emerge from it.",
           "structure_outcomesID": "demon_portal",
           "structure_outcomes": [
@@ -279,7 +279,7 @@
         {
           "structure_id": "elemental_altar",
           "structure_name": "Elemental Altar",
-          "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+          "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107349122551402516/OverTime_32-bit_pixel_art_Elemental_Altar_a_mystical_platform_w_8ca117dc-92e9-40da-a7ab-166bb571b728.png",
           "structure_description": "An ancient altar used to summon powerful elemental entities.",
           "structure_outcomesID": "elemental_altar",
           "structure_outcomes": [
@@ -328,7 +328,7 @@
         {
             "structure_id": "death_knight_lair",
             "structure_name": "Death Knight's Lair",
-            "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107349640354988132/OverTime_32-bit_pixel_art_Death_Knight_Lair_a_sinister_fortress_8d1b9eb3-c996-45c8-980e-055675d7a9ca.png",
             "structure_description": "A dark, foreboding lair that is home to the formidable Death Knight.",
             "structure_outcomesID": "death_knight_lair",
             "structure_outcomes": [
