@@ -141,7 +141,7 @@ async def structure_spawn_task() -> None:
         structureid = structure[0]
         structure_name = structure[1]
         #send the structure
-        message = await channel.send(content=f"A {structure_name} has Appeared")
+        message = await channel.send(content=f"{structure_name} has Appeared")
             #print(structure_outcomes)
         #get the strucure info using the db_manager
         structure_info = await db_manager.get_structure(structureid)
@@ -154,7 +154,7 @@ async def structure_spawn_task() -> None:
         #creare an embed to show the structure info
         embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}", color=0x00ff00)
         embed.set_image(url=f"{structure_image}")
-        embed.set_footer(text=f"Use /explore {structureid} to explore this structure.")
+        embed.set_footer(text=f"Use | /explore {structureid} | to explore this structure.")
         await channel.send(embed=embed)
         await db_manager.edit_current_structure(bot_guild.id, structureid)
 
