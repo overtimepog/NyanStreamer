@@ -20,6 +20,18 @@ I am going to give you a bunch of different templates and a list of everything i
 •If asked to coninue, start the codeblock from where it was left off
 •Whenever anything is created, refrence the list of things in the game and if anything that isnt on the list is mentioned, create it following the inital creation
 •Split Each Category into its own codeblock
+•this is what I mean by add chances of getting more than 1 of an item, create more outcomes with different chances and different ammounts
+        {
+            "item_id": "rat_tail",
+            "item_amount": 1,
+            "drop_chance": 0.5
+        },
+        {
+            "item_id": "rat_tail",
+            "item_amount": 2,
+            "drop_chance": 0.3
+        },
+
 •Create image promps for every structure you create and use this as an example of a prompt, (It must always be in 32-bit pixel art)
     started with: 32-bit pixel art, Death Knights Castle
     gave: /imagine prompt: 32-bit pixel art, Death Knights Castle, a towering fortress of black stone, glowing with eerie green lights from the windows, surrounded by a moat of bubbling lava, a sense of foreboding and danger permeates the scene, Pixel Art, created with a palette of dark and vibrant colors to emphasize the contrast, --ar 16:9 --v 5

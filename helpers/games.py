@@ -284,5 +284,6 @@ async def fishing_game():
             prize = "Participation Medal"
 
         await ctx.send(f'{user.mention} has finished fishing with a total of {points} points and won a {prize}!')
+        await db_manager.add_item_to_inventory(user.id, prize, 1)
 
     return fish
