@@ -25,6 +25,7 @@ import discord
 from discord.ext import commands
 from helpers.card import Card
 from PIL import Image
+import discordgame as dg
 
 cash = "<:cash:1077573941515792384>"
 
@@ -206,7 +207,7 @@ async def slots(ctx: Context, user, gamble):
     else:
         #if they are all different, take the amount they bet from their balance
         await slot_machine.edit(content=f"**{user.name}** lost {cash}**{gamble}**! \n {slot1} : {slot2} : {slot3}")
-        #pass
+        #passx
         
 #create slots_rules function
 #this function will be called when the user types !slots_rules
@@ -222,3 +223,66 @@ async def slot_rules(ctx: Context):
     )
     #send the embed
     await ctx.send(embed=embed)
+    
+class FishingButton(discord.ui.View):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @discord.ui.button(label="Continue fishing", style=discord.ButtonStyle.green)
+    async def on_continue(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+        self.stop()
+
+async def fishing_game():
+    fishes = {
+        "Shark": {"emoji": "<:Shark:1107388348693233735>", "points": 10, "rarity": 0.01},
+        "Whale": {"emoji": "<:Whale:1107388346264727683>", "points": 9, "rarity": 0.02},
+        "Koi": {"emoji": "<:Koi:1107388726985891941>", "points": 8, "rarity": 0.03},
+        "Swordfish": {"emoji": "<:Fish_Sword:1107388731599638540>", "points": 7, "rarity": 0.04},
+        "Tuna": {"emoji": "<:Fish_Tuna:1107388734682439821>", "points": 6, "rarity": 0.05},
+        "Clownfish": {"emoji": "<:Fish_Clown:1107388729930289323>", "points": 5, "rarity": 0.06},
+        "Goldfish": {"emoji": "<:Fish_Gold:1107388728839770202>", "points": 4, "rarity": 0.07},
+        "Yellow Lab": {"emoji": "<:Fish_LemonYellowLab:1107388730878210129>", "points": 3, "rarity": 0.08},
+        "Squid": {"emoji": "<:Cephalopod_Squid:1107389556048793711>", "points": 2, "rarity": 0.09},
+        "Octopus": {"emoji": "<:Cephalopod_Octopus:1107389552584294440>", "points": 2, "rarity": 0.1},
+        "Dolphin": {"emoji": "<:Mammal_Dolphin:1107389554404622547>", "points": 1, "rarity": 0.11},
+        "Crab": {"emoji": "<:Crustacean_Crab:1107389550067720234>", "points": 1, "rarity": 0.12},
+        "Jellyfish": {"emoji": "<:Fish_Jellyfish:1107389551758037053>", "points": 1, "rarity": 0.13}
+    }
+
+    def catch_fish(user_luck):
+        catchable_fishes = [fish for fish in fishes if fishes[fish]["rarity"] <= user_luck/100]
+        if not catchable_fishes:
+            catchable_fishes = [fish for fish in fishes]
+        return random.choice(catchable_fishes)
+
+    async def fish(ctx: Context, user, user_luck):
+        points = 0
+        tries = 5
+
+        for i in range(tries):
+            caught_fish = catch_fish(user_luck)
+            fish_points = fishes[caught_fish]["points"]
+            points += fish_points
+
+            view = FishingButton()
+            await ctx.send(
+                content=f'{user.name} caught a {caught_fish} {fishes[caught_fish]["emoji"]} and gained {fish_points} points!',
+                view=view
+            )
+
+            # Wait for the user to press the button
+            await view.wait()
+
+        if points >= 40:
+            prize = "Golden Trophy"
+        elif points >= 30:
+            prize = "Silver Trophy"
+        elif points >= 20:
+            prize = "Bronze Trophy"
+        else:
+            prize = "Participation Medal"
+
+        await ctx.send(f'{user.mention} has finished fishing with a total of {points} points and won a {prize}!')
+
+    return fish

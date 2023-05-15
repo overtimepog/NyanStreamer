@@ -295,6 +295,18 @@ class Games(commands.Cog, name="games"):
             )
         )
         os.remove(f'./{ctx.author.id}.png')
+        
+        
+    #fishing command
+    @commands.hybrid_command(
+        name="fish",
+        description="Go fishing.",
+    )
+    async def fish(self, ctx: Context):
+        #get the users luck stat
+        luck = await db_manager.get_luck(ctx.author.id)
+        fish = await games.fishing_game()
+        await fish(ctx, ctx.author, luck)
 
 async def setup(bot):
     await bot.add_cog(Games(bot))
