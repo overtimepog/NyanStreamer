@@ -3,47 +3,217 @@
         "chest_id": "chest_basic",
         "chest_name": "Chest",
         "chest_price": 100,
-        "chest_emoji": "<:chest:1061289541027254362>",
+        "chest_emoji": "<a:WoodChest:1078758729706643506>",
         "chest_rarity": "Common",
-        "chest_type": "Consumable",
+        "chest_type": "Chest",
         "chest_description": "A basic chest, found in plenty of places and contains a few items.",
         "key_id": "None",
         "chest_contentsID": "chest_basic",
         "chest_contents": [
-            {
-                "item_id": "stick",
-                "item_amount": 2,
-                "drop_chance": 0.5
-            },
-            {
-                "item_id": "feather",
-                "item_amount": 2,
-                "drop_chance": 0.5
-            },
-            {
-                "item_id": "string",
-                "item_amount": 2,
-                "drop_chance": 0.5
-            },
             {
                 "item_id": "iron_ingot",
                 "item_amount": 1,
                 "drop_chance": 0.2
             },
             {
-                "item_id": "gold_ingot",
+                "item_id": "iron_ingot",
+                "item_amount": 2,
+                "drop_chance": 0.1
+            },
+            {
+                "item_id": "iron_ingot",
+                "item_amount": 3,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "stick",
+                "item_amount": 1,
+                "drop_chance": 0.2
+            },
+            {
+                "item_id": "stick",
+                "item_amount": 2,
+                "drop_chance": 0.1
+            },
+            {
+                "item_id": "stick",
+                "item_amount": 3,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "string",
+                "item_amount": 1,
+                "drop_chance": 0.15
+            },
+            {
+                "item_id": "string",
+                "item_amount": 2,
+                "drop_chance": 0.075
+            },
+            {
+                "item_id": "string",
+                "item_amount": 3,
+                "drop_chance": 0.0375
+            },
+            {
+                "item_id": "feather",
+                "item_amount": 1,
+                "drop_chance": 0.15
+            },
+            {
+                "item_id": "feather",
+                "item_amount": 2,
+                "drop_chance": 0.075
+            },
+            {
+                "item_id": "feather",
+                "item_amount": 3,
+                "drop_chance": 0.0375
+            },
+            {
+                "item_id": "dahila",
                 "item_amount": 1,
                 "drop_chance": 0.1
             },
             {
-                "item_id": "diamond",
+                "item_id": "dahila",
+                "item_amount": 2,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "dahila",
+                "item_amount": 3,
+                "drop_chance": 0.025
+            },
+            {
+                "item_id": "bone",
+                "item_amount": 1,
+                "drop_chance": 0.1
+            },
+            {
+                "item_id": "bone",
+                "item_amount": 2,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "bone",
+                "item_amount": 3,
+                "drop_chance": 0.025
+            },
+            {
+                "item_id": "leather",
+                "item_amount": 1,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "leather",
+                "item_amount": 2,
+                "drop_chance": 0.025
+            },
+            {
+                "item_id": "leather",
+                "item_amount": 3,
+                "drop_chance": 0.0125
+            },
+            {
+                "item_id": "wooden_handle",
+                "item_amount": 1,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "wooden_handle",
+                "item_amount": 2,
+                "drop_chance": 0.025
+            },
+            {
+                "item_id": "wooden_handle",
+                "item_amount": 3,
+                "drop_chance": 0.0125
+            },
+            {
+                "item_id": "iron_sword",
+                "item_amount": 1,
+                "drop_chance": 0.02
+            },
+            {
+                "item_id": "iron_dagger",
+                "item_amount": 1,
+                "drop_chance": 0.02
+            },
+            {
+                "item_id": "pickaxe",
+                "item_amount": 1,
+                "drop_chance": 0.01
+            },
+            {
+                "item_id": "huntingbow",
+                "item_amount": 1,
+                "drop_chance": 0.01
+            },
+            {
+                "item_id": "iron_helmet",
+                "item_amount": 1,
+                "drop_chance": 0.005
+            },
+            {
+                "item_id": "iron_chestplate",
+                "item_amount": 1,
+                "drop_chance": 0.005
+            },
+            {
+                "item_id": "iron_leggings",
+                "item_amount": 1,
+                "drop_chance": 0.005
+            },
+            {
+                "item_id": "iron_boots",
+                "item_amount": 1,
+                "drop_chance": 0.005
+            },
+            {
+                "item_id": "healthpotion",
                 "item_amount": 1,
                 "drop_chance": 0.02
             },
             {
                 "item_id": "healthpotion",
+                "item_amount": 2,
+                "drop_chance": 0.01
+            },
+            {
+                "item_id": "healthpotion",
+                "item_amount": 3,
+                "drop_chance": 0.005
+            },
+            {
+                "item_id": "bread",
                 "item_amount": 1,
-                "drop_chance": 0.05
+                "drop_chance": 0.02
+            },
+            {
+                "item_id": "bread",
+                "item_amount": 2,
+                "drop_chance": 0.01
+            },
+            {
+                "item_id": "bread",
+                "item_amount": 3,
+                "drop_chance": 0.005
+            },
+            {
+                "item_id": "ale",
+                "item_amount": 1,
+                "drop_chance": 0.02
+            },
+            {
+                "item_id": "ale",
+                "item_amount": 2,
+                "drop_chance": 0.01
+            },
+            {
+                "item_id": "ale",
+                "item_amount": 3,
+                "drop_chance": 0.005
             }
         ]
     }

@@ -828,7 +828,7 @@ async def add_chests() -> None:
             if chest['chest_contentsID'] != "None":
                 for item in chest['chest_contents']:
                     await db.execute(f"INSERT INTO `chest_contents` (`chest_id`, `item_id`, `item_amount`, `drop_chance`) VALUES (?, ?, ?, ?)", (chest['chest_contentsID'], item['item_id'], item['item_amount'], item['drop_chance']))
-                    print(f"Updated |{item['item_id']}| to the chest |{chest['chest_name']}| with a drop chance of |{item['drop_chance']}|")
+                    print(f"Updated |{item['item_id']}| x{item['item_amount']} to the chest |{chest['chest_id']}| with a drop chance of |{item['drop_chance']}|")
                 print(f"Updated |{chest['chest_name']}|'s contents to the database")
             
         else:

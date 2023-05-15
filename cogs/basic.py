@@ -191,7 +191,10 @@ class Basic(commands.Cog, name="basic"):
                     item_element = item[10]
                     item_crit_chance = item[11]
                     item_projectile = item[12]
-                    item_description = await db_manager.get_basic_item_description(item_id)
+                    if item_type == "Chest":
+                        item_description = await db_manager.get_chest_description(item_id)
+                    else:
+                        item_description = await db_manager.get_basic_item_description(item_id)
 
                     inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
 
@@ -2000,7 +2003,7 @@ class Basic(commands.Cog, name="basic"):
                 return
 
             #split the item_id by the "_"
-            chest_name = await db_manager.get_basic_item_name(item)
+            chest_name = await db_manager.get_chest_name(item)
             itemID = item
             item = item.split("_")
             luck = await db_manager.get_luck(user_id)
@@ -2059,16 +2062,21 @@ class Basic(commands.Cog, name="basic"):
                         highchanceitems.append(item)
 
                 #based on the roll, get the item
-                if roll <= 10:
-                    item = random.choice(lowchanceitems)
-                elif roll > 10 and roll <= 50:
-                    item = random.choice(midchanceitems)
-                elif roll > 50 and roll <= 90:
-                    item = random.choice(highchanceitems)
-                elif roll > 90:
-                    #they found nothing
-                    await ctx.send(f"It seems {chest_name} ended up being empty!")
-                    return
+                try:
+                    if roll <= 10:
+                        item = random.choice(lowchanceitems)
+                    elif roll > 10 and roll <= 50:
+                        item = random.choice(midchanceitems)
+                    elif roll > 50 and roll <= 90:
+                        item = random.choice(highchanceitems)
+                except IndexError:
+                    # If there are no items in the selected list, just continue
+                    pass
+                else:
+                    if roll > 90:
+                        #they found nothing
+                        await ctx.send(f"It seems {chest_name} ended up being empty!")
+                        return
                 
                 await db_manager.add_item_to_inventory(ctx.author.id, item[1], item[2])
                 item_name = await db_manager.get_basic_item_name(item[1])
