@@ -132,42 +132,42 @@
                 },
                 {
                 "item_id": "iron_sword",
-                "item_amount": 3,
+                "item_amount": 1,
                 "drop_chance": 0.02
                 },
                 {
                 "item_id": "iron_dagger",
-                "item_amount": 3,
+                "item_amount": 1,
                 "drop_chance": 0.02
                 },
                 {
                 "item_id": "pickaxe",
-                "item_amount": 3,
+                "item_amount": 1,
                 "drop_chance": 0.01
                 },
                 {
                 "item_id": "huntingbow",
-                "item_amount": 3,
+                "item_amount": 1,
                 "drop_chance": 0.01
                 },
                 {
                 "item_id": "iron_helmet",
-                "item_amount": 3,
+                "item_amount": 1,
                 "drop_chance": 0.005
                 },
                 {
                 "item_id": "iron_chestplate",
-                "item_amount": 3,
+                "item_amount": 1,
                 "drop_chance": 0.005
                 },
                 {
                 "item_id": "iron_leggings",
-                "item_amount": 3,
+                "item_amount": 1,
                 "drop_chance": 0.005
                 },
                 {
                 "item_id": "iron_boots",
-                "item_amount": 3,
+                "item_amount": 1,
                 "drop_chance": 0.005
                 },
                 {
