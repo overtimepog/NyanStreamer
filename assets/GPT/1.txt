@@ -1,0 +1,1 @@
+I am going to give you a bunch of object templates from my game, a list of everything in the game to be used as a reference, and a bunch of rules that need to be followed at all time when generating content with the templates 

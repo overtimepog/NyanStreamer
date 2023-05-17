@@ -1,0 +1,133 @@
+and this is the refrence of everything in the game
+Type: Weapon | ID: iron_sword | Rarity: Common | Damage: 3-5
+Type: Weapon | ID: iron_battle_axe | Rarity: Uncommon | Damage: 10-14
+Type: Weapon | ID: iron_dagger | Rarity: Common | Damage: 5-9
+Type: Weapon | ID: flame_grimoire | Rarity: Rare | Damage: 10-15
+Type: Weapon | ID: water_grimoire | Rarity: Rare | Damage: 10-15
+Type: Weapon | ID: air_grimoire | Rarity: Rare | Damage: 10-15
+Type: Weapon | ID: earth_grimoire | Rarity: Rare | Damage: 10-15
+Type: Weapon | ID: book_of_demons | Rarity: Legendary | Damage: 20-35
+Type: Weapon | ID: death_knight_sword | Rarity: Legendary | Damage: 25-35
+Type: Weapon | ID: poison_dagger | Rarity: Uncommon | Damage: 10-15
+Type: Weapon | ID: death_scythe | Rarity: Legendary | Damage: 100-500
+Type: Weapon | ID: spectral_sword | Rarity: Epic | Damage: 50-70
+Type: Weapon | ID: frost_giant_hammer | Rarity: Epic | Damage: 40-60
+Type: Material | ID: rat_tail | Rarity: Common | Damage: 0
+Type: Material | ID: dragon_tooth | Rarity: Legendary | Damage: 0
+Type: Material | ID: iron_ingot | Rarity: Common | Damage: 0
+Type: Material | ID: gold_ingot | Rarity: Rare | Damage: 0
+Type: Material | ID: arcane_crystal | Rarity: Epic | Damage: 0
+Type: Material | ID: magic_powder | Rarity: Common | Damage: 0
+Type: Material | ID: stick | Rarity: Common | Damage: 0
+Type: Material | ID: string | Rarity: Common | Damage: 0
+Type: Material | ID: feather | Rarity: Common | Damage: 0
+Type: Material | ID: dahila | Rarity: Common | Damage: 0
+Type: Material | ID: diamond | Rarity: Rare | Damage: 0
+Type: Material | ID: goldenflower | Rarity: Uncommon | Damage: 0
+Type: Material | ID: dragon_scale | Rarity: Legendary | Damage: 0
+Type: Material | ID: bone | Rarity: Common | Damage: 0
+Type: Material | ID: sapphire | Rarity: Epic | Damage: 0
+Type: Material | ID: ruby | Rarity: Epic | Damage: 0
+Type: Material | ID: dragon_eye | Rarity: Legendary | Damage: 0
+Type: Material | ID: gold_chain | Rarity: Common | Damage: 0
+Type: Material | ID: ectoplasm | Rarity: Uncommon | Damage: 0
+Type: Material | ID: leather | Rarity: Common | Damage: 0
+Type: Material | ID: goblin_ear | Rarity: Common | Damage: 0
+Type: Material | ID: wooden_handle | Rarity: Common | Damage: 0
+Type: Material | ID: ancient_scroll | Rarity: Rare | Damage: 0
+Type: Material | ID: demon_essence | Rarity: Epic | Damage: 0
+Type: Material | ID: demon_skull | Rarity: Epic | Damage: 0
+Type: Material | ID: fire_rune | Rarity: Rare | Damage: 0
+Type: Material | ID: water_rune | Rarity: Rare | Damage: 0
+Type: Material | ID: earth_rune | Rarity: Rare | Damage: 0
+Type: Material | ID: air_rune | Rarity: Rare | Damage: 0
+Type: Material | ID: spider_venom | Rarity: Uncommon | Damage: 0
+Type: Material | ID: queen_spider_venom | Rarity: Legendary | Damage: 0
+Type: Tool | ID: pickaxe | Rarity: Commond | Damage: 2
+Type: Tool | ID: huntingbow | Rarity: Common | Damage: 4
+Type: Armor SubType: Helmet | ID: iron_helmet | Rarity: Common | Damage: 5
+Type: Armor SubType: Chestplate | ID: iron_chestplate | Rarity: Common | Damage: 10
+Type: Armor SubType: Leggings | ID: iron_leggings | Rarity: Common | Damage: 7
+Type: Armor SubType: Boots | ID: iron_boots | Rarity: Common | Damage: 4
+Type: Armor SubType: Helmet | ID: gold_helmet | Rarity: Rare | Damage: 8
+Type: Armor SubType: Chestplate | ID: gold_chestplate | Rarity: Rare | Damage: 12
+Type: Armor SubType: Leggings | ID: gold_leggings | Rarity: Rare | Damage: 10
+Type: Armor SubType: Boots | ID: gold_boots | Rarity: Rare | Damage: 6
+Type: Armor SubType: Helmet | ID: dragon_scale_helmet | Rarity: Legendary | Damage: 25
+Type: Armor SubType: Chestplate | ID: dragon_scale_chestplate | Rarity: Legendary | Damage: 35
+Type: Armor SubType: Leggings | ID: dragon_scale_leggings | Rarity: Legendary | Damage: 30
+Type: Armor SubType: Boots | ID: dragon_scale_boots | Rarity: Legendary | Damage: 20
+Type: Armor SubType: Helmet | ID: spectral_helmet | Rarity: Epic | Damage: 20
+Type: Armor SubType: Chestplate | ID: spectral_chestplate | Rarity: Epic | Damage: 30
+Type: Armor SubType: Leggings | ID: spectral_leggings | Rarity: Epic | Damage: 25
+Type: Armor SubType: Boots | ID: spectral_boots | Rarity: Epic | Damage: 15
+Type: Armor SubType: Helmet | ID: frost_queen_crown | Rarity: Legendary | Damage: 65
+Type: Consumable SubType: Potion | ID: healthpotion | Rarity: Common | Damage: 10
+Type: Consumable SubType: Potion | ID: revivepotion | Rarity: Rare | Damage: 100
+Type: Consumable | ID: bread | Rarity: Common | Damage: 0
+Type: Consumable | ID: ale | Rarity: Common | Damage: 0
+Type: Misc SubType: Bauble | ID: clover | Rarity: Legendary | Damage: 0
+Type: Armor SubType: Bauble | ID: goblin_talisman | Rarity: Uncommon | Damage: 0
+Type: Armor SubType: Necklace | ID: amulet_dragon | Rarity: Legendary | Damage: 0
+Type: Misc | ID: skeleton_key | Rarity: Epic | Damage: 0
+Type: Misc | ID: void_pearl | Rarity: Rare | Damage: 0
+Type: Misc | ID: dragon_heart | Rarity: Legendary | Damage: 0
+Type: Badge | ID: devSlayer | Rarity: Legendary | Damage: 0
+Type: Badge | ID: demon_skull_badge | Rarity: Epic | Damage: 0
+Type: Badge SubType: Plushie | ID: aspen_plushie | Rarity: Legendary | Damage: 0
+Type: Pet | ID: winged_cash_pet | Rarity: Legendary | Damage: 0
+Type: Pet | ID: tree_in_bottle_pet | Rarity: Epic | Damage: 0
+Type: Pet | ID: slime_girl_pet | Rarity: Rare | Damage: 0
+Type: Chest | ID: chest_basic | Rarity:Common
+Type: Enemy | ID: rat | Rarity:Common | Health: 10 | Damage: 3-5
+Type: Enemy | ID: fairy | Rarity:Rare | Health: 20 | Damage: 1-5
+Type: Enemy | ID: skeleton_horde | Rarity:Rare | Health: 50 | Damage: 5-10
+Type: Enemy | ID: spirit | Rarity:Rare | Health: 60 | Damage: 10-15
+Type: Enemy | ID: wolf | Rarity:Uncommon | Health: 20 | Damage: 4-6
+Type: Enemy | ID: goblin | Rarity:Common | Health: 20 | Damage: 5-7
+Type: Enemy | ID: demon | Rarity:Epic | Health: 150 | Damage: 15-20
+Type: Enemy | ID: succubus | Rarity:Rare | Health: 100 | Damage: 10-15
+Type: Enemy | ID: fire_elemental | Rarity:Rare | Health: 100 | Damage: 15-20
+Type: Enemy | ID: water_elemental | Rarity:Rare | Health: 100 | Damage: 15-20
+Type: Enemy | ID: air_elemental | Rarity:Rare | Health: 100 | Damage: 15-20
+Type: Enemy | ID: earth_elemental | Rarity:Rare | Health: 100 | Damage: 15-20
+Type: Enemy | ID: death_knight | Rarity:Legendary | Health: 200 | Damage: 20-30
+Type: Enemy | ID: giant_spider | Rarity:Uncommon | Health: 50 | Damage: 10-15
+Type: Enemy | ID: hell_hound | Rarity:Epic | Health: 200 | Damage: 30-40
+Type: Enemy | ID: death_knight | Rarity:Epic | Health: 500 | Damage: 40-60
+Type: Enemy | ID: flame_guardian | Rarity:Legendary | Health: 200 | Damage: 20-30
+Type: Enemy | ID: frost_giant | Rarity:Epic | Health: 200 | Damage: 30-50
+Type: Enemy | ID: lich_king | Rarity:Epic | Health: 500 | Damage: 20-40
+Type: Enemy | ID: flamewing | Rarity:Legendary | Health: 600 | Damage: 30-55
+Type: Enemy | ID: malik_mindflayer | Rarity:Legendary | Health: 500 | Damage: 30-50
+Type: Enemy | ID: spider_queen | Rarity:Legendary | Health: 100 | Damage: 20-30
+Type: Enemy | ID: death | Rarity:Legendary | Health: 1000 | Damage: 90-150
+Type: Enemy | ID: ice_queen | Rarity:Legendary | Health: 500 | Damage: 50-70
+Type: Structure | ID: dungeon
+Type: Structure | ID: ancient_temple
+Type: Structure | ID: abandoned_mine
+Type: Structure | ID: demon_portal
+Type: Structure | ID: elemental_altar
+Type: Structure | ID: death_knight_lair
+Type: Structure | ID: spider_den
+Type: Structure | ID: deaths_domain
+Type: Structure | ID: volcanic_lair
+Type: Structure | ID: frost_fortress
+Type: Quest | ID: gathering_dahilas
+Type: Quest | ID: kill_fire_elemental
+Type: Quest | ID: kill_water_elemental
+Type: Quest | ID: kill_air_elemental
+Type: Quest | ID: kill_earth_elemental
+Type: Quest | ID: collect_fire_runes
+Type: Quest | ID: collect_water_runes
+Type: Quest | ID: collect_air_runes
+Type: Quest | ID: collect_earth_runes
+Type: Quest | ID: slay_death_knight
+Type: Quest | ID: defeat_death
+Type: Quest | ID: flamewing_hunt
+Type: Quest | ID: collect_dragon_scales
+Type: Quest | ID: find_dragon_heart
+Type: Quest | ID: slay_frost_giant
+Type: Quest | ID: defeat_ice_queen
+
+once you have understood the reference, tell me and follow it with a ✅

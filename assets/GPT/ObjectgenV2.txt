@@ -1,0 +1,622 @@
+I am going to give you a bunch of object templates from my game, a list of everything in the game to be used as a reference, and a bunch of rules that need to be followed at all time when generating content with the templates 
+
+each rule is marked with a • and continues till the next •
+Rules: 
+    •If you run out of characters to respond with, please tell me and offer to continue from where you left off
+    •When creating a certain game object, you must follow its specific rules and template always
+    •Only Enemies and Weapons get quotes; they must be in the format that is displayed in the template and must contain each of the three items in the {}
+    •There must be at least 8 unique quotes for each item or enemy generated
+    •There must be at least 8 unique outcomes for structure generated
+    •The Item Types are, Consumable, Badge, Weapon, Armor, Material, and Misc
+    •Structures only have the options, (item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, spawn), no others will work
+    •There are only three item elements and they can only work on weapons, Fire, Paralysis, and Poison, if the item effect would be "Burn", Replace it with "Fire"
+    •If possible, dont use item elements, create weapons with the item_element of None
+    •Every item needs "item_damage", even if its 0, it needs to be there
+    •for Armor, "item_damage", refers to how much damage the armor piece blocks when the user wearing it is attacked, it is still called "item_damage" in the code though
+    •Armors have subtypes, Helmet, Chestplate, Leggings and Boots that must be present when making a piece of armor
+    •Item effects must be formated like so {effect} +/- {number}, EX. health + 10, and an item can only have 1 effect
+    •There are only specific item effects, they are (health, damage, luck, crit_chance, dodge_chance, fire_resistance, paralysis_resistance, poison_resistance, and frost_resistance)
+    •Outcomes need to have xp, the "outcome_xp" can not be 0
+    •The only Quest Types are "collect" and "kill"
+    •Mana does not exist, nothing to do with mana should be created
+    •If an item has a recipe, its recpie_id needs to be the same as the item_id
+    •Badges and Pets are Equippable
+    •chests need chest contents and chests arent allowed to be empty
+    •If asked to coninue, start the codeblock from where it was left off
+    •Whenever anything is created, refrence the list of things in the game and if anything that isnt on the list is mentioned, create it following the inital creation
+    •Split Each Category into its own codeblock
+    •this is what I mean by add chances of getting more than 1 of an item, create more outcomes with different chances and different ammounts
+            {
+                "item_id": "rat_tail",
+                "item_amount": 1,
+                "drop_chance": 0.5
+            },
+            {
+                "item_id": "rat_tail",
+                "item_amount": 2,
+                "drop_chance": 0.3
+            },
+    
+    •Create image promps for every structure you create and use this as an example of a prompt, (It must always be in 32-bit pixel art)
+        started with: 32-bit pixel art, Death Knights Castle
+        gave: /imagine prompt: 32-bit pixel art, Death Knights Castle, a towering fortress of black stone, glowing with eerie green lights from the windows, surrounded by a moat of bubbling lava, a sense of foreboding and danger permeates the scene, Pixel Art, created with a palette of dark and vibrant colors to emphasize the contrast, --ar 16:9 --v 5
+    •When I ask for you to create a new branch, what I mean is that a branch consists of "2 or more, new enemies, a new boss, a bunch of new items (armor sets, materials, weapons, pets, badges and unique items, weapons or armor (unique in the way of unique items in games have unique names, descriptions.. etc)), new quests, and a new structure to house and spawn those new enemies and boss"
+
+once all the rules are understood, please tell me what the rule is, followed by what it means for you and generated content, then a ✅, please only say each rule once
+
+this is all the object templates for the game
+
+        this is the Enemy and Boss template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names    {
+                "enemy_id": "rat",
+                "enemy_name": "Rat",
+                "enemy_health": 10,
+                "enemy_damage": "3-5",
+                "enemy_emoji": "<a:Rat:1078761460211130428>",
+                "enemy_description": "A rat. It's not very strong, but it's annoying as hell.",
+                "enemy_rarity": "Common",
+                "enemy_type": "Animal",
+                "enemy_xp": 5,
+                "enemy_money": 5,
+                "enemy_crit_chance": 0,
+                "enemy_drop_id": "rat",
+                "enemy_drops": [
+                {
+                    "item_id": "rat_tail",
+                    "item_amount": 1,
+                    "item_drop_chance": 1
+                }
+            ],
+                "enemy_drop_rarity": "Common",
+                "enemy_element": "None",
+                "quote_id": "rat",
+                "enemy_quotes": [
+                    {
+                        "quote": "{enemy_name} slashes at {target} dealing {damage} damage."
+                    },
+                    {
+                        "quote": "{enemy_name} bites {target} dealing {damage} damage."
+                    },
+                    {
+                        "quote": "{enemy_name} scratches {target} dealing {damage} damage."
+                    }
+                ]
+            },
+        this is the weapon and item template for my game, use it to create more items when I ask for them, you will always put the created item code in a codeblock and correct any spelling mistakes in item names 
+        [
+            {
+                "item_id": "iron_sword",
+                "item_name": "Iron Sword",
+                "item_price": 75,
+                "item_emoji": "<:Iron_Sword:1077583210659205130>",
+                "item_rarity": "Common",
+                "item_type": "Weapon",
+                "item_damage": "5-7",
+                "isUsable": false,
+                "inShop": true,
+                "isEquippable": true,
+                "item_description": "A Basic Sword, good for getting started.",
+                "item_element": "None",
+                "item_crit_chance": "5%",
+                "item_projectile": "None",
+                "recipe_id": "None",
+                "item_recipe": [{
+                    "ingredient_id": "stick",
+                    "ingredient_amount": 1
+                }, {
+                    "ingredient_id": "iron_ingot",
+                    "ingredient_amount": 2
+                }],
+                "isHuntable": false,
+                "item_hunt_chance": 0,
+                "item_effect": "None",
+                "isMineable": false,
+                "item_mine_chance": 0,
+                "quote_id": "iron_sword",
+                "item_quotes": [
+                    {
+                        "quote": "{user} swings their Sword at {target} and deals {damage} damage!"
+                    }
+                ],
+                "item_sub_type": "None"
+            }
+        ]
+        this is the template for armor
+            {
+        "item_id": "iron_helmet",
+        "item_name": "Iron Helmet",
+        "item_price": 80,
+        "item_emoji": "<:Iron_Helmet:1077579503804624957>",
+        "item_rarity": "Common",
+        "item_type": "Armor",
+        "item_damage": 5,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "A basic iron helmet, used to protect.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "iron_helmet",
+        "item_recipe": [{
+            "ingredient_id": "iron_ingot",
+            "ingredient_amount": 3
+        }],
+        "item_effect": "None",
+        "item_sub_type": "Helmet"
+    },    
+        this is the Quest template for my game, use it to create more quests when I ask for them, you will always put the created quest code in a codeblock and correct any spelling mistakes    {
+                "quest_id": "gathering_dahilas",
+                "quest_name": "Gathering Dahilas",
+                "quest_description": "The local apothecary is in need of Dahilas for their potions. Help by gathering 10 of them.",
+                "quest_xp_reward": 5,
+                "quest_reward_type": "Money",
+                "quest_reward": "Money",
+                "quest_reward_amount": 10,
+                "quest_level_required": 1,
+                "quest_type": "collect",
+                "quest": "10 dahila",
+                "OnBoard": true
+            }
+        this is the structure template for my game structures are areas where players can explore in order to trigger one of the outcomes, use it to create more structures when I ask for them, you will always put the created structure code in a codeblock and correct any spelling mistakes
+                {
+                    "structure_id": "dungeon",
+                    "structure_name": "Dungeon",
+                    "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+                    "structure_description": "A dark, foreboding dungeon filled with traps and treasures.",
+                    "structure_outcomesID": "dungeon",
+                    "structure_outcomes": [
+                      {
+                        "structure_quote": "You narrowly avoided a trap and found a hidden chest!",
+                        "structure_state": "success",
+                        "outcome_chance": 0.3,
+                        "outcome_type": "item_gain",
+                        "outcome_output": "chest_basic",
+                        "outcome_amount": 1,
+                        "outcome_money": 0,
+                        "outcome_xp": 10
+                      },
+                      {
+                        "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                        "structure_state": "success",
+                        "outcome_chance": 0.2,
+                        "outcome_type": "money_gain",
+                        "outcome_output": "gold",
+                        "outcome_amount": 200,
+                        "outcome_money": 0,
+                        "outcome_xp": 10
+                      },
+                      {
+                        "structure_quote": "You Encountered a lone goblin wandering the Dungeon!",
+                        "structure_state": "loss",
+                        "outcome_chance": 0.1,
+                        "outcome_type": "spawn",
+                        "outcome_output": "goblin",
+                        "outcome_amount": 0,
+                        "outcome_money": 0,
+                        "outcome_xp": 10
+                      },
+                      {
+                        "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
+                        "structure_state": "boss",
+                        "outcome_chance": 0.05,
+                        "outcome_type": "spawn",
+                        "outcome_output": "malik",
+                        "outcome_amount": 0,
+                        "outcome_money": 0,
+                        "outcome_xp": 10
+                      },
+                      {
+                        "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
+                        "structure_state": "success",
+                        "outcome_chance": 0.05,
+                        "outcome_type": "item_gain",
+                        "outcome_output": "amulet_dragon",
+                        "outcome_amount": 1,
+                        "outcome_money": 0,
+                        "outcome_xp": 30
+                      },
+                      {
+                        "structure_quote": "You've found a stash of healing potions!",
+                        "structure_state": "success",
+                        "outcome_chance": 0.1,
+                        "outcome_type": "item_gain",
+                        "outcome_output": "healthpotion",
+                        "outcome_amount": 3,
+                        "outcome_money": 0,
+                        "outcome_xp": 20
+                      },
+                      {
+                        "structure_quote": "You've been hit by a poisoned dart and lost some health!",
+                        "structure_state": "loss",
+                        "outcome_chance": 0.15,
+                        "outcome_type": "health_loss",
+                        "outcome_output": "",
+                        "outcome_amount": 30,
+                        "outcome_money": 0,
+                        "outcome_xp": 10
+                      }  
+                    ]
+                },
+
+        this is the template to create chests
+        {
+            "chest_id": "chest_basic",
+            "chest_name": "Chest",
+            "chest_price": 100,
+            "chest_emoji": "<a:WoodChest:1078758729706643506>",
+            "chest_rarity": "Common",
+            "chest_type": "Chest",
+            "chest_description": "A basic chest, found in plenty of places and contains a few items.",
+            "key_id": "None",
+            "chest_contentsID": "chest_basic",
+            "chest_contents": [
+                    {
+                    "item_id": "iron_ingot",
+                    "item_amount": 3,
+                    "drop_chance": 0.2
+                    },
+                    {
+                    "item_id": "iron_ingot",
+                    "item_amount": 4,
+                    "drop_chance": 0.1
+                    },
+                    {
+                    "item_id": "iron_ingot",
+                    "item_amount": 5,
+                    "drop_chance": 0.05
+                    },
+                    {
+                    "item_id": "stick",
+                    "item_amount": 3,
+                    "drop_chance": 0.2
+                    },
+                    {
+                    "item_id": "stick",
+                    "item_amount": 4,
+                    "drop_chance": 0.1
+                    },
+                    {
+                    "item_id": "stick",
+                    "item_amount": 5,
+                    "drop_chance": 0.05
+                    },
+                    {
+                    "item_id": "string",
+                    "item_amount": 3,
+                    "drop_chance": 0.15
+                    },
+                    {
+                    "item_id": "string",
+                    "item_amount": 4,
+                    "drop_chance": 0.075
+                    },
+                    {
+                    "item_id": "string",
+                    "item_amount": 5,
+                    "drop_chance": 0.0375
+                    },
+                    {
+                    "item_id": "feather",
+                    "item_amount": 3,
+                    "drop_chance": 0.15
+                    },
+                    {
+                    "item_id": "feather",
+                    "item_amount": 4,
+                    "drop_chance": 0.075
+                    },
+                    {
+                    "item_id": "feather",
+                    "item_amount": 5,
+                    "drop_chance": 0.0375
+                    },
+                    {
+                    "item_id": "dahila",
+                    "item_amount": 3,
+                    "drop_chance": 0.1
+                    },
+                    {
+                    "item_id": "dahila",
+                    "item_amount": 4,
+                    "drop_chance": 0.05
+                    },
+                    {
+                    "item_id": "dahila",
+                    "item_amount": 5,
+                    "drop_chance": 0.025
+                    },
+                    {
+                    "item_id": "bone",
+                    "item_amount": 3,
+                    "drop_chance": 0.1
+                    },
+                    {
+                    "item_id": "bone",
+                    "item_amount": 4,
+                    "drop_chance": 0.05
+                    },
+                    {
+                    "item_id": "bone",
+                    "item_amount": 5,
+                    "drop_chance": 0.025
+                    },
+                    {
+                    "item_id": "leather",
+                    "item_amount": 3,
+                    "drop_chance": 0.05
+                    },
+                    {
+                    "item_id": "leather",
+                    "item_amount": 4,
+                    "drop_chance": 0.025
+                    },
+                    {
+                    "item_id": "leather",
+                    "item_amount": 5,
+                    "drop_chance": 0.0125
+                    },
+                    {
+                    "item_id": "wooden_handle",
+                    "item_amount": 3,
+                    "drop_chance": 0.05
+                    },
+                    {
+                    "item_id": "wooden_handle",
+                    "item_amount": 4,
+                    "drop_chance": 0.025
+                    },
+                    {
+                    "item_id": "wooden_handle",
+                    "item_amount": 5,
+                    "drop_chance": 0.0125
+                    },
+                    {
+                    "item_id": "iron_sword",
+                    "item_amount": 1,
+                    "drop_chance": 0.02
+                    },
+                    {
+                    "item_id": "iron_dagger",
+                    "item_amount": 1,
+                    "drop_chance": 0.02
+                    },
+                    {
+                    "item_id": "pickaxe",
+                    "item_amount": 1,
+                    "drop_chance": 0.01
+                    },
+                    {
+                    "item_id": "huntingbow",
+                    "item_amount": 1,
+                    "drop_chance": 0.01
+                    },
+                    {
+                    "item_id": "iron_helmet",
+                    "item_amount": 1,
+                    "drop_chance": 0.005
+                    },
+                    {
+                    "item_id": "iron_chestplate",
+                    "item_amount": 1,
+                    "drop_chance": 0.005
+                    },
+                    {
+                    "item_id": "iron_leggings",
+                    "item_amount": 1,
+                    "drop_chance": 0.005
+                    },
+                    {
+                    "item_id": "iron_boots",
+                    "item_amount": 1,
+                    "drop_chance": 0.005
+                    },
+                    {
+                    "item_id": "healthpotion",
+                    "item_amount": 3,
+                    "drop_chance": 0.02
+                    },
+                    {
+                    "item_id": "healthpotion",
+                    "item_amount": 4,
+                    "drop_chance": 0.01
+                    },
+                    {
+                    "item_id": "healthpotion",
+                    "item_amount": 5,
+                    "drop_chance": 0.005
+                    },
+                    {
+                    "item_id": "bread",
+                    "item_amount": 3,
+                    "drop_chance": 0.02
+                    },
+                    {
+                    "item_id": "bread",
+                    "item_amount": 4,
+                    "drop_chance": 0.01
+                    },
+                    {
+                    "item_id": "bread",
+                    "item_amount": 5,
+                    "drop_chance": 0.005
+                    },
+                    {
+                    "item_id": "ale",
+                    "item_amount": 3,
+                    "drop_chance": 0.02
+                    },
+                    {
+                    "item_id": "ale",
+                    "item_amount": 4,
+                    "drop_chance": 0.01
+                    },
+                    {
+                    "item_id": "ale",
+                    "item_amount": 5,
+                    "drop_chance": 0.005
+                    }
+                ]
+            }
+        this is for pets
+            {
+                "item_id": "winged_cash_pet",
+                "item_name": "Winged Cash",
+                "item_price": 10000,
+                "item_emoji": "<a:flyingcash:1105664583680655491>",
+                "item_rarity": "Legendary",
+                "item_type": "Pet",
+                "item_damage": 0,
+                "isUsable": false,
+                "inShop": false,
+                "isEquippable": true,
+                "item_description": "A Flying stack of Cash, how neat!",
+                "item_element": "None",
+                "item_crit_chance": "0%",
+                "item_projectile": "None",
+                "recipe_id": "None",
+                "item_recipe": [],
+                "isHuntable": false,
+                "item_hunt_chance": 0,
+                "item_effect": "luck + 15",
+                "isMineable": false,
+                "item_mine_chance": 0,
+                "item_sub_type": "None"
+            }
+
+once you have understood all the templates, tell me and follow it with a ✅
+
+and this is the refrence of everything in the game
+Type: Weapon | ID: iron_sword | Rarity: Common | Damage: 3-5
+Type: Weapon | ID: iron_battle_axe | Rarity: Uncommon | Damage: 10-14
+Type: Weapon | ID: iron_dagger | Rarity: Common | Damage: 5-9
+Type: Weapon | ID: flame_grimoire | Rarity: Rare | Damage: 10-15
+Type: Weapon | ID: water_grimoire | Rarity: Rare | Damage: 10-15
+Type: Weapon | ID: air_grimoire | Rarity: Rare | Damage: 10-15
+Type: Weapon | ID: earth_grimoire | Rarity: Rare | Damage: 10-15
+Type: Weapon | ID: book_of_demons | Rarity: Legendary | Damage: 20-35
+Type: Weapon | ID: death_knight_sword | Rarity: Legendary | Damage: 25-35
+Type: Weapon | ID: poison_dagger | Rarity: Uncommon | Damage: 10-15
+Type: Weapon | ID: death_scythe | Rarity: Legendary | Damage: 100-500
+Type: Weapon | ID: spectral_sword | Rarity: Epic | Damage: 50-70
+Type: Weapon | ID: frost_giant_hammer | Rarity: Epic | Damage: 40-60
+Type: Material | ID: rat_tail | Rarity: Common | Damage: 0
+Type: Material | ID: dragon_tooth | Rarity: Legendary | Damage: 0
+Type: Material | ID: iron_ingot | Rarity: Common | Damage: 0
+Type: Material | ID: gold_ingot | Rarity: Rare | Damage: 0
+Type: Material | ID: arcane_crystal | Rarity: Epic | Damage: 0
+Type: Material | ID: magic_powder | Rarity: Common | Damage: 0
+Type: Material | ID: stick | Rarity: Common | Damage: 0
+Type: Material | ID: string | Rarity: Common | Damage: 0
+Type: Material | ID: feather | Rarity: Common | Damage: 0
+Type: Material | ID: dahila | Rarity: Common | Damage: 0
+Type: Material | ID: diamond | Rarity: Rare | Damage: 0
+Type: Material | ID: goldenflower | Rarity: Uncommon | Damage: 0
+Type: Material | ID: dragon_scale | Rarity: Legendary | Damage: 0
+Type: Material | ID: bone | Rarity: Common | Damage: 0
+Type: Material | ID: sapphire | Rarity: Epic | Damage: 0
+Type: Material | ID: ruby | Rarity: Epic | Damage: 0
+Type: Material | ID: dragon_eye | Rarity: Legendary | Damage: 0
+Type: Material | ID: gold_chain | Rarity: Common | Damage: 0
+Type: Material | ID: ectoplasm | Rarity: Uncommon | Damage: 0
+Type: Material | ID: leather | Rarity: Common | Damage: 0
+Type: Material | ID: goblin_ear | Rarity: Common | Damage: 0
+Type: Material | ID: wooden_handle | Rarity: Common | Damage: 0
+Type: Material | ID: ancient_scroll | Rarity: Rare | Damage: 0
+Type: Material | ID: demon_essence | Rarity: Epic | Damage: 0
+Type: Material | ID: demon_skull | Rarity: Epic | Damage: 0
+Type: Material | ID: fire_rune | Rarity: Rare | Damage: 0
+Type: Material | ID: water_rune | Rarity: Rare | Damage: 0
+Type: Material | ID: earth_rune | Rarity: Rare | Damage: 0
+Type: Material | ID: air_rune | Rarity: Rare | Damage: 0
+Type: Material | ID: spider_venom | Rarity: Uncommon | Damage: 0
+Type: Material | ID: queen_spider_venom | Rarity: Legendary | Damage: 0
+Type: Tool | ID: pickaxe | Rarity: Commond | Damage: 2
+Type: Tool | ID: huntingbow | Rarity: Common | Damage: 4
+Type: Armor SubType: Helmet | ID: iron_helmet | Rarity: Common | Damage: 5
+Type: Armor SubType: Chestplate | ID: iron_chestplate | Rarity: Common | Damage: 10
+Type: Armor SubType: Leggings | ID: iron_leggings | Rarity: Common | Damage: 7
+Type: Armor SubType: Boots | ID: iron_boots | Rarity: Common | Damage: 4
+Type: Armor SubType: Helmet | ID: gold_helmet | Rarity: Rare | Damage: 8
+Type: Armor SubType: Chestplate | ID: gold_chestplate | Rarity: Rare | Damage: 12
+Type: Armor SubType: Leggings | ID: gold_leggings | Rarity: Rare | Damage: 10
+Type: Armor SubType: Boots | ID: gold_boots | Rarity: Rare | Damage: 6
+Type: Armor SubType: Helmet | ID: dragon_scale_helmet | Rarity: Legendary | Damage: 25
+Type: Armor SubType: Chestplate | ID: dragon_scale_chestplate | Rarity: Legendary | Damage: 35
+Type: Armor SubType: Leggings | ID: dragon_scale_leggings | Rarity: Legendary | Damage: 30
+Type: Armor SubType: Boots | ID: dragon_scale_boots | Rarity: Legendary | Damage: 20
+Type: Armor SubType: Helmet | ID: spectral_helmet | Rarity: Epic | Damage: 20
+Type: Armor SubType: Chestplate | ID: spectral_chestplate | Rarity: Epic | Damage: 30
+Type: Armor SubType: Leggings | ID: spectral_leggings | Rarity: Epic | Damage: 25
+Type: Armor SubType: Boots | ID: spectral_boots | Rarity: Epic | Damage: 15
+Type: Armor SubType: Helmet | ID: frost_queen_crown | Rarity: Legendary | Damage: 65
+Type: Consumable SubType: Potion | ID: healthpotion | Rarity: Common | Damage: 10
+Type: Consumable SubType: Potion | ID: revivepotion | Rarity: Rare | Damage: 100
+Type: Consumable | ID: bread | Rarity: Common | Damage: 0
+Type: Consumable | ID: ale | Rarity: Common | Damage: 0
+Type: Misc SubType: Bauble | ID: clover | Rarity: Legendary | Damage: 0
+Type: Armor SubType: Bauble | ID: goblin_talisman | Rarity: Uncommon | Damage: 0
+Type: Armor SubType: Necklace | ID: amulet_dragon | Rarity: Legendary | Damage: 0
+Type: Misc | ID: skeleton_key | Rarity: Epic | Damage: 0
+Type: Misc | ID: void_pearl | Rarity: Rare | Damage: 0
+Type: Misc | ID: dragon_heart | Rarity: Legendary | Damage: 0
+Type: Badge | ID: devSlayer | Rarity: Legendary | Damage: 0
+Type: Badge | ID: demon_skull_badge | Rarity: Epic | Damage: 0
+Type: Badge SubType: Plushie | ID: aspen_plushie | Rarity: Legendary | Damage: 0
+Type: Pet | ID: winged_cash_pet | Rarity: Legendary | Damage: 0
+Type: Pet | ID: tree_in_bottle_pet | Rarity: Epic | Damage: 0
+Type: Pet | ID: slime_girl_pet | Rarity: Rare | Damage: 0
+Type: Chest | ID: chest_basic | Rarity:Common
+Type: Enemy | ID: rat | Rarity:Common | Health: 10 | Damage: 3-5
+Type: Enemy | ID: fairy | Rarity:Rare | Health: 20 | Damage: 1-5
+Type: Enemy | ID: skeleton_horde | Rarity:Rare | Health: 50 | Damage: 5-10
+Type: Enemy | ID: spirit | Rarity:Rare | Health: 60 | Damage: 10-15
+Type: Enemy | ID: wolf | Rarity:Uncommon | Health: 20 | Damage: 4-6
+Type: Enemy | ID: goblin | Rarity:Common | Health: 20 | Damage: 5-7
+Type: Enemy | ID: demon | Rarity:Epic | Health: 150 | Damage: 15-20
+Type: Enemy | ID: succubus | Rarity:Rare | Health: 100 | Damage: 10-15
+Type: Enemy | ID: fire_elemental | Rarity:Rare | Health: 100 | Damage: 15-20
+Type: Enemy | ID: water_elemental | Rarity:Rare | Health: 100 | Damage: 15-20
+Type: Enemy | ID: air_elemental | Rarity:Rare | Health: 100 | Damage: 15-20
+Type: Enemy | ID: earth_elemental | Rarity:Rare | Health: 100 | Damage: 15-20
+Type: Enemy | ID: death_knight | Rarity:Legendary | Health: 200 | Damage: 20-30
+Type: Enemy | ID: giant_spider | Rarity:Uncommon | Health: 50 | Damage: 10-15
+Type: Enemy | ID: hell_hound | Rarity:Epic | Health: 200 | Damage: 30-40
+Type: Enemy | ID: death_knight | Rarity:Epic | Health: 500 | Damage: 40-60
+Type: Enemy | ID: flame_guardian | Rarity:Legendary | Health: 200 | Damage: 20-30
+Type: Enemy | ID: frost_giant | Rarity:Epic | Health: 200 | Damage: 30-50
+Type: Enemy | ID: lich_king | Rarity:Epic | Health: 500 | Damage: 20-40
+Type: Enemy | ID: flamewing | Rarity:Legendary | Health: 600 | Damage: 30-55
+Type: Enemy | ID: malik_mindflayer | Rarity:Legendary | Health: 500 | Damage: 30-50
+Type: Enemy | ID: spider_queen | Rarity:Legendary | Health: 100 | Damage: 20-30
+Type: Enemy | ID: death | Rarity:Legendary | Health: 1000 | Damage: 90-150
+Type: Enemy | ID: ice_queen | Rarity:Legendary | Health: 500 | Damage: 50-70
+Type: Structure | ID: dungeon
+Type: Structure | ID: ancient_temple
+Type: Structure | ID: abandoned_mine
+Type: Structure | ID: demon_portal
+Type: Structure | ID: elemental_altar
+Type: Structure | ID: death_knight_lair
+Type: Structure | ID: spider_den
+Type: Structure | ID: deaths_domain
+Type: Structure | ID: volcanic_lair
+Type: Structure | ID: frost_fortress
+Type: Quest | ID: gathering_dahilas
+Type: Quest | ID: kill_fire_elemental
+Type: Quest | ID: kill_water_elemental
+Type: Quest | ID: kill_air_elemental
+Type: Quest | ID: kill_earth_elemental
+Type: Quest | ID: collect_fire_runes
+Type: Quest | ID: collect_water_runes
+Type: Quest | ID: collect_air_runes
+Type: Quest | ID: collect_earth_runes
+Type: Quest | ID: slay_death_knight
+Type: Quest | ID: defeat_death
+Type: Quest | ID: flamewing_hunt
+Type: Quest | ID: collect_dragon_scales
+Type: Quest | ID: find_dragon_heart
+Type: Quest | ID: slay_frost_giant
+Type: Quest | ID: defeat_ice_queen
+
+once you have understood the reference, tell me and follow it with a ✅
+
+give me a short summary of all the information processed 
