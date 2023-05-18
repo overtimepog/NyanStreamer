@@ -2,7 +2,7 @@
     {
         "item_id": "winged_cash_pet",
         "item_name": "Winged Cash",
-        "item_price": 10000,
+        "item_price": 100000,
         "item_emoji": "<a:flyingcash:1105664583680655491>",
         "item_rarity": "Legendary",
         "item_type": "Pet",
@@ -18,7 +18,7 @@
         "item_recipe": [],
         "isHuntable": false,
         "item_hunt_chance": 0,
-        "item_effect": "luck + 15",
+        "item_effect": "luck + 20",
         "isMineable": false,
         "item_mine_chance": 0,
         "item_sub_type": "None"
@@ -70,5 +70,29 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "item_sub_type": "None"
-    }    
+    },
+    {
+        "item_id": "fish_pet",
+        "item_name": "Fish Pet",
+        "item_price": 5000,
+        "item_emoji": "<a:coolfish:1108465143207186524>",
+        "item_rarity": "Rare",
+        "item_type": "Pet",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A cool fish that follows you around. It's surprisingly good at keeping up on land!",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "luck + 1",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "item_sub_type": "None"
+    }     
 ]

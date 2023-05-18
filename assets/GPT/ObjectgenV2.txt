@@ -499,6 +499,7 @@ Type: Weapon | ID: poison_dagger | Rarity: Uncommon | Damage: 10-15
 Type: Weapon | ID: death_scythe | Rarity: Legendary | Damage: 100-500
 Type: Weapon | ID: spectral_sword | Rarity: Epic | Damage: 50-70
 Type: Weapon | ID: frost_giant_hammer | Rarity: Epic | Damage: 40-60
+Type: Material | ID: bait | Rarity: Common | Damage: 0
 Type: Material | ID: rat_tail | Rarity: Common | Damage: 0
 Type: Material | ID: dragon_tooth | Rarity: Legendary | Damage: 0
 Type: Material | ID: iron_ingot | Rarity: Common | Damage: 0
@@ -565,6 +566,7 @@ Type: Badge SubType: Plushie | ID: aspen_plushie | Rarity: Legendary | Damage: 0
 Type: Pet | ID: winged_cash_pet | Rarity: Legendary | Damage: 0
 Type: Pet | ID: tree_in_bottle_pet | Rarity: Epic | Damage: 0
 Type: Pet | ID: slime_girl_pet | Rarity: Rare | Damage: 0
+Type: Pet | ID: fish_pet | Rarity: Rare | Damage: 0
 Type: Chest | ID: chest_basic | Rarity:Common
 Type: Enemy | ID: rat | Rarity:Common | Health: 10 | Damage: 3-5
 Type: Enemy | ID: fairy | Rarity:Rare | Health: 20 | Damage: 1-5

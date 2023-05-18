@@ -174,7 +174,7 @@ class Basic(commands.Cog, name="basic"):
                 end_idx = start_idx + 5
                 inventory_embed = discord.Embed(
                     title="Inventory",
-                    description=f"{ctx.author.name}'s Inventory \n Commands: \n /equip ID: equips an item based on its id \n /unequip ID: will unequip an item based on its ID.",
+                    description=f"{ctx.author.name}'s Inventory \n Commands: \n /equip ID: equips an item based on its ID \n /unequip ID: will unequip an item based on its ID. \n /sell ID amount: will sell that amount of an item from your inventory",
                 )
                 inventory_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -838,7 +838,6 @@ class Basic(commands.Cog, name="basic"):
                             return
                         #if the user has enough money, continue with the purchase
                         else:
-                            await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
                             #remove the item from the shop
                             await db_manager.remove_shop_item_amount(item, amount)
                             #add the item to the users inventory

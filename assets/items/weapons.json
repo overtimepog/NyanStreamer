@@ -491,7 +491,7 @@
         "item_type": "Weapon",
         "item_damage": "10-15",
         "isUsable": false,
-        "inShop": true,
+        "inShop": false,
         "isEquippable": true,
         "item_description": "A dagger coated with spider venom. Deals poison damage to enemies.",
         "item_element": "Poison",

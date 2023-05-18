@@ -233,10 +233,18 @@ async def slot_rules(ctx: Context):
     await ctx.send(embed=embed)
     
 class FishingButton(discord.ui.View):
-    def __init__(self, **kwargs):
+    def __init__(self, user_id, **kwargs):
         super().__init__(**kwargs)
+        self.user_id = user_id
         self.button_clicked = asyncio.Event()
         self.selected_spot = None
+        self.cancelled = False
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("This is not your game!", ephemeral=True)
+            return False
+        return True
 
     @discord.ui.button(label="1", style=discord.ButtonStyle.secondary, row=0)
     async def select_spot_1(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -327,6 +335,12 @@ class FishingButton(discord.ui.View):
         else:
             self.button_clicked.set()
             await interaction.response.defer()
+            
+    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.danger)
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.cancelled = True
+        self.button_clicked.set()
+        await interaction.response.defer()
 
 async def fishing_game():
     fishes = {
@@ -360,10 +374,11 @@ async def fishing_game():
         return random.choice(catchable_fishes)
 
     async def fish(ctx: Context, user, user_luck):
+        baitAmount = await db_manager.get_item_amount_from_inventory(user.id, "bait")
         points = 0
-        tries = 5
+        tries = 5 + baitAmount
 
-        view = FishingButton()
+        view = FishingButton(user.id)
         message = None
 
         instructions = (
@@ -376,14 +391,18 @@ async def fishing_game():
 
         embed = discord.Embed(
             title=f"{user.name}'s Fishing Game",
-            description=instructions,
+            description=instructions + "\n" + "\n" + f"Starting Bait: {tries}",
             color=0x00BFFF  # Light blue
         )
-        message = await ctx.send(embed=embed, view=view)
         
+        message = await ctx.send(embed=embed, view=view)
+
         await view.button_clicked.wait()
 
         for i in range(tries):
+            if view.cancelled:
+                break
+
             if view.selected_spot is None:
                 await ctx.send("Please select a fishing spot first!")
                 return
@@ -396,24 +415,37 @@ async def fishing_game():
             points += fish_points
 
             embed = discord.Embed(
-                title=f'{user.name} caught a {fishes[caught_fish]["emoji"]} {caught_fish} in spot {view.selected_spot}!',
-                description=f'gained {fish_points} points! Bait left: {tries - i - 1}/{tries}',
+                title=f'{user.name} caught a {fishes[caught_fish]["emoji"]}{caught_fish} in spot {view.selected_spot}!',
+                description=f'gained {fish_points} points! Bait left: {tries - i - 1}',
                 color=rarity_colors[fishes[caught_fish]["rarity_name"]]
             )
             embed.set_footer(text=f"Selected spot: {view.selected_spot}")
 
             await message.edit(embed=embed)
 
-        if points >= 40:
-            prize = "Golden Trophy"
-        elif points >= 30:
-            prize = "Silver Trophy"
-        elif points >= 20:
-            prize = "Bronze Trophy"
+            if baitAmount > 0:
+                await db_manager.remove_item_from_inventory(user.id, "bait", 1)
+                baitAmount -= 1
+                
+        if points <= 30:
+            prizeID = "chest_basic"
+            prizeName = await db_manager.get_chest_name(prizeID)
+            prizeEmoji = await db_manager.get_chest_icon(prizeID)
+            prizeAmount = 1
+            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
         else:
-            prize = "Participation Medal"
+            prizeID = "fish_pet"
+            prizeName = await db_manager.get_basic_item_name(prizeID)
+            prizeEmoji = await db_manager.get_basic_item_emote(prizeID)
+            prizeAmount = 1
+            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
 
-        await ctx.send(f'{user.mention} has finished fishing with a total of {points} points and won a {prize}!')
+        if view.cancelled:
+            await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
+        else:
+            await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
+
         await db_manager.add_item_to_inventory(user.id, prize, 1)
 
     return fish
+
