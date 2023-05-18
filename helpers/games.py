@@ -434,10 +434,10 @@ async def fishing_game():
                 prizeAmount = 1
                 prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
             elif points >= 45:
-                prizeID = "chest_basic"
+                prizeID = "chest_pet"
                 prizeName = await db_manager.get_chest_name(prizeID)
                 prizeEmoji = await db_manager.get_chest_icon(prizeID)
-                prizeAmount = 3
+                prizeAmount = 1
                 prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
             elif points >= 30:
                 prizeID = "chest_basic"

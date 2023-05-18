@@ -216,5 +216,48 @@
                 "drop_chance": 0.005
                 }
         ]
-    }
+    },
+    {
+        "chest_id": "chest_pet",
+        "chest_name": "Pet Chest",
+        "chest_price": 5000,
+        "chest_emoji": "<a:IceChest:1108753322824974346>",
+        "chest_rarity": "Epic",
+        "chest_type": "Chest",
+        "chest_description": "A special chest that contains various pets. Who knows what pet you might find!",
+        "key_id": "None",
+        "chest_contentsID": "pet_chest",
+        "chest_contents": [
+            {
+                "item_id": "frog_pet",
+                "item_amount": 1,
+                "drop_chance": 0.3
+            },
+            {
+                "item_id": "baby_elephant_pet",
+                "item_amount": 1,
+                "drop_chance": 0.2
+            },
+            {
+                "item_id": "winged_cash_pet",
+                "item_amount": 1,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "tree_in_bottle_pet",
+                "item_amount": 1,
+                "drop_chance": 0.1
+            },
+            {
+                "item_id": "slime_girl_pet",
+                "item_amount": 1,
+                "drop_chance": 0.1
+            },
+            {
+                "item_id": "fish_pet",
+                "item_amount": 1,
+                "drop_chance": 0.2
+            }
+        ]
+    }    
 ]
