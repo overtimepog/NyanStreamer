@@ -427,18 +427,30 @@ async def fishing_game():
                 await db_manager.remove_item_from_inventory(user.id, "bait", 1)
                 baitAmount -= 1
                 
-        if points <= 30:
-            prizeID = "chest_basic"
-            prizeName = await db_manager.get_chest_name(prizeID)
-            prizeEmoji = await db_manager.get_chest_icon(prizeID)
-            prizeAmount = 1
-            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
-        else:
-            prizeID = "fish_pet"
-            prizeName = await db_manager.get_basic_item_name(prizeID)
-            prizeEmoji = await db_manager.get_basic_item_emote(prizeID)
-            prizeAmount = 1
-            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            if points >= 60:
+                prizeID = "fish_pet"
+                prizeName = await db_manager.get_basic_item_name(prizeID)
+                prizeEmoji = await db_manager.get_basic_item_emote(prizeID)
+                prizeAmount = 1
+                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            elif points >= 45:
+                prizeID = "chest_basic"
+                prizeName = await db_manager.get_chest_name(prizeID)
+                prizeEmoji = await db_manager.get_chest_icon(prizeID)
+                prizeAmount = 3
+                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            elif points >= 30:
+                prizeID = "chest_basic"
+                prizeName = await db_manager.get_chest_name(prizeID)
+                prizeEmoji = await db_manager.get_chest_icon(prizeID)
+                prizeAmount = 2
+                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            elif points >= 15:
+                prizeID = "chest_basic"
+                prizeName = await db_manager.get_chest_name(prizeID)
+                prizeEmoji = await db_manager.get_chest_icon(prizeID)
+                prizeAmount = 1
+                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
 
         if view.cancelled:
             await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
