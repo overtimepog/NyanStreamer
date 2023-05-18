@@ -1,4 +1,4 @@
-each rule is marked with a • and continues till the next •
+each rule is marked with a •
 Rules: 
     •If you run out of characters to respond with, please tell me and offer to continue from where you left off
     •When creating a certain game object, you must follow its specific rules and template always
@@ -40,4 +40,4 @@ Rules:
         gave: /imagine prompt: 32-bit pixel art, Death Knights Castle, a towering fortress of black stone, glowing with eerie green lights from the windows, surrounded by a moat of bubbling lava, a sense of foreboding and danger permeates the scene, Pixel Art, created with a palette of dark and vibrant colors to emphasize the contrast, --ar 16:9 --v 5
     •When I ask for you to create a new branch, what I mean is that a branch consists of "2 or more, new enemies, a new boss, a bunch of new items (armor sets, materials, weapons, pets, badges and unique items, weapons or armor (unique in the way of unique items in games have unique names, descriptions.. etc)), new quests, and a new structure to house and spawn those new enemies and boss"
 
-once all the rules are understood, please tell me what the rule is, followed by what it means for you and generated content, then a ✅, please only say each rule once
+once all the rules are understood, first tell me how many their are, and then please tell me what the rule is, followed by what it means for you and generated content, then a ✅, please only say each rule once
