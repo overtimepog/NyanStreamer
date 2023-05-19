@@ -615,7 +615,7 @@ class Basic(commands.Cog, name="basic"):
         num_pages = (len(shopitems) // 5) + (1 if len(shopitems) % 5 > 0 else 0)
 
         current_page = 0
-        timeRemaining = ReRoll.shopReRollTime(self)
+        timeRemaining = await ReRoll.shopReRollTime(self)
 
         # Create a function to generate embeds from a list of items
         async def create_embeds(item_list):
