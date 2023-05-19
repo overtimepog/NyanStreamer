@@ -134,7 +134,7 @@ async def structure_spawn_task() -> None:
             #print("A structure is already spawned in " + bot_guild.name)
             continue
         
-        #print("Spawned a structure in " + bot_guild.name)
+        print("Spawned " + {structure_name} + " in " + bot_guild.name)
         #get a random structure
         structureschoices = await db_manager.get_structures()
         structure = random.choice(structureschoices)
