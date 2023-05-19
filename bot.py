@@ -100,7 +100,10 @@ bot.config = config
 async def shop_reset_task() -> None:
     print("Rerolling shop...")
     await db_manager.add_shop_items()
+    await db_manager.edit_timeLeft(43200)
     print("Shop has been rerolled.")
+    timeleft = await db_manager.get_timeLeft()
+    print("Time Left: " + str(timeleft))
 
 
 
