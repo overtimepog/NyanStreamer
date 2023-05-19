@@ -115,7 +115,17 @@ async def on_ready() -> None:
     structure_spawn_task.start()
     
 
-        #every 5 hours a structure will spawn in the channel named "dankstreamer-structures"
+#every 12 hours the shop will reset, create a task to do this
+print("Shop will reset in 12 hours")
+@tasks.loop(hours=5)
+async def shop_reset_task() -> None:
+    await db_manager.clear_shop()
+    await db_manager.add_shop_items()
+    print("Shop has been reset")
+
+
+
+#every 5 hours a structure will spawn in the channel named "dankstreamer-structures"
 print("A structure will spawn every 1 hour")
 @tasks.loop(minutes=30)
 async def structure_spawn_task() -> None:
@@ -157,15 +167,6 @@ async def structure_spawn_task() -> None:
         embed.set_footer(text=f"Use /explore {structureid} to explore this structure.")
         await channel.send(embed=embed)
         await db_manager.edit_current_structure(bot_guild.id, structureid)
-
-
-#every 12 hours the shop will reset, create a task to do this
-print("Shop will reset in 12 hours")
-@tasks.loop(hours=5)
-async def shop_reset_task() -> None:
-    await db_manager.clear_shop()
-    await db_manager.add_shop_items()
-    print("Shop has been reset")
 
 
 @tasks.loop(minutes=1.0)
