@@ -25,7 +25,6 @@ import discord
 from discord.ext import commands
 from helpers.card import Card
 from PIL import Image
-import discordgame as dg
 
 cash = "<:cash:1077573941515792384>"
 rarity_colors = {
