@@ -7,6 +7,7 @@ Version: 5.4
 """
 
 import asyncio
+import datetime
 import json
 import random
 import re
@@ -19,6 +20,8 @@ from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
 from helpers import battle, checks, db_manager, hunt, mine
+from bot import ReRoll
+
 
 global i
 i = 0
@@ -612,6 +615,7 @@ class Basic(commands.Cog, name="basic"):
         num_pages = (len(shopitems) // 5) + (1 if len(shopitems) % 5 > 0 else 0)
 
         current_page = 0
+        timeRemaining = ReRoll.shopReRollTime(self)
 
         # Create a function to generate embeds from a list of items
         async def create_embeds(item_list):
@@ -623,7 +627,7 @@ class Basic(commands.Cog, name="basic"):
                 end_idx = start_idx + 5
                 shop_embed = discord.Embed(
                     title="Shop",
-                    description="This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`.",
+                    description="This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Time to ReRoll: " + timeRemaining,
                 )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -645,9 +649,9 @@ class Basic(commands.Cog, name="basic"):
                         item_emoji = await db_manager.get_chest_icon(item_id)
                         item_description = await db_manager.get_chest_description(item_id)
                         item_amount = await db_manager.get_shop_item_amount(item_id)
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price} ({item_amount})", value=f'**{item_description}** \n Type: `Chests` \n ID:`{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n Type: `Chests` \n ID:`{item_id}`', inline=False)
                     else:
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price} ({item_amount})", value=f'**{item_description}** \n Type: `{item[5]}` \n ID:`{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n Type: `{item[5]}` \n ID:`{item_id}`', inline=False)
                 embeds.append(shop_embed)
 
             return embeds
@@ -839,7 +843,7 @@ class Basic(commands.Cog, name="basic"):
                         #if the user has enough money, continue with the purchase
                         else:
                             #remove the item from the shop
-                            await db_manager.remove_shop_item_amount(item, amount)
+                            #await db_manager.remove_shop_item_amount(item, amount)
                             #add the item to the users inventory
                             await db_manager.add_item_to_inventory(user_id, item, amount)
                             #if the user has a quest, check it

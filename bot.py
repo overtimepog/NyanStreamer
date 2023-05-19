@@ -7,6 +7,7 @@ Version: 5.4
 """
 
 import asyncio
+import datetime
 import json
 import os
 import platform
@@ -111,17 +112,21 @@ async def on_ready() -> None:
         print("Syncing commands globally...")
         await bot.tree.sync()
         print("Done syncing commands globally!")
+    print("-------------------")
+    print("Shop Reset Task Started")
     shop_reset_task.start()
+    print("-------------------")
+    print("Structure Spawn Task Started")
     structure_spawn_task.start()
+    print("-------------------")
     
 
 #every 12 hours the shop will reset, create a task to do this
-print("Shop will reset in 12 hours")
 @tasks.loop(hours=5)
 async def shop_reset_task() -> None:
-    await db_manager.clear_shop()
+    print("Rerolling shop...")
     await db_manager.add_shop_items()
-    print("Shop has been reset")
+    print("Shop has been rerolled.")
 
 
 
@@ -179,6 +184,15 @@ async def status_task() -> None:
     
 #create a task to regenerate the twitch credentials and save them to the database, every 5 days
     
+class ReRoll(commands.Bot):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.shop_reset_task = self.loop.create_task(self.shop_reset_task())
+
+    async def shopReRollTime() -> None:
+        reroll_time = shop_reset_task.next_iteration
+        time_remaining = reroll_time - datetime.datetime.now()
+        return time_remaining
 
 
 @bot.event
