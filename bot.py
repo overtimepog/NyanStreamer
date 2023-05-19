@@ -139,7 +139,7 @@ async def structure_spawn_task() -> None:
         structure = random.choice(structureschoices)
         structureid = structure[0]
         structure_name = structure[1]
-        print("Spawned " + {structure_name} + " in " + bot_guild.name)
+        print("Spawned " + structure_name + " in " + bot_guild.name)
         #send the structure
         message = await channel.send(content=f"{structure_name} has Appeared")
             #print(structure_outcomes)
