@@ -20,7 +20,6 @@ from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
 from helpers import battle, checks, db_manager, hunt, mine
-from bot import ReRoll
 
 
 global i
@@ -615,7 +614,14 @@ class Basic(commands.Cog, name="basic"):
         num_pages = (len(shopitems) // 5) + (1 if len(shopitems) % 5 > 0 else 0)
 
         current_page = 0
-        timeRemaining = await ReRoll.shopReRollTime(self)
+
+        # Get the time left from the database
+        time_left = await db_manager.get_timeLeft()
+        # Convert time_left to hours, minutes, and seconds
+        hours, remainder = divmod(time_left, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        # Display the time left to the user
+        # Rest of your code...
 
         # Create a function to generate embeds from a list of items
         async def create_embeds(item_list):
@@ -627,7 +633,7 @@ class Basic(commands.Cog, name="basic"):
                 end_idx = start_idx + 5
                 shop_embed = discord.Embed(
                     title="Shop",
-                    description="This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Time to ReRoll: " + timeRemaining,
+                    description="This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Time to ReRoll: " + f"{hours} hours, {minutes} minutes, {seconds} seconds"
                 )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 

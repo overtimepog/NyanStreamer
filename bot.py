@@ -93,32 +93,6 @@ The config is available using the following code:
 - self.bot.config # In cogs
 """
 bot.config = config
-
-
-
-
-@bot.event
-async def on_ready() -> None:
-    """
-    The code in this even is executed when the bot is ready
-    """
-    print(f"Logged in as {bot.user.name}")
-    print(f"discord.py API version: {discord.__version__}")
-    print(f"Python version: {platform.python_version()}")
-    print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
-    print("-------------------")
-    status_task.start()
-    if config["sync_commands_globally"]:
-        print("Syncing commands globally...")
-        await bot.tree.sync()
-        print("Done syncing commands globally!")
-    print("-------------------")
-    print("Shop Reset Task Started")
-    shop_reset_task.start()
-    print("-------------------")
-    print("Structure Spawn Task Started")
-    structure_spawn_task.start()
-    print("-------------------")
     
 
 #every 12 hours the shop will reset, create a task to do this
@@ -183,17 +157,6 @@ async def status_task() -> None:
     await bot.change_presence(activity=discord.Game(random.choice(statuses)))
     
 #create a task to regenerate the twitch credentials and save them to the database, every 5 days
-    
-class ReRoll(commands.Bot):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.shop_reset_task = self.loop.create_task(self.shop_reset_task())
-
-    async def shopReRollTime() -> None:
-        reroll_time = shop_reset_task.next_iteration
-        time_remaining = reroll_time - datetime.datetime.now()
-        return time_remaining
-
 
 @bot.event
 async def on_message(message: discord.Message) -> None:
@@ -390,25 +353,57 @@ async def load_cogs() -> None:
                 exception = f"{type(e).__name__}: {e}"
                 print(f"Failed to load extension {extension}\n{exception}")
 
-asyncio.run(init_db())
-asyncio.run(load_cogs())
-print("\n" + "---------Basic Items----------")
-asyncio.run(db_manager.add_basic_items())
-print("\n" + "---------Chests----------")
-asyncio.run(db_manager.add_chests())   
-print("\n" + "---------Shop Items----------")
-asyncio.run(db_manager.add_shop_items())
-print("\n" + "---------Enemies----------")
-asyncio.run(db_manager.add_enemies())
-print("\n" + "---------Quests----------")
-asyncio.run(db_manager.add_quests())
-print("\n" + "---------Quests to Board----------")
-asyncio.run(db_manager.add_quests_to_board())
-print("\n" + "---------Structures----------")
-asyncio.run(db_manager.add_structures())
-print("\n" + "---------COPY PASTE ITEMS----------")
-asyncio.run(db_manager.print_items())
-print("\n" + "-------------------")
-#run twitch bot file
-subprocess.Popen([sys.executable, r'twitch.py'])
+@tasks.loop(seconds=1)
+async def decrease_time_left_task() -> None:
+    # Get the current time left
+    time_left = await db_manager.get_timeLeft()
+    # Decrease the time left by 1 second
+    await db_manager.edit_timeLeft(time_left - 1)
+
+async def setup() -> None:
+    await init_db()
+    await load_cogs()
+    print("\n" + "---------Basic Items----------")
+    await db_manager.add_basic_items()
+    print("\n" + "---------Chests----------")
+    await db_manager.add_chests()   
+    print("\n" + "---------Shop Items----------")
+    await db_manager.add_shop_items()
+    print("\n" + "---------Enemies----------")
+    await db_manager.add_enemies()
+    print("\n" + "---------Quests----------")
+    await db_manager.add_quests()
+    print("\n" + "---------Quests to Board----------")
+    await db_manager.add_quests_to_board()
+    print("\n" + "---------Structures----------")
+    await db_manager.add_structures()
+    print("\n" + "---------COPY PASTE ITEMS----------")
+    await db_manager.print_items()
+    print("\n" + "-------------------")
+
+@bot.event
+async def on_ready() -> None:
+    await setup()
+    decrease_time_left_task.start()
+    print(f"Logged in as {bot.user.name}")
+    print(f"discord.py API version: {discord.__version__}")
+    print(f"Python version: {platform.python_version()}")
+    print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
+    print("-------------------")
+    status_task.start()
+    if config["sync_commands_globally"]:
+        print("Syncing commands globally...")
+        await bot.tree.sync()
+        print("Done syncing commands globally!")
+    print("-------------------")
+    print("Shop Reset Task Started")
+    shop_reset_task.start()
+    print("-------------------")
+    print("Structure Spawn Task Started")
+    structure_spawn_task.start()
+    print("-------------------")
+    # Run setup function
+    # Run twitch bot file
+    subprocess.Popen([sys.executable, r'twitch.py'])
+
 bot.run(config["token"])
