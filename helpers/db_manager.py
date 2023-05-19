@@ -873,9 +873,6 @@ async def add_shop_items() -> None:
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
     #add the items to the shop table
     #select 10 random items if there are more than 10 items
-    if len(data) > 10:
-        data = random.sample(data, 10)
-
     for item in data:
         item_id = item[0]
         item_amount = 1
@@ -3926,31 +3923,3 @@ async def get_nameOfThirdDamageDealer(monster_id: str, server_id: int) -> str:
         async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
             result = await cursor.fetchone()
             return result[11] if result is not None else None
-        
-#CREATE TABLE IF NOT EXISTS `timeleft` (
-#  `time` int(11) NOT NULL
-#)
-
-async def get_timeLeft() -> int:
-    """
-    This function will get the time left.
-
-    :return: The time left.
-    """
-    db = DB()
-    async with aiosqlite.connect("database/database.db") as db:
-        async with db.execute("SELECT time FROM timeleft") as cursor:
-            result = await cursor.fetchone()
-            return result[0] if result is not None else 0
-        
-#edit the time left
-async def edit_timeLeft(time: int) -> None:
-    """
-    This function will edit the time left.
-
-    :param time: The new time left.
-    """
-    db = DB()
-    async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("UPDATE timeleft SET time=?", (time,))
-        await db.commit()
