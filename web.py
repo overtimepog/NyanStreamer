@@ -1,7 +1,7 @@
 from flask import Flask, redirect, request, session
 import requests
 import discord
-import helpers.db_manager as db_manager
+from helpers import db_manager
 from bot import bot
 
 app = Flask(__name__)
