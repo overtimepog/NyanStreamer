@@ -2414,69 +2414,6 @@ async def get_enemy_element(enemy_id: int) -> int:
         else:
             return None
 
-#make a request to the twitch api to get the twitch id of the streamer
-async def get_twitch_id(streamer_channel: str) -> int:
-    code = await get_twitchCode()
-
-    headers = {
-    'Authorization': f'Bearer {code}',
-    'Client-Id': 'gp762nuuoqcoxypju8c569th9wz7q5',
-    }
-    def remove_prefix(text, prefix):
-        if text.startswith(prefix):
-            return text[len(prefix):]
-        return text
-
-    if streamer_channel.startswith("https://www.twitch.tv/"):
-        streamer_channel = remove_prefix(streamer_channel, "https://www.twitch.tv/")
-    elif streamer_channel.startswith("https://twitch.tv/"):
-        streamer_channel = remove_prefix(streamer_channel, "https://twitch.tv/")
-    else:
-        streamer_channel = streamer_channel
-    params = {
-        'login': f'{streamer_channel}',
-    }
-
-    async with aiohttp.ClientSession() as session:
-            async with session.get('https://api.twitch.tv/helix/users', params=params, headers=headers) as request:
-                data = await request.json()
-                print(data)
-                twitch_id = data['data'][0]['id']
-                print(twitch_id)
-                return twitch_id
-
-#make a request to the twitch api to get the broadcaster type of the streamer
-async def get_broadcaster_type(streamer_channel: str) -> str:
-    code = await get_twitchCode()
-
-    headers = {
-    'Authorization': f'Bearer {code}',
-    'Client-Id': 'gp762nuuoqcoxypju8c569th9wz7q5',
-    }
-    def remove_prefix(text, prefix):
-        if text.startswith(prefix):
-            return text[len(prefix):]
-        return text
-
-    if streamer_channel.startswith("https://www.twitch.tv/"):
-        streamer_channel = remove_prefix(streamer_channel, "https://www.twitch.tv/")
-    elif streamer_channel.startswith("https://twitch.tv/"):
-        streamer_channel = remove_prefix(streamer_channel, "https://twitch.tv/")
-    else:
-        streamer_channel = streamer_channel
-
-    params = {
-        'login': f'{streamer_channel}',
-    }
-
-    async with aiohttp.ClientSession() as session:
-            async with session.get('https://api.twitch.tv/helix/users', params=params, headers=headers) as request:
-                data = await request.json()
-                print (data)
-                broadcaster_type = data['data'][0]['broadcaster_type']
-                print(broadcaster_type)
-                return broadcaster_type
-
 #update the isStreamer column in the user table to True
 async def update_is_streamer(user_id: int) -> int:
     db = DB()
@@ -2488,9 +2425,6 @@ async def update_is_not_streamer(user_id: int) -> int:
     db = DB()
     await db.execute(f"UPDATE `users` SET `isStreamer` = 0 WHERE user_id = ?", (user_id,))
     return 1
-
-
-             
 
 #function to add a new streamer and their server and their ID to the database streamer table, if the streamer already exists, it will say that the streamer already exists
 async def add_streamer(streamer_channel: str, user_id: int, emotePrefix: str, twitch_id: int, broadcaster_type: str) -> int:

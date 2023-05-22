@@ -40,90 +40,6 @@ class Basic(commands.Cog, name="basic"):
 
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
     #registering a streamer will also add them to the database user table
-    @commands.hybrid_command(
-        name="streamer",
-        description="This command will add a new streamer to the database.",
-    )
-    async def streamer(self, ctx: Context, itemprefix: str):
-        """
-        This command will add a new streamer to the database.
-
-        :param ctx: The context of the command.
-        :param itemprefix: The prefix that the streamer wants to be used with thier custom items.
-        """
-
-#Done, fix this so it works with the the users connected twitch account
-
-        userprofile = await db_manager.profile(ctx.author.id)
-        twitch_id = userprofile[14]
-        twitch_username = userprofile[15]
-        if twitch_id == None or twitch_username == None or twitch_id == "None" or twitch_username == "None":
-            await ctx.send("You must be connected to a twitch account to use this command.")
-            return
-
-        broadcaster_cast_type = await db_manager.get_broadcaster_type(twitch_username)
-        user_id = ctx.author.id
-        #check if the streamer already exists in the database
-        if await db_manager.is_streamer(user_id):
-            #this code fucking sucks, ive spent way too much time and now I have to rewrite it all because I cant figure out how to make it work, yay
-            await ctx.send("this person is already a streamer. :)")
-            return
-        if broadcaster_cast_type == "partner":
-            #if the user already exists in the database, update their streamer status to true
-            if await db_manager.check_user(user_id):
-                await db_manager.update_is_streamer(user_id)
-                await db_manager.add_streamer(twitch_username, user_id, itemprefix, twitch_id, broadcaster_cast_type)
-                await ctx.send("Thanks for registering as a streamer, as a Partner you get access to more custom item slots, and you can use the /give command to give items to your viewers, items will also be dropped to viewers in your streams.")
-                return
-            await db_manager.add_streamer(twitch_username, user_id, itemprefix, twitch_id, broadcaster_cast_type)
-            await db_manager.add_user(user_id, True)
-            #await ctx.send("Streamer added to the database.")
-            return
-        elif broadcaster_cast_type == "affiliate":
-            #if the user already exists in the database, update their streamer status to true
-            if await db_manager.check_user(user_id):
-                await db_manager.update_is_streamer(user_id)
-                await db_manager.add_streamer(twitch_username, user_id, itemprefix, twitch_id, broadcaster_cast_type)
-                await ctx.send("Thanks for registering as a streamer, as an Affiliate you get to create custom items and they will be dropped in your streams.")
-                return
-            await db_manager.add_streamer(twitch_username, user_id, itemprefix, twitch_id, broadcaster_cast_type)
-            await db_manager.add_user(user_id, True)
-            #await ctx.send("Streamer added to the database.")
-            return
-        elif broadcaster_cast_type == "":
-            #await db_manager.add_user(user_id, False)
-            await ctx.send("You must be a twitch affiliate or partner to use this command.")
-            return
-    #if an error is raised, this will be called
-    @streamer.error
-    async def streamer_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please enter a channel name and an emoteprefix.")
-            return
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Please enter a valid channel name and an emoteprefix.")
-            return
-
-
-    #command to remove a streamer from the database streamer table, using the remove_streamer function from helpers\db_manager.py
-    @commands.hybrid_command(
-        name="unregister",
-        description="This command will remove a streamer from the database.",
-    )
-    async def unregister(self, ctx: Context):
-        """
-        This command will remove a streamer from the database.
-
-        :param ctx: The context in which the command was called.
-        :param streamer_channel: The streamer's twitch channel.
-        """
-        user_id = ctx.author.id
-        await db_manager.remove_streamer(user_id)
-        #set the user's streamer status to false
-        await db_manager.update_is_not_streamer(user_id)
-        #await db_manager.remove_user(user_id)
-        await ctx.send("Streamer removed from the database.")   
-
     #command to veiw all streamers in the database streamer table, using the view_streamers function from helpers\db_manager.py
     @commands.hybrid_command(
         name="viewstreamers",
@@ -1765,7 +1681,6 @@ class Basic(commands.Cog, name="basic"):
         await battle.deathbattle_monster(ctx, user_id, author_name, monsterid, monsterName)
     
         
-    #command to connect their discord account to their twitch account
     @commands.hybrid_command(
         name="connect",
         description="Connect your twitch account to your discord account!",
@@ -1786,39 +1701,9 @@ class Basic(commands.Cog, name="basic"):
                 self.url = url
                 self.add_item(discord.ui.Button(label="Register With Twitch!", url=self.url))
         #send the embed to the user in DMs
-        #get the guild object from the guild ID
-        guild = self.bot.get_guild(1070882685855211641)
-        #create a new channel in the guild
-        channel = await guild.create_text_channel("twitch-auth")
-        #create a webhook in the channel
-        webhook = await channel.create_webhook(name="twitch-auth")
-        #get the webhook url
-        webhook_url = webhook.url
         await ctx.send("Check your DMs :)")
-        await ctx.author.send(embed=embed, view=MyView(f"https://dankstreamer.lol/webhook?url={webhook_url}")) # Send a message with our View class that contains the button
-        #send the users discord ID to the webhook 
-        #webhook_url = "https://discord.com/api/webhooks/1069631304196436029/4kR9H23BJ5f14U1U3ZuTXEo9vhoBC5zBN9E1j1nz7etj1pHf2Vq14eiE1aWb50JpYDG3"
-        webhook = SyncWebhook.from_url(webhook_url)
-        webhook.send(f"DISCORD ID: {ctx.author.id}")
-
-        #WATCH THIS VIDEO FOR HELP https://www.youtube.com/watch?v=Ip0M_yxUwfg&ab_channel=Glowstik
-            
-        ##put the twitch name in lowercase
-        #twitch_name = twitch_name.lower()
-        ##get the streamerID from the database
-        #twitchID = await db_manager.get_twitch_id(twitch_name)
-        #print(twitchID)
-        ##are they already connected?
-        #await db_manager.connect_twitch(ctx.author.id, twitchID)
-        #isConnected = await db_manager.is_connected(ctx.author.id)
-        #print(isConnected)
-        #exists = await db_manager.twitch_exists(twitchID)
-        ##check if the streamerID is in the database
-        #if exists == True:
-        #    await ctx.send(f"This twitch account is already connected to a discord account, or does not exist!")
-        #elif exists == False:
-        #    await ctx.send(f"Your twitch account is now connected to your discord account!, You can now earn items and money by watching streamers connected to DankStreamer!")
-
+        await ctx.author.send(embed=embed, view=MyView(f"https://dankstreamer.lol/webhook?discord_id={ctx.author.id}")) # Send a message with our View class that contains the button
+        
 #disconnect command
     @commands.hybrid_command(
         name="disconnect",
