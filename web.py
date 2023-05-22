@@ -3,6 +3,7 @@ import requests
 import discord
 from helpers import db_manager
 from bot import bot
+from waitress import serve
 
 app = Flask(__name__)
 app.secret_key = 'your secret key'  # replace with your secret key
@@ -59,3 +60,6 @@ def callback():
     print(f"Connected {discord_id} to {user['id']}!")
 
     return redirect("https://dankstreamer.lol/thanks")
+
+if __name__ == "__main__":
+    serve(app, host='0.0.0.0', port=5000, url_scheme='https')
