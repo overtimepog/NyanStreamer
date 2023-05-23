@@ -280,13 +280,6 @@ async def load_cogs() -> None:
                 exception = f"{type(e).__name__}: {e}"
                 print(f"Failed to load extension {extension}\n{exception}")
 
-@tasks.loop(seconds=1)
-async def decrease_time_left_task() -> None:
-    # Get the current time left
-    time_left = await db_manager.get_timeLeft()
-    # Decrease the time left by 1 second
-    await db_manager.edit_timeLeft(time_left - 1)
-
 async def setup() -> None:
     await init_db()
     await load_cogs()
@@ -328,6 +321,7 @@ async def on_ready() -> None:
     # Run setup function
     # Run twitch bot file
     subprocess.Popen([sys.executable, r'twitch.py'])
+    print("-------------------")
     subprocess.Popen([sys.executable, r'web.py'])
 
 bot.run(config["token"])
