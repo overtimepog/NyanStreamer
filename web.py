@@ -11,7 +11,8 @@ import os
 import sys
 import json
 from discord.ext.commands import Bot, Context
-import bot
+from discord import Intents
+from discord.ext import commands, tasks
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key='your secret key')  # replace with your secret key
@@ -23,6 +24,12 @@ if not os.path.isfile("config.json"):
 else:
     with open("config.json") as file:
         config = json.load(file)
+
+Intents.message_content = True
+intents = discord.Intents.all()
+
+bot = Bot(command_prefix=commands.when_mentioned_or(
+    config["prefix"]), intents=intents, help_command=None)
 
 @app.get("/")
 async def index(request: Request):
@@ -75,9 +82,11 @@ async def callback(request: Request):
 
     embed = discord.Embed(title="Connected!", description=embed_description, color=0x00ff00)
     embed.set_footer(text=f"Discord ID: {discord_id} | Twitch ID: {user['id']}")
-    bot.bot.get_user(int(discord_id)).send(embed=embed)
+    await bot.get_user(int(discord_id)).send(embed=embed)
 
     return RedirectResponse(url="https://dankstreamer.lol/thanks")
+
+bot.run(config["token"])
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
