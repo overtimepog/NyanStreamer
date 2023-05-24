@@ -321,7 +321,5 @@ async def on_ready() -> None:
     # Run setup function
     # Run twitch bot file
     subprocess.Popen([sys.executable, r'twitch.py'])
-    print("-------------------")
-    subprocess.Popen([sys.executable, r'web.py'])
 
 bot.run(config["token"])
