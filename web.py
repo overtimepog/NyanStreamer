@@ -74,7 +74,7 @@ async def callback(request: Request):
     embed = discord.Embed(title="Connected!", description=embed_description, color=0x00ff00)
     embed.set_footer(text=f"Discord ID: {discord_id} | Twitch ID: {user['id']}")
     intents = discord.Intents.all()
-    client = discord.Client(intents)
+    client = discord.Client(intents=intents)
     client.start(config['token'])
     client.get_user(int(discord_id)).send(embed=embed)
     print(f"Connected {discord_id} to {user['id']}!")
