@@ -65,6 +65,7 @@ async def callback(request: Request):
     if broadcaster_type in ["affiliate", "partner"]:
         emotePrefix = user['login'][:4]
         await db_manager.add_streamer(user['login'], discord_id, emotePrefix, user['id'], broadcaster_type)
+        await db_manager.update_is_streamer(discord_id)
         embed_description = "Your accounts have been connected! You have been registered as a streamer. Your generated prefix is: " + emotePrefix
     else:
         embed_description = "Your accounts have been connected!"
