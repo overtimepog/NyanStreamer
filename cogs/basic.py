@@ -215,11 +215,14 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.message.author.id
         #get the streamer prefix
         streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
+        print(streamer_prefix)
         #print(streamer_prefix)
         #get streamer broadcast type
         channel = await db_manager.get_streamer_channel_from_user_id(user_id)
+        print(channel)
         #print(channel)
-        broadcast_type = await db_manager.get_broadcaster_type(channel)
+        broadcast_type = await db_manager.get_broadcaster_type_from_user_id(user_id)
+        print(broadcast_type)
         #check if the item exists in the database
         items = await db_manager.view_streamer_items(channel)
         for i in items:

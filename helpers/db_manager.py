@@ -2919,6 +2919,18 @@ async def get_streamer_channel_from_user_id(user_id: int) -> str:
         async with db.execute("SELECT * FROM streamer WHERE user_id=?", (user_id,)) as cursor:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
+        
+#get the broadcaster type
+async def get_broadcaster_type_from_user_id(user_id: int) -> str:
+    """
+    This function will get the broadcaster type from the streamer table.
+
+    :param user_id: The ID of the user that the broadcaster type should be gotten from.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer WHERE user_id=?", (user_id,)) as cursor:
+            result = await cursor.fetchone()
+            return result[4] if result is not None else 0
             
 #get streamerPrefix from the streamer table using the streamers user ID
 async def get_streamerPrefix_with_user_id(user_id: int) -> str:
