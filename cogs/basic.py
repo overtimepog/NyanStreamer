@@ -974,7 +974,7 @@ class Basic(commands.Cog, name="basic"):
                     end_idx = start_idx + 5
                     inventory_embed = discord.Embed(
                         title="Inventory",
-                        description=f"{ctx.author.name}'s Inventory \n",
+                        description=f"{user.name}'s Inventory \n",
                     )
                     inventory_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -1101,7 +1101,7 @@ class Basic(commands.Cog, name="basic"):
 
                 for i, pet in enumerate(pet_list):
                     pet_embed = discord.Embed(
-                        title=f"{ctx.author.name}'s {pet[2]}",
+                        title=f"{user.name}'s {pet[2]}",
                         color=pet_color
                     )
                     pet_rarity = pet[5]
