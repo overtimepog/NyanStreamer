@@ -6,7 +6,6 @@ This is a template to create your own discord bot in python.
 Version: 5.4
 """
 
-import asyncio
 import platform
 import random
 
@@ -15,7 +14,18 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-from discord.ext.commands import Paginator
+import asyncio
+import datetime
+import json
+import random
+import re
+import requests
+from discord import Webhook, SyncWebhook
+import aiohttp
+import discord
+from discord import Embed, app_commands
+from discord.ext import commands
+from discord.ext.commands import Context, has_permissions
 
 from helpers import checks
 
@@ -24,91 +34,80 @@ class General(commands.Cog, name="general"):
     def __init__(self, bot):
         self.bot = bot
 
-        
-
     @commands.hybrid_command(
         name="help",
         description="List all commands the bot has loaded."
     )
     @checks.not_blacklisted()
-    async def help(self, context: commands.Context):
-        class HelpView(discord.ui.View):
-            def __init__(self, embeds):
-                super().__init__(timeout=None)  # Ensures the buttons won't get disabled
-                self.embeds = embeds
-                self.current_page = 0
-
-            @discord.ui.button(label="<<", style=discord.ButtonStyle.green)
-            async def first_page(self, button: discord.ui.Button, interaction: discord.Interaction):
-                self.current_page = 0
-                await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
-
-            @discord.ui.button(label="<", style=discord.ButtonStyle.green)
-            async def previous_page(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if self.current_page > 0:
-                    self.current_page -= 1
-                    await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
-
-            @discord.ui.button(label=">", style=discord.ButtonStyle.green)
-            async def next_page(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if self.current_page < len(self.embeds) - 1:
-                    self.current_page += 1
-                    await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
-
-            @discord.ui.button(label=">>", style=discord.ButtonStyle.green)
-            async def last_page(self, button: discord.ui.Button, interaction: discord.Interaction):
-                self.current_page = len(self.embeds) - 1
-                await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
-
+    async def help(self, context: Context) -> None:
         prefix = self.bot.config["prefix"]
-        
-        # Define a Paginator instance
-        pages = Paginator(prefix='', suffix='', max_size=2000)
-        
+
+        # Get all cogs and their commands
+        cogs_data = []
         for i in self.bot.cogs:
             cog = self.bot.get_cog(i.lower())
             commands = cog.get_commands()
-            data = []
             for command in commands:
                 description = command.description.partition('\n')[0]
-                data.append(f"{prefix}{command.name} - {description}")
-            help_text = "\n".join(data)
-            
-            # Add the text for this cog to the paginator
-            pages.add_line(f"**{i.capitalize()}**")
-            pages.add_line(f'```{help_text}```\n', empty=False)
-    
-        # The index of the current page
-        page_num = 0
-        
-        # Send the first page
-        message = await context.send(pages[page_num])
-        
-        # Add reactions to the message
-        await message.add_reaction('◀')
-        await message.add_reaction('▶')
-    
-        def check(reaction, user):
-            return user == context.message.author and str(reaction.emoji) in ['◀', '▶']
-        
-        while True:
-            try:
-                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
-                
-                if str(reaction.emoji) == '▶' and page_num != len(pages) - 1:
-                    page_num += 1
-                    await message.edit(content=pages[page_num])
-                    await message.remove_reaction(reaction, user)
-    
-                elif str(reaction.emoji) == '◀' and page_num > 0:
-                    page_num -= 1
-                    await message.edit(content=pages[page_num])
-                    await message.remove_reaction(reaction, user)
-            
-            except asyncio.TimeoutError:
-                await message.clear_reactions()
-                break
+                cogs_data.append((i, f"{prefix}{command.name}", description))
 
+        # Calculate number of pages based on number of cogs
+        num_pages = (len(cogs_data) // 5) + (1 if len(cogs_data) % 5 > 0 else 0)
+
+        # Create a function to generate embeds from a list of cogs
+        async def create_embeds(cogs_list):
+            embeds = []
+            for i in range(num_pages):
+                start_idx = i * 5
+                end_idx = start_idx + 5
+                help_embed = discord.Embed(title="Help", description="List of available commands:", color=0x9C84EF)
+                help_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+
+                for cog in cogs_list[start_idx:end_idx]:
+                    cog_name, command_name, command_description = cog
+                    help_embed.add_field(name=cog_name.capitalize(), value=f'```{command_name} - {command_description}```', inline=False)
+
+                embeds.append(help_embed)
+
+            return embeds
+
+        # Create a list of embeds with 5 cogs per embed
+        embeds = await create_embeds(cogs_data)
+
+        class HelpButton(discord.ui.View):
+            def __init__(self, current_page, embeds, **kwargs):
+                super().__init__(**kwargs)
+                self.current_page = current_page
+                self.embeds = embeds
+
+            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = 0
+                await interaction.response.defer()
+                await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page > 0:
+                    self.current_page -= 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page < len(self.embeds) - 1:
+                    self.current_page += 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = len(self.embeds) - 1
+                await interaction.response.defer()
+                await interaction.message.edit(embed=self.embeds[self.current_page])
+
+        view = HelpButton(current_page=0, embeds=embeds)
+        await context.send(embed=embeds[0], view=view)
 
     @commands.hybrid_command(
         name="botinfo",
