@@ -2537,12 +2537,12 @@ class Basic(commands.Cog, name="basic"):
                             for unique_drop in unique_drops:
                                 item_emote = await db_manager.get_basic_item_emote(unique_drop)
                                 item_name = await db_manager.get_basic_item_name(unique_drop)
-                                drop_info_list.append(f"{item_emote} {item_name}")
+                                drop_info_list.append(f"\t{item_emote} {item_name}")
                             drop_info = "\n".join(drop_info_list)
                         else:
                             drop_info = "No Drops"
 
-                        beastiary_embed.add_field(name=f"{enemy_emote} {enemy_name}", value=f"\n{drop_info} \n", inline=False)
+                        beastiary_embed.add_field(name=f"{enemy_emote} {enemy_name}", value=f"Drops: \n{drop_info}\n", inline=False)
 
                     embeds.append(beastiary_embed)
 
