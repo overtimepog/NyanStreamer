@@ -20,11 +20,15 @@ import aiosqlite
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
+from discord.ext.commands import Context, has_permissions
+
+from helpers import battle, checks, db_manager, hunt, mine
 
 import exceptions
 from helpers import db_manager, explore
 import twitch
 
+cash = "<:cash:1077573941515792384>"
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
 else:
@@ -96,9 +100,6 @@ bot.config = config
     
 
 #every 12 hours the shop will reset, create a task to do this
-
-
-
 #every 5 hours a structure will spawn in the channel named "dankstreamer-structures"
 print("A structure will spawn every 1 hour")
 @tasks.loop(minutes=90)
@@ -147,10 +148,12 @@ async def structure_spawn_task() -> None:
                 self.current_page = 0
                 await interaction.response.defer()
                 #invoke the explore command
-                await explore.explore(self, ctx, structureid)
+                message = await interaction.original_response()
+                ctx = await bot.get_context(message)
+                await ctx.invoke(bot.get_command("explore"))
 
-        message = await channel.send(embed=embed, view=ExploreButton())
-        ctx = await bot.get_context(message)
+
+        await channel.send(embed=embed, view=ExploreButton())
         await db_manager.edit_current_structure(bot_guild.id, structureid)
 
 
