@@ -147,8 +147,8 @@
                 "item_drop_chance": 0.5
             },
             {
-                "item_id": "silver_amulet",
-                "item_amount": 2,
+                "item_id": "ectoplasm",
+                "item_amount": 10,
                 "item_drop_chance": 0.25
             }
         ],
@@ -171,7 +171,7 @@
         "enemy_name": "Wolf",
         "enemy_health": 20,
         "enemy_damage": "4-6",
-        "enemy_emoji": "<a:Wolf:123456789012345678>",
+        "enemy_emoji": "<a:Wolf:1111423356697333840>",
         "enemy_description": "A fierce wolf with sharp teeth and claws.",
         "enemy_rarity": "Uncommon",
         "enemy_type": "Animal",
@@ -254,7 +254,7 @@
         "enemy_name": "Demon",
         "enemy_health": 150,
         "enemy_damage": "15-20",
-        "enemy_emoji": "<a:Demon:1078761460211130428>",
+        "enemy_emoji": "<a:demon:1111436174528098315>",
         "enemy_description": "A powerful demon from the underworld. It's very dangerous.",
         "enemy_rarity": "Epic",
         "enemy_type": "Demon",
@@ -319,7 +319,7 @@
         "enemy_name": "Succubus",
         "enemy_health": 100,
         "enemy_damage": "10-15",
-        "enemy_emoji": "<a:Succubus:1078761460211130428>",
+        "enemy_emoji": "<a:succ:1111436450202918962>",
         "enemy_description": "A seductive demon that uses charm to weaken its enemies.",
         "enemy_rarity": "Rare",
         "enemy_type": "Demon",
