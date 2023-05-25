@@ -25,7 +25,7 @@ from discord.ext.commands import Context, has_permissions
 from helpers import battle, checks, db_manager, hunt, mine
 
 import exceptions
-from helpers import db_manager, explore
+from helpers import db_manager
 import twitch
 
 cash = "<:cash:1077573941515792384>"
