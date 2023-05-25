@@ -6,6 +6,7 @@ This is a template to create your own discord bot in python.
 Version: 5.4
 """
 
+import asyncio
 import platform
 import random
 
@@ -14,6 +15,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
+from discord.ext.commands import Paginator
 
 from helpers import checks
 
@@ -57,24 +59,56 @@ class General(commands.Cog, name="general"):
             async def last_page(self, button: discord.ui.Button, interaction: discord.Interaction):
                 self.current_page = len(self.embeds) - 1
                 await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
-        prefix = self.bot.command_prefix
-        embeds = []
+
+        prefix = self.bot.config["prefix"]
+        
+        # Define a Paginator instance
+        pages = Paginator(prefix='', suffix='', max_size=2000)
+        
         for i in self.bot.cogs:
-            cog = self.bot.get_cog(i)
-            if cog is None:
-                continue
+            cog = self.bot.get_cog(i.lower())
             commands = cog.get_commands()
             data = []
             for command in commands:
-                if command.hidden:
-                    continue
                 description = command.description.partition('\n')[0]
                 data.append(f"{prefix}{command.name} - {description}")
             help_text = "\n".join(data)
-            embed = discord.Embed(title=f"{i} Commands", description=f'```{help_text}```', color=0x9C84EF)
-            embeds.append(embed)
-        view = HelpView(embeds)
-        await context.send(embed=embeds[0], view=view)
+            
+            # Add the text for this cog to the paginator
+            pages.add_line(f"**{i.capitalize()}**")
+            pages.add_line(f'```{help_text}```\n', empty=False)
+    
+        # The index of the current page
+        page_num = 0
+        
+        # Send the first page
+        message = await context.send(pages[page_num])
+        
+        # Add reactions to the message
+        await message.add_reaction('◀')
+        await message.add_reaction('▶')
+    
+        def check(reaction, user):
+            return user == context.message.author and str(reaction.emoji) in ['◀', '▶']
+        
+        while True:
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                
+                if str(reaction.emoji) == '▶' and page_num != len(pages) - 1:
+                    page_num += 1
+                    await message.edit(content=pages[page_num])
+                    await message.remove_reaction(reaction, user)
+    
+                elif str(reaction.emoji) == '◀' and page_num > 0:
+                    page_num -= 1
+                    await message.edit(content=pages[page_num])
+                    await message.remove_reaction(reaction, user)
+            
+            except asyncio.TimeoutError:
+                await message.clear_reactions()
+                break
+
 
     @commands.hybrid_command(
         name="botinfo",
