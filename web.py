@@ -66,18 +66,18 @@ async def callback(request: Request):
         emotePrefix = user['login'][:4]
         await db_manager.add_streamer(user['login'], discord_id, emotePrefix, user['id'], broadcaster_type)
         await db_manager.update_is_streamer(discord_id)
-        embed_description = "Your accounts have been connected! You have been registered as a streamer. Your generated prefix is: " + emotePrefix
+        description = "Your accounts have been connected! You have been registered as a streamer!"
     else:
-        embed_description = "Your accounts have been connected!"
-
-    embed = discord.Embed(title="Connected!", description=embed_description, color=0x00ff00)
-    embed.set_footer(text=f"Discord ID: {discord_id} | Twitch ID: {user['id']}")
+        description = "Your accounts have been connected!"
 
     return templates.TemplateResponse("thanks.html", {
         "request": request, 
         "discord_id": discord_id,
         "twitch_id": user['id'],
-        "description": embed_description
+        "description": description,
+        "broadcaster_type": broadcaster_type,
+        "twitch_name": user['login'],
+        "prefix": emotePrefix
     })
 
 
