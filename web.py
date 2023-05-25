@@ -60,7 +60,9 @@ async def callback(request: Request):
 
     await db_manager.edit_twitchCreds(access_token)  
     await db_manager.connect_twitch_id(discord_id, user['id'])  
-    await db_manager.connect_twitch_name(discord_id, user['login'])  
+    print("connected twitch id")
+    await db_manager.connect_twitch_name(discord_id, user['login'])
+    print("connected twitch name")
 
     if broadcaster_type in ["affiliate", "partner"]:
         emotePrefix = user['login'][:4]
