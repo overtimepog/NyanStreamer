@@ -620,16 +620,6 @@
                     "outcome_xp": 30
                 },
                 {
-                    "structure_quote": "You've been hit by a burst of flame and lost some health!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.15,
-                    "outcome_type": "health_loss",
-                    "outcome_output": "",
-                    "outcome_amount": 30,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
                     "structure_quote": "You've encountered the legendary Flamewing!",
                     "structure_state": "boss",
                     "outcome_chance": 0.05,
@@ -638,6 +628,36 @@
                     "outcome_amount": 0,
                     "outcome_money": 0,
                     "outcome_xp": 50
+                },
+                {
+                    "structure_quote": "You've found a stash of rare gems in a hidden compartment!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "item_gain",
+                    "outcome_output": "gem",
+                    "outcome_amount": 10,
+                    "outcome_money": 0,
+                    "outcome_xp": 20
+                },
+                {
+                    "structure_quote": "You've discovered a hidden cache of gold!",
+                    "structure_state": "success",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "money_gain",
+                    "outcome_output": "gold",
+                    "outcome_amount": 300,
+                    "outcome_money": 0,
+                    "outcome_xp": 20
+                },
+                {
+                    "structure_quote": "You've stumbled into a molten river and suffered severe burns!",
+                    "structure_state": "loss",
+                    "outcome_chance": 0.1,
+                    "outcome_type": "health_loss",
+                    "outcome_output": "",
+                    "outcome_amount": 40,
+                    "outcome_money": 0,
+                    "outcome_xp": 5
                 }
             ]
         },

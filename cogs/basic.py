@@ -1988,7 +1988,11 @@ class Basic(commands.Cog, name="basic"):
             
             
     #explore command
-    @commands.hybrid_command()
+    @commands.hybrid_command(
+            name="explore",
+            description="Explore a structure in the current channel.",
+            usage="explore <structure>",
+    )
     #command cooldown of 5 minutes
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def explore(self, ctx: Context, structure: str):

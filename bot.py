@@ -139,20 +139,8 @@ async def structure_spawn_task() -> None:
         #creare an embed to show the structure info
         embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}", color=0x00ff00)
         embed.set_image(url=f"{structure_image}")
-
-        class ExploreButton(discord.ui.View):
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
-            @discord.ui.button(label="Explore", style=discord.ButtonStyle.green, row=1)
-            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = 0
-                await interaction.response.defer()
-                #invoke the explore command
-                message = await interaction.original_response()
-                ctx = await bot.get_context(message)
-                await ctx.invoke(bot.get_command("explore"), structure=structureid)
-
-        await channel.send(embed=embed, view=ExploreButton())
+        embed.set_footer(f"/explore {structureid}")
+        await channel.send(embed=embed)
         await db_manager.edit_current_structure(bot_guild.id, structureid)
 
 
