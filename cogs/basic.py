@@ -2616,12 +2616,13 @@ class Basic(commands.Cog, name="basic"):
                 pet_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
                 for pet in pet_list[start_idx:end_idx]:
-                    pet_id = pet[1]
-                    pet_name = pet[2]
-                    pet_price = pet[3]
-                    pet_emoji = pet[4]
-                    pet_rarity = pet[5]
-                    pet_effect = pet[18]
+                    pet_id = pet[0] #id
+                    pet_name = pet[1] #name
+                    pet_price = pet[2] #price
+                    pet_emoji = pet[3] #emoji
+                    pet_rarity = pet[4] #rarity
+                    pet_type = pet[5] #emoji
+                    pet_effect = pet[17]
 
                     pet_embed.add_field(name=f"{pet_emoji}{pet_name} (`{pet_id}`)", value=f'**Effect: {pet_effect}** \n Price: `{pet_price}` \n Rarity: `{pet_rarity}` \n', inline=False)
 
