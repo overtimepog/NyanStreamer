@@ -62,7 +62,7 @@ class TwitchBot(commands.Bot):
         if ctx.author.is_mod:
             #get the viewers from the channel
             channelName = TwitchBot.get_channel(self, ctx.channel.name)
-            twitchID = await db_manager.get_twitch_id(ctx.channel.name)
+            twitchID = await db_manager.get_twitch_id_of_channel(channelName)
             print(channelName)
             channelName = str(channelName)
             #remove the <Channel name: from the channel name
@@ -87,7 +87,7 @@ class TwitchBot(commands.Bot):
             #get the item from the database
             items = await db_manager.get_all_streamer_items(twitchID)
             basic_items = db_manager.get_all_basic_items()
-            userTwitchID = await db_manager.get_twitch_id(randomViewer)
+            userTwitchID = await db_manager.get_twitch_id_of_channel(randomViewer)
             isConnected = await db_manager.is_twitch_connected(userTwitchID)
             if isConnected == True:
                 #get the discord id of the random user

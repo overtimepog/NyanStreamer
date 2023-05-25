@@ -2442,6 +2442,21 @@ async def add_streamer(streamer_channel: str, user_id: int, emotePrefix: str, tw
         async with rows as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
+        
+#get_twitch_id_of_channel
+async def get_twitch_id_of_channel(streamer_channel: str) -> int:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,), fetch="one")
+        if data is not None:
+            return data[3]
+        else:
+            #get it from the user table
+            data = await db.execute(f"SELECT * FROM `users` WHERE twitch_name = ?", (streamer_channel,), fetch="one")
+            if data is not None:
+                return data[2]
+            else:
+                return None
+
    
 #function to remove a streamer from the database streamer table using the streamers user ID
 async def remove_streamer(user_id: int) -> int:
