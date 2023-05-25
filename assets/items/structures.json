@@ -513,7 +513,7 @@
                 {
                     "structure_quote": "You've stumbled into a hidden chamber and found a hoard of spectral gold!",
                     "structure_state": "success",
-                    "outcome_chance": 0.2,
+                    "outcome_chance": 0.75,
                     "outcome_type": "money_gain",
                     "outcome_output": "gold",
                     "outcome_amount": 200,
@@ -533,7 +533,7 @@
                 {
                     "structure_quote": "You Encountered a lone Hell Hound wandering the Domain!",
                     "structure_state": "loss",
-                    "outcome_chance": 0.1,
+                    "outcome_chance": 0.3,
                     "outcome_type": "spawn",
                     "outcome_output": "hell_hound",
                     "outcome_amount": 0,
@@ -543,7 +543,7 @@
                 {
                     "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
                     "structure_state": "boss",
-                    "outcome_chance": 0.05,
+                    "outcome_chance": 0.1,
                     "outcome_type": "spawn",
                     "outcome_output": "death",
                     "outcome_amount": 0,
@@ -622,7 +622,7 @@
                 {
                     "structure_quote": "You've encountered the legendary Flamewing!",
                     "structure_state": "boss",
-                    "outcome_chance": 0.05,
+                    "outcome_chance": 0.1,
                     "outcome_type": "spawn",
                     "outcome_output": "flamewing",
                     "outcome_amount": 0,
@@ -632,17 +632,17 @@
                 {
                     "structure_quote": "You've found a stash of rare gems in a hidden compartment!",
                     "structure_state": "success",
-                    "outcome_chance": 0.1,
+                    "outcome_chance": 0.75,
                     "outcome_type": "item_gain",
-                    "outcome_output": "gem",
-                    "outcome_amount": 10,
+                    "outcome_output": "gold",
+                    "outcome_amount": 2,
                     "outcome_money": 0,
                     "outcome_xp": 20
                 },
                 {
                     "structure_quote": "You've discovered a hidden cache of gold!",
                     "structure_state": "success",
-                    "outcome_chance": 0.1,
+                    "outcome_chance": 0.3,
                     "outcome_type": "money_gain",
                     "outcome_output": "gold",
                     "outcome_amount": 300,

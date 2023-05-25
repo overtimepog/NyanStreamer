@@ -2081,7 +2081,11 @@ class Basic(commands.Cog, name="basic"):
             try:
                 item = random.choice(highchanceitems)
             except(IndexError):
-                item = random.choice(midchanceitems)
+                try:
+                    item = random.choice(midchanceitems)
+                except(IndexError):
+                    item = random.choice(lowchanceitems)
+
         
         #get the info of the item
         outcome_quote = item[0]
