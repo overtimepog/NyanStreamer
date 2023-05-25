@@ -125,7 +125,7 @@ async def structure_spawn_task() -> None:
         structure_name = structure[1]
         print("Spawned " + structure_name + " in " + bot_guild.name)
         #send the structure
-        message = await channel.send(content=f"{structure_name} has Appeared")
+        #message = await channel.send(content=f"{structure_name} has Appeared")
             #print(structure_outcomes)
         #get the strucure info using the db_manager
         structure_info = await db_manager.get_structure(structureid)
@@ -147,9 +147,10 @@ async def structure_spawn_task() -> None:
                 self.current_page = 0
                 await interaction.response.defer()
                 #invoke the explore command
-                await explore.explore(self, interaction, structureid)
+                await explore.explore(self, ctx, structureid)
 
-        await channel.send(embed=embed, view=ExploreButton())
+        message = await channel.send(embed=embed, view=ExploreButton())
+        ctx = await bot.get_context(message)
         await db_manager.edit_current_structure(bot_guild.id, structureid)
 
 
