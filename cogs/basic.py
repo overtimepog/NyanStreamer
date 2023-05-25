@@ -2500,6 +2500,7 @@ class Basic(commands.Cog, name="basic"):
         description="see all the pets",
     )
     async def petview(self, ctx):
+        pass
         
 
 
