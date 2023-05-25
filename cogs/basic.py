@@ -2542,7 +2542,7 @@ class Basic(commands.Cog, name="basic"):
                         else:
                             drop_info = "No Drops"
 
-                        beastiary_embed.add_field(name=f"{enemy_emote} {enemy_name}", value=f"Drops: \n{drop_info}\n", inline=False)
+                        beastiary_embed.add_field(name=f" \n {enemy_emote} {enemy_name} ({enemy_id})", value=f"\n{drop_info}\n", inline=False)
 
                     embeds.append(beastiary_embed)
 
