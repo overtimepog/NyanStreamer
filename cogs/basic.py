@@ -884,7 +884,7 @@ class Basic(commands.Cog, name="basic"):
         #convert the xp needed to a string
         xp_needed = str(xp_needed)
         user_items = await db_manager.view_inventory(user_id)
-        embed = discord.Embed(title="Profile", description=f"{user.mention}'s Profile.", color=0x00ff00)
+        embed = discord.Embed(title="Profile", description=f"{user.mention}'s Profile.")
         if user_health == 0:
             embed.add_field(name="Health", value=f"{user_health} (Dead)", inline=True)
         else:
@@ -1202,32 +1202,10 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.add_money(user_id, 200)
             await db_manager.add_item_to_inventory(user_id, "iron_sword", 1)
             await db_manager.add_item_to_inventory(user_id, "huntingbow", 1)
+            await db_manager.add_item_to_inventory(user_id, "pickaxe", 1)
             await ctx.send(f"You have started your Journey, Welcome {ctx.message.author.name} to **Dank Streamer**.")
         else:
             await ctx.send("You have already started your journey.")
-            
-#get the quotes of a specific enemy
-    @commands.hybrid_command(
-        name="quotes",
-        description="This command will view the quotes of a specific enemy.",
-    )
-    async def quotes(self, ctx: Context, enemy: str):
-        """
-        This command will view the quotes of a specific enemy.
-
-        :param ctx: The context in which the command was called.
-        :param enemy: The enemy that you want to view the quotes of.
-        """
-        quotes = await db_manager.get_enemy_quotes(enemy)
-        if quotes == None or quotes == []:
-            await ctx.send("That enemy doesn't have any quotes.")
-        else:
-            embed = discord.Embed(title="Quotes", description=f"{enemy}'s Quotes.", color=0x00ff00)
-            for i in quotes:
-                quote = i[1]
-                embed.add_field(name="Quote", value=f"{quote}", inline=False)
-            await ctx.send(embed=embed)        
-    
         
 
 

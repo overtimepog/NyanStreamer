@@ -137,7 +137,7 @@ async def structure_spawn_task() -> None:
         #get the structure image
         structure_image = structure_info[2]
         #creare an embed to show the structure info
-        embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}", color=0x00ff00)
+        embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}")
         embed.set_image(url=f"{structure_image}")
         embed.set_footer(text=f"/explore {structureid}")
         await channel.send(embed=embed)
