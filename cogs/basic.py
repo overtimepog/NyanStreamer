@@ -2489,7 +2489,10 @@ class Basic(commands.Cog, name="basic"):
     )
     async def beastiary(self, ctx):
         beasts = await db_manager.get_all_enemies()
-        print(beasts)
+        drops = await db_manager.get_all_enemy_drops()
+        print("Beasts: ", beasts)
+        print('\n')
+        print("Drops: ", drops)
 
 
 

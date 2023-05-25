@@ -2319,6 +2319,15 @@ async def get_all_enemies() -> list:
             return data
         else:
             return None
+        
+#get all the enemie drops
+async def get_all_enemy_drops() -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `enemy_drops`", fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
 
 async def set_enemy_not_burning(enemy_id: int) -> int:
         db = DB()
