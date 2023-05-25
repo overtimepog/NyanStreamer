@@ -22,26 +22,59 @@ class General(commands.Cog, name="general"):
     def __init__(self, bot):
         self.bot = bot
 
+        
+
     @commands.hybrid_command(
         name="help",
         description="List all commands the bot has loaded."
     )
     @checks.not_blacklisted()
-    async def help(self, context: Context) -> None:
-        prefix = self.bot.config["prefix"]
-        embed = discord.Embed(
-            title="Help", description="List of available commands:", color=0x9C84EF)
+    async def help(self, context: commands.Context):
+        class HelpView(discord.ui.View):
+            def __init__(self, embeds):
+                super().__init__(timeout=None)  # Ensures the buttons won't get disabled
+                self.embeds = embeds
+                self.current_page = 0
+
+            @discord.ui.button(label="<<", style=discord.ButtonStyle.green)
+            async def first_page(self, button: discord.ui.Button, interaction: discord.Interaction):
+                self.current_page = 0
+                await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
+
+            @discord.ui.button(label="<", style=discord.ButtonStyle.green)
+            async def previous_page(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if self.current_page > 0:
+                    self.current_page -= 1
+                    await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
+
+            @discord.ui.button(label=">", style=discord.ButtonStyle.green)
+            async def next_page(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if self.current_page < len(self.embeds) - 1:
+                    self.current_page += 1
+                    await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
+
+            @discord.ui.button(label=">>", style=discord.ButtonStyle.green)
+            async def last_page(self, button: discord.ui.Button, interaction: discord.Interaction):
+                self.current_page = len(self.embeds) - 1
+                await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
+        prefix = self.bot.command_prefix
+        embeds = []
         for i in self.bot.cogs:
-            cog = self.bot.get_cog(i.lower())
+            cog = self.bot.get_cog(i)
+            if cog is None:
+                continue
             commands = cog.get_commands()
             data = []
             for command in commands:
+                if command.hidden:
+                    continue
                 description = command.description.partition('\n')[0]
                 data.append(f"{prefix}{command.name} - {description}")
             help_text = "\n".join(data)
-            embed.add_field(name=i.capitalize(),
-                            value=f'```{help_text}```', inline=False)
-        await context.send(embed=embed)
+            embed = discord.Embed(title=f"{i} Commands", description=f'```{help_text}```', color=0x9C84EF)
+            embeds.append(embed)
+        view = HelpView(embeds)
+        await context.send(embed=embeds[0], view=view)
 
     @commands.hybrid_command(
         name="botinfo",
