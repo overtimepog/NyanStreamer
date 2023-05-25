@@ -2328,6 +2328,16 @@ async def get_all_enemy_drops() -> list:
             return data
         else:
             return None
+        
+#get all basic items, with the type Pet
+async def get_all_pets() -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_type = 'Pet'", fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+
 
 async def set_enemy_not_burning(enemy_id: int) -> int:
         db = DB()

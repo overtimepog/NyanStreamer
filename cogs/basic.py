@@ -2587,18 +2587,86 @@ class Basic(commands.Cog, name="basic"):
 
 
 #petview command
-    @commands.hybrid_command(
+    @commands.command(
         name="petview",
-        description="see all the pets",
+        description="This command will view all pets in the game.",
     )
-    async def petview(self, ctx):
-        pass
-        
+    async def petview(self, ctx: Context):
+        # Get all pets from the database
+        pets = await db_manager.get_all_pets()
+        if pets == []:
+            await ctx.send("There are no pets in the game.")
+            return
 
+        # Calculate number of pages based on number of items
+        num_pages = (len(pets) // 5) + (1 if len(pets) % 5 > 0 else 0)
 
+        # Create a function to generate embeds from a list of pets
+        async def create_embeds(pet_list):
+            num_pages = (len(pet_list) // 5) + (1 if len(pet_list) % 5 > 0 else 0)
+            embeds = []
 
-            
+            for i in range(num_pages):
+                start_idx = i * 5
+                end_idx = start_idx + 5
+                pet_embed = discord.Embed(
+                    title="Pets",
+                    description=f"All available pets in the game, you can find them in Pet Chests!",
+                )
+                pet_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
+                for pet in pet_list[start_idx:end_idx]:
+                    pet_id = pet[1]
+                    pet_name = pet[2]
+                    pet_price = pet[3]
+                    pet_emoji = pet[4]
+                    pet_rarity = pet[5]
+                    pet_effect = pet[18]
+
+                    pet_embed.add_field(name=f"{pet_emoji}{pet_name} (`{pet_id}`)", value=f'**Effect: {pet_effect}** \n Price: `{pet_price}` \n Rarity: `{pet_rarity}` \n', inline=False)
+
+                embeds.append(pet_embed)
+
+            return embeds
+
+        # Create a list of embeds with 5 pets per embed
+        embeds = await create_embeds(pets)
+
+        class PetviewButton(discord.ui.View):
+                def __init__(self, current_page, embeds, **kwargs):
+                    super().__init__(**kwargs)
+                    self.current_page = current_page
+                    self.embeds = embeds
+
+                @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+                async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = 0
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+                async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page > 0:
+                        self.current_page -= 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+                async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page < len(self.embeds) - 1:
+                        self.current_page += 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+                async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = len(self.embeds) - 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+        view = PetviewButton(current_page=0, embeds=embeds)
+        await ctx.send(embed=embeds[0], view=view)
+    
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
