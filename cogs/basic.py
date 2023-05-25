@@ -2587,7 +2587,7 @@ class Basic(commands.Cog, name="basic"):
 
 
 #petview command
-    @commands.command(
+    @commands.hybrid_command(
         name="petview",
         description="This command will view all pets in the game.",
     )
