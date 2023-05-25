@@ -866,6 +866,16 @@ class Basic(commands.Cog, name="basic"):
         user_quest = user_profile[13]
         user_twitch_id = user_profile[14]
         user_twitch_name = user_profile[15]
+        #print all this info
+        print(f"User ID: {user_id}")
+        print(f"User Money: {user_money}")
+        print(f"User Health: {user_health}")
+        print(f"Is Streamer: {isStreamer}")
+        print(f"User XP: {user_xp}")
+        print(f"User Level: {user_level}")
+        print(f"User Quest: {user_quest}")
+        print(f"User Twitch ID: {user_twitch_id}")
+        print(f"User Twitch Name: {user_twitch_name}")
         #get the xp needed for the next level
         xp_needed = await db_manager.xp_needed(user_id)
         #convert the xp needed to a string
@@ -935,9 +945,9 @@ class Basic(commands.Cog, name="basic"):
             isStreamer = "Yes"
         elif isStreamer == 0:
             isStreamer = "No"
-        if user_twitch_name == None or user_twitch_name == "" or user_twitch_name == "None":
-            user_twitch_name = "Not Connected"
-        embed.set_footer(text=f"User ID: {user_id} | Twitch: {user_twitch_name} | Streamer: {isStreamer}")
+        if user_twitch_id == None or user_twitch_id == "" or user_twitch_id == "None":
+            user_twitch_id = "Not Connected"
+        embed.set_footer(text=f"User ID: {user_id} | Twitch: {user_twitch_id} | Streamer: {isStreamer}")
         
         async def display_inventory(ctx, user):
             # Get user inventory items from the database
