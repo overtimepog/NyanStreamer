@@ -1158,7 +1158,10 @@ class Basic(commands.Cog, name="basic"):
                     await interaction.message.edit(embed=self.embeds[self.current_page])
 
             view = PetButton(current_page=0, embeds=embeds)
-            await ctx.send(embed=embeds[0], view=view)
+            try:
+                await ctx.send(embed=embeds[0], view=view)
+            except(IndexError):
+                await ctx.send(f"{user.name} has no pets")
 
         class ProfileView(discord.ui.View):
             def __init__(self, ctx):
