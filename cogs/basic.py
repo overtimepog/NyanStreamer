@@ -2484,15 +2484,93 @@ class Basic(commands.Cog, name="basic"):
 
 #beastiary command
     @commands.hybrid_command(
-        name="beastiary",
-        description="see all the creatures",
-    )
-    async def beastiary(self, ctx):
-        beasts = await db_manager.get_all_enemies()
-        drops = await db_manager.get_all_enemy_drops()
-        print("Beasts: ", beasts)
-        print('\n')
-        print("Drops: ", drops)
+            name="beastiary",
+            description="This command will view all the enemies.",
+        )
+    async def beastiary(self, ctx: Context):
+            # Get all the enemies from the database
+            enemies = await db_manager.get_all_enemies()
+
+            # Get all the drops from the database
+            drops = await db_manager.get_all_enemy_drops()
+
+            # If there are no enemies, send a message saying there are no enemies
+            if not enemies:
+                await ctx.send("There are no enemies!")
+                return
+
+            # Calculate number of pages based on number of enemies
+            num_pages = (len(enemies) // 5) + (1 if len(enemies) % 5 > 0 else 0)
+            current_page = 0
+
+            # Transform data into dictionaries
+            enemies_dict = {enemy[0]: enemy for enemy in enemies}
+            drops_dict = {}
+            for drop in drops:
+                enemy_id = drop[0]
+                if enemy_id not in drops_dict:
+                    drops_dict[enemy_id] = []
+                drops_dict[enemy_id].append(drop)
+
+            # Create a function to generate embeds from a list of enemies
+            async def create_embeds(enemy_dict, drop_dict):
+                enemy_embeds = []
+                for enemy_id, enemy_data in enemy_dict.items():
+                    enemy_emote = enemy_data[4]  # Assuming enemy emote is at index 4
+                    enemy_name = enemy_data[1]  # Assuming enemy name is at index 1
+
+                    # Generate drops info
+                    drop_infos = drop_dict.get(enemy_id, [])
+                    if drop_infos:
+                        unique_drops = set([drop[1] for drop in drop_infos])
+                        drop_info = "\n".join(unique_drops)
+                    else:
+                        drop_info = "No Drops"
+
+                    enemy_embed = discord.Embed(
+                        title=f"{enemy_emote} {enemy_name}",
+                        description=f"Drops:\n{drop_info}",
+                        color=0x000000,
+                    )
+                    enemy_embeds.append(enemy_embed)
+                return enemy_embeds
+
+            embeds = await create_embeds(enemies_dict, drops_dict)
+
+            class BeastiaryButton(discord.ui.View):
+                def __init__(self, current_page, embeds, **kwargs):
+                    super().__init__(**kwargs)
+                    self.current_page = current_page
+                    self.embeds = embeds
+
+                @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+                async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = 0
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+                async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page > 0:
+                        self.current_page -= 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+                async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page < len(self.embeds) - 1:
+                        self.current_page += 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+                async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = len(self.embeds) - 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            view = BeastiaryButton(current_page=0, embeds=embeds)
+            await ctx.send(embed=embeds[0], view=view)
 
 
 
