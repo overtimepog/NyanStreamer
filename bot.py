@@ -104,7 +104,7 @@ print("A structure will spawn every 1 hour")
 @tasks.loop(minutes=90)
 async def structure_spawn_task() -> None:
     class ExploreButton(discord.ui.View):
-        def __init__(self, current_page, embeds, **kwargs):
+        def __init__(self, **kwargs):
             super().__init__(**kwargs)
         @discord.ui.button(label="Explore", style=discord.ButtonStyle.green, row=1)
         async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -148,7 +148,8 @@ async def structure_spawn_task() -> None:
         #creare an embed to show the structure info
         embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}", color=0x00ff00)
         embed.set_image(url=f"{structure_image}")
-        await channel.send(embed=embed, view=ExploreButton)
+        view = ExploreButton()
+        await channel.send(embed=embed, view=view)
         await db_manager.edit_current_structure(bot_guild.id, structureid)
 
 
