@@ -2482,6 +2482,27 @@ class Basic(commands.Cog, name="basic"):
         view = RecipebookButton(current_page=0, embeds=embeds)
         await ctx.send(embed=embeds[0], view=view)
 
+#beastiary command
+    @commands.hybrid_command(
+        name="beastiary",
+        description="see all the creatures",
+    )
+    async def beastiary(self, ctx):
+        beasts = await db_manager.get_all_enemies()
+        print(beasts)
+
+
+
+
+#petview command
+    @commands.hybrid_command(
+        name="petview",
+        description="see all the pets",
+    )
+    async def petview(self, ctx):
+        
+
+
 
             
 
