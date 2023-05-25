@@ -94,7 +94,7 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         #print(user1_weapon)
         if user1_weapon == None or user1_weapon == []:
             user1_weapon_name = "Fists"
-            user1_damage = 1
+            user1_damage = random.randint(1, 10)
             user1_weapon_subtype = "None"
             #convert subtype to str
             user1_weapon_subtype = str(user1_weapon_subtype)
@@ -126,7 +126,8 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         user2_weapon = await db_manager.get_equipped_weapon(user2)
         if user2_weapon == None or user2_weapon == []:
             user2_weapon_name = "Fists"
-            user2_damage = 2
+            #the damage is any number between 1 and 10
+            user2_damage = random.randint(1, 10)
             user2_weapon_subtype = "None"
             #convert subtype to str
             user2_weapon_subtype = str(user2_weapon_subtype)
@@ -242,7 +243,21 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
                 prev_desc = ""
                 
             user1_weapon = await db_manager.get_item_id(user1_weapon_name)
-            user_weapon_quotes = await db_manager.get_item_quotes(user1_weapon)
+            if user1_weapon == None:
+                user_weapon_quotes = [
+                    "{user} trips and accidentally hurls a rock, it bounces off a wall and hits {target} for {damage} damage. Accurate and hilarious!",
+                    "{user} digs in their pockets and pulls out a stale loaf of bread, hurling it at {target}. It hits for {damage} damage. Who knew carbs could be so dangerous?",
+                    "{user} fumbles around and finds an old boot, flings it with surprising accuracy at {target} causing {damage} damage. A boot to the face, now that's got to hurt!",
+                    "{user} inexplicably starts a dance-off. The unexpected and horrific dance moves confuse {target}, causing {damage} damage. That's one way to use the power of dance!",
+                    "{user} finds a squeaky toy in their pocket and throws it at {target}. It hits for {damage} damage. Who's a good boy now, huh?",
+                    "{user} pulls out a feather and tickles {target}. It's so ticklish that it takes {damage} damage. Laughter really is the best... weapon?",
+                    "{user} summons a horde of angry pigeons that swoop down on {target}, causing {damage} damage. They've really got those birds trained!",
+                    "{user} pulls out a rubber chicken and slaps {target} around a bit with it. It's so absurd that it causes {damage} damage. If you can't beat 'em, make 'em laugh!",
+                    "{user} starts telling a bad joke. {target} laughs so hard they take {damage} damage. A sense of humor can be a lethal weapon!",
+                    "{user} pulls out a spoon and charges at {target}. It's so unexpected that it causes {damage} damage. Never underestimate the power of cutlery!"
+                ]
+            else:
+                user_weapon_quotes = await db_manager.get_item_quotes(user1_weapon)
             user1Promt = random.choice(user_weapon_quotes)
             if user1Promt == user1_weapon:
                 user1Promt = random.choice(user_weapon_quotes)
@@ -395,7 +410,21 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
             if prev_desc == None:
                 prev_desc = ""
             user2_weapon = await db_manager.get_item_id(user2_weapon_name)
-            user_weapon_quotes = await db_manager.get_item_quotes(user2_weapon)
+            if user2_weapon == None:
+                user_weapon_quotes = [
+                    "{user} trips and accidentally hurls a rock, it bounces off a wall and hits {target} for {damage} damage. Accurate and hilarious!",
+                    "{user} digs in their pockets and pulls out a stale loaf of bread, hurling it at {target}. It hits for {damage} damage. Who knew carbs could be so dangerous?",
+                    "{user} fumbles around and finds an old boot, flings it with surprising accuracy at {target} causing {damage} damage. A boot to the face, now that's got to hurt!",
+                    "{user} inexplicably starts a dance-off. The unexpected and horrific dance moves confuse {target}, causing {damage} damage. That's one way to use the power of dance!",
+                    "{user} finds a squeaky toy in their pocket and throws it at {target}. It hits for {damage} damage. Who's a good boy now, huh?",
+                    "{user} pulls out a feather and tickles {target}. It's so ticklish that it takes {damage} damage. Laughter really is the best... weapon?",
+                    "{user} summons a horde of angry pigeons that swoop down on {target}, causing {damage} damage. They've really got those birds trained!",
+                    "{user} pulls out a rubber chicken and slaps {target} around a bit with it. It's so absurd that it causes {damage} damage. If you can't beat 'em, make 'em laugh!",
+                    "{user} starts telling a bad joke. {target} laughs so hard they take {damage} damage. A sense of humor can be a lethal weapon!",
+                    "{user} pulls out a spoon and charges at {target}. It's so unexpected that it causes {damage} damage. Never underestimate the power of cutlery!"
+                ]
+            else:
+                user_weapon_quotes = await db_manager.get_item_quotes(user2_weapon)
             user2Promt = random.choice(user_weapon_quotes)
             if user2Promt == user2_weapon:
                 user2Promt = random.choice(user_weapon_quotes)

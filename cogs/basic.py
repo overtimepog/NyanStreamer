@@ -1244,6 +1244,7 @@ class Basic(commands.Cog, name="basic"):
         """
         user_id = ctx.message.author.id
         user_money = await db_manager.get_money(user_id)
+        user_money = user_money[0][0]
         if user_money >= amount:
             await db_manager.add_money(user.id, amount)
             await db_manager.remove_money(user_id, amount)
@@ -1327,6 +1328,9 @@ class Basic(commands.Cog, name="basic"):
             item_effect = await db_manager.get_basic_item_effect(item)
             if item_effect == None or item_effect == "None":
                 message = f"You equipped `{item_name}`."
+                await db_manager.equip_item(user_id, item)
+                await ctx.send(message)
+                return
             #print(item_effect)
             #split the effect by spaces
             item_effect = item_effect.split()
