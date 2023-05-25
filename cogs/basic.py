@@ -463,7 +463,7 @@ class Basic(commands.Cog, name="basic"):
         name="acceptquest",
         description="Accept a quest from the quest board.",
     )
-    async def acceptquest(self, ctx: Context, quest_id: int):
+    async def acceptquest(self, ctx: Context, quest: str):
         # Get the quest id from the database
         quest = await db_manager.get_quest_from_id(quest_id)
         if quest is None:
@@ -2127,6 +2127,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
+                await db_manager.add_level(msg.author.id)
                 
             userquest = await db_manager.get_user_quest(msg.author.id)
             if userquest != 0:
@@ -2188,6 +2189,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
+                await db_manager.add_level(msg.author.id)
             #remove the item from the users inventory
             await db_manager.remove_item_from_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is health_loss
@@ -2208,6 +2210,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
+                await db_manager.add_level(msg.author.id)
             await db_manager.remove_health(msg.author.id, outcome_amount)
         #if the outcome type is health_gain
         elif outcome_type == "health_gain":
@@ -2227,6 +2230,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
+                await db_manager.add_level(msg.author.id)
             #add the health to the users health
             await db_manager.add_health(msg.author.id, outcome_amount)
         #if the outcome type is money_gain
@@ -2247,6 +2251,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
+                await db_manager.add_level(msg.author.id)
             #add the money to the users money
             await db_manager.add_money(msg.author.id, outcome_amount)
         #if the outcome type is money_loss
@@ -2267,6 +2272,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
+                await db_manager.add_level(msg.author.id)
             #remove the money from the users money
             await db_manager.remove_money(msg.author.id, outcome_amount)
         #if the outcome type is battle
