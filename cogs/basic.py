@@ -2482,7 +2482,6 @@ class Basic(commands.Cog, name="basic"):
         view = RecipebookButton(current_page=0, embeds=embeds)
         await ctx.send(embed=embeds[0], view=view)
 
-#beastiary command
     @commands.hybrid_command(
             name="beastiary",
             description="This command will view all the enemies.",
@@ -2499,10 +2498,6 @@ class Basic(commands.Cog, name="basic"):
                 await ctx.send("There are no enemies!")
                 return
 
-            # Calculate number of pages based on number of enemies
-            num_pages = (len(enemies) // 5) + (1 if len(enemies) % 5 > 0 else 0)
-            current_page = 0
-
             # Transform data into dictionaries
             enemies_dict = {enemy[0]: enemy for enemy in enemies}
             drops_dict = {}
@@ -2514,26 +2509,44 @@ class Basic(commands.Cog, name="basic"):
 
             # Create a function to generate embeds from a list of enemies
             async def create_embeds(enemy_dict, drop_dict):
-                enemy_embeds = []
-                for enemy_id, enemy_data in enemy_dict.items():
-                    enemy_emote = enemy_data[4]  # Assuming enemy emote is at index 4
-                    enemy_name = enemy_data[1]  # Assuming enemy name is at index 1
+                num_pages = (len(enemy_dict) // 5) + (1 if len(enemy_dict) % 5 > 0 else 0)
+                embeds = []
+                enemy_ids = list(enemy_dict.keys())
 
-                    # Generate drops info
-                    drop_infos = drop_dict.get(enemy_id, [])
-                    if drop_infos:
-                        unique_drops = set([drop[1] for drop in drop_infos])
-                        drop_info = "\n".join(unique_drops)
-                    else:
-                        drop_info = "No Drops"
+                for i in range(num_pages):
+                    start_idx = i * 5
+                    end_idx = start_idx + 5
 
-                    enemy_embed = discord.Embed(
-                        title=f"{enemy_emote} {enemy_name}",
-                        description=f"Drops:\n{drop_info}",
+                    beastiary_embed = discord.Embed(
+                        title="Beastiary",
+                        description="All the enemies in the game!",
                         color=0x000000,
                     )
-                    enemy_embeds.append(enemy_embed)
-                return enemy_embeds
+                    beastiary_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+
+                    for enemy_id in enemy_ids[start_idx:end_idx]:
+                        enemy_data = enemy_dict[enemy_id]
+                        enemy_emote = enemy_data[4]  # Assuming enemy emote is at index 4
+                        enemy_name = enemy_data[1]  # Assuming enemy name is at index 1
+
+                        # Generate drops info
+                        drop_infos = drop_dict.get(enemy_id, [])
+                        if drop_infos:
+                            unique_drops = set([drop[1] for drop in drop_infos])
+                            drop_info_list = []
+                            for unique_drop in unique_drops:
+                                item_emote = await db_manager.get_basic_item_emote(unique_drop)
+                                item_name = await db_manager.get_basic_item_name(unique_drop)
+                                drop_info_list.append(f"{item_emote} {item_name}")
+                            drop_info = "\n".join(drop_info_list)
+                        else:
+                            drop_info = "No Drops"
+
+                        beastiary_embed.add_field(name=f"{enemy_emote} {enemy_name}", value=f"Drops:\n{drop_info}", inline=False)
+
+                    embeds.append(beastiary_embed)
+
+                return embeds
 
             embeds = await create_embeds(enemies_dict, drops_dict)
 
@@ -2571,8 +2584,6 @@ class Basic(commands.Cog, name="basic"):
 
             view = BeastiaryButton(current_page=0, embeds=embeds)
             await ctx.send(embed=embeds[0], view=view)
-
-
 
 
 #petview command
