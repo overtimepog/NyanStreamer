@@ -19,17 +19,6 @@ app.add_middleware(SessionMiddleware, secret_key='your secret key')  # replace w
 
 templates = Jinja2Templates(directory="templates")
 
-if not os.path.isfile("config.json"):
-    sys.exit("'config.json' not found! Please add it and try again.")
-else:
-    with open("config.json") as file:
-        config = json.load(file)
-
-Intents.message_content = True
-intents = discord.Intents.all()
-
-bot = Bot(command_prefix=commands.when_mentioned_or(
-    config["prefix"]), intents=intents, help_command=None)
 
 @app.get("/")
 async def index(request: Request):
@@ -82,11 +71,14 @@ async def callback(request: Request):
 
     embed = discord.Embed(title="Connected!", description=embed_description, color=0x00ff00)
     embed.set_footer(text=f"Discord ID: {discord_id} | Twitch ID: {user['id']}")
-    await bot.get_user(int(discord_id)).send(embed=embed)
 
-    return RedirectResponse(url="https://dankstreamer.lol/thanks")
+    return templates.TemplateResponse("thanks.html", {
+        "request": request, 
+        "discord_id": discord_id,
+        "twitch_id": user['id'],
+        "description": embed_description
+    })
 
-bot.run(config["token"])
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
