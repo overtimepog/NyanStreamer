@@ -103,6 +103,16 @@ bot.config = config
 print("A structure will spawn every 1 hour")
 @tasks.loop(minutes=90)
 async def structure_spawn_task() -> None:
+    class InventoryButton(discord.ui.View):
+        def __init__(self, current_page, embeds, **kwargs):
+            super().__init__(**kwargs)
+        @discord.ui.button(label="Explore", style=discord.ButtonStyle.green, row=1)
+        async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+            self.current_page = 0
+            await interaction.response.defer()
+            #invoke the explore command
+            await bot.get_command("explore").invoke(interaction)
+            
     #get the structures channel
     for bot_guild in bot.guilds:
         #if bot_guild.id == 1070882685855211641:
@@ -138,7 +148,6 @@ async def structure_spawn_task() -> None:
         #creare an embed to show the structure info
         embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}", color=0x00ff00)
         embed.set_image(url=f"{structure_image}")
-        embed.set_footer(text=f"Use /explore {structureid} to explore this structure.")
         await channel.send(embed=embed)
         await db_manager.edit_current_structure(bot_guild.id, structureid)
 
