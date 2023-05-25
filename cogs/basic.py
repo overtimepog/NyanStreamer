@@ -1199,7 +1199,7 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.add_money(user_id, 200)
             await db_manager.add_item_to_inventory(user_id, "iron_sword", 1)
             await db_manager.add_item_to_inventory(user_id, "huntingbow", 1)
-            await ctx.send(f"You have started your Journy, Welcome {ctx.message.author.name} to **Dank Streamer**.")
+            await ctx.send(f"You have started your Journey, Welcome {ctx.message.author.name} to **Dank Streamer**.")
         else:
             await ctx.send("You have already started your journey.")
             
