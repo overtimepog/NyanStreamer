@@ -150,8 +150,7 @@ async def structure_spawn_task() -> None:
                 #invoke the explore command
                 message = await interaction.original_response()
                 ctx = await bot.get_context(message)
-                await ctx.invoke(bot.get_command("explore"))
-
+                await ctx.invoke(bot.get_command("explore"), structure=structureid)
 
         await channel.send(embed=embed, view=ExploreButton())
         await db_manager.edit_current_structure(bot_guild.id, structureid)
