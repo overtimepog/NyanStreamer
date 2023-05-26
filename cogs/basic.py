@@ -1205,7 +1205,7 @@ class Basic(commands.Cog, name="basic"):
         #check if the user is in the database
         userExist = await db_manager.check_user(user_id)
         if userExist == None or userExist == []:
-            await db_manager.profile(user_id)
+            await db_manager.get_user(user_id)
             await db_manager.add_money(user_id, 200)
             await db_manager.add_item_to_inventory(user_id, "iron_sword", 1)
             await db_manager.add_item_to_inventory(user_id, "huntingbow", 1)
