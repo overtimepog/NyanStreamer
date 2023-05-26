@@ -20,6 +20,7 @@ from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 
 from helpers import battle, checks, db_manager, hunt, mine
+from typing import List, Tuple
 
 
 global i
@@ -1910,64 +1911,34 @@ class Basic(commands.Cog, name="basic"):
                 #get the chest contents
                 #print(itemID)
                 chest_contents = await db_manager.get_chest_contents(itemID)
-                #print(chest_contents)
-                #calculate the chest contents chances
-                #organize the chest items by their chest chance
-                chest_contents.sort(key=lambda x: x[3], reverse=True)
-                #print("--------------------------------------------")
-                #print(chest_contents)
-                #get the user's luck
-                luck = await db_manager.get_luck(ctx.author.id)
+                def choose_item_based_on_chance(items_with_chances: List[Tuple]):
+                    total = sum(w for i, w in items_with_chances)
+                    r = random.uniform(0, total)
+                    upto = 0
+                    for item, w in items_with_chances:
+                        if upto + w >= r:
+                            return item
+                        upto += w
+                    assert False, "Shouldn't get here"
+                # apply the luck to the chest item chances, then normalize them to sum to 1
+                chest_contents = [(item, chance + luck / 100) for item, chance in chest_contents]
+                total_chance = sum(chance for item, chance in chest_contents)
+                chest_contents = [(item, chance / total_chance) for item, chance in chest_contents]
 
-                #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
-                roll = random.randint(1, 100) - luck
-                #if the roll is greater than 100, set it to 100
-                if roll > 100:
-                    roll = 100
+                # Choose an item based on chest item chances
+                chosen_item = choose_item_based_on_chance(chest_contents)
 
-                #if the roll is less than 1, set it to 1
-                if roll < 1:
-                    roll = 1
-
-
-                lowchanceitems = []
-                for item in chest_contents:
-                    if item[3] <= 0.1:
-                        lowchanceitems.append(item)
-
-                midchanceitems = []
-                for item in chest_contents:
-                    if item[3] > 0.1 and item[3] <= 0.5:
-                        midchanceitems.append(item)
-
-                highchanceitems = []
-                for item in chest_contents:
-                    if item[3] > 0.5 and item[3] <= 1:
-                        highchanceitems.append(item)
-
-                #based on the roll, get the item
-                try:
-                    if roll <= 10:
-                        item = random.choice(lowchanceitems)
-                    elif roll > 10 and roll <= 50:
-                        item = random.choice(midchanceitems)
-                    elif roll > 50 and roll <= 90:
-                        item = random.choice(highchanceitems)
-                except IndexError:
-                    # If there are no items in the selected list, just continue
-                    pass
+                if chosen_item is not None:
+                    await db_manager.add_item_to_inventory(ctx.author.id, chosen_item[0], chosen_item[2])
+                    item_name = await db_manager.get_basic_item_name(chosen_item[0])
+                    item_emoji = await db_manager.get_basic_item_emote(chosen_item[0])
+                    # tell the user what they got
+                    await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {chosen_item[2]}")
+                    return 
                 else:
-                    if roll > 90:
-                        #they found nothing
-                        await ctx.send(f"It seems {chest_name} ended up being empty!")
-                        return
-                
-                await db_manager.add_item_to_inventory(ctx.author.id, item[1], item[2])
-                item_name = await db_manager.get_basic_item_name(item[1])
-                item_emoji = await db_manager.get_basic_item_emote(item[1])
-                #tell the user what they got
-                await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {item[2]}")
-                return   
+                    #they found nothing
+                    await ctx.send(f"It seems {chest_name} ended up being empty!")
+                    return
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
@@ -1981,94 +1952,46 @@ class Basic(commands.Cog, name="basic"):
     #command cooldown of 5 minutes
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def explore(self, ctx: Context, structure: str):
-        #check if the user exists in the database
         if await db_manager.check_user(ctx.author.id) == 0:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.explore.reset_cooldown(ctx)
             return
-        #get the current structure in the channel
+    
+        msg = ctx.message
+
         await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
         structure_outcomes = await db_manager.get_structure_outcomes(structure)
-        msg = ctx.message
-        #get the structure outcomes
-        luck = await db_manager.get_luck(msg.author.id)
-        #for each outcome, calculate the chance of it happening based on the outcome chance and the users luck
-            #get the hunt chance for each item in the huntitems list
+        luck = await db_manager.get_luck(ctx.author.id)
+
         outcomes = []
         for outcome in structure_outcomes:
-            #print(outcome)
-            #print(len(outcome))
-            #`structure_quote` varchar(255) NOT NULL,
-            #`structure_state` varchar(255) NOT NULL,
-            #`outcome_chance` int(11) NOT NULL,
-            #`outcome_type` varchar(255) NOT NULL,
-            #`outcome` varchar(255) NOT NULL,
-            #`outcome_amount` varchar(11) NOT NULL,
-            #`outcome_money` varchar(11) NOT NULL,
-            #`outcome_xp` varchar(11) NOT NULL,
-
             quote = outcome[1]
             state = outcome[2]
-            outcome_chance = outcome[3]
+            outcome_chance = outcome[3] * 100  # Multiply by 100 because your outcome_chance is in the range of 0.01 to 1
             outcome_type = outcome[4]
             outcome_thing = outcome[5]
             outcome_amount = outcome[6]
             outcome_money = outcome[7]
             outcome_xp = outcome[8]
-            #add the outcome to the outcomes list
+
             outcomes.append([quote, state, outcome_chance, outcome_type, outcome_thing, outcome_amount, outcome_money, outcome_xp])
-        
-        #sort the outcomes list by the chance of the outcome happening
+
         outcomes.sort(key=lambda x: x[2], reverse=True)
 
-        #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
-        roll = random.randint(1, 100) - luck
-        #if the roll is greater than 100, set it to 100
+        roll = random.randint(1, 100) + luck
         if roll > 100:
             roll = 100
-
-        #if the roll is less than 1, set it to 1
-        if roll < 1:
+        elif roll < 1:
             roll = 1
 
-        #get the items with the hunt chance 0.01 or lower
-        lowchanceitems = []
-        for item in outcomes:
-            if item[2] <= 0.1:
-                lowchanceitems.append(item)
+        # Filter outcomes that the roll is equal or less than the chance.
+        valid_outcomes = [item for item in outcomes if roll <= item[2]]
 
-        midchanceitems = []
-        for item in outcomes:
-            if item[2] > 0.1 and item[2] <= 0.5:
-                midchanceitems.append(item)
+        if not valid_outcomes:  # If no valid outcomes, take the one with the highest chance
+            item = outcomes[0]
+        else:
+            item = random.choice(valid_outcomes)
 
-        highchanceitems = []
-        for item in outcomes:
-            if item[2] > 0.5 and item[2] <= 1:
-                highchanceitems.append(item)
-
-        #based on the roll, get the item
-        if roll <= 10:
-            try:
-                item = random.choice(lowchanceitems)
-            except(IndexError):
-                item = random.choice(outcomes)
-        elif roll > 10 and roll <= 50:
-            try:
-                item = random.choice(midchanceitems)
-            except(IndexError):
-                item = random.choice(lowchanceitems)
-        elif roll > 50 and roll <= 100:
-            try:
-                item = random.choice(highchanceitems)
-            except(IndexError):
-                try:
-                    item = random.choice(midchanceitems)
-                except(IndexError):
-                    item = random.choice(lowchanceitems)
-
-        
-        #get the info of the item
         outcome_quote = item[0]
         outcome_state = item[1]
         outcome_chance = item[2]
@@ -2077,14 +2000,9 @@ class Basic(commands.Cog, name="basic"):
         outcome_amount = item[5]
         outcome_money = item[6]
         outcome_xp = item[7]
-        
-        #the outcome_types are: item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, spawn
-        #if the outcome type is item_gain
-        #get the outcome_icon
-        #remove the line breaks from the outcome_quote
+
         outcome_thing = str(outcome_thing)
-        outcome_quote = str(outcome_quote)
-        outcome_quote = outcome_quote.strip()
+        outcome_quote = str(outcome_quote).strip()
         if outcome_type == "item_gain":
             #if outcome things first word is chest, then add a to the end of the outcome_quote
             if outcome_thing.split("_")[0] == "chest":
@@ -2108,7 +2026,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                await db_manager.add_level(msg.author.id)
+                await db_manager.add_level(msg.author.id, 1)
                 
             userquest = await db_manager.get_user_quest(msg.author.id)
             if userquest != 0:
@@ -2170,7 +2088,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                await db_manager.add_level(msg.author.id)
+                await db_manager.add_level(msg.author.id, 1)
             #remove the item from the users inventory
             await db_manager.remove_item_from_inventory(msg.author.id, outcome_thing, outcome_amount)
         #if the outcome type is health_loss
@@ -2191,7 +2109,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                await db_manager.add_level(msg.author.id)
+                await db_manager.add_level(msg.author.id, 1)
             await db_manager.remove_health(msg.author.id, outcome_amount)
         #if the outcome type is health_gain
         elif outcome_type == "health_gain":
@@ -2211,7 +2129,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                await db_manager.add_level(msg.author.id)
+                await db_manager.add_level(msg.author.id, 1)
             #add the health to the users health
             await db_manager.add_health(msg.author.id, outcome_amount)
         #if the outcome type is money_gain
@@ -2232,7 +2150,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                await db_manager.add_level(msg.author.id)
+                await db_manager.add_level(msg.author.id, 1)
             #add the money to the users money
             await db_manager.add_money(msg.author.id, outcome_amount)
         #if the outcome type is money_loss
@@ -2253,7 +2171,7 @@ class Basic(commands.Cog, name="basic"):
                 level = level.replace(",", "")
                 #if the user leveled up, send a message saying they leveled up
                 await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                await db_manager.add_level(msg.author.id)
+                await db_manager.add_level(msg.author.id, 1)
             #remove the money from the users money
             await db_manager.remove_money(msg.author.id, outcome_amount)
         #if the outcome type is battle
