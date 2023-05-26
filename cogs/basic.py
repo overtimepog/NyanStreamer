@@ -1922,6 +1922,7 @@ class Basic(commands.Cog, name="basic"):
 
                 # Choose an item based on chest item chances
                 chosen_item = choose_item_based_on_chance(chest_contents)
+                print(chosen_item)
 
                 if chosen_item is not None:
                     await db_manager.add_item_to_inventory(ctx.author.id, chosen_item[0], chosen_item[2])
