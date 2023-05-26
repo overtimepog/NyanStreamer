@@ -12,7 +12,7 @@
                 "structure_state": "success",
                 "outcome_chance": 0.3,
                 "outcome_type": "item_gain",
-                "outcome_output": "chest_basic",
+                "outcome_output": "chest",
                 "outcome_amount": 1,
                 "outcome_money": 0,
                 "outcome_xp": 10
@@ -337,7 +337,7 @@
                     "structure_state": "success",
                     "outcome_chance": 0.3,
                     "outcome_type": "item_gain",
-                    "outcome_output": "chest_basic",
+                    "outcome_output": "chest",
                     "outcome_amount": 1,
                     "outcome_money": 0,
                     "outcome_xp": 10
@@ -476,7 +476,7 @@
                 "structure_state": "success",
                 "outcome_chance": 0.3,
                 "outcome_type": "item_gain",
-                "outcome_output": "chest_basic",
+                "outcome_output": "chest",
                 "outcome_amount": 1,
                 "outcome_money": 0,
                 "outcome_xp": 10
@@ -505,7 +505,7 @@
                     "structure_state": "success",
                     "outcome_chance": 0.3,
                     "outcome_type": "item_gain",
-                    "outcome_output": "chest_basic",
+                    "outcome_output": "chest",
                     "outcome_amount": 1,
                     "outcome_money": 0,
                     "outcome_xp": 10
@@ -673,7 +673,7 @@
                     "structure_state": "success",
                     "outcome_chance": 0.3,
                     "outcome_type": "item_gain",
-                    "outcome_output": "chest_basic",
+                    "outcome_output": "chest",
                     "outcome_amount": 1,
                     "outcome_money": 0,
                     "outcome_xp": 10
