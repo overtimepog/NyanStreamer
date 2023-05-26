@@ -139,7 +139,7 @@ async def structure_spawn_task() -> None:
         #creare an embed to show the structure info
         embed = discord.Embed(title=f"{structure_name}", description=f"{structure_description}")
         embed.set_image(url=f"{structure_image}")
-        embed.set_footer(text=f"/explore {structureid}")
+        embed.set_footer(text=f"/explore structure:{structureid}")
         await channel.send(embed=embed)
         await db_manager.edit_current_structure(bot_guild.id, structureid)
 

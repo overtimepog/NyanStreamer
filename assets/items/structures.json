@@ -632,10 +632,10 @@
                 {
                     "structure_quote": "You've found a stash of rare gems in a hidden compartment!",
                     "structure_state": "success",
-                    "outcome_chance": 0.75,
-                    "outcome_type": "item_gain",
+                    "outcome_chance": 0.2,
+                    "outcome_type": "money_gain",
                     "outcome_output": "gold",
-                    "outcome_amount": 2,
+                    "outcome_amount": 100,
                     "outcome_money": 0,
                     "outcome_xp": 20
                 },
