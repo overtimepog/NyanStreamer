@@ -483,9 +483,9 @@ async def fishing_game():
                 prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
                 if view.cancelled:
                     await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
+                    await db_manager.add_item_to_inventory(user.id, prizeID, 2)
                 else:
                     await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
+                    await db_manager.add_item_to_inventory(user.id, prizeID, 2)
     return fish
 

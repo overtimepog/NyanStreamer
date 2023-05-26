@@ -1873,14 +1873,15 @@ class Basic(commands.Cog, name="basic"):
             #split the item_id by the "_"
             chest_name = await db_manager.get_chest_name(item)
             itemID = item
+            #get the item type 
             try:
                 item = item.split("_")
             except:
                 pass
             luck = await db_manager.get_luck(user_id)
             #if item[0] is chest
-            if item[1] == "chest" or isChest == 1 or item == "chest":
-
+            #if the items id is "chest" or "pet_chest"
+            if item[0] == "chest" or item[0] == "pet_chest":
                 outcomePhrases = [
                     "You opened the chest and found ",
                     "As you pried open the chest, you discovered ",
