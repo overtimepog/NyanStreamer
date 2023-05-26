@@ -21,10 +21,6 @@ Rules:
     •Mana does not exist, nothing to do with mana should be created
     •If an item has a recipe, its recpie_id needs to be the same as the item_id
     •Badges and Pets are Equippable
-    •low chance structure outcomes are <= 0.1
-    •mid chance structure outcomes are >0.1 and <=0.5
-    •high chance structure outcomes are > 0.5 and <=1
-    •A Structure must have at least one outcome in each Category
     •chests need chest contents and chests arent allowed to be empty
     •If asked to coninue, start the codeblock from where it was left off
     •Whenever anything is created, refrence the list of things in the game and if anything that isnt on the list is mentioned, create it following the inital creation
