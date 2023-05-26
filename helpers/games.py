@@ -440,7 +440,7 @@ async def fishing_game():
                     await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
                     await db_manager.add_item_to_inventory(user.id, prizeID, 1)
             elif points >= 45:
-                prizeID = "chest_pet"
+                prizeID = "pet_chest"
                 prizeName = await db_manager.get_chest_name(prizeID)
                 prizeEmoji = await db_manager.get_chest_icon(prizeID)
                 prizeAmount = 1
@@ -459,10 +459,10 @@ async def fishing_game():
                 prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
                 if view.cancelled:
                     await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
+                    await db_manager.add_item_to_inventory(user.id, prizeID, 2)
                 else:
                     await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
+                    await db_manager.add_item_to_inventory(user.id, prizeID, 2)
             elif points >= 15:
                 prizeID = "chest"
                 prizeName = await db_manager.get_chest_name(prizeID)
