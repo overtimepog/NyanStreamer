@@ -245,8 +245,10 @@ class Basic(commands.Cog, name="basic"):
             item_id = str(streamer_prefix) + "_" + item_name
             #convert all spaces in the item name to underscores
             item_id = item_id.replace(" ", "_")
-            await db_manager.add_streamer_item_to_user(user_id, item_id)
-            await ctx.send("Item created.")
+            #send more info
+            embed = discord.Embed(title="Item Creation", description=f"Created item {item_emoji}{item_name} and emoji for your channel.",)
+            embed.set_footer(text="ID: " + item_id)
+            await ctx.send(embed=embed)
 
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
     @commands.hybrid_command(
@@ -285,33 +287,26 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.message.author.id
         user_name = ctx.message.author.name
         streamer = streamer.lower()
-        #get the streamer prefix
-        streamer_prefix = await db_manager.get_streamerPrefix_with_channel(streamer)
-        #print(streamer_prefix)
-        #get the streamer prefix of the user
-        user_streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
-        #print(user_streamer_prefix)
-        #if streamer_prefix != user_streamer_prefix:
-        #get streamer broadcast type
-        #get the items from the database
-        #put the streamername to lowercase
+
+        # Get the items from the database
         items = await db_manager.view_streamer_items(streamer)
-        #get the users items from the database
+
+        # Get the user's items from the database
         user_items = await db_manager.view_streamer_item_inventory(user_id)
-        #create the embed
+
         if len(items) == 0:
             await ctx.send("This streamer has no items.")
             return
-        embed = discord.Embed(title=f"{user_name}'s Streamer Items from {streamer}", description=f"heres every item from {streamer} \n if it has ???, it means you dont own one, think of this as a trophy case for streamer items you collect by watching {streamer}'s streams :)\n", color=0x00ff00)
-        #add the items to the embed
+
+        embed = discord.Embed(title=f"{user_name}'s Streamer Items from {streamer}", description=f"Here are every item from {streamer}. If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching {streamer}'s streams :)", color=0x00ff00)
+
+        # Add the items to the embed
         for i in items:
-            #check if the user has the item
-            for j in user_items:
-                if i[1] in j:
-                    embed.add_field(name=f"{i[4]}", value=f"**{i[3]}**", inline=False)
-                else:
-                    embed.add_field(name=f"**???**", value=f"**???**", inline=False)
-        #send the embed
+            if any(i[1] in j for j in user_items):
+                embed.add_field(name=f"{i[4]}", value=f"**{i[3]}**", inline=False)
+            else:
+                embed.add_field(name=f"{i[4]}", value=f"**???**", inline=False)
+
         await ctx.send(embed=embed)
         #else:
             #await ctx.send("You cannot view your own items.")
