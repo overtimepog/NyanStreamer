@@ -49,8 +49,8 @@ async def hunt(ctx: Context):
             amount = 10
 
         # grant the item to the user
-        await db_manager.add_item_to_inventory(ctx.author.id, item[0], amount)
-        item_id = item[0]
+        await db_manager.add_item_to_inventory(ctx.author.id, item, amount)
+        item_id = item
         item_id = str(item_id)
 
         # get the item's emoji and name
