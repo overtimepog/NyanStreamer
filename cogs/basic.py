@@ -1735,6 +1735,10 @@ class Basic(commands.Cog, name="basic"):
     async def fight(self, ctx: Context, target: discord.Member):
         #check if the user is in a battle
         #check if the user is in a battle
+        user_exists = await db_manager.check_user(ctx.author.id)
+        if user_exists == None:
+            await ctx.send("You are not in the database yet, please use the `/start` command to start your adventure!")
+            return
         user_exists = await db_manager.check_user(target.id)
         if user_exists == None:
             await ctx.send("This user does not exist!, tell them to do /start to start playing!")
