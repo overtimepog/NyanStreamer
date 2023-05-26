@@ -246,7 +246,7 @@ class Basic(commands.Cog, name="basic"):
             #convert all spaces in the item name to underscores
             item_id = item_id.replace(" ", "_")
             #send more info
-            embed = discord.Embed(title="Item Creation", description=f"Created item {item_emoji}{item_name} and emoji for your channel.",)
+            embed = discord.Embed(title="Item Creation", description=f"Created item {item_emoji} **{item_name}** for the channel {channel}",)
             embed.set_footer(text="ID: " + item_id)
             await ctx.send(embed=embed)
 
