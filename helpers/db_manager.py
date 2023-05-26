@@ -104,9 +104,7 @@ async def get_money(user_id: int) -> int:
             users = await db.execute(f"SELECT `money` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
             return users
         else:
-            await get_user(user_id)
-            users = await db.execute(f"SELECT `money` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-            return users
+            return None
 
 #add money to a user
 async def add_money(user_id: int, amount: int) -> None: 
@@ -115,9 +113,7 @@ async def add_money(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `money` = `money` + ? WHERE `user_id` = ?", (amount, user_id))
     else:
-        #create a new user
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `money` = `money` + ? WHERE `user_id` = ?", (amount, user_id))
+        return None
         
 
 #remove money from a user
@@ -127,8 +123,7 @@ async def remove_money(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `money` = `money` - ? WHERE `user_id` = ?", (amount, user_id))
     else:
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `money` = `money` - ? WHERE `user_id` = ?", (amount, user_id))
+        return None
 
 #add health to a user
 async def add_health(user_id: int, amount: int) -> None:
@@ -137,8 +132,7 @@ async def add_health(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `health` = `health` + ? WHERE `user_id` = ?", (amount, user_id))
     else:
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `health` = `health` + ? WHERE `user_id` = ?", (amount, user_id))
+        return None
 
 #remove health from a user
 async def remove_health(user_id: int, amount: int) -> None:
@@ -147,8 +141,7 @@ async def remove_health(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `health` = `health` - ? WHERE `user_id` = ?", (amount, user_id))
     else:
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `health` = `health` - ? WHERE `user_id` = ?", (amount, user_id))
+        return None
 
 async def get_health(user_id: int) -> int:
     db = DB()
@@ -157,9 +150,7 @@ async def get_health(user_id: int) -> int:
         users = await db.execute(f"SELECT `health` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await get_user(user_id)
-        users = await db.execute(f"SELECT `health` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        return users
+        return None
     
 #get an enemy's health
 async def get_enemy_health(enemy_id: str) -> int:
@@ -258,9 +249,7 @@ async def get_xp(user_id: int) -> int:
         users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await get_user(user_id)
-        users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        return users
+        return None
     
 #add xp to a user
 async def add_xp(user_id: int, amount: int) -> None:
@@ -269,8 +258,7 @@ async def add_xp(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `player_xp` = `player_xp` + ? WHERE `user_id` = ?", (amount, user_id))
     else:
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `player_xp` = `player_xp` + ? WHERE `user_id` = ?", (amount, user_id))
+        return None
         
 #remove xp from a user
 async def remove_xp(user_id: int, amount: int) -> None:
@@ -279,8 +267,7 @@ async def remove_xp(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `player_xp` = `player_xp` - ? WHERE `user_id` = ?", (amount, user_id))
     else:
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `player_xp` = `player_xp` - ? WHERE `user_id` = ?", (amount, user_id))
+        return None
         
 #set the users xp
 async def set_xp(user_id: int, amount: int) -> None:
@@ -289,8 +276,7 @@ async def set_xp(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `player_xp` = ? WHERE `user_id` = ?", (amount, user_id))
     else:
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `player_xp` = ? WHERE `user_id` = ?", (amount, user_id))
+        return None
         
 #get the users level player_level
 async def get_level(user_id: int) -> int:
@@ -300,9 +286,7 @@ async def get_level(user_id: int) -> int:
         users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await get_user(user_id)
-        users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        return users
+        return None
     
 #add level to a user
 async def add_level(user_id: int, amount: int) -> None:
@@ -313,7 +297,7 @@ async def add_level(user_id: int, amount: int) -> None:
         #reset the players xp to 0
         await db.execute(f"UPDATE `users` SET `player_xp` = 0 WHERE `user_id` = ?", (user_id,))
     else:
-        await get_user(user_id)
+        return None
         
 #remove level from a user
 async def remove_level(user_id: int, amount: int) -> None:
@@ -322,7 +306,7 @@ async def remove_level(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `player_level` = `player_level` - ? WHERE `user_id` = ?", (amount, user_id))
     else:
-        await get_user(user_id)
+        return None
     
 #calculate the amount of xp needed to level up
 async def xp_needed(user_id: int) -> int:
@@ -337,12 +321,7 @@ async def xp_needed(user_id: int) -> int:
         print(xp_needed)
         return xp_needed
     else:
-        await get_user(user_id)
-        users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        users = int(users[0])
-        xp_needed = (users * 6)
-        print(xp_needed)
-        return xp_needed
+        return None
     
 #check if a user can level up
 async def can_level_up(user_id: int) -> bool:
@@ -355,12 +334,7 @@ async def can_level_up(user_id: int) -> bool:
         else:
             return False
     else:
-        await get_user(user_id)
-        users = await db.execute(f"SELECT `player_xp` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        if users[0] >= await xp_needed(user_id):
-            return True
-        else:
-            return False
+        return None
     
 #get user, if they don't exist, create them
 async def get_user(user_id: int) -> None:
@@ -409,10 +383,7 @@ async def get_luck(user_id: int) -> int:
         luck = int(luck[0])
         return luck
     else:
-        await get_user(user_id)
-        luck = await db.execute(f"SELECT `luck` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        luck = int(luck[0])
-        return luck
+        return None
 
 #add lcuk to a user
 async def add_luck(user_id: int, luck: int) -> None:
@@ -421,9 +392,7 @@ async def add_luck(user_id: int, luck: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `luck` = `luck` + ? WHERE `user_id` = ?", (luck, user_id))
     else:
-        #create a new user
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `luck` = `luck` + ? WHERE `user_id` = ?", (luck, user_id))
+        return None
 
 #remove luck from a user
 async def remove_luck(user_id: int, luck: int) -> None:
@@ -432,9 +401,7 @@ async def remove_luck(user_id: int, luck: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `luck` = `luck` - ? WHERE `user_id` = ?", (luck, user_id))
     else:
-        #create a new user
-        await get_user(user_id)
-        await db.execute(f"UPDATE `users` SET `luck` = `luck` - ? WHERE `user_id` = ?", (luck, user_id))
+        return None
     
 #set luck to a user
 async def set_luck(user_id: int, luck: int) -> None:

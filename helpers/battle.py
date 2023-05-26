@@ -19,42 +19,6 @@ from helpers import db_manager
 #-------------------Death Battle-------------------#
 async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     turnCount = 0
-    #set each users isInCombat to true
-    #DONE: figure out how to get the path of this file without hardcoding it
-    #get the background image path
-    imgpath = "images/battle_backround.png"
-    fontPath = "fonts/G_ari_bd.ttf"
-    
-    #open the background image
-    background = Image.open(imgpath)
-    #Q, how do I get the path of this file
-    #A, use os.path.dirname(__file__)
-
-    #User 1
-    user = discord.utils.get(ctx.guild.members, id=int(user1))
-    avatar1url = user.avatar.url
-    response = requests.get(avatar1url)
-    avatar1 = Image.open(BytesIO(response.content))
-    draw = ImageDraw.Draw(background)
-    font = ImageFont.truetype(fontPath, 30)
-    #draw the user's profile picture
-    avatar1 = avatar1.resize((500, 500))
-    background.paste(avatar1, (50, 320))
-    #draw the user's name
-    draw.text((70, 860), user.name, (0, 0, 0), font=font)
-
-    #User 2
-    user = discord.utils.get(ctx.guild.members, id=int(user2))
-    avatar2url = user.avatar.url
-    draw = ImageDraw.Draw(background)
-    font = ImageFont.truetype(fontPath, 30)
-    #draw the user's profile picture
-    response = requests.get(avatar2url)
-    avatar2 = Image.open(BytesIO(response.content))
-    avatar2 = avatar2.resize((500, 500))
-    background.paste(avatar2, (1300, 320))
-    #draw the user's name
-    draw.text((1070, 860), user.name, (0, 0, 0), font=font)    
     await db_manager.set_in_combat(user1)
     await db_manager.set_in_combat(user2)
     embed = discord.Embed(color=0x00ff00)
@@ -71,12 +35,8 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
     embed.add_field(name=user2_name, value="Health: " + user2_health, inline=True)
     prev_desc = None
 
-    #save the image
-    background.save("images/battle.png")
     #send the image in chat
     msg = await ctx.channel.send(embed=embed)
-    #delete the image
-    os.remove("images/battle.png")
     
     #before the loop starts, set the burn turn, poison turn, paralyze turn, and freeze turn to 0
     user1_burn_turn = 0
@@ -1673,54 +1633,27 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
             drop_amount = int(drop_amount)
             drops.append([item, drop_chance, drop_amount])
 
-        #organize the hunt items by their hunt chance
+        # organize the items by their drop chance
         drops.sort(key=lambda x: x[1], reverse=True)
-        print(drops)
+
         #get the user's luck
         luck = await db_manager.get_luck(ctx.author.id)
 
-        #roll a number between 1 and 100, the higher the luck, the higher the chance of getting a higher number, the higher the number, the higher the chance of getting a better item, which is determined by the hunt chance of each item, the higher the hunt chance, the higher the chance of getting that item
-        roll = random.randint(1, 100) - luck
-        #if the roll is greater than 100, set it to 100
-        if roll > 100:
-            roll = 100
+        # create a cumulative distribution from the drop chances
+        cumulative_distribution = []
+        total = 0
+        for drop in drops:
+            total += drop[1]
+            cumulative_distribution.append(total)
 
-        #if the roll is less than 1, set it to 1
-        if roll < 1:
-            roll = 1
+        # roll a number between 0 and the total drop chances, adjusted by luck
+        roll = random.uniform(0, total) - luck
 
-        #get the items with the hunt chance 0.01 or lower
-        lowchanceitems = []
-        for item in drops:
-            if item[1] <= 0.1:
-                lowchanceitems.append(item)
-
-        midchanceitems = []
-        for item in drops:
-            if item[1] > 0.1 and item[1] <= 0.5:
-                midchanceitems.append(item)
-
-        highchanceitems = []
-        for item in drops:
-            if item[1] > 0.5 and item[1] <= 1:
-                highchanceitems.append(item)
-
-        #based on the roll, get the item
-        if roll <= 10:
-            try:
-                item = random.choice(lowchanceitems)
-            except(IndexError):
-                item = random.choice(drops)
-        elif roll > 10 and roll <= 50:
-            try:
-                item = random.choice(midchanceitems)
-            except(IndexError):
-                item = random.choice(lowchanceitems)
-        elif roll > 50 and roll <= 100:
-            try:
-                item = random.choice(highchanceitems)
-            except(IndexError):
-                item = random.choice(midchanceitems)
+        # find the item that corresponds to the roll
+        for i, drop in enumerate(drops):
+            if roll <= cumulative_distribution[i]:
+                chosen_item = drop
+                break
         
         
         #get the damage dealers
@@ -1754,49 +1687,36 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         third_dealer_damage = await db_manager.get_thirdDamage(monsterID, ctx.guild.id)
         
         #assign the items based on damage dealt and chance
-        first_dealer_items = []
-        if first_dealer_damage >= second_dealer_damage and first_dealer_damage >= third_dealer_damage:
-            first_dealer_items = highchanceitems + midchanceitems + lowchanceitems
-        elif first_dealer_damage < second_dealer_damage and second_dealer_damage >= third_dealer_damage:
-            first_dealer_items = midchanceitems + highchanceitems + lowchanceitems
-        else:
-            first_dealer_items = midchanceitems + lowchanceitems + highchanceitems
-        
-        second_dealer_items = []
-        if second_dealer_damage >= first_dealer_damage and second_dealer_damage >= third_dealer_damage:
-            second_dealer_items = midchanceitems + lowchanceitems
-        else:
-            second_dealer_items = lowchanceitems
-        
-        third_dealer_items = midchanceitems + lowchanceitems
-        
-        #iterate through each damage dealer and assign them their items
-        for dealer_id, dealer_name, dealer_damage, dealer_items in zip([first_damage_dealer, second_damage_dealer, third_damage_dealer], [first_dealer_name, second_dealer_name, third_dealer_name], [first_dealer_damage, second_dealer_damage, third_dealer_damage], [first_dealer_items, second_dealer_items, third_dealer_items]):
-            #if the dealer is none, skip
-            if dealer_id is None:
-                continue
-            #if the dealer has no name, skip
-            if dealer_name is None:
-                continue
-            #if the dealer has no damage, skip
-            if dealer_damage is None:
-                continue
-            emote = None
-            item_name = None
-            item_amount = None
-            for item in dealer_items:
-                roll = random.randint(1, 100) - luck
-                if roll > item[1]:
-                    continue
-                emote = await db_manager.get_basic_item_emote(item[0])
-                item_name = await db_manager.get_basic_item_name(item[0])
-                item_amount = item[2]
-                await db_manager.add_item_to_inventory(dealer_id, item[0], item[2])
-                break
-            if emote and item_name and item_amount:
-                await ctx.send(dealer_name + " has gotten " + str(item_amount) + " " + emote +  "**" + item_name + "**!")
+        # Adjust the luck based on the damage dealt
+        # Iterate through each damage dealer and assign them their items
+        for dealer_id, dealer_name, dealer_damage in zip([first_damage_dealer, second_damage_dealer, third_damage_dealer], 
+                                                         [first_dealer_name, second_dealer_name, third_dealer_name], 
+                                                         [first_dealer_damage, second_dealer_damage, third_dealer_damage]):
 
+            # If the dealer is None, skip
+            if dealer_id is None or dealer_name is None or dealer_damage is None:
+                continue
             
+            # Adjust the luck based on the damage dealt
+            dealer_luck = luck if dealer_damage >= max([first_dealer_damage, second_dealer_damage, third_dealer_damage]) else 0
+
+            # Roll for the dealer
+            roll = random.uniform(0, total) - dealer_luck
+            for i, drop in enumerate(drops):
+                if roll <= cumulative_distribution[i]:
+                    chosen_item = drop
+                    break
+
+            item_id = chosen_item[0]
+            item_amount = chosen_item[2]
+
+            emote = await db_manager.get_basic_item_emote(item_id)
+            item_name = await db_manager.get_basic_item_name(item_id)
+
+            if emote and item_name and item_amount:
+                await db_manager.add_item_to_inventory(dealer_id, item_id, item_amount)
+                await ctx.send(f"{dealer_name} has gotten {item_amount} {emote} **{item_name}**!")
+
             #grant the items based on the damage dealers
             
             
@@ -2010,4 +1930,119 @@ async def send_spawned_embed(ctx: Context):
         embed.add_field(name="💥 Top Damage Dealers", value=field_text, inline=False)
         # Send the embed to the channel
         await ctx.send(embed=embed)
+
+
+
+async def attack(ctx: Context, target: discord.Member):
+    attacker = ctx.author
+    attacker_health = await db_manager.get_health(attacker.id)
+    target_health = await db_manager.get_health(target.id)
+
+    if attacker_health <= 0:
+        await ctx.send(f"{attacker.name} has no health left and cannot attack!")
+        return
+
+    if target_health <= 0:
+        await ctx.send(f"{target.name} has already been defeated!")
+        return
     
+    #calculate damage dealt
+    # User 1
+    #get the equipped weapon
+    weapon = await db_manager.get_equipped_weapon(attacker.id)
+    #print(user1_weapon)
+    if weapon == None or weapon == []:
+        weapon_name = "Fists"
+        damage = random.randint(1, 10)
+        weapon_subtype = "None"
+        #convert subtype to str
+        weapon_subtype = str(weapon_subtype)
+        #convert projectile to str
+    else:
+        weapon_name = weapon[0][2]
+        #convert it to str
+        weapon_name = str(weapon_name)
+        damage = weapon[0][8]
+        damage = str(damage)
+        #split it by the - 
+        damage = damage.split("-")
+        #get a random number between the two numbers
+        damage = random.randint(int(damage[0]), int(damage[1]))
+        weapon_subtype = weapon[0][10]
+        #convert subtype to str
+        weapon_subtype = str(weapon_subtype)
+
+
+
+    #get the equipped armor of the user being attacked so they can take less damage
+    armor = await db_manager.get_equipped_armor(target.id)
+    if armor == None or armor == []:
+        armor_name = "Clothes"
+        defense = 1
+    else:
+        armor_name = armor[0][2]
+        defense = armor[0][8]
+
+    #calculate the damage
+    damage = int(damage) - int(defense)
+    if damage < 0:
+        damage = 0
+    
+    if damage >= target_health:
+        damage = target_health
+
+
+    weapon = await db_manager.get_item_id(weapon_name)
+    if weapon == None:
+        weapon_quotes = [
+            "{user} trips and accidentally hurls a rock, it bounces off a wall and hits {target} for {damage} damage. Accurate and hilarious!",
+            "{user} digs in their pockets and pulls out a stale loaf of bread, hurling it at {target}. It hits for {damage} damage. Who knew carbs could be so dangerous?",
+            "{user} fumbles around and finds an old boot, flings it with surprising accuracy at {target} causing {damage} damage. A boot to the face, now that's got to hurt!",
+            "{user} inexplicably starts a dance-off. The unexpected and horrific dance moves confuse {target}, causing {damage} damage. That's one way to use the power of dance!",
+            "{user} finds a squeaky toy in their pocket and throws it at {target}. It hits for {damage} damage. Who's a good boy now, huh?",
+            "{user} pulls out a feather and tickles {target}. It's so ticklish that it takes {damage} damage. Laughter really is the best... weapon?",
+            "{user} summons a horde of angry pigeons that swoop down on {target}, causing {damage} damage. They've really got those birds trained!",
+            "{user} pulls out a rubber chicken and slaps {target} around a bit with it. It's so absurd that it causes {damage} damage. If you can't beat 'em, make 'em laugh!",
+            "{user} starts telling a bad joke. {target} laughs so hard they take {damage} damage. A sense of humor can be a lethal weapon!",
+            "{user} pulls out a spoon and charges at {target}. It's so unexpected that it causes {damage} damage. Never underestimate the power of cutlery!"
+        ]
+    else:
+        weapon_quotes = await db_manager.get_item_quotes(weapon)
+    Promt = random.choice(weapon_quotes)
+    if Promt == weapon:
+        Promt = random.choice(weapon_quotes)
+    Promt = str(Promt)
+    Promt = Promt.replace("{user}", attacker.name)
+    Promt = Promt.replace("{target}", target.name)
+    Promt = Promt.replace("{damage}", str(damage))
+
+    full_promt = Promt
+
+    #send the message
+    ctx.send(full_promt)
+    #deal the damage
+    await db_manager.remove_health(target.id, damage)
+    #check if the target is dead
+    target_health = await db_manager.get_health(target.id)
+    if target_health <= 0:
+        #if they are dead, give the attacker some of the targets gold
+        target_money = await db_manager.get_money(target.id)
+        attacker_money = await db_manager.get_money(attacker.id)
+        #give the attacker 10% of the targets money
+        money_to_give = target_money * 0.1
+        money_to_give = int(money_to_give)
+        await db_manager.add_money(attacker.id, money_to_give)
+        await db_manager.remove_money(target.id, money_to_give)
+        #give the attacker some xp
+        target_xp = await db_manager.get_xp(target.id)
+        attacker_xp = await db_manager.get_xp(attacker.id)
+        #give the attacker 10% of the targets xp, if the target has no xp, give the attacker 10 xp
+        xp_to_give = target_xp * 0.1
+        xp_to_give = int(xp_to_give)
+        if xp_to_give == 0:
+            xp_to_give = 10
+        await db_manager.add_xp(attacker.id, xp_to_give)
+        await db_manager.remove_xp(target.id, xp_to_give)
+        #say who won
+        await ctx.send(f"{attacker.name} has defeated {target.name}!")
+        
