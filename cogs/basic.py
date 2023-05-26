@@ -1890,6 +1890,8 @@ class Basic(commands.Cog, name="basic"):
             #if the items id is "chest" or "pet_chest"
             if item[0] == "chest" or item[0] == "pet_chest":
                 print(item)
+                contents = await db_manager.get_chest_contents(itemID)
+                print(contents)
                 outcomePhrases = [
                     "You opened the chest and found ",
                     "As you pried open the chest, you discovered ",
