@@ -2217,6 +2217,8 @@ class Basic(commands.Cog, name="basic"):
         item_recipe = await db_manager.get_item_recipe(recipe)
         has_recipe = await db_manager.check_item_recipe(recipe)
 
+        print(item_recipe)
+
         # If the item does not have a recipe
         if not has_recipe:
             await ctx.send(f"{item_emote} **{item_name}** does not have a recipe!")
