@@ -1908,9 +1908,10 @@ class Basic(commands.Cog, name="basic"):
                         upto += w
                     assert False, "Shouldn't get here"
                 # apply the luck to the chest item chances, then normalize them to sum to 1
-                chest_contents = [({'item_id': item['item_id'], 'item_amount': item['item_amount']}, item['drop_chance'] + luck / 100) for item in chest_contents]
+                chest_contents = [({'item_id': item[0], 'item_amount': item[1]}, item[2] + luck / 100) for item in chest_contents]
                 total_chance = sum(chance for item, chance in chest_contents)
                 chest_contents = [({'item_id': item['item_id'], 'item_amount': item['item_amount']}, chance / total_chance) for item, chance in chest_contents]
+
 
                 # Choose an item based on chest item chances
                 chosen_item = choose_item_based_on_chance(chest_contents)
