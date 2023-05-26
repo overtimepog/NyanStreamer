@@ -2227,8 +2227,10 @@ class Basic(commands.Cog, name="basic"):
             item_ammount = await db_manager.get_item_amount_from_inventory(ctx.author.id, component)
             # Check if the user has the item and enough quantity of it
             if not hasone or item_ammount < component_amount:
+                component_emoji = await db_manager.get_basic_item_emote(component)
+                component_name = await db_manager.get_basic_item_name(component)
                 # Send a message saying the user does not have the item or enough quantity of it
-                await ctx.send(f"You do not have enough {component}!")
+                await ctx.send(f"You do not have enough {component_emoji} **{component_name}**!")
                 return
 
         # Remove required items from the user's inventory and give them the crafted item
