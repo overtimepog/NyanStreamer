@@ -1932,12 +1932,13 @@ class Basic(commands.Cog, name="basic"):
                 ]
 
                 chosen_item = choose_item_based_on_chance(chest_contents)
+                print(chosen_item)
 
                 if chosen_item is not None:
-                    await db_manager.add_item_to_inventory(ctx.author.id, chosen_item[0]['item_id'], chosen_item[0]['item_amount'])
-                    item_name = await db_manager.get_basic_item_name(chosen_item[0]['item_id'])
-                    item_emoji = await db_manager.get_basic_item_emote(chosen_item[0]['item_id'])
-                    await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {chosen_item[0]['item_amount']}")
+                    await db_manager.add_item_to_inventory(ctx.author.id, chosen_item['item_id'], chosen_item['item_amount'])
+                    item_name = await db_manager.get_basic_item_name(chosen_item['item_id'])
+                    item_emoji = await db_manager.get_basic_item_emote(chosen_item['item_id'])
+                    await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {chosen_item['item_amount']}")
                 else:
                     await ctx.send(f"It seems {chest_name} ended up being empty!")
         else:
