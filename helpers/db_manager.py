@@ -318,7 +318,6 @@ async def xp_needed(user_id: int) -> int:
         #convert users to int
         users = int(users[0])
         xp_needed = (users * 6)
-        print(xp_needed)
         return xp_needed
     else:
         return None

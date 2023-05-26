@@ -877,19 +877,20 @@ class Basic(commands.Cog, name="basic"):
         user_twitch_id = user_profile[14]
         user_twitch_name = user_profile[15]
         #print all this info
+        #get the xp needed for the next level
+        xp_needed = await db_manager.xp_needed(user_id)
+        #convert the xp needed to a string
+        xp_needed = str(xp_needed)
         print(f"User ID: {user_id}")
         print(f"User Money: {user_money}")
         print(f"User Health: {user_health}")
         print(f"Is Streamer: {isStreamer}")
         print(f"User XP: {user_xp}")
+        print(f"XP Needed: {xp_needed}")
         print(f"User Level: {user_level}")
         print(f"User Quest: {user_quest}")
         print(f"User Twitch ID: {user_twitch_id}")
         print(f"User Twitch Name: {user_twitch_name}")
-        #get the xp needed for the next level
-        xp_needed = await db_manager.xp_needed(user_id)
-        #convert the xp needed to a string
-        xp_needed = str(xp_needed)
         user_items = await db_manager.view_inventory(user_id)
         embed = discord.Embed(title="Profile", description=f"{user.mention}'s Profile.")
         if user_health == 0:
