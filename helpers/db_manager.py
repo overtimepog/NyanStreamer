@@ -633,9 +633,7 @@ async def profile(user_id: int) -> list:
         users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
         return users
     else:
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck) VALUES (?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0))
-        users = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        return users
+        return None
 
 #add the basic items to the database basic_items table
 async def add_basic_items() -> None:

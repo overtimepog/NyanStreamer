@@ -1729,6 +1729,11 @@ class Basic(commands.Cog, name="basic"):
     async def fight(self, ctx: Context, user: discord.Member):
         #check if the user is in a battle
         #check if the user is in a battle
+        user_exists = await db_manager.check_user(user.id)
+        if user_exists == None:
+            await ctx.send("This user does not exist!, tell them to do /start to start playing!")
+            return
+        
         user_is_in_battle = await db_manager.is_in_combat(ctx.author.id)
         if user_is_in_battle == True:
             await ctx.send("You are already in a battle!")
@@ -1747,11 +1752,6 @@ class Basic(commands.Cog, name="basic"):
         user_is_alive = await db_manager.is_alive(user.id)
         if user_is_alive == False:
             await ctx.send("This user is dead! wait till they respawn! or they use an item to revive!")
-            return
-        
-        user_exists = await db_manager.check_user(user.id)
-        if user_exists == None:
-            await ctx.send("This user does not exist!, tell them to do /start to start playing!")
             return
         
         #ask the user if they want to fight
