@@ -2582,6 +2582,71 @@ class Basic(commands.Cog, name="basic"):
 
         view = PetviewButton(current_page=0, embeds=embeds)
         await ctx.send(embed=embeds[0], view=view)
+
+#trade command
+    @commands.hybrid_command(
+        name="trade",
+        description="This command will trade with another user.",
+    )
+    async def trade(self, ctx: Context, user: discord.Member, item: str, item_count: int = 1, requested_item=None, requested_item_count: int = 1):
+        # Get the user's inventory
+        user_inventory = await db_manager.view_inventory(ctx.author.id)
+        if user_inventory == []:
+            await ctx.send("You have no items to trade.")
+            return
+    
+        # Get the other user's inventory
+        other_user_inventory = await db_manager.view_inventory(user.id)
+        if other_user_inventory == [] and requested_item is not None:
+            await ctx.send(f"{user.name} has no items to trade.")
+            return
+    
+        # Check if the user has the item
+        if item not in [item[0] for item in user_inventory] or user_inventory[item] < item_count:
+            await ctx.send(f"You do not have enough {item}.")
+            return
+    
+        if requested_item:
+            # Check if the other user has the requested item
+            if requested_item not in [item[0] for item in other_user_inventory] or other_user_inventory[requested_item] < requested_item_count:
+                await ctx.send(f"{user.name} does not have enough {requested_item}.")
+                return
+    
+        # Ask the other user if they accept the trade/gift
+        if requested_item:
+            confirm_msg = await ctx.send(f"{user.name}, {ctx.author.name} wants to trade their {item} (x{item_count}) for your {requested_item} (x{requested_item_count}). React with 👍 or 👎.")
+        else:
+            confirm_msg = await ctx.send(f"{user.name}, {ctx.author.name} wants to give you a {item} (x{item_count}). React with 👍 or 👎.")
+            
+        # Add reactions to the confirmation message
+        await confirm_msg.add_reaction('👍')  # thumbs up
+        await confirm_msg.add_reaction('👎')  # thumbs down
+        
+        def check(reaction, react_user):
+            return react_user == user and str(reaction.emoji) in ['👍', '👎']
+    
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send('Trade request timed out.')
+            return
+        if str(reaction.emoji) == '👎':
+            await ctx.send("Trade cancelled.")
+            return
+    
+        # Perform the trade/gift
+        await db_manager.remove_item(ctx.author.id, item, item_count)
+        await db_manager.add_item(user.id, item, item_count)
+        if requested_item:
+            await db_manager.remove_item(user.id, requested_item, requested_item_count)
+            await db_manager.add_item(ctx.author.id, requested_item, requested_item_count)
+        
+        if requested_item:
+            await ctx.send(f"{ctx.author.name} has traded their {item} (x{item_count}) for {user.name}'s {requested_item} (x{requested_item_count}).")
+        else:
+            await ctx.send(f"{ctx.author.name} has given a {item} (x{item_count}) to {user.name}.")
+        
+
     
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
