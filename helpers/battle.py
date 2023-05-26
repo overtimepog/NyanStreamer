@@ -1436,10 +1436,13 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         user_defense = user_armor[0][8]
     except(IndexError, TypeError):
         user_defense = 0
-    
-    user_damage_boost = await db_manager.get_damage_boost(userID)
-    user_damage_boost = int(user_damage_boost)
-    user_weapon_damage = user_weapon_damage + user_damage_boost
+
+    try:
+        user_damage_boost = await db_manager.get_damage_boost(userID)
+        user_damage_boost = int(user_damage_boost)
+        user_weapon_damage = user_weapon_damage + user_damage_boost
+    except(IndexError, TypeError):
+        user_damage_boost = 0
     
     #get the monsters health
     monsterTotalHealth = await db_manager.get_enemy_health(monsterID)

@@ -1204,7 +1204,9 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.add_item_to_inventory(user_id, "iron_sword", 1)
             await db_manager.add_item_to_inventory(user_id, "huntingbow", 1)
             await db_manager.add_item_to_inventory(user_id, "pickaxe", 1)
-            await ctx.send(f"You have started your Journey, Welcome {ctx.message.author.name} to **Dank Streamer**.")
+            #equip the iron sword
+            await db_manager.equip_item(user_id, "iron_sword")
+            await ctx.send(f"You have started your Journey and your Iron Sword has been Equipped, Welcome {ctx.message.author.name} to **Dank Streamer**.")
         else:
             await ctx.send("You have already started your journey.")
         
