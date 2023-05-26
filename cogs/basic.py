@@ -859,6 +859,12 @@ class Basic(commands.Cog, name="basic"):
         """
         user_id = user.id
         user_profile = await db_manager.profile(user_id)
+        if user_profile == None:
+            if user_id == ctx.author.id:
+                await ctx.send(f"You haven't started your Journey, use `/start`.")
+            else:
+                await ctx.send(f"{user.name} hasn't started their Journey, tell them to use `/start`.")
+
         #print(user_profile)
         user_id = user_profile[0]
         user_money = user_profile[1]
