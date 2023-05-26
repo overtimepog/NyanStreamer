@@ -75,5 +75,29 @@
         "isMineable": true,
         "item_mine_chance": 0.001,
         "item_sub_type": "Plushie"
-    }    
+    },
+    {
+        "item_id": "dev_badge",
+        "item_name": "Dev",
+        "item_price": 10000000000,
+        "item_emoji": "<:clockBadge:1111512143997698169>",
+        "item_rarity": "Legendary",
+        "item_type": "Badge",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "Only Given out to Devs and people who have helped the bot in some way, very cool to have on your profile!",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": true,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": true,
+        "item_mine_chance": 0,
+        "item_sub_type": "Badge"
+    }
 ]
