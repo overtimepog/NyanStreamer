@@ -1766,7 +1766,8 @@ class Basic(commands.Cog, name="basic"):
     async def hunt(self, ctx: Context):
         #restset the cooldown
             #check if the user has a bow
-        if await db_manager.check_user(ctx.author.id) == 0:
+        userExist = await db_manager.check_user(ctx.author.id)
+        if userExist == None or userExist == []:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.hunt.reset_cooldown(ctx)
             return
@@ -1786,7 +1787,8 @@ class Basic(commands.Cog, name="basic"):
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
     async def mine(self, ctx: Context):
-        if await db_manager.check_user(ctx.author.id) == 0:
+        userExist = await db_manager.check_user(ctx.author.id)
+        if userExist == None or userExist == []:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.mine.reset_cooldown(ctx)
             return
@@ -1812,7 +1814,8 @@ class Basic(commands.Cog, name="basic"):
         :param ctx: The context in which the command was called.
         :param item: The item that should be used.
         """
-        if await db_manager.check_user(ctx.author.id) == 0:
+        userExist = await db_manager.check_user(ctx.author.id)
+        if userExist == None or userExist == []:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.use.reset_cooldown(ctx)
             return
@@ -1944,7 +1947,8 @@ class Basic(commands.Cog, name="basic"):
     #command cooldown of 5 minutes
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def explore(self, ctx: Context, structure: str):
-        if await db_manager.check_user(ctx.author.id) == 0:
+        userExist = await db_manager.check_user(ctx.author.id)
+        if userExist == None or userExist == []:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.explore.reset_cooldown(ctx)
             return
@@ -2594,37 +2598,51 @@ class Basic(commands.Cog, name="basic"):
         if user_inventory == []:
             await ctx.send("You have no items to trade.")
             return
-    
+
         # Get the other user's inventory
         other_user_inventory = await db_manager.view_inventory(user.id)
         if other_user_inventory == [] and requested_item is not None:
             await ctx.send(f"{user.name} has no items to trade.")
             return
-    
+
         # Check if the user has the item
         if item not in [item[0] for item in user_inventory] or user_inventory[item] < item_count:
-            await ctx.send(f"You do not have enough {item}.")
+            await ctx.send(f"You do not have enough `{item}`.")
             return
-    
+
         if requested_item:
             # Check if the other user has the requested item
             if requested_item not in [item[0] for item in other_user_inventory] or other_user_inventory[requested_item] < requested_item_count:
-                await ctx.send(f"{user.name} does not have enough {requested_item}.")
+                await ctx.send(f"{user.name} does not have enough `{requested_item}`.")
                 return
-    
+            
+        # Get the item emoji
+        #if the item is a chest, get the chest emoji
+        if item == "chest" or "pet_chest":
+            item_emoji = await db_manager.get_chest_icon(item)
+        else:
+            item_emoji = await db_manager.get_basic_item_emote(item)
+
+        # Get the requested item emoji
+        if requested_item:
+            if requested_item == "chest" or "pet_chest":
+                requested_item_emoji = await db_manager.get_chest_icon(requested_item)
+            else:
+                requested_item_emoji = await db_manager.get_basic_item_emote(requested_item)
+
         # Ask the other user if they accept the trade/gift
         if requested_item:
-            confirm_msg = await ctx.send(f"{user.name}, {ctx.author.name} wants to trade their {item} (x{item_count}) for your {requested_item} (x{requested_item_count}). React with 👍 or 👎.")
+            confirm_msg = await ctx.send(f"{user.name}, {ctx.author.name} wants to trade their {item_emoji}{item} (x{item_count}) for your {requested_item_emoji}{requested_item} (x{requested_item_count}). React with 👍 or 👎.")
         else:
-            confirm_msg = await ctx.send(f"{user.name}, {ctx.author.name} wants to give you a {item} (x{item_count}). React with 👍 or 👎.")
-            
+            confirm_msg = await ctx.send(f"{user.name}, {ctx.author.name} wants to give you {item_emoji}{item} (x{item_count}). React with 👍 or 👎.")
+
         # Add reactions to the confirmation message
         await confirm_msg.add_reaction('👍')  # thumbs up
         await confirm_msg.add_reaction('👎')  # thumbs down
-        
+
         def check(reaction, react_user):
             return react_user == user and str(reaction.emoji) in ['👍', '👎']
-    
+
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
         except asyncio.TimeoutError:
@@ -2633,18 +2651,18 @@ class Basic(commands.Cog, name="basic"):
         if str(reaction.emoji) == '👎':
             await ctx.send("Trade cancelled.")
             return
-    
+
         # Perform the trade/gift
         await db_manager.remove_item(ctx.author.id, item, item_count)
-        await db_manager.add_item(user.id, item, item_count)
+        await db_manager.add_item_to_inventory(user.id, item, item_count)
         if requested_item:
             await db_manager.remove_item(user.id, requested_item, requested_item_count)
-            await db_manager.add_item(ctx.author.id, requested_item, requested_item_count)
-        
+            await db_manager.add_item_to_inventory(ctx.author.id, requested_item, requested_item_count)
+
         if requested_item:
-            await ctx.send(f"{ctx.author.name} has traded their {item} (x{item_count}) for {user.name}'s {requested_item} (x{requested_item_count}).")
+            await ctx.send(f"{ctx.author.name} has traded their {item_emoji}{item} (x{item_count}) for {user.name}'s {requested_item_emoji}{requested_item} (x{requested_item_count}).")
         else:
-            await ctx.send(f"{ctx.author.name} has given a {item} (x{item_count}) to {user.name}.")
+            await ctx.send(f"{ctx.author.name} has given {item_emoji}{item} (x{item_count}) to {user.name}.")
         
 
     
