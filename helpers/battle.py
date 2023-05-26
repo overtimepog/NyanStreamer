@@ -1940,11 +1940,11 @@ async def userattack(ctx: Context, target: discord.Member):
 
     #if none is returned, it means the user doesn't exist in the database
     if attacker_health == None:
-        await ctx.send(f"{attacker.name} does not exist!, do /start to start playing!")
+        await ctx.send(f"{attacker.name} does not exist!, do `/start` to start playing!")
         return
     
     if target_health == None:
-        await ctx.send(f"{target.name} does not exist!, tell them to do /start to start playing!")
+        await ctx.send(f"{target.name} does not exist!, tell them to do `/start` to start playing!")
         return
 
     if attacker_health <= 0:
