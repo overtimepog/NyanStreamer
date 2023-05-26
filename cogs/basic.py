@@ -2204,7 +2204,6 @@ class Basic(commands.Cog, name="basic"):
 
         # Get the item info
         item_info = await db_manager.view_basic_item(recipe)
-        #print(item_info)
         # If the item is not found
         if not item_info:
             # Send a message saying the item is not found
@@ -2217,24 +2216,22 @@ class Basic(commands.Cog, name="basic"):
         item_recipe = await db_manager.get_item_recipe(recipe)
         has_recipe = await db_manager.check_item_recipe(recipe)
 
-        print(item_recipe)
-
         # If the item does not have a recipe
         if not has_recipe:
             await ctx.send(f"{item_emote} **{item_name}** does not have a recipe!")
             return
 
         # Check if the user has all the required items before crafting
-        for recipe_item, recipe_amount in item_recipe:
+        for recipe_item_name, component, component_amount in item_recipe:
             # Check if the user has the item and enough quantity of it
-            if not await db_manager.check_user_has_item(ctx.author.id, recipe_item, recipe_amount):
+            if not await db_manager.check_user_has_item(ctx.author.id, component, component_amount):
                 # Send a message saying the user does not have the item or enough quantity of it
-                await ctx.send(f"You do not have enough {recipe_item}!")
+                await ctx.send(f"You do not have enough {component}!")
                 return
 
         # Remove required items from the user's inventory and give them the crafted item
-        for recipe_item, recipe_amount in item_recipe:
-            await db_manager.remove_item_from_inventory(ctx.author.id, recipe_item, recipe_amount)
+        for recipe_item_name, component, component_amount in item_recipe:
+            await db_manager.remove_item_from_inventory(ctx.author.id, component, component_amount)
         await db_manager.add_item_to_inventory(ctx.author.id, item_name, item_emote)
         await ctx.send(f"{item_emote} **{item_name}** has been crafted!")
 
