@@ -1890,10 +1890,13 @@ class Basic(commands.Cog, name="basic"):
             #split the item_id by the "_"
             chest_name = await db_manager.get_chest_name(item)
             itemID = item
-            item = item.split("_")
+            try:
+                item = item.split("_")
+            except:
+                pass
             luck = await db_manager.get_luck(user_id)
             #if item[0] is chest
-            if item[0] == "chest":
+            if item[1] == "chest" or isChest == 1 or item == "chest":
 
                 outcomePhrases = [
                     "You opened the chest and found ",
@@ -1921,9 +1924,9 @@ class Basic(commands.Cog, name="basic"):
                         upto += w
                     assert False, "Shouldn't get here"
                 # apply the luck to the chest item chances, then normalize them to sum to 1
-                chest_contents = [(item, chance + luck / 100) for item, chance in chest_contents]
+                chest_contents = [({'item_id': item['item_id'], 'item_amount': item['item_amount']}, item['drop_chance'] + luck / 100) for item in chest_contents]
                 total_chance = sum(chance for item, chance in chest_contents)
-                chest_contents = [(item, chance / total_chance) for item, chance in chest_contents]
+                chest_contents = [({'item_id': item['item_id'], 'item_amount': item['item_amount']}, chance / total_chance) for item, chance in chest_contents]
 
                 # Choose an item based on chest item chances
                 chosen_item = choose_item_based_on_chance(chest_contents)

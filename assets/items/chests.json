@@ -1,6 +1,6 @@
 [    
     {
-        "chest_id": "chest_basic",
+        "chest_id": "chest",
         "chest_name": "Chest",
         "chest_price": 100,
         "chest_emoji": "<a:WoodChest:1078758729706643506>",
@@ -8,7 +8,7 @@
         "chest_type": "Chest",
         "chest_description": "A basic chest, found in plenty of places and contains a few items.",
         "key_id": "None",
-        "chest_contentsID": "chest_basic",
+        "chest_contentsID": "chest",
         "chest_contents": [
                 {
                 "item_id": "iron_ingot",
@@ -218,7 +218,7 @@
         ]
     },
     {
-        "chest_id": "chest_pet",
+        "chest_id": "pet_chest",
         "chest_name": "Pet Chest",
         "chest_price": 5000,
         "chest_emoji": "<a:IceChest:1108753322824974346>",
