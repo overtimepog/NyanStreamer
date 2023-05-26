@@ -1886,12 +1886,11 @@ class Basic(commands.Cog, name="basic"):
             except:
                 pass
             luck = await db_manager.get_luck(user_id)
-            #if item[0] is chest
-            #if the items id is "chest" or "pet_chest"
+
             if item[0] == "chest" or item[0] == "pet_chest":
                 print(item)
                 contents = await db_manager.get_chest_contents(itemID)
-                print(contents)
+
                 outcomePhrases = [
                     "You opened the chest and found ",
                     "As you pried open the chest, you discovered ",
@@ -1905,11 +1904,10 @@ class Basic(commands.Cog, name="basic"):
                     "Inside the chest, you were delighted to find "
                 ]
 
-                #get the chest contents
-                #print(itemID)
                 chest_contents = await db_manager.get_chest_contents(itemID)
+
                 def choose_item_based_on_chance(items_with_chances: List[Tuple]):
-                    total = sum(w for i, w in items_with_chances)
+                    total = sum(w for _, w in items_with_chances)
                     r = random.uniform(0, total)
                     upto = 0
                     for item, w in items_with_chances:
@@ -1917,27 +1915,31 @@ class Basic(commands.Cog, name="basic"):
                             return item
                         upto += w
                     assert False, "Shouldn't get here"
-                # apply the luck to the chest item chances, then normalize them to sum to 1
-                chest_contents = [({'item_id': item[0], 'item_amount': item[1]}, item[2] + luck / 100) for item in chest_contents]
-                total_chance = sum(chance for item, chance in chest_contents)
-                chest_contents = [({'item_id': item['item_id'], 'item_amount': item['item_amount']}, chance / total_chance) for item, chance in chest_contents]
 
+                chest_contents = [
+                    (
+                        {'item_id': item[1], 'item_amount': item[2]}, 
+                        item[3] + luck / 100
+                    ) for item in chest_contents
+                ]
 
-                # Choose an item based on chest item chances
+                total_chance = sum(chance for _, chance in chest_contents)
+                chest_contents = [
+                    (
+                        {'item_id': item['item_id'], 'item_amount': item['item_amount']}, 
+                        chance / total_chance
+                    ) for item, chance in chest_contents
+                ]
+
                 chosen_item = choose_item_based_on_chance(chest_contents)
-                print(chosen_item)
 
                 if chosen_item is not None:
-                    await db_manager.add_item_to_inventory(ctx.author.id, chosen_item[0], chosen_item[2])
-                    item_name = await db_manager.get_basic_item_name(chosen_item[0])
-                    item_emoji = await db_manager.get_basic_item_emote(chosen_item[0])
-                    # tell the user what they got
-                    await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {chosen_item[2]}")
-                    return 
+                    await db_manager.add_item_to_inventory(ctx.author.id, chosen_item[0]['item_id'], chosen_item[0]['item_amount'])
+                    item_name = await db_manager.get_basic_item_name(chosen_item[0]['item_id'])
+                    item_emoji = await db_manager.get_basic_item_emote(chosen_item[0]['item_id'])
+                    await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {chosen_item[0]['item_amount']}")
                 else:
-                    #they found nothing
                     await ctx.send(f"It seems {chest_name} ended up being empty!")
-                    return
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
