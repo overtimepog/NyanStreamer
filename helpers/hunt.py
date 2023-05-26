@@ -37,6 +37,7 @@ async def hunt(ctx: Context):
 
     # Choose an item based on hunt chances
     item = choose_item_based_on_hunt_chance(huntItems)
+    print(item)
 
     if item is not None:
         # determine the amount and cap it between 1 and 10
@@ -53,7 +54,7 @@ async def hunt(ctx: Context):
         item_id = str(item_id)
 
         # get the item's emoji and name
-        if item_id.split("_")[0] == "chest":
+        if item_id.split("_")[0] == "chest" or item_id == "chest":
             item_emoji = await db_manager.get_chest_icon(item_id)
             item_name = await db_manager.get_chest_name(item_id)
         else:
