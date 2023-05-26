@@ -268,9 +268,9 @@
                   "structure_quote": "The portal remains quiet... for now.",
                   "structure_state": "loss",
                   "outcome_chance": 0.9,
-                  "outcome_type": "None",
+                  "outcome_type": "money_gain",
                   "outcome_output": "None",
-                  "outcome_amount": 0,
+                  "outcome_amount": 50,
                   "outcome_money": 0,
                   "outcome_xp": 10
               }
