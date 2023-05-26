@@ -2223,8 +2223,10 @@ class Basic(commands.Cog, name="basic"):
 
         # Check if the user has all the required items before crafting
         for recipe_item_name, component, component_amount in item_recipe:
+            hasone = await db_manager.check_user_has_item(ctx.author.id, component)
+            item_ammount = await db_manager.get_item_amount_from_inventory(ctx.author.id, component)
             # Check if the user has the item and enough quantity of it
-            if not await db_manager.check_user_has_item(ctx.author.id, component, component_amount):
+            if not hasone or item_ammount < component_amount:
                 # Send a message saying the user does not have the item or enough quantity of it
                 await ctx.send(f"You do not have enough {component}!")
                 return
