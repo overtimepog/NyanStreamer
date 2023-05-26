@@ -1889,6 +1889,7 @@ class Basic(commands.Cog, name="basic"):
             #if item[0] is chest
             #if the items id is "chest" or "pet_chest"
             if item[0] == "chest" or item[0] == "pet_chest":
+                print(item)
                 outcomePhrases = [
                     "You opened the chest and found ",
                     "As you pried open the chest, you discovered ",
