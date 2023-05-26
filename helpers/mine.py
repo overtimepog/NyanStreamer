@@ -61,10 +61,10 @@ async def mine(ctx: Context):
         if amount > 15:
             amount = 15
         #grant the item to the user
-        await db_manager.add_item_to_inventory(ctx.author.id, item[0], amount)
-        item_id = item[0]
+        await db_manager.add_item_to_inventory(ctx.author.id, item, amount)
+        item_id = item
         item_id = str(item_id)
-        if item_id.split("_")[0] == "chest":
+        if item_id.split("_")[0] == "chest" or item_id == "chest":
             item_emoji = await db_manager.get_chest_icon(item_id)
             item_name = await db_manager.get_chest_name(item_id)
         else:
