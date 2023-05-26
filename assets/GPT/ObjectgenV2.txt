@@ -174,7 +174,7 @@ this is all the object templates for the game
                         "structure_state": "success",
                         "outcome_chance": 0.3,
                         "outcome_type": "item_gain",
-                        "outcome_output": "chest_basic",
+                        "outcome_output": "chest",
                         "outcome_amount": 1,
                         "outcome_money": 0,
                         "outcome_xp": 10
@@ -244,7 +244,7 @@ this is all the object templates for the game
 
         this is the template to create chests
         {
-            "chest_id": "chest_basic",
+            "chest_id": "chest",
             "chest_name": "Chest",
             "chest_price": 100,
             "chest_emoji": "<a:WoodChest:1078758729706643506>",
@@ -252,7 +252,7 @@ this is all the object templates for the game
             "chest_type": "Chest",
             "chest_description": "A basic chest, found in plenty of places and contains a few items.",
             "key_id": "None",
-            "chest_contentsID": "chest_basic",
+            "chest_contentsID": "chest",
             "chest_contents": [
                     {
                     "item_id": "iron_ingot",
@@ -571,7 +571,7 @@ Type: Pet | ID: winged_cash_pet | Rarity: Legendary | Damage: 0
 Type: Pet | ID: tree_in_bottle_pet | Rarity: Epic | Damage: 0
 Type: Pet | ID: slime_girl_pet | Rarity: Rare | Damage: 0
 Type: Pet | ID: fish_pet | Rarity: Rare | Damage: 0
-Type: Chest | ID: chest_basic | Rarity:Common
+Type: Chest | ID: chest | Rarity:Common
 Type: Enemy | ID: rat | Rarity:Common | Health: 10 | Damage: 3-5
 Type: Enemy | ID: fairy | Rarity:Rare | Health: 20 | Damage: 1-5
 Type: Enemy | ID: skeleton_horde | Rarity:Rare | Health: 50 | Damage: 5-10
