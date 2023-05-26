@@ -1726,50 +1726,25 @@ class Basic(commands.Cog, name="basic"):
         name="fight",
         description="Fight a user!",
     )
-    async def fight(self, ctx: Context, user: discord.Member):
+    async def fight(self, ctx: Context, target: discord.Member):
         #check if the user is in a battle
         #check if the user is in a battle
-        user_exists = await db_manager.check_user(user.id)
+        user_exists = await db_manager.check_user(target.id)
         if user_exists == None:
             await ctx.send("This user does not exist!, tell them to do /start to start playing!")
-            return
-        
-        user_is_in_battle = await db_manager.is_in_combat(ctx.author.id)
-        if user_is_in_battle == True:
-            await ctx.send("You are already in a battle!")
             return
         #check if the user is dead
         user_is_alive = await db_manager.is_alive(ctx.author.id)
         if user_is_alive == False:
             await ctx.send("You are dead! wait to respawn! or use an item to revive!")
             return
-        #check if the user is in a battle
-        user_is_in_battle = await db_manager.is_in_combat(user.id)
-        if user_is_in_battle == True:
-            await ctx.send("This user is already in a battle!")
-            return
         #check if the user is dead
-        user_is_alive = await db_manager.is_alive(user.id)
+        user_is_alive = await db_manager.is_alive(target.id)
         if user_is_alive == False:
             await ctx.send("This user is dead! wait till they respawn! or they use an item to revive!")
             return
-        
-        #ask the user if they want to fight
-        await ctx.send(f"{user.mention} is Challenging {ctx.author.mention} to a fight! Do you accept? (yes/no)")
-        #wait for a response
-        def check(m):
-            return m.author == user and m.channel == ctx.channel
-        try:
-            msg = await self.bot.wait_for("message", check=check, timeout=60)
-        except asyncio.TimeoutError:
-            await ctx.send("They did not accept the fight!")
-            return
-        if msg.content.lower() == "yes":
-            await ctx.send("The fight has begun!")
-            await battle.deathbattle(ctx, ctx.author.id, user.id, ctx.author.name, user.name)
-        elif msg.content.lower() == "no":
-            await ctx.send("They did not accept the fight!")
-            return
+        #attack the user
+        await battle.userattack(ctx, target)
         
     #hunt command
     #command cooldown of 2 hours

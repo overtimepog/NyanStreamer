@@ -1933,17 +1933,26 @@ async def send_spawned_embed(ctx: Context):
 
 
 
-async def attack(ctx: Context, target: discord.Member):
+async def userattack(ctx: Context, target: discord.Member):
     attacker = ctx.author
     attacker_health = await db_manager.get_health(attacker.id)
     target_health = await db_manager.get_health(target.id)
+
+    #if none is returned, it means the user doesn't exist in the database
+    if attacker_health == None:
+        await ctx.send(f"{attacker.name} does not exist!, do /start to start playing!")
+        return
+    
+    if target_health == None:
+        await ctx.send(f"{target.name} does not exist!, tell them to do /start to start playing!")
+        return
 
     if attacker_health <= 0:
         await ctx.send(f"{attacker.name} has no health left and cannot attack!")
         return
 
     if target_health <= 0:
-        await ctx.send(f"{target.name} has already been defeated!")
+        await ctx.send(f"{target.name} has already been defeated and needs to be revived!")
         return
     
     #calculate damage dealt
@@ -2045,4 +2054,3 @@ async def attack(ctx: Context, target: discord.Member):
         await db_manager.remove_xp(target.id, xp_to_give)
         #say who won
         await ctx.send(f"{attacker.name} has defeated {target.name}!")
-        
