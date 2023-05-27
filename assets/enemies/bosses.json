@@ -168,7 +168,7 @@
         "enemy_drop_id": "spider_queen",
         "enemy_drops": [
             {
-                "item_id": "queen_spider_venom",
+                "item_id": "spider_queen_venom",
                 "item_amount": 1,
                 "item_drop_chance": 1
             }
