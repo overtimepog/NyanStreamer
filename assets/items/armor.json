@@ -392,5 +392,98 @@
             }
         ],
         "item_sub_type": "Helmet"
+    },
+    {
+        "item_id": "hell_hound_helmet",
+        "item_name": "Hell Hound Helmet",
+        "item_price": 200,
+        "item_emoji": "<:hell_hound_Helmet:1112076499730841602>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 10,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A helmet made from the fur of a Hell Hound, it's surprisingly durable and warm.",
+        "item_element": "Fire",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "hell_hound_helmet",
+        "item_recipe": [{
+            "ingredient_id": "hell_hound_fur",
+            "ingredient_amount": 5
+        }],
+        "item_effect": "fire_resistance + 10",
+        "item_sub_type": "Helmet"
+    },
+    {
+        "item_id": "hell_hound_chestplate",
+        "item_name": "Hell Hound Chestplate",
+        "item_price": 300,
+        "item_emoji": "<:hell_hound_Chestplate:1112076499114262588>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 15,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A chestplate made from the fur of a Hell Hound, it provides excellent protection and warmth.",
+        "item_element": "Fire",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "hell_hound_chestplate",
+        "item_recipe": [{
+            "ingredient_id": "hell_hound_fur",
+            "ingredient_amount": 8
+        }],
+        "item_effect": "fire_resistance + 15",
+        "item_sub_type": "Chestplate"
+    },
+    {
+        "item_id": "hell_hound_leggings",
+        "item_name": "Hell Hound Leggings",
+        "item_price": 250,
+        "item_emoji": "<:hell_hound_Leggings:1112076501186256916>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 12,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "Leggings made from the fur of a Hell Hound, they're comfortable and provide good protection.",
+        "item_element": "Fire",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "hell_hound_leggings",
+        "item_recipe": [{
+            "ingredient_id": "hell_hound_fur",
+            "ingredient_amount": 7
+        }],
+        "item_effect": "fire_resistance + 12",
+        "item_sub_type": "Leggings"
+    },
+    {
+        "item_id": "hell_hound_boots",
+        "item_name": "Hell Hound Boots",
+        "item_price": 150,
+        "item_emoji": "<:hell_hound_Boots:1112076497235218553>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 8,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "Boots made from the fur of a Hell Hound, they're surprisingly light and warm.",
+        "item_element": "Fire",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "hell_hound_boots",
+        "item_recipe": [{
+            "ingredient_id": "hell_hound_fur",
+            "ingredient_amount": 4
+        }],
+        "item_effect": "fire_resistance + 8",
+        "item_sub_type": "Boots"
     }
+                
 ]

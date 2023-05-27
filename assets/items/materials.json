@@ -814,8 +814,8 @@
             "item_sub_type": "None"
         },
         {
-            "item_id": "queen_spider_venom",
-            "item_name": "Queen Spider Venom",
+            "item_id": "spider_queen_venom",
+            "item_name": "Spider Queen Venom",
             "item_price": 100,
             "item_emoji": "<:QueenVenom:1106266809189011569>",
             "item_rarity": "Legendary",
