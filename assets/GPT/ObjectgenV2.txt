@@ -531,6 +531,7 @@ Type: Material | ID: earth_rune | Rarity: Rare | Damage: 0
 Type: Material | ID: air_rune | Rarity: Rare | Damage: 0
 Type: Material | ID: spider_venom | Rarity: Uncommon | Damage: 0
 Type: Material | ID: queen_spider_venom | Rarity: Legendary | Damage: 0
+Type: Material | ID: hell_hound_fur | Rarity: Rare | Damage: 0
 Type: Tool | ID: pickaxe | Rarity: Commond | Damage: 2
 Type: Tool | ID: huntingbow | Rarity: Common | Damage: 4
 Type: Armor SubType: Helmet | ID: iron_helmet | Rarity: Common | Damage: 5
@@ -563,11 +564,15 @@ Type: Misc | ID: dragon_heart | Rarity: Legendary | Damage: 0
 Type: Badge | ID: devSlayer | Rarity: Legendary | Damage: 0
 Type: Badge | ID: demon_skull_badge | Rarity: Epic | Damage: 0
 Type: Badge SubType: Plushie | ID: aspen_plushie | Rarity: Legendary | Damage: 0
+Type: Badge SubType: Badge | ID: dev_badge | Rarity: Legendary | Damage: 0
 Type: Pet | ID: winged_cash_pet | Rarity: Legendary | Damage: 0
 Type: Pet | ID: tree_in_bottle_pet | Rarity: Epic | Damage: 0
 Type: Pet | ID: slime_girl_pet | Rarity: Rare | Damage: 0
-Type: Pet | ID: fish_pet | Rarity: Rare | Damage: 0
+Type: Pet | ID: fish_pet | Rarity: Uncommon | Damage: 0
+Type: Pet | ID: frog_pet | Rarity: Rare | Damage: 0
+Type: Pet | ID: baby_elephant_pet | Rarity: Epic | Damage: 0
 Type: Chest | ID: chest | Rarity:Common
+Type: Chest | ID: pet_chest | Rarity:Epic
 Type: Enemy | ID: rat | Rarity:Common | Health: 10 | Damage: 3-5
 Type: Enemy | ID: fairy | Rarity:Rare | Health: 20 | Damage: 1-5
 Type: Enemy | ID: skeleton_horde | Rarity:Rare | Health: 50 | Damage: 5-10
