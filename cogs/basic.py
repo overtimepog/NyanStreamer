@@ -582,6 +582,7 @@ class Basic(commands.Cog, name="basic"):
                     discord.SelectOption(label="Consumable"),
                     discord.SelectOption(label="Material"),
                     discord.SelectOption(label="Badge"),
+                    discord.SelectOption(label="Pet"),
                 ]
                 super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
 
