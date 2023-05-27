@@ -133,7 +133,7 @@
                 "item_drop_chance": 1
             },
             {
-                "item_id": "dragon_amulet",
+                "item_id": "amulet_dragon",
                 "item_amount": 1,
                 "item_drop_chance": 0.2
             }
