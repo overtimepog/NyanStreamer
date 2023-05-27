@@ -1948,8 +1948,8 @@ class Basic(commands.Cog, name="basic"):
             description="Explore a structure in the current channel.",
             usage="explore <structure>",
     )
-    #command cooldown of 5 minutes
-    @commands.cooldown(1, 300, commands.BucketType.user)
+    #command cooldown of 2 minutes
+    @commands.cooldown(1, 120, commands.BucketType.user)
     async def explore(self, ctx: Context, structure: str):
         userExist = await db_manager.check_user(ctx.author.id)
         if userExist == None or userExist == []:
