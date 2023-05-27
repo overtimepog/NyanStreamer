@@ -675,5 +675,44 @@
             }
         ],
         "item_sub_type": "None"
-    }
+    },
+    {
+        "item_id": "flame_lance",
+        "item_name": "Flame Lance",
+        "item_price": 500,
+        "item_emoji": "<:flame_lance:1112079158076518553>",
+        "item_rarity": "Rare",
+        "item_type": "Weapon",
+        "item_damage": "20-30",
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A lance imbued with the power of flame, crafted from the heart of a Flame Guardian.",
+        "item_element": "Fire",
+        "item_crit_chance": "10%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "flame_lance",
+        "item_quotes": [
+            {
+                "quote": "{user} thrusts their Flame Lance at {target}, dealing {damage} fire damage!"
+            },
+            {
+                "quote": "{user} swings their Flame Lance in a wide arc, scorching {target} for {damage} fire damage!"
+            },
+            {
+                "quote": "{user} stabs at {target} with their Flame Lance, causing {damage} fire damage!"
+            },
+            {
+                "quote": "{user} charges at {target} with their Flame Lance, dealing {damage} fire damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    }    
 ]    
