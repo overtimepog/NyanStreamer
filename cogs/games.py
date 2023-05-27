@@ -308,5 +308,13 @@ class Games(commands.Cog, name="games"):
         fish = await games.fishing_game()
         await fish(ctx, ctx.author, luck)
 
+    #puzzle command
+    @commands.hybrid_command(
+        name="puzzle",
+        description="Solve a puzzle.",
+    )
+    async def puzzle(self, ctx: Context):
+        await games.trivia(ctx)
+
 async def setup(bot):
     await bot.add_cog(Games(bot))

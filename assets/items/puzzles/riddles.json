@@ -1,0 +1,29 @@
+{
+    "riddles": [
+      {
+        "id": 1,
+        "riddle": "What has keys but can’t open locks?",
+        "choices": ["A piano", "A door", "A chest", "A lock"],
+        "answer": "A piano"
+      },
+      {
+        "id": 2,
+        "riddle": "What has to be broken before you can use it?",
+        "choices": ["A dish", "A car", "An egg", "A toy"],
+        "answer": "An egg"
+      },
+      {
+        "id": 3,
+        "riddle": "What gets wet while drying?",
+        "choices": ["A sponge", "A towel", "A fan", "A hair"],
+        "answer": "A towel"
+      },
+      {
+        "id": 4,
+        "riddle": "What is so fragile that saying its name breaks it?",
+        "choices": ["A glass", "Silence", "A feather", "A mirror"],
+        "answer": "Silence"
+      }
+    ]
+  }
+  

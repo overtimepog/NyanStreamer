@@ -1,0 +1,29 @@
+{
+    "mathPuzzles": [
+      {
+        "id": 1,
+        "problem": "Solve for x: 3x + 6 = 12",
+        "choices": ["1", "2", "3", "4"],
+        "answer": "2"
+      },
+      {
+        "id": 2,
+        "problem": "What is the cube root of 27?",
+        "choices": ["2", "3", "4", "5"],
+        "answer": "3"
+      },
+      {
+        "id": 3,
+        "problem": "Solve for x: x / 2 = 4",
+        "choices": ["6", "7", "8", "9"],
+        "answer": "8"
+      },
+      {
+        "id": 4,
+        "problem": "What is the square root of 64?",
+        "choices": ["6", "7", "8", "9"],
+        "answer": "8"
+      }
+    ]
+  }
+  

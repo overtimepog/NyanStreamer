@@ -489,3 +489,76 @@ async def fishing_game():
                     await db_manager.add_item_to_inventory(user.id, prizeID, 2)
     return fish
 
+
+from discord import Embed
+from discord.ui import Button, View
+import json
+import random
+
+class TriviaView(View):
+    def __init__(self, answer, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.answer = answer
+
+    @discord.ui.button()
+    async def on_button_click(self, button: discord.ui.Button, interaction: discord.Interaction):
+        selected_choice = button.label
+        if selected_choice == self.answer:
+            color = discord.Color.green()
+            text = f"Correct! The answer was {self.answer}."
+            button.style = discord.ButtonStyle.success
+        else:
+            color = discord.Color.red()
+            text = f"Sorry, that's incorrect. The correct answer was {self.answer}."
+            button.style = discord.ButtonStyle.danger
+
+        embed = interaction.message.embeds[0]
+        embed.color = color
+        embed.set_footer(text=text)
+        await interaction.message.edit(embed=embed, view=None)
+        await interaction.response.defer()
+
+async def trivia(self, ctx: Context):
+    def load_questions(filename):
+        with open(filename, 'r') as file:
+            data = json.load(file)
+        return data
+
+    math = load_questions('assets\items\puzzles\math.json')
+    random_math_question = random.choice(math['mathPuzzles'])
+    math_problem = random_math_question['problem']
+    math_choices = random_math_question['choices']
+    math_answer = random_math_question['answer']
+
+    riddles = load_questions('assets\items\puzzles\riddles.json')
+    random_riddle_question = random.choice(riddles['riddles'])
+    riddle = random_riddle_question['riddle']
+    riddle_choices = random_riddle_question['choices']
+    riddle_answer = random_riddle_question['answer']
+
+    sequences = load_questions('assets\items\puzzles\sequence.json')
+    random_sequence_question = random.choice(sequences['sequencePuzzles'])
+    sequence = random_sequence_question['sequence']
+    sequence_choices = random_sequence_question['choices']
+    sequence_answer = random_sequence_question['answer']
+
+    puzzles = [
+        {"type": "Math Problem", "question": math_problem, "choices": math_choices, "answer": math_answer},
+        {"type": "Riddle", "question": riddle, "choices": riddle_choices, "answer": riddle_answer},
+        {"type": "Sequence", "question": sequence, "choices": sequence_choices, "answer": sequence_answer}
+    ]
+
+    selected_puzzle = random.choice(puzzles)
+
+    embed = Embed(
+        title=f"{selected_puzzle['type']}",
+        description=f"{selected_puzzle['question']}",
+        color=discord.Color.blue()
+    )
+
+    view = TriviaView(selected_puzzle['answer'])
+
+    for choice in selected_puzzle['choices']:
+        view.add_item(Button(label=choice, style=discord.ButtonStyle.secondary))
+
+    await ctx.send(embed=embed, view=view)
