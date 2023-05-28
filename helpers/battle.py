@@ -1479,14 +1479,14 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     first_damage = await db_manager.get_firstDamage(monsterID, ctx.guild.id)
     second_damage = await db_manager.get_secondDamage(monsterID, ctx.guild.id)
     third_damage = await db_manager.get_thirdDamage(monsterID, ctx.guild.id)
-    
+
     if first_damage_dealer is None:
         first_damage_dealer = userID
         first_damage = user_damage
         await db_manager.edit_firstDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_firstDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfFirstDamageDealer(monsterID, ctx.guild.id, userName)
-    
+
     elif user_damage > first_damage and userID != first_damage_dealer:
         third_damage_dealer = second_damage_dealer
         second_damage_dealer = first_damage_dealer
@@ -1495,14 +1495,14 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         await db_manager.edit_firstDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_firstDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfFirstDamageDealer(monsterID, ctx.guild.id, userName)
-    
+
     elif second_damage_dealer is None and userID != first_damage_dealer:
         second_damage_dealer = userID
         second_damage = user_damage
         await db_manager.edit_secondDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_secondDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfSecondDamageDealer(monsterID, ctx.guild.id, userName)
-    
+
     elif user_damage > second_damage and userID != first_damage_dealer and userID != second_damage_dealer:
         third_damage_dealer = second_damage_dealer
         second_damage_dealer = userID
@@ -1510,14 +1510,14 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         await db_manager.edit_secondDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_secondDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfSecondDamageDealer(monsterID, ctx.guild.id, userName)
-    
+
     elif third_damage_dealer is None and userID != first_damage_dealer and userID != second_damage_dealer:
         third_damage_dealer = userID
         third_damage = user_damage
         await db_manager.edit_thirdDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_thirdDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfThirdDamageDealer(monsterID, ctx.guild.id, userName)
-    
+
     elif user_damage > third_damage and userID != first_damage_dealer and userID != second_damage_dealer and userID != third_damage_dealer:
         third_damage_dealer = userID
         third_damage = user_damage
@@ -1926,16 +1926,20 @@ async def send_spawned_embed(ctx: Context):
         first_damage_dealer = await db_manager.get_firstDamageDealer(currentSpawn, ctx.guild.id)
         second_damage_dealer = await db_manager.get_secondDamageDealer(currentSpawn, ctx.guild.id)
         third_damage_dealer = await db_manager.get_thirdDamageDealer(currentSpawn, ctx.guild.id)
-        print(first_damage_dealer)
+
+        #get the damage
+        first_damage = await db_manager.get_firstDamage(currentSpawn, ctx.guild.id)
+        second_damage = await db_manager.get_secondDamage(currentSpawn, ctx.guild.id)
+        third_damage = await db_manager.get_thirdDamage(currentSpawn, ctx.guild.id)
 
         # Add a field for the top 3 damage dealers
         field_text = ""
         if first_damage_dealer != 0 and first_damage_dealer != None and first_damage_dealer != "None":
-            field_text += f"🏆 1st Place: <@{first_damage_dealer}> - They get loot!\n"
+            field_text += f"🏆 1st Place: <@{first_damage_dealer}> {first_damage}\n"
         if second_damage_dealer != 0 and second_damage_dealer != None and second_damage_dealer != "None":
-            field_text += f"🥈 2nd Place: <@{second_damage_dealer}> - They get loot!\n"
+            field_text += f"🥈 2nd Place: <@{second_damage_dealer}> {second_damage}\n"
         if third_damage_dealer != 0 and third_damage_dealer != None and third_damage_dealer != "None":
-            field_text += f"🥉 3rd Place: <@{third_damage_dealer}> - They get loot!\n"
+            field_text += f"🥉 3rd Place: <@{third_damage_dealer}> {third_damage}\n"
         if not field_text:
             field_text = "No damage has been dealt yet."
         embed.add_field(name="💥 Top Damage Dealers", value=field_text, inline=False)
