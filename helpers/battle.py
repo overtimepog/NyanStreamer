@@ -1430,15 +1430,15 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         quotes.append(quote)
         
     user1Promt = random.choice(quotes)
-    monster_defence = await db_manager.get_enemy_health(monsterID)
-    #convert the defence to int
-    monster_defence = int(monster_defence[0])
-    #divide the defence by 5
-    monster_defence = monster_defence / 5
-    #convert the defence to int
-    monster_defence = int(monster_defence)
+   #monster_defence = await db_manager.get_enemy_health(monsterID)
+   ##convert the defence to int
+   #monster_defence = int(monster_defence[0])
+   ##divide the defence by 5
+   #monster_defence = monster_defence / 5
+   ##convert the defence to int
+   #monster_defence = int(monster_defence)
     #calculate the damage the the user does
-    user_damage = user_weapon_damage - monster_defence
+    user_damage = user_weapon_damage
     if user1Promt == user_weapon:
         user1Promt = random.choice(user_weapon_quotes)
     user1Promt = str(user1Promt)
