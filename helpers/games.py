@@ -524,19 +524,19 @@ async def trivia(self, ctx: Context):
             data = json.load(file)
         return data
 
-    math = load_questions('assets\items\puzzles\math.json')
+    math = load_questions('assets/items/puzzles/math.json')
     random_math_question = random.choice(math['mathPuzzles'])
     math_problem = random_math_question['problem']
     math_choices = random_math_question['choices']
     math_answer = random_math_question['answer']
 
-    riddles = load_questions('assets\items\puzzles\riddles.json')
+    riddles = load_questions('assets/items/puzzles/riddles.json')
     random_riddle_question = random.choice(riddles['riddles'])
     riddle = random_riddle_question['riddle']
     riddle_choices = random_riddle_question['choices']
     riddle_answer = random_riddle_question['answer']
 
-    sequences = load_questions('assets\items\puzzles\sequence.json')
+    sequences = load_questions('assets/items/puzzles/sequence.json')
     random_sequence_question = random.choice(sequences['sequencePuzzles'])
     sequence = random_sequence_question['sequence']
     sequence_choices = random_sequence_question['choices']
