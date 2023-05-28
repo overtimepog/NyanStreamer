@@ -1958,7 +1958,7 @@ async def send_spawned_embed(ctx: Context):
         else:
             drop_info = "No Drops"
 
-        embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
+        embed.add_field(name="Drops ", value=drop_info, inline=False)
 
         # Get the top 3 damage dealers
         first_damage_dealer = await db_manager.get_firstDamageDealer(currentSpawn, ctx.guild.id)
