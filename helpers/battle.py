@@ -1844,7 +1844,22 @@ async def spawn_monster(ctx, monsterID):
                 # Set the thumbnail to the emote
                 embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{emoji}.png")
     # Add the footer "use /attack {monster name} to attack the monster"
-    embed.set_footer(text=f"use /attack {monsterID} to attack this monster")
+    embed.set_footer(text=f"use /attack enemy:{monsterID} to attack this monster")
+
+    drops = await db_manager.get_enemy_drops(monsterID)
+    # Generate drops info
+    drop_info_list = []
+    if drops:
+        for drop in drops:
+            item_emote = await db_manager.get_basic_item_emote(drop)
+            item_name = await db_manager.get_basic_item_name(drop)
+            drop_info_list.append(f"\t{item_emote} {item_name}")
+        drop_info = "\n".join(drop_info_list)
+    else:
+        drop_info = "No Drops"
+    # Add the drops info as a field to the embed
+    embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
+
     field_text = "No damage has been dealt yet."
     embed.add_field(name="💥 Top Damage Dealers", value=field_text, inline=False)
     # Send the embed to the channel
@@ -1924,7 +1939,6 @@ async def send_spawned_embed(ctx: Context):
         embed.set_footer(text=f"use /attack {currentSpawn} to attack this monster")
 
         drops = await db_manager.get_enemy_drops(currentSpawn)
-        print(drops)
         # Generate drops info
         drop_info_list = []
         if drops:
@@ -1937,6 +1951,7 @@ async def send_spawned_embed(ctx: Context):
             drop_info = "No Drops"
 
         # Add the drops info as a field to the embed
+        embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
 
         # Get the top 3 damage dealers
         first_damage_dealer = await db_manager.get_firstDamageDealer(currentSpawn, ctx.guild.id)
@@ -1958,9 +1973,8 @@ async def send_spawned_embed(ctx: Context):
             field_text += f"🥉 3rd Place: <@{third_damage_dealer}> {third_damage}\n"
         if not field_text:
             field_text = "No damage has been dealt yet."
-
-        embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
         embed.add_field(name="💥 Top Damage Dealers", value=field_text, inline=False)
+
         # Send the embed to the channel
         await ctx.send(embed=embed)
 
