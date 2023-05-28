@@ -1476,41 +1476,51 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         third_damage = 0
         
     #get the damage dealers
-    first_damage_dealer = await db_manager.get_firstDamageDealer(monsterID, ctx.guild.id)     
-    second_damage_dealer = await db_manager.get_secondDamageDealer(monsterID, ctx.guild.id)     
-    third_damage_dealer = await db_manager.get_thirdDamageDealer(monsterID, ctx.guild.id)
+    first_damage = await db_manager.get_firstDamage(monsterID, ctx.guild.id)
+    second_damage = await db_manager.get_secondDamage(monsterID, ctx.guild.id)
+    third_damage = await db_manager.get_thirdDamage(monsterID, ctx.guild.id)
     
-    #check if the dealers are none
     if first_damage_dealer is None:
         first_damage_dealer = userID
+        first_damage = user_damage
         await db_manager.edit_firstDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_firstDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfFirstDamageDealer(monsterID, ctx.guild.id, userName)
-    elif user_damage > await db_manager.get_firstDamage(monsterID, ctx.guild.id):
+    
+    elif user_damage > first_damage and userID != first_damage_dealer:
         third_damage_dealer = second_damage_dealer
         second_damage_dealer = first_damage_dealer
         first_damage_dealer = userID
+        first_damage = user_damage
         await db_manager.edit_firstDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_firstDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfFirstDamageDealer(monsterID, ctx.guild.id, userName)
-    elif second_damage_dealer is None:
+    
+    elif second_damage_dealer is None and userID != first_damage_dealer:
         second_damage_dealer = userID
+        second_damage = user_damage
         await db_manager.edit_secondDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_secondDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfSecondDamageDealer(monsterID, ctx.guild.id, userName)
-    elif user_damage > await db_manager.get_secondDamage(monsterID, ctx.guild.id):
+    
+    elif user_damage > second_damage and userID != first_damage_dealer and userID != second_damage_dealer:
         third_damage_dealer = second_damage_dealer
         second_damage_dealer = userID
+        second_damage = user_damage
         await db_manager.edit_secondDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_secondDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfSecondDamageDealer(monsterID, ctx.guild.id, userName)
-    elif third_damage_dealer is None:
+    
+    elif third_damage_dealer is None and userID != first_damage_dealer and userID != second_damage_dealer:
         third_damage_dealer = userID
+        third_damage = user_damage
         await db_manager.edit_thirdDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_thirdDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfThirdDamageDealer(monsterID, ctx.guild.id, userName)
-    elif user_damage > await db_manager.get_thirdDamage(monsterID, ctx.guild.id):
+    
+    elif user_damage > third_damage and userID != first_damage_dealer and userID != second_damage_dealer and userID != third_damage_dealer:
         third_damage_dealer = userID
+        third_damage = user_damage
         await db_manager.edit_thirdDamageDealer(monsterID, ctx.guild.id, userID)
         await db_manager.edit_thirdDamage(monsterID, ctx.guild.id, user_damage)
         await db_manager.edit_nameOfThirdDamageDealer(monsterID, ctx.guild.id, userName)
