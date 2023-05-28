@@ -9,7 +9,7 @@
         "item_damage": 2,
         "isUsable": false,
         "inShop": true,
-        "isEquippable": true,
+        "isEquippable": false,
         "item_description": "A pickaxe is a tool used to mine stone and ores.",
         "item_element": "None",
         "item_crit_chance": "0%",
