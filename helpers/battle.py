@@ -1847,18 +1847,21 @@ async def spawn_monster(ctx, monsterID):
     embed.set_footer(text=f"use /attack enemy:{monsterID} to attack this monster")
 
     drops = await db_manager.get_enemy_drops(monsterID)
-    print(drops)
+
     # Generate drops info
     drop_info_list = []
     if drops:
         for drop in drops:
-            print(drop)
-            item_emote = await db_manager.get_basic_item_emote(drop)
-            item_name = await db_manager.get_basic_item_name(drop)
+            drop_id, drop_quantity, drop_chance = drop[1], drop[2], drop[3]
+            #get the item emote
+            item_emote = await db_manager.get_basic_item_emote(drop_id)
+            #get the item name
+            item_name = await db_manager.get_basic_item_name(drop_id)
             drop_info_list.append(f"\t{item_emote} {item_name}")
         drop_info = "\n".join(drop_info_list)
     else:
         drop_info = "No Drops"
+
     # Add the drops info as a field to the embed
     embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
 
@@ -1945,14 +1948,16 @@ async def send_spawned_embed(ctx: Context):
         drop_info_list = []
         if drops:
             for drop in drops:
-                item_emote = await db_manager.get_basic_item_emote(drop)
-                item_name = await db_manager.get_basic_item_name(drop)
+                drop_id, drop_quantity, drop_chance = drop[1], drop[2], drop[3]
+                #get the item emote
+                item_emote = await db_manager.get_basic_item_emote(drop_id)
+                #get the item name
+                item_name = await db_manager.get_basic_item_name(drop_id)
                 drop_info_list.append(f"\t{item_emote} {item_name}")
             drop_info = "\n".join(drop_info_list)
         else:
             drop_info = "No Drops"
 
-        # Add the drops info as a field to the embed
         embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
 
         # Get the top 3 damage dealers
