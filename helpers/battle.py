@@ -1936,7 +1936,6 @@ async def send_spawned_embed(ctx: Context):
             drop_info = "No Drops"
 
         # Add the drops info as a field to the embed
-        embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
 
         # Get the top 3 damage dealers
         first_damage_dealer = await db_manager.get_firstDamageDealer(currentSpawn, ctx.guild.id)
@@ -1958,6 +1957,8 @@ async def send_spawned_embed(ctx: Context):
             field_text += f"🥉 3rd Place: <@{third_damage_dealer}> {third_damage}\n"
         if not field_text:
             field_text = "No damage has been dealt yet."
+
+        embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
         embed.add_field(name="💥 Top Damage Dealers", value=field_text, inline=False)
         # Send the embed to the channel
         await ctx.send(embed=embed)
