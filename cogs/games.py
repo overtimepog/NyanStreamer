@@ -309,9 +309,10 @@ class Games(commands.Cog, name="games"):
         await fish(ctx, ctx.author, luck)
 
     #puzzle command
+    @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.hybrid_command(
         name="puzzle",
-        description="Solve a puzzle.",
+        description="Solve a puzzle for a prize",
     )
     async def puzzle(self, ctx: Context):
         await games.trivia(self, ctx)
