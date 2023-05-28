@@ -1924,6 +1924,7 @@ async def send_spawned_embed(ctx: Context):
         embed.set_footer(text=f"use /attack {currentSpawn} to attack this monster")
 
         drops = await db_manager.get_enemy_drops(currentSpawn)
+        print(drops)
         # Generate drops info
         drop_info_list = []
         if drops:
