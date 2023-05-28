@@ -492,20 +492,20 @@ async def fishing_game():
 
 
 class TriviaButton(Button):
-    def __init__(self, label, view, *args, **kwargs):
+    def __init__(self, label, trivia_view, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label = label
-        self.view = view
+        self.trivia_view = trivia_view
 
     async def callback(self, interaction: discord.Interaction):
         selected_choice = self.label
-        if selected_choice == self.view.answer:
+        if selected_choice == self.trivia_view.answer:
             color = discord.Color.green()
-            text = f"Correct! The answer was {self.view.answer}."
+            text = f"Correct! The answer was {self.trivia_view.answer}."
             self.style = discord.ButtonStyle.success
         else:
             color = discord.Color.red()
-            text = f"Sorry, that's incorrect. The correct answer was {self.view.answer}."
+            text = f"Sorry, that's incorrect. The correct answer was {self.trivia_view.answer}."
             self.style = discord.ButtonStyle.danger
 
         embed = interaction.message.embeds[0]
@@ -519,7 +519,7 @@ class TriviaView(View):
         self.answer = answer
 
     def add_choice(self, choice):
-        self.add_item(TriviaButton(label=choice, view=self, style=discord.ButtonStyle.secondary))
+        self.add_item(TriviaButton(label=choice, trivia_view=self, style=discord.ButtonStyle.secondary))
 
 
 async def trivia(self, ctx: commands.Context):
