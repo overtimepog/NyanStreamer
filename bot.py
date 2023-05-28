@@ -143,6 +143,34 @@ async def structure_spawn_task() -> None:
         await channel.send(embed=embed)
         await db_manager.edit_current_structure(bot_guild.id, structureid)
 
+@tasks.loop(minutes=30)
+async def mob_spawn_task() -> None:
+    mobs = await db_manager.get_all_enemies()
+    for bot_guild in bot.guilds:
+        #if bot_guild.id == 1070882685855211641:
+        #    print("Skipping " + bot_guild.name + " because it's the Connections server")
+        #    continue
+        #reset the guilds current structure
+        channel = discord.utils.get(bot_guild.text_channels, topic="dankstreamer-structures")
+        if channel is None:
+            #print("A channel with the topic dankstreamer-structures does not exist in " + bot_guild.name)
+            continue
+        
+        if await db_manager.get_current_structure(bot_guild.id) is not None:
+            #print("A structure is already spawned in " + bot_guild.name)
+            continue
+        #get all the mobs that can spawn
+
+        #get a random mob
+        mob = random.choice(mobs)
+        mobid = mob[0]
+        mob_name = mob[1]
+        await battle.spawn_monster(channel, mobid)
+        print("Spawned " + mob_name + " in " + bot_guild.name)
+
+
+
+
 
 @tasks.loop(minutes=1.0)
 async def status_task() -> None:
@@ -316,8 +344,11 @@ async def on_ready() -> None:
         await bot.tree.sync()
         print("Done syncing commands globally!")
     print("-------------------")
-    print("Structure Spawn Task Started")
-    structure_spawn_task.start()
+    #print("Structure Spawn Task Started")
+    #structure_spawn_task.start()
+    #print("-------------------")
+    print("Mob Spawn Task Started")
+    mob_spawn_task.start()
     print("-------------------")
     # Run setup function
     # Run twitch bot file
