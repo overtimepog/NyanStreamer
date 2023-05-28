@@ -1,0 +1,34 @@
+{
+    "wordPuzzles": [
+        {
+            "problem": "Rearrange the letters in 'listen' to make another English word.",
+            "choices": ["Tinsel", "Inlets", "Silent", "All of the above"],
+            "answer": "All of the above"
+        },
+        {
+            "problem": "Rearrange the letters in 'orchestra' to make another English word.",
+            "choices": ["Carthorse", "Carothers", "Chester", "Roaches"],
+            "answer": "Carthorse"
+        },
+        {
+            "problem": "Rearrange the letters in 'onset' to make another English word.",
+            "choices": ["Notes", "Stone", "Tones", "All of the above"],
+            "answer": "All of the above"
+        },
+        {
+            "problem": "What 7 letter word becomes longer when the third letter is removed?",
+            "choices": ["Lounger", "Longest", "Longing", "Lenders"],
+            "answer": "Lounger"
+        },
+        {
+            "problem": "I am a word of five letters and people eat me. If you remove the first letter I become a form of energy. Remove two, and I'm needed to live. Scramble the last 3 and you can drink me. What am I?",
+            "choices": ["Wheat", "Grape", "Water", "Juice"],
+            "answer": "Wheat"
+        },
+        {
+            "problem": "I am a word that begins with the letter 'i'. If you add the letter 'a' to me, I become a new word with a different meaning, but that sounds exactly the same. What word am I?",
+            "choices": ["Isle", "Idle", "Item", "Iron"],
+            "answer": "Isle"
+        }
+    ]
+}

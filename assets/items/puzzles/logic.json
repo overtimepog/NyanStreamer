@@ -1,0 +1,19 @@
+{
+    "logicPuzzles": [
+        {
+            "problem": "You are in a room with two doors. One leads to certain death and the other leads to freedom. There are two guards, one in front of each door. One guard always tells the truth and the other always lies. You do not know which guard is which, or which door leads to freedom. You can ask one guard one question to determine the door to freedom. What do you ask?",
+            "choices": ["Which door leads to freedom?", "If I were to ask the other guard which door leads to freedom, what would he say?", "Are you the truthful guard?", "Are you the lying guard?"],
+            "answer": "If I were to ask the other guard which door leads to freedom, what would he say?"
+        },
+        {
+            "problem": "There are three light switches outside a room. One corresponds to a light bulb inside the room, the other two do nothing. You can flip the switches however you want but can only enter the room once. How do you identify which switch controls the light bulb?",
+            "choices": ["Turn on all the switches", "Turn on one switch and wait", "Turn on two switches, wait a few minutes, turn one off", "Turn off all the switches"],
+            "answer": "Turn on two switches, wait a few minutes, turn one off"
+        },
+        {
+            "problem": "A man has a bee in his hand. What's in his eye?",
+            "choices": ["Tears", "Fear", "Beauty", "Nothing"],
+            "answer": "Beauty"
+        }
+    ]
+}

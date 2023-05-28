@@ -559,10 +559,25 @@ async def trivia(self, ctx: commands.Context):
         sequence_choices = random_sequence_question['choices']
         sequence_answer = random_sequence_question['answer']
 
+        word_puzzles = load_questions('assets/items/puzzles/word.json')
+        random_word_question = random.choice(word_puzzles['wordPuzzles'])
+        word_problem = random_word_question['problem']
+        word_choices = random_word_question['choices']
+        word_answer = random_word_question['answer']
+
+        # Load the logic puzzles
+        logic_puzzles = load_questions('assets/items/puzzles/logic.json')
+        random_logic_question = random.choice(logic_puzzles['logicPuzzles'])
+        logic_problem = random_logic_question['problem']
+        logic_choices = random_logic_question['choices']
+        logic_answer = random_logic_question['answer']
+
         puzzles = [
             {"type": "Math Problem", "question": math_problem, "choices": math_choices, "answer": math_answer},
             {"type": "Riddle", "question": riddle, "choices": riddle_choices, "answer": riddle_answer},
-            {"type": "Sequence", "question": sequence, "choices": sequence_choices, "answer": sequence_answer}
+            {"type": "Sequence", "question": sequence, "choices": sequence_choices, "answer": sequence_answer},
+            {"type": "Word Puzzle", "question": word_problem, "choices": word_choices, "answer": word_answer},
+            {"type": "Logic Puzzle", "question": logic_problem, "choices": logic_choices, "answer": logic_answer}
         ]
 
         selected_puzzle = random.choice(puzzles)
