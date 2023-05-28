@@ -1847,10 +1847,12 @@ async def spawn_monster(ctx, monsterID):
     embed.set_footer(text=f"use /attack enemy:{monsterID} to attack this monster")
 
     drops = await db_manager.get_enemy_drops(monsterID)
+    print(drops)
     # Generate drops info
     drop_info_list = []
     if drops:
         for drop in drops:
+            print(drop)
             item_emote = await db_manager.get_basic_item_emote(drop)
             item_name = await db_manager.get_basic_item_name(drop)
             drop_info_list.append(f"\t{item_emote} {item_name}")
