@@ -114,8 +114,11 @@ class Basic(commands.Cog, name="basic"):
                         item_description = await db_manager.get_chest_description(item_id)
                     else:
                         item_description = await db_manager.get_basic_item_description(item_id)
-
-                    inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+                    isequippable = await db_manager.is_basic_item_equipable(item_id)
+                    if isequippable == True:
+                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+                    else:
+                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
 
                 embeds.append(inventory_embed)
 
