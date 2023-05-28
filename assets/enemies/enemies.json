@@ -732,8 +732,8 @@
     {
         "enemy_id": "hell_hound",
         "enemy_name": "Hell Hound",
-        "enemy_health": 200,
-        "enemy_damage": "30-40",
+        "enemy_health": 35,
+        "enemy_damage": "10-15",
         "enemy_emoji": "<a:hellhound:1107043898435567656>",
         "enemy_description": "A hound from the depths of hell. It's as terrifying as you'd expect.",
         "enemy_rarity": "Epic",
