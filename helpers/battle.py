@@ -1819,12 +1819,15 @@ async def spawn_monster(ctx, monsterID):
     monster_emoji = await db_manager.get_enemy_emoji(monsterID)
     monster_emoji = str(monster_emoji[0])
     await db_manager.add_current_spawn(ctx.guild.id, monsterID, monster_hp)
+    desc = await db_manager.get_enemy_description(monsterID)
     #send the embed to the channel
     embed = discord.Embed(
         title=f"{monster_name}",
-        description=f"**Health:** {monster_hp}/{monster_hp}\n**Attack:** {monster_attack}",
+        description=f"{desc}",
         color=discord.Color.red()
     )
+    embed.add_field(name="**Health: **", value=f"{monster_hp}/{monster_hp}", inline=True)
+    embed.add_field(name="**Attack: **", value=f"{monster_attack}", inline=True)
     # If there's an emote for the mob
     if monster_emoji:
         # Get the numbers in the emote string
@@ -1914,11 +1917,15 @@ async def send_spawned_embed(ctx: Context):
         mobEmoji = mobEmoji.replace(",", "")
 
         # Build the embed, and set the image to the monster's emoji
+        desc = await db_manager.get_enemy_description(currentSpawn)
+        #send the embed to the channel
         embed = discord.Embed(
             title=f"{mobName}",
-            description=f"**Health:** {currentHealth}/{mobHealth}\n**Attack:** {mobAttack}",
+            description=f"{desc}",
             color=discord.Color.red()
         )
+        embed.add_field(name="**Health: **", value=f"{currentHealth}/{mobHealth}", inline=True)
+        embed.add_field(name="**Attack: **", value=f"{mobAttack}", inline=True)
 
         # If there's an emote for the mob
         if mobEmoji:
