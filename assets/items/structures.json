@@ -190,7 +190,7 @@
                   "structure_state": "loss",
                   "outcome_chance": 0.2,
                   "outcome_type": "spawn",
-                  "outcome_output": "cave_spider",
+                  "outcome_output": "giant_spider",
                   "outcome_amount": 0,
                   "outcome_money": 0,
                   "outcome_xp": 10
@@ -224,16 +224,6 @@
                   "outcome_amount": 1,
                   "outcome_money": 0,
                   "outcome_xp": 30
-              },
-              {
-                  "structure_quote": "You've stumbled upon an old mining cart filled with coal!",
-                  "structure_state": "success",
-                  "outcome_chance": 0.1,
-                  "outcome_type": "item_gain",
-                  "outcome_output": "coal",
-                  "outcome_amount": 10,
-                  "outcome_money": 0,
-                  "outcome_xp": 20
               },
               {
                   "structure_quote": "You've been exposed to toxic fumes and lost some health!",
