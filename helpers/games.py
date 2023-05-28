@@ -521,15 +521,8 @@ class TriviaView(View):
     def add_choice(self, choice):
         self.add_item(TriviaButton(label=choice, style=discord.ButtonStyle.secondary, view=self))
 
-class MyBot(commands.Bot):
-    def __init__(self, command_prefix, **options):
-        super().__init__(command_prefix, **options)
 
-    async def on_ready(self):
-        print(f'We have logged in as {self.user}')
-
-    @commands.command()
-    async def trivia(self, ctx: commands.Context):
+async def trivia(self, ctx: commands.Context):
         def load_questions(filename):
             with open(filename, 'r') as file:
                 data = json.load(file)
