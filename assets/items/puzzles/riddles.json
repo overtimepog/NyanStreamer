@@ -23,6 +23,102 @@
         "riddle": "What is so fragile that saying its name breaks it?",
         "choices": ["A glass", "Silence", "A feather", "A mirror"],
         "answer": "Silence"
+      },
+      {
+        "id": 5,
+        "riddle": "I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?",
+        "choices": ["An echo", "A ghost", "A shadow", "A cloud"],
+        "answer": "An echo"
+      },
+      {
+        "id": 6,
+        "riddle": "I am taken from a mine, and shut up in a wooden case, from which I am never released, and yet I am used by almost every person. What am I?",
+        "choices": ["Gold", "Coal", "A diamond", "Pencil lead"],
+        "answer": "Pencil lead"
+      },
+      {
+        "id": 7,
+        "riddle": "What has many teeth, but can't bite?",
+        "choices": ["A comb", "A snake", "A dog", "A shark"],
+        "answer": "A comb"
+      },
+      {
+        "id": 8,
+        "riddle": "What has a heart that doesn’t beat?",
+        "choices": ["An artichoke", "A dead person", "A machine", "A rock"],
+        "answer": "An artichoke"
+      },
+      {
+        "id": 9,
+        "riddle": "This belongs to you, but other people use it more than you do. What is it?",
+        "choices": ["Your name", "Your car", "Your clothes", "Your house"],
+        "answer": "Your name"
+      },
+      {
+        "id": 10,
+        "riddle": "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?",
+        "choices": ["A map", "A globe", "A desert", "A dream"],
+        "answer": "A map"
+      },
+      {
+        "id": 11,
+        "riddle": "I am not alive, but I grow; I don't have lungs, but I need air; I don't have a mouth, but water kills me. What am I?",
+        "choices": ["Fire", "Rock", "Sand", "Ice"],
+        "answer": "Fire"
+      },
+      {
+        "id": 12,
+        "riddle": "I fly without wings. I cry without eyes. Wherever I go, darkness follows me. What am I?",
+        "choices": ["Shadow", "Wind", "Cloud", "Ghost"],
+        "answer": "Cloud"
+      },
+      {
+        "id": 13,
+        "riddle": "The more you take, the more you leave behind. What am I?",
+        "choices": ["Time", "Love", "Footsteps", "Air"],
+        "answer": "Footsteps"
+      },
+      {
+        "id": 14,
+        "riddle": "I am full of keys, but I can't open any door. What am I?",
+        "choices": ["A map", "A piano", "A book", "A toolbox"],
+        "answer": "A piano"
+      },
+      {
+        "id": 15,
+        "riddle": "What can travel around the world while staying in a corner?",
+        "choices": ["A stamp", "A book", "A coin", "A mouse"],
+        "answer": "A stamp"
+      },
+      {
+        "id": 16,
+        "riddle": "What has hands but can not clap?",
+        "choices": ["A clock", "A mannequin", "A chair", "A toy"],
+        "answer": "A clock"
+      },
+      {
+        "id": 17,
+        "riddle": "What gets bigger the more you take away from it?",
+        "choices": ["A hole", "A mountain", "A river", "A tree"],
+        "answer": "A hole"
+      },
+      {
+        "id": 18,
+        "riddle": "You see a house with two doors. One door leads to certain death and the other door leads to life. There are two guards, one in front of each door. One guard always tells the truth and the other always lies. You do not know which guard is which, nor which door leads to life. You can ask one guard one question to determine the door to life. What do you ask?",
+        "choices": ["Which door would the other guard say leads to life?", "Are you guarding the door to life?", "Is the other guard a liar?", "Which door leads to life?"],
+        "answer": "Which door would the other guard say leads to life?"
+      },
+      {
+        "id": 19,
+        "riddle": "What is so delicate that saying its name breaks it?",
+        "choices": ["Silence", "Bubble", "Heart", "Mirror"],
+        "answer": "Silence"
+      },
+      {
+        "id": 20,
+        "riddle": "What can you catch but not throw?",
+        "choices": ["A ball", "A cold", "A fish", "A bird"],
+        "answer": "A cold"
       }
     ]
   }
