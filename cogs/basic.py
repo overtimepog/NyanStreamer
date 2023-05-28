@@ -565,9 +565,9 @@ class Basic(commands.Cog, name="basic"):
                         item_emoji = await db_manager.get_chest_icon(item_id)
                         item_description = await db_manager.get_chest_description(item_id)
                         item_amount = await db_manager.get_shop_item_amount(item_id)
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n Type: `Chests` \n ID:`{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n Type: `Chests` \n ID | `{item_id}`', inline=False)
                     else:
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n Type: `{item[5]}` \n ID:`{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n Type: `{item[5]}` \n ID | `{item_id}`', inline=False)
                 embeds.append(shop_embed)
 
             return embeds
