@@ -314,7 +314,7 @@ class Games(commands.Cog, name="games"):
         description="Solve a puzzle.",
     )
     async def puzzle(self, ctx: Context):
-        await games.trivia(ctx)
+        await games.trivia(self, ctx)
 
 async def setup(bot):
     await bot.add_cog(Games(bot))
