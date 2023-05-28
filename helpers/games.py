@@ -519,7 +519,7 @@ class TriviaView(View):
         self.answer = answer
 
     def add_choice(self, choice):
-        self.add_item(TriviaButton(label=choice, style=discord.ButtonStyle.secondary, view=self))
+        self.add_item(TriviaButton(label=choice, view=self, style=discord.ButtonStyle.secondary))
 
 
 async def trivia(self, ctx: commands.Context):
