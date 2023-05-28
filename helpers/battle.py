@@ -1922,6 +1922,22 @@ async def send_spawned_embed(ctx: Context):
 
         # Add the footer "use /attack {monster name} to attack the monster"
         embed.set_footer(text=f"use /attack {currentSpawn} to attack this monster")
+
+        drops = await db_manager.get_enemy_drops(currentSpawn)
+        # Generate drops info
+        drop_info_list = []
+        if drops:
+            for drop in drops:
+                item_emote = await db_manager.get_basic_item_emote(drop)
+                item_name = await db_manager.get_basic_item_name(drop)
+                drop_info_list.append(f"\t{item_emote} {item_name}")
+            drop_info = "\n".join(drop_info_list)
+        else:
+            drop_info = "No Drops"
+
+        # Add the drops info as a field to the embed
+        embed.add_field(name="🎁 Possible Drops", value=drop_info, inline=False)
+
         # Get the top 3 damage dealers
         first_damage_dealer = await db_manager.get_firstDamageDealer(currentSpawn, ctx.guild.id)
         second_damage_dealer = await db_manager.get_secondDamageDealer(currentSpawn, ctx.guild.id)
