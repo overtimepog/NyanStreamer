@@ -1580,7 +1580,6 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
     luck = await db_manager.get_luck(userID)
     #convert the dodge chance to int
     user_dodge_chance = int(user_dodge_chance)
-    user_dodge_chance = user_dodge_chance + luck
     #get a random number between 1 and 100
     random_number = random.randint(1, 100)
     #if the random number is less than or equal to the dodge chance
@@ -1591,6 +1590,8 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         return
     await db_manager.remove_health(userID, monsterDamage)
     await ctx.send(enemyPromt)
+    #send the embed 
+    await send_spawned_embed(ctx)
     
     #get the users health
     userHealth = await db_manager.get_health(userID)
