@@ -164,6 +164,11 @@ async def mob_spawn_task() -> None:
         mob = random.choice(mobs)
         mobid = mob[0]
         mob_name = mob[1]
+        #get the current spawned mobs
+        current_mob = await db_manager.get_current_spawn(bot_guild.id)
+        if current_mob is not None:
+            print("A mob is already spawned in " + bot_guild.name)
+            continue
         await battle.spawn_monster(channel, mobid)
         print("Spawned " + mob_name + " in " + bot_guild.name)
 
