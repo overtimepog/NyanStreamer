@@ -1,4 +1,5 @@
-import os # for importing env vars for the bot to use
+import os
+import re # for importing env vars for the bot to use
 from twitchio.ext import commands
 import asyncio
 import json
@@ -63,8 +64,9 @@ class TwitchBot(commands.Bot):
             #get the viewers from the channel
             channel = TwitchBot.get_channel(self, ctx.channel.name)
             chatters = channel.chatters
-            print(chatters)
-            await ctx.send("The Chatters are " + str(chatters))
+            names = re.findall(r'PartialChatter name: (.*?),', chatters)
+            randomViewer = random.choice(names)
+            print(randomViewer)
             channelName = channel.name
             channelName = str(channelName)
             twitchID = await db_manager.get_twitch_id_of_channel(channelName)
@@ -72,7 +74,6 @@ class TwitchBot(commands.Bot):
             channelName = str(channelName)
             #add the vips to the viewers list
             #get a random viewer from the list
-            randomViewer = random.choice(list)
             #get the item from the database
             items = await db_manager.get_all_streamer_items(twitchID)
             basic_items = db_manager.get_all_basic_items()
