@@ -1693,6 +1693,11 @@ class Basic(commands.Cog, name="basic"):
         description="Connect your twitch account to your discord account!",
     )
     async def connect(self, ctx: Context):
+        #check if th user exists in the database
+        user_exists = await db_manager.check_user(ctx.author.id)
+        if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
+            await ctx.send("You are not in the database yet, please use the `d.start or /start` command to start your adventure!")
+            return
         #create an embed to send to the user, then add a button to connect their twitch account
         embed = discord.Embed(
             title="Connect your twitch account to your discord account!",
