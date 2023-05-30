@@ -465,12 +465,12 @@ class Basic(commands.Cog, name="basic"):
     )
     async def acceptquest(self, ctx: Context, quest: str):
         # Get the quest id from the database
-        quest = await db_manager.get_quest_from_id(quest_id)
+        quest = await db_manager.get_quest_from_id(quest)
         if quest is None:
             await ctx.send("That quest does not exist.")
             return
 
-        quest_id = str(quest_id)
+        quest_id = str(quest)
 
         # Get the user id
         user_id = ctx.message.author.id
