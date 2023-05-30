@@ -62,7 +62,7 @@ class TwitchBot(commands.Bot):
         if ctx.author.is_mod:
             #get the viewers from the channel
             channel = TwitchBot.get_channel(self, ctx.channel.name)
-            channel.name = channelName
+            channelName = channel.name
             channelName = str(channelName)
             twitchID = await db_manager.get_twitch_id_of_channel(channelName)
             print(channelName)
