@@ -67,14 +67,6 @@ class TwitchBot(commands.Bot):
             twitchID = await db_manager.get_twitch_id_of_channel(channelName)
             print(channelName)
             channelName = str(channelName)
-            #remove the <Channel name: from the channel name
-            def remove_prefix(text, prefix):
-                if text.startswith(prefix):
-                    return text[len(prefix):]
-                return text
-            channelName = remove_prefix(channelName, "<Channel name: ")
-            #remove the > from the channel name
-            channelName = channelName[:-1]
             #send a request to the twitch api to get the viewers
             async with aiohttp.ClientSession() as session:
                 async with session.get(f"https://tmi.twitch.tv/group/user/{channelName}/chatters") as resp:
