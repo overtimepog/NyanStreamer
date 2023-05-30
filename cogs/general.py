@@ -50,7 +50,7 @@ class General(commands.Cog, name="general"):
             commands = cog.get_commands()
             for command in commands:
                 description = command.description.partition('\n')[0]
-                cogs_data.append((i, f"/{command.name}", description))
+                cogs_data.append((i, f"d! or /{command.name}", description))
 
         # Calculate number of pages based on number of cogs
         num_pages = (len(cogs_data) // 5) + (1 if len(cogs_data) % 5 > 0 else 0)
