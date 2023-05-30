@@ -71,6 +71,7 @@ class TwitchBot(commands.Bot):
             async with aiohttp.ClientSession() as session:
                 async with session.get(f"https://tmi.twitch.tv/group/user/{channelName}/chatters") as resp:
                     text = await resp.text()
+                    print(text)
                     try:
                         data = json.loads(text)
                     except json.JSONDecodeError:
