@@ -150,7 +150,7 @@ async def mob_spawn_task() -> None:
         #    print("Skipping " + bot_guild.name + " because it's the Connections server")
         #    continue
         #reset the guilds current structure
-        channel = discord.utils.get(bot_guild.text_channels, topic="dankstreamer-structures")
+        channel = discord.utils.get(bot_guild.text_channels, topic="dankstreamer")
         if channel is None:
             #print("A channel with the topic dankstreamer-structures does not exist in " + bot_guild.name)
             continue
