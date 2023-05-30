@@ -21,6 +21,7 @@ from discord.ext.commands import Context, has_permissions
 
 from helpers import battle, checks, db_manager, hunt, mine
 from typing import List, Tuple
+from discord.ext.commands.errors import CommandInvokeError
 
 
 global i
@@ -1714,7 +1715,11 @@ class Basic(commands.Cog, name="basic"):
                 self.add_item(discord.ui.Button(label="Register With Twitch!", url=self.url))
         #send the embed to the user in DMs
         await ctx.send("Check your DMs :)")
-        await ctx.author.send(embed=embed, view=MyView(f"https://dankstreamer.lol/webhook?discord_id={ctx.author.id}")) # Send a message with our View class that contains the button
+        try:
+            await ctx.author.send(embed=embed, view=MyView(f"https://dankstreamer.lol/webhook?discord_id={ctx.author.id}")) # Send a message with our View class that contains the button
+        except(CommandInvokeError):
+            await ctx.send("I couldn't DM you! Make sure your DMs are open!")
+            return
         
 #disconnect command
     @commands.hybrid_command(
@@ -2256,6 +2261,11 @@ class Basic(commands.Cog, name="basic"):
         monsterName = await db_manager.get_enemy_name(enemy)
         #check if the monster is spawned
         monsterSpawned = await db_manager.check_current_spawn(monsterID, ctx.guild.id)
+        #check if a user is alive
+        isAlive = await db_manager.is_alive(userID)
+        if isAlive == False:
+            await ctx.send("You are dead! Use a revive potion <:RevivePotion:1077645427647725578> to revive!")
+            return
         #if the monster is spawned
         if monsterSpawned == 1:
             #start the battle
