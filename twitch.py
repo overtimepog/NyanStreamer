@@ -62,25 +62,14 @@ class TwitchBot(commands.Bot):
         if ctx.author.is_mod:
             #get the viewers from the channel
             channel = TwitchBot.get_channel(self, ctx.channel.name)
+            chatters = channel.chatters
+            print(chatters)
+            await ctx.send("The Chatters are " + str(chatters))
             channelName = channel.name
             channelName = str(channelName)
             twitchID = await db_manager.get_twitch_id_of_channel(channelName)
             print(channelName)
             channelName = str(channelName)
-            #send a request to the twitch api to get the viewers
-            async with aiohttp.ClientSession() as session:
-                async with session.get(f"https://tmi.twitch.tv/group/user/{channelName}/chatters") as resp:
-                    text = await resp.text()
-                    print(text)
-                    try:
-                        data = json.loads(text)
-                    except json.JSONDecodeError:
-                        print("Failed to decode json from response")
-                        data = None
-            #get the viewers from the json
-            viewers = data["chatters"]["viewers"]
-            vips = data["chatters"]["vips"]
-            list = viewers + vips
             #add the vips to the viewers list
             #get a random viewer from the list
             randomViewer = random.choice(list)
