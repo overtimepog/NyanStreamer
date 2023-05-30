@@ -72,16 +72,27 @@ async def callback(request: Request):
     else:
         description = "Your accounts have been connected!"
 
-    return templates.TemplateResponse("thanks.html", {
-        "request": request, 
-        "discord_id": discord_id,
-        "twitch_id": user['id'],
-        "description": description,
-        "broadcaster_type": broadcaster_type,
-        "twitch_name": user['login'],
-        "prefix": emotePrefix
-    })
 
+    if broadcaster_type in ["affiliate", "partner"]:
+        return templates.TemplateResponse("thanks.html", {
+            "request": request, 
+            "discord_id": discord_id,
+            "twitch_id": user['id'],
+            "description": description,
+            "broadcaster_type": broadcaster_type,
+            "twitch_name": user['login'],
+            "prefix": emotePrefix
+        })
+    else:
+        return templates.TemplateResponse("thanks.html", {
+             "request": request,
+            "discord_id": discord_id,
+            "twitch_id": user['id'],
+            "description": description,
+            "broadcaster_type": "User",
+            "twitch_name": user['login'],
+            "prefix": "None"
+        })
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
