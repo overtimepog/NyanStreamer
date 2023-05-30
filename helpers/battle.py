@@ -2011,11 +2011,11 @@ async def userattack(ctx: Context, target: discord.Member):
         await ctx.send(f"{target.name} does not exist!, tell them to do `/start` to start playing!")
         return
 
-    if attacker_health <= 0:
+    if int(attacker_health) <= 0:
         await ctx.send(f"{attacker.name} has no health left and cannot attack!")
         return
 
-    if target_health <= 0:
+    if int(target_health) <= 0:
         await ctx.send(f"{target.name} has already been defeated and needs to be revived!")
         return
     
