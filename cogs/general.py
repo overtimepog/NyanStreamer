@@ -50,7 +50,7 @@ class General(commands.Cog, name="general"):
             commands = cog.get_commands()
             for command in commands:
                 description = command.description.partition('\n')[0]
-                cogs_data.append((i, f"d! or /{command.name}", description))
+                cogs_data.append((i, f"{command.name}", description))
 
         # Calculate number of pages based on number of cogs
         num_pages = (len(cogs_data) // 5) + (1 if len(cogs_data) % 5 > 0 else 0)
@@ -61,12 +61,12 @@ class General(commands.Cog, name="general"):
             for i in range(num_pages):
                 start_idx = i * 5
                 end_idx = start_idx + 5
-                help_embed = discord.Embed(title="Help", description="List of available commands:", color=0x9C84EF)
+                help_embed = discord.Embed(title="Help", description="List of available commands: use d! or /", color=0x9C84EF)
                 help_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
                 for cog in cogs_list[start_idx:end_idx]:
                     cog_name, command_name, command_description = cog
-                    help_embed.add_field(name=cog_name.capitalize(), value=f'```{command_name} - {command_description}```', inline=False)
+                    help_embed.add_field(name=f'{command_name}', value=f'```{command_description}```', inline=False)
 
                 embeds.append(help_embed)
 
