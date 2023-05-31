@@ -55,7 +55,7 @@ class TwitchBot(commands.Bot):
         await ctx.send(f'Hello {ctx.author.name}!')
 
     #command to drop an item to a random viewer in chat, get the random veiwer from https://tmi.twitch.tv/group/user/{channel}/chatters and then send a message to them
-    @commands.cooldown(rate=1, per=120, bucket=commands.BucketType.channel)
+    @commands.cooldown(rate=1, per=120, bucket=commands.Bucket.channel)
     @commands.command()
     async def drop(self, ctx: commands.Context):
         if ctx.author.is_mod:
