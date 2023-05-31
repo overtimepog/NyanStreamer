@@ -499,9 +499,9 @@ async def get_all_basic_items() -> list:
     return data
 
 #return a list of all of a streamers created items by channel name
-async def get_all_streamer_items(twitch_id: int) -> list:
+async def get_all_streamer_items(channel: str) -> list:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `streamer_items` WHERE twitch_id = ?", (twitch_id,), fetch="all")
+    data = await db.execute(f"SELECT * FROM `streamer_items` WHERE channel = ?", (channel,), fetch="all")
     return data
 
 
