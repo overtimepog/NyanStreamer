@@ -105,7 +105,7 @@ class TwitchBot(commands.Bot):
                     await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
                     return
                 else:
-                    await ctx.send(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!, ReRolling...")
+                    await ctx.send(f"{randomViewer} is not connected to discord! ReRolling...")
         else:
             await ctx.send(f"You do not have permission to use this command!")
         
