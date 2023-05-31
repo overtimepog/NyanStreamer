@@ -64,7 +64,7 @@ class TwitchBot(commands.Bot):
             #get the viewers from the channel
             channel = TwitchBot.get_channel(self, ctx.channel.name)
             chatters = channel.chatters
-            names = re.findall(r'PartialChatter name: (.*?),', chatters)
+            names = [chatter.name for chatter in chatters]
             randomViewer = random.choice(names)
             print(randomViewer)
             channelName = channel.name
