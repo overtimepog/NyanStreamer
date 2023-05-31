@@ -1997,7 +1997,8 @@ class Basic(commands.Cog, name="basic"):
         outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
 
         # Using set() to ensure unique outcomes
-        random_outcomes = random.sample(set(outcomes), min(3, len(set(outcomes))))
+        unique_outcomes = [dict(t) for t in set([tuple(d.items()) for d in outcomes])]
+        random_outcomes = random.sample(unique_outcomes, min(3, len(unique_outcomes)))
 
         embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
         embed.set_image(url=structure[2])
