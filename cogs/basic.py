@@ -294,9 +294,11 @@ class Basic(commands.Cog, name="basic"):
 
         # Get the items from the database
         items = await db_manager.view_streamer_items(streamer)
+        #print(items)
 
         # Get the user's items from the database
         user_items = await db_manager.view_streamer_item_inventory(user_id)
+        #print(user_items)
 
         if len(items) == 0:
             await ctx.send("This streamer has no items.")
@@ -306,10 +308,10 @@ class Basic(commands.Cog, name="basic"):
 
         # Add the items to the embed
         for i in items:
-            if any(i[1] in j for j in user_items):
+            if any(i[2] in j for j in user_items):
                 embed.add_field(name=f"{i[4]}", value=f"**{i[3]}**", inline=False)
             else:
-                embed.add_field(name=f"{i[4]}", value=f"**???**", inline=False)
+                embed.add_field(name=f"**???**", value=f"**???**", inline=False)
 
         await ctx.send(embed=embed)
         #else:

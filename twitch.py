@@ -63,7 +63,6 @@ class TwitchBot(commands.Bot):
             chatters = channel.chatters
             names = [chatter.name for chatter in chatters]
             itemGiven = False  # Introduce a boolean flag
-
             for _ in range(len(names)):  # Change from infinite loop to finite loop over chatters
                 randomViewer = random.choice(names)
                 userTwitchID = await db_manager.get_twitch_id_of_channel(randomViewer)
