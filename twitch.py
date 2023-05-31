@@ -155,7 +155,7 @@ class TwitchBot(commands.Bot):
                 return
             else:
                 await ctx.send(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!, ReRolling...")
-                await TwitchBot.drop(self, ctx)
+                await TwitchBot.drop(self, ctx, ctx.channel.name)
         else:
             await ctx.send(f"You do not have permission to use this command!")
         
