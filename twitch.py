@@ -55,7 +55,7 @@ class TwitchBot(commands.Bot):
         await ctx.send(f'Hello {ctx.author.name}!')
 
     #command to drop an item to a random viewer in chat, get the random veiwer from https://tmi.twitch.tv/group/user/{channel}/chatters and then send a message to them
-    @commands.cooldown(rate=1, per=1800, bucket=commands.Bucket.channel)
+    @commands.cooldown(rate=1, per=120, bucket=commands.Bucket.channel)
     @commands.command()
     #add a cooldown of 1 hour
     async def drop(self, ctx: commands.Context):
@@ -154,8 +154,8 @@ class TwitchBot(commands.Bot):
                 await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
                 return
             else:
-                print(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!, ReRolling...")
-                await self.drop(ctx)
+                await ctx.send(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!, ReRolling...")
+                await TwitchBot.drop(self, ctx)
         else:
             await ctx.send(f"You do not have permission to use this command!")
         
