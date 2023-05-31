@@ -55,107 +55,57 @@ class TwitchBot(commands.Bot):
         await ctx.send(f'Hello {ctx.author.name}!')
 
     #command to drop an item to a random viewer in chat, get the random veiwer from https://tmi.twitch.tv/group/user/{channel}/chatters and then send a message to them
-    @commands.cooldown(rate=1, per=120, bucket=commands.Bucket.channel)
+    @commands.cooldown(rate=1, per=120, bucket=commands.BucketType.channel)
     @commands.command()
-    #add a cooldown of 1 hour
     async def drop(self, ctx: commands.Context):
-        #make sure only mods of the channel can use this command
         if ctx.author.is_mod:
-            #get the viewers from the channel
             channel = TwitchBot.get_channel(self, ctx.channel.name)
             chatters = channel.chatters
             names = [chatter.name for chatter in chatters]
-            randomViewer = random.choice(names)
-            print(randomViewer)
-            channelName = channel.name
-            channelName = str(channelName)
-            print(channelName)
-            channelName = str(channelName)
-            #add the vips to the viewers list
-            #get a random viewer from the list
-            #get the item from the database
-            items = await db_manager.get_all_streamer_items(channelName)
-            userTwitchID = await db_manager.get_twitch_id_of_channel(randomViewer)
-            isConnected = await db_manager.is_twitch_connected(userTwitchID)
-            if isConnected == True:
-                #get the discord id of the random user
-                userDiscordID = await db_manager.get_user_id(userTwitchID)
-                if len(items) == 0:
-                    #send a message to the channel saying there are no items to drop
-                    print("no items for channel: " + ctx.channel.name)
-                    await ctx.send(f"There are no items to drop in {ctx.channel.name}, giving money instead :)!")
-                    #drop a random basic item instead
-                    #get a random item from the list
-                    
-                    money = random.randint(25, 1000)
-                    await db_manager.add_money(userDiscordID, money)
-                    await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
-                    return
 
-                #get a random item from the list
-                randomItem = random.choice(items)
-                    #`streamer_prefix` varchar(20) NOT NULL,
-                    #`item_id` varchar(20) NOT NULL,
-                    #`item_name` varchar NOT NULL,
-                    #`item_price` varchar(255) NOT NULL,
-                    #`item_emoji` varchar(255) NOT NULL,
-                    #`item_rarity` varchar(255) NOT NULL,
-                    #`twitch_id` varchar(255) NOT NULL,
-                    #`item_type` varchar(255) NOT NULL,
-                    #`item_damage` int(11) NOT NULL,
-                    #`item_element` varchar(255) NOT NULL,
-                    #`item_crit_chance` int(11) NOT NULL,
-                    #`item_effect` varchar(255) NOT NULL,
-                    #`isUsable` boolean NOT NULL,
-                    #`isEquippable` boolean NOT NULL
-                #CREATE TABLE IF NOT EXISTS `streamer_items` (
-                #  `streamer_prefix` varchar(20) NOT NULL,
-                #  `channel` varchar(20) NOT NULL,
-                #  `item_id` varchar(20) NOT NULL,
-                #  `item_name` varchar NOT NULL,
-                #  `item_emoji` varchar(255) NOT NULL,
-                #  `item_rarity` varchar(255) NOT NULL
-                #);
+            while True:
+                randomViewer = random.choice(names)
+                userTwitchID = await db_manager.get_twitch_id_of_channel(randomViewer)
+                isConnected = await db_manager.is_twitch_connected(userTwitchID)
+                if isConnected:
+                    userDiscordID = await db_manager.get_user_id(userTwitchID)
+                    items = await db_manager.get_all_streamer_items(channel.name)
 
-                prefix = randomItem[0]
-                channel = randomItem[1]
-                itemID = randomItem[2]
-                itemName = randomItem[3]
+                    if len(items) == 0:
+                        print("no items for channel: " + ctx.channel.name)
+                        await ctx.send(f"There are no items to drop in {ctx.channel.name}, giving money instead :)!")
+                        money = random.randint(25, 1000)
+                        await db_manager.add_money(userDiscordID, money)
+                        await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
+                        return
 
-                #print all of it
-                print(prefix)
-                print(channel)
-                print(itemID)
-                print(itemName)
-                print(randomViewer)
+                    randomItem = random.choice(items)
 
-                #get all the data from the item
+                    prefix = randomItem[0]
+                    channel = randomItem[1]
+                    itemID = randomItem[2]
+                    itemName = randomItem[3]
 
-                #make sure the random user is connected to discord
-                #get the twitch id of the random user
-                    #get the discord name of the random user
-                    #send a message to the random user
-                    #add the item to the users inventory
-                    #give it a 50% chance for the item to be dropped, and the other 75% it will give random amount of money
-                chance = random.randint(1, 4)
-                if chance <= 2:
+                    print(prefix)
+                    print(channel)
+                    print(itemID)
+                    print(itemName)
+                    print(randomViewer)
                     itemgiven = await db_manager.add_streamer_item_to_user(userDiscordID, itemID)
-                    #send a message to the random user saying they have been given an item
                     if itemgiven == 0:
-                        await ctx.send(f"{randomViewer} already has {itemName} in their inventory!, you have been given 5000 coins instead!")
-                        await db_manager.add_money(userDiscordID, 5000)
+                        await ctx.send(f"{randomViewer} already has {itemName} in their inventory!, you have been given 1000 coins instead!")
+                        await db_manager.add_money(userDiscordID, 1000)
                         return
                     elif itemgiven == 1:
                         await ctx.send(f"{randomViewer} has been given {itemName} by {ctx.author.name}!")
                         return
-                    #get a random amount of money
-                money = random.randint(25, 1000)
-                await db_manager.add_money(userDiscordID, money)
-                await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
-                return
-            else:
-                await ctx.send(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!, ReRolling...")
-                await TwitchBot.drop(self, ctx, ctx.channel.name)
+
+                    money = random.randint(25, 1000)
+                    await db_manager.add_money(userDiscordID, money)
+                    await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
+                    return
+                else:
+                    await ctx.send(f"{randomViewer} is not connected to discord!, please connect to discord to receive items from drops!, ReRolling...")
         else:
             await ctx.send(f"You do not have permission to use this command!")
         
