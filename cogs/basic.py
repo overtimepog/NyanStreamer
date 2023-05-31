@@ -1983,21 +1983,21 @@ class Basic(commands.Cog, name="basic"):
         for outcome in outcomes:
             structure_outcomes.append({
                 #quote
-                "structure_quote": outcome[0],
+                "structure_quote": outcome[1],
                 #state
-                "structure_state": outcome[1],
+                "structure_state": outcome[2],
                 #chance
-                "outcome_chance": outcome[2],
+                "outcome_chance": outcome[3],
                 #type
-                "outcome_type": outcome[3],
+                "outcome_type": outcome[4],
                 #output
-                "outcome_output": outcome[4],
+                "outcome_output": outcome[5],
                 #amount
-                "outcome_amount": outcome[5],
+                "outcome_amount": outcome[6],
                 #money
-                "outcome_money": outcome[6],
+                "outcome_money": outcome[7],
                 #xp
-                "outcome_xp": outcome[7]
+                "outcome_xp": outcome[8]
             })
         luck = await db_manager.get_luck(ctx.author.id)
 
