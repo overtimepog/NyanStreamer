@@ -54,8 +54,13 @@ class TwitchBot(commands.Bot):
         # Send a hello back!
         await ctx.send(f'Hello {ctx.author.name}!')
 
+    @commands.command()
+    async def help(self, ctx: commands.Context):
+        #send a help message with all the commands
+        await ctx.send("d.drop: Drops a random item from your channel to a random viewer in chat\n")
+
     #command to drop an item to a random viewer in chat, get the random veiwer from https://tmi.twitch.tv/group/user/{channel}/chatters and then send a message to them
-    @commands.cooldown(rate=1, per=120, bucket=commands.Bucket.channel)
+    @commands.cooldown(rate=1, per=60, bucket=commands.Bucket.channel)
     @commands.command()
     async def drop(self, ctx: commands.Context):
         if ctx.author.is_mod:
@@ -74,7 +79,7 @@ class TwitchBot(commands.Bot):
                     if len(items) == 0:
                         print("no items for channel: " + ctx.channel.name)
                         await ctx.send(f"There are no items to drop in {ctx.channel.name}, giving money instead :)!")
-                        money = random.randint(25, 1000)
+                        money = random.randint(200, 5000)
                         await db_manager.add_money(userDiscordID, money)
                         await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
                         itemGiven = True
@@ -102,12 +107,10 @@ class TwitchBot(commands.Bot):
                         await ctx.send(f"{randomViewer} has been given {itemName} by {ctx.author.name}!")
                         itemGiven = True
                         break
-
             if not itemGiven:  # If the loop ended and no items were given
                 await ctx.send("No viewer has been given an item.")
         else:
             await ctx.send(f"You do not have permission to use this command!")
-        
         
 if __name__ == "__main__":
     bot = TwitchBot()
