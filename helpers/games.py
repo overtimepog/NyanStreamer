@@ -594,3 +594,6 @@ async def trivia(self, ctx: commands.Context):
             view.add_choice(choice)
 
         await ctx.send(embed=embed, view=view)
+
+
+#catch the fish minigame

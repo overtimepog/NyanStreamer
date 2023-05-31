@@ -1965,7 +1965,7 @@ class Basic(commands.Cog, name="basic"):
     )
     #command cooldown of 2 minutes
     @commands.cooldown(1, 120, commands.BucketType.user)
-    async def explore(self, ctx: Context, structure: str):
+    async def explore(self, ctx: Context):
         userExist = await db_manager.check_user(ctx.author.id)
         if userExist == None or userExist == []:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
@@ -1973,234 +1973,96 @@ class Basic(commands.Cog, name="basic"):
             return
     
         msg = ctx.message
-
+    
         await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
-        structure_outcomes = await db_manager.get_structure_outcomes(structure)
+        all_structures = await db_manager.get_all_structures()
+        structure = random.choice(all_structures)
+        structure_outcomes = structure["structure_outcomes"]
         luck = await db_manager.get_luck(ctx.author.id)
-
+    
         outcomes = []
         for outcome in structure_outcomes:
-            quote = outcome[1]
-            state = outcome[2]
-            outcome_chance = outcome[3] * 100  # Multiply by 100 because your outcome_chance is in the range of 0.01 to 1
-            outcome_type = outcome[4]
-            outcome_thing = outcome[5]
-            outcome_amount = outcome[6]
-            outcome_money = outcome[7]
-            outcome_xp = outcome[8]
+            outcomes.append(outcome)
+    
+        outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)  # Change the sort order to the chance of occurrence
+    
+        random_outcomes = random.sample(outcomes, min(3, len(outcomes)))  # Select 3 random outcomes
+    
+        embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
+        embed.set_thumbnail(url=structure["structure_image"])
+    
+        for i, item in enumerate(random_outcomes, start=1):
+            outcome_quote = item["structure_quote"]
+            outcome_state = item["structure_state"]
+            outcome_chance = item["outcome_chance"] * 100
+            outcome_type = item["outcome_type"]
+            outcome_output = item["outcome_output"]
+            outcome_amount = item["outcome_amount"]
+            outcome_money = item["outcome_money"]
+            outcome_xp = item["outcome_xp"]
+    
+            outcome_output = str(outcome_output)
+            outcome_quote = str(outcome_quote).strip()
+            embed.add_field(name=f":scroll: Outcome {i}", value=f"**{outcome_quote}**", inline=False)
+    
+            if outcome_type == "spawn":
+                user_health = await db_manager.get_health(ctx.author.id)
+                user_weapon = await db_manager.get_equipped_weapon(ctx.author.id)
+                monster_health = await db_manager.get_enemy_health(outcome_output)
+                monster_power = await db_manager.get_enemy_damage(outcome_output)
+                #the power is a string ex. 1-5
+                monster_power = monster_power.split("-")
+                #get the first number
+                monster_power = int(monster_power[0])
+                #get the second number
+                monster_power2 = int(monster_power[1])
+                #get a random number between the two numbers
+                monster_power = random.randint(monster_power, monster_power2)
+    
+                # Adjust the following formula based on your battle logic
+                chance_to_defeat = (user_health + user_weapon - monster_health - monster_power + luck) / 100
+                user_defeats_spawn = random.random() < chance_to_defeat
+                if user_defeats_spawn:
+                    monster_drops = await db_manager.get_enemy_drops(outcome_output)
+                    drops = []
+                    for drop in monster_drops:
+                        item = drop[1]
+                        drop_amount = drop[2]
+                        drop_chance = drop[3]
+                        drop_chance = float(drop_chance)
+                        drop_amount = int(drop_amount)
+                        drops.append([item, drop_chance, drop_amount])
+    
+                    # organize the items by their drop chance
+                    drops.sort(key=lambda x: x[1], reverse=True)
+    
+                    # create a cumulative distribution from the drop chances
+                    cumulative_distribution = []
+                    total = 0
+                    for drop in drops:
+                        total += drop[1]
+                        cumulative_distribution.append(total)
+    
+                    # roll a number between 0 and the total drop chances, adjusted by luck
+                    roll = random.uniform(0, total) - luck
+    
+                    # find the item that corresponds to the roll
+                    for i, drop in enumerate(drops):
+                        if roll <= cumulative_distribution[i]:
+                            chosen_item = drop
+                            break
+                        
+                    item_id = chosen_item[0]
+                    item_amount = chosen_item[2]
+    
+                    emote = await db_manager.get_basic_item_emote(item_id)
+                    item_name = await db_manager.get_basic_item_name(item_id)
+    
+                    if emote and item_name and item_amount:
+                        await db_manager.add_item_to_inventory(ctx.author.id, item_id, item_amount)
+                        embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has successfully defeated the monster!", inline=False)
+        await ctx.send(embed=embed)
 
-            outcomes.append([quote, state, outcome_chance, outcome_type, outcome_thing, outcome_amount, outcome_money, outcome_xp])
-
-        outcomes.sort(key=lambda x: x[2], reverse=True)
-
-        roll = random.randint(1, 100) + luck
-        if roll > 100:
-            roll = 100
-        elif roll < 1:
-            roll = 1
-
-        # Filter outcomes that the roll is equal or less than the chance.
-        valid_outcomes = [item for item in outcomes if roll <= item[2]]
-
-        if not valid_outcomes:  # If no valid outcomes, take the one with the highest chance
-            item = outcomes[0]
-        else:
-            item = random.choice(valid_outcomes)
-
-        outcome_quote = item[0]
-        outcome_state = item[1]
-        outcome_chance = item[2]
-        outcome_type = item[3]
-        outcome_thing = item[4]
-        outcome_amount = item[5]
-        outcome_money = item[6]
-        outcome_xp = item[7]
-
-        outcome_thing = str(outcome_thing)
-        outcome_quote = str(outcome_quote).strip()
-        if outcome_type == "item_gain":
-            #if outcome things first word is chest, then add a to the end of the outcome_quote
-            if outcome_thing.split("_")[0] == "chest":
-                outcome_icon = await db_manager.get_chest_icon(outcome_thing)
-                outcome_name = await db_manager.get_chest_name(outcome_thing)
-            else:
-                outcome_name = await db_manager.get_basic_item_name(outcome_thing)
-                outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
-            #send a message saying the outcome, and the item gained
-            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}** ...And + ⭐{outcome_xp} XP!")
-            #remove the health from the users health
-            await db_manager.add_xp(msg.author.id, outcome_xp)
-            #check if the user leveled up
-            canLevelUp = await db_manager.can_level_up(msg.author.id)
-            if canLevelUp == True:
-                await db_manager.add_level(msg.author.id, 1)
-                level = await db_manager.get_level(msg.author.id)
-                #remove the () and , from the level
-                level = str(level)
-                level = level.replace("(", "")
-                level = level.replace(")", "")
-                level = level.replace(",", "")
-                #if the user leveled up, send a message saying they leveled up
-                await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                
-            userquest = await db_manager.get_user_quest(msg.author.id)
-            if userquest != 0:
-                #check if the users quest objective is to get an item and if the item is the item they got
-                quest_objective = await db_manager.get_quest_objective_from_id(userquest)
-                #seperate it by space and get the second thing
-                quest_objective = quest_objective.split(" ")
-                quest_objective = quest_objective[1]
-                if quest_objective == outcome_thing:
-                    #add one to the users quest progress
-                    await db_manager.update_quest_progress(msg.author.id, userquest, outcome_amount)
-                    #check the users quest progress
-                    progress = await db_manager.get_quest_progress(msg.author.id, userquest)
-                    total = await db_manager.get_quest_total_from_id(userquest)
-                    #if the progress is less than the total, complete the quest and give the user the reward
-                    if progress >= total:
-                        #get quest reward type
-                        quest_reward_type = await db_manager.get_quest_reward_type_from_id(userquest)
-                        #if the quest reward type is item, give the user the item, and if its Money, give the user the money
-                        if quest_reward_type == "item":
-                            #get quest reward
-                            quest_reward = await db_manager.get_quest_reward_from_id(userquest)
-                            #get quest reward amount
-                            quest_reward_amount = await db_manager.get_quest_reward_amount_from_id(userquest)
-                            #add the item to the users inventory
-                            await db_manager.add_item_to_inventory(msg.author.id, quest_reward, quest_reward_amount)
-                            await ctx.send(f"Congrats {msg.author.mention}, you completed the quest **{await db_manager.get_quest_name_from_quest_id(userquest)}** and got x{quest_reward_amount} {await db_manager.get_basic_item_emote(quest_reward)} **{await db_manager.get_basic_item_name(quest_reward)}**!")
-                        elif quest_reward_type == "Money":
-                            #get quest reward amount
-                            quest_reward_amount = await db_manager.get_quest_reward_amount_from_id(userquest)
-                            #add the money to the users money
-                            await db_manager.add_money(msg.author.id, quest_reward_amount)
-                            await ctx.send(f"Congrats {msg.author.mention}, you completed the quest **{await db_manager.get_quest_name_from_quest_id(userquest)}** and got {cash}{quest_reward_amount} Money!")
-                    await db_manager.mark_quest_completed(msg.author.id, userquest)
-                    
-            #add the item to the users inventory
-            await db_manager.add_item_to_inventory(msg.author.id, outcome_thing, outcome_amount)
-        #if the outcome type is item_loss
-        elif outcome_type == "item_loss":
-            if outcome_thing.split("_")[0] == "chest":
-                outcome_icon = await db_manager.get_chest_icon(outcome_thing)
-                outcome_name = await db_manager.get_chest_name(outcome_thing)
-            else:
-                outcome_name = await db_manager.get_basic_item_name(outcome_thing)
-                outcome_icon = await db_manager.get_basic_item_emote(outcome_thing)
-            #send a message saying the outcome, and the item lost
-            await ctx.send(f"{outcome_quote} + {outcome_amount} {outcome_icon} **{outcome_name}** ...And + ⭐{outcome_xp} XP")
-            #remove the health from the users health
-            await db_manager.add_xp(msg.author.id, outcome_xp)
-            #check if the user leveled up
-            canLevelUp = await db_manager.can_level_up(msg.author.id)
-            if canLevelUp == True:
-                await db_manager.add_level(msg.author.id, 1)
-                #if the user leveled up, send a message saying they leveled up
-                level = await db_manager.get_level(msg.author.id)
-                #remove the () and , from the level
-                level = str(level)
-                level = level.replace("(", "")
-                level = level.replace(")", "")
-                level = level.replace(",", "")
-                #if the user leveled up, send a message saying they leveled up
-                await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                
-            #remove the item from the users inventory
-            await db_manager.remove_item_from_inventory(msg.author.id, outcome_thing, outcome_amount)
-        #if the outcome type is health_loss
-        elif outcome_type == "health_loss":
-            #send a message saying the outcome, and the health lost
-            await ctx.send(f"{outcome_quote} - {outcome_amount} health! ...And + ⭐{outcome_xp} XP")
-            #remove the health from the users health
-            await db_manager.add_xp(msg.author.id, outcome_xp)
-            #check if the user leveled up
-            canLevelUp = await db_manager.can_level_up(msg.author.id)
-            if canLevelUp == True:
-                await db_manager.add_level(msg.author.id, 1)
-                #if the user leveled up, send a message saying they leveled up
-                level = await db_manager.get_level(msg.author.id)
-                #remove the () and , from the level
-                level = str(level)
-                level = level.replace("(", "")
-                level = level.replace(")", "")
-                level = level.replace(",", "")
-                #if the user leveled up, send a message saying they leveled up
-                await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                
-            await db_manager.remove_health(msg.author.id, outcome_amount)
-        #if the outcome type is health_gain
-        elif outcome_type == "health_gain":
-            #send a message saying the outcome, and the health gained
-            await ctx.send(f"{outcome_quote} + {outcome_amount} health! ...And + ⭐{outcome_xp} XP")
-            #remove the health from the users health
-            await db_manager.add_xp(msg.author.id, outcome_xp)
-            #check if the user leveled up
-            canLevelUp = await db_manager.can_level_up(msg.author.id)
-            if canLevelUp == True:
-                await db_manager.add_level(msg.author.id, 1)
-                #if the user leveled up, send a message saying they leveled up
-                level = await db_manager.get_level(msg.author.id)
-                #remove the () and , from the level
-                level = str(level)
-                level = level.replace("(", "")
-                level = level.replace(")", "")
-                level = level.replace(",", "")
-                #if the user leveled up, send a message saying they leveled up
-                await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                
-            #add the health to the users health
-            await db_manager.add_health(msg.author.id, outcome_amount)
-        #if the outcome type is money_gain
-        elif outcome_type == "money_gain":
-            #send a message saying the outcome, and the money gained
-            await ctx.send(f"{outcome_quote} + {cash}{outcome_amount} ...And + ⭐{outcome_xp} XP")
-                        #remove the health from the users health
-            await db_manager.add_xp(msg.author.id, outcome_xp)
-            #check if the user leveled up
-            canLevelUp = await db_manager.can_level_up(msg.author.id)
-            if canLevelUp == True:
-                await db_manager.add_level(msg.author.id, 1)
-                #if the user leveled up, send a message saying they leveled up
-                level = await db_manager.get_level(msg.author.id)
-                #remove the () and , from the level
-                level = str(level)
-                level = level.replace("(", "")
-                level = level.replace(")", "")
-                level = level.replace(",", "")
-                #if the user leveled up, send a message saying they leveled up
-                await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                
-            #add the money to the users money
-            await db_manager.add_money(msg.author.id, outcome_amount)
-        #if the outcome type is money_loss
-        elif outcome_type == "money_loss":
-            #send a message saying the outcome, and the money lost
-            await ctx.send(f"{outcome_quote} - {cash}{outcome_amount} ...And + ⭐{outcome_xp} XP")
-                        #remove the health from the users health
-            await db_manager.add_xp(msg.author.id, outcome_xp)
-            #check if the user leveled up
-            canLevelUp = await db_manager.can_level_up(msg.author.id)
-            if canLevelUp == True:
-                await db_manager.add_level(msg.author.id, 1)
-                #if the user leveled up, send a message saying they leveled up
-                level = await db_manager.get_level(msg.author.id)
-                #remove the () and , from the level
-                level = str(level)
-                level = level.replace("(", "")
-                level = level.replace(")", "")
-                level = level.replace(",", "")
-                #if the user leveled up, send a message saying they leveled up
-                await ctx.send(f"Congrats {msg.author.mention}, you leveled up! You are now level {level}!")
-                
-            #remove the money from the users money
-            await db_manager.remove_money(msg.author.id, outcome_amount)
-        #if the outcome type is battle
-        elif outcome_type == "spawn":
-            #send a message saying the outcome
-            await ctx.send(f"{outcome_quote}")
-            #start a battle
-            outcome_name = await db_manager.get_enemy_name(outcome_thing)
-            await battle.spawn_monster(ctx, outcome_thing)
             
     #craft command
     @commands.hybrid_command()

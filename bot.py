@@ -351,9 +351,9 @@ async def on_ready() -> None:
     #print("Structure Spawn Task Started")
     #structure_spawn_task.start()
     #print("-------------------")
-    print("Mob Spawn Task Started")
-    mob_spawn_task.start()
-    print("-------------------")
+    #print("Mob Spawn Task Started")
+    #mob_spawn_task.start()
+    #print("-------------------")
     # Run setup function
     # Run twitch bot file
     subprocess.Popen([sys.executable, r'twitch.py'])

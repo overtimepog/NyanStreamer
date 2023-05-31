@@ -1999,6 +1999,15 @@ async def get_structure_outcomes(structure_id: str) -> list:
         else:
             return None
         
+#get all the structures
+async def get_all_structures() -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `structures`", fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+        
 #add a structure to the current structures table
 async def add_current_structure(server_id: str, structure_id: str) -> None:
         db = DB()
