@@ -75,7 +75,6 @@ class TwitchBot(commands.Bot):
             #get a random viewer from the list
             #get the item from the database
             items = await db_manager.get_all_streamer_items(channelName)
-            basic_items = db_manager.get_all_basic_items()
             userTwitchID = await db_manager.get_twitch_id_of_channel(randomViewer)
             isConnected = await db_manager.is_twitch_connected(userTwitchID)
             if isConnected == True:
