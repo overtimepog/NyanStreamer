@@ -2006,8 +2006,10 @@ class Basic(commands.Cog, name="basic"):
             outcomes.append(outcome)
 
         outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
+        print(outcomes)
 
         random_outcomes = random.sample(outcomes, min(3, len(outcomes)))
+        print(random_outcomes)
 
         embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
         embed.set_image(url=structure[2])
@@ -2023,6 +2025,8 @@ class Basic(commands.Cog, name="basic"):
             outcome_xp = item["outcome_xp"]
 
             outcome_output = str(outcome_output)
+            print(outcome_output)
+            print(outcome_quote)
             outcome_quote = str(outcome_quote).strip()
             embed.add_field(name=f":scroll: Outcome {i}", value=f"**{outcome_quote}**", inline=False)
 
