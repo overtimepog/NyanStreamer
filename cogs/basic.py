@@ -1982,34 +1982,22 @@ class Basic(commands.Cog, name="basic"):
         structure_outcomes = []
         for outcome in outcomes:
             structure_outcomes.append({
-                #quote
                 "structure_quote": outcome[1],
-                #state
                 "structure_state": outcome[2],
-                #chance
                 "outcome_chance": outcome[3],
-                #type
                 "outcome_type": outcome[4],
-                #output
                 "outcome_output": outcome[5],
-                #amount
                 "outcome_amount": outcome[6],
-                #money
                 "outcome_money": outcome[7],
-                #xp
                 "outcome_xp": outcome[8]
             })
         luck = await db_manager.get_luck(ctx.author.id)
 
-        outcomes = []
-        for outcome in structure_outcomes:
-            outcomes.append(outcome)
-
+        outcomes = [outcome for outcome in structure_outcomes]
         outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
-        #print(outcomes)
 
-        random_outcomes = random.sample(outcomes, min(3, len(outcomes)))
-        #print(random_outcomes)
+        # Using set() to ensure unique outcomes
+        random_outcomes = random.sample(set(outcomes), min(3, len(set(outcomes))))
 
         embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
         embed.set_image(url=structure[2])
@@ -2025,17 +2013,37 @@ class Basic(commands.Cog, name="basic"):
             outcome_xp = item["outcome_xp"]
 
             outcome_output = str(outcome_output)
-            #print(outcome_output)
-            #print(outcome_quote)
             outcome_quote = str(outcome_quote).strip()
             embed.add_field(name=f":scroll: Outcome {i}", value=f"**{outcome_quote}**", inline=False)
 
-            if outcome_type == "spawn":
+            if outcome_type == "item_gain":
+                item_id = outcome_output
+                await db_manager.add_item_to_inventory(ctx.author.id, item_id, outcome_amount)
+                embed.add_field(name=":package: Item Gain", value=f"You have gained {outcome_amount} of {outcome_output}!", inline=False)
+    
+            elif outcome_type == "item_loss":
+                item_id = outcome_output
+                await db_manager.remove_item_from_inventory(ctx.author.id, item_id, outcome_amount)
+                embed.add_field(name=":package: Item Loss", value=f"You have lost {outcome_amount} of {outcome_output}!", inline=False)
+    
+            elif outcome_type == "health_gain":
+                await db_manager.add_health(ctx.author.id, outcome_amount)
+                embed.add_field(name=":green_heart: Health Gain", value=f"You have gained {outcome_amount} health!", inline=False)
+    
+            elif outcome_type == "health_loss":
+                await db_manager.remove_health(ctx.author.id, outcome_amount)
+                embed.add_field(name=":green_heart: Health Loss", value=f"You have lost {outcome_amount} health!", inline=False)
+    
+            elif outcome_type == "money_gain":
+                await db_manager.add_money(ctx.author.id, outcome_money)
+                embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {outcome_money} coins!", inline=False)
+    
+            elif outcome_type == "spawn":
                 user_health = await db_manager.get_health(ctx.author.id)
                 user_weapon = await db_manager.get_equipped_weapon(ctx.author.id)
                 monster_health = await db_manager.get_enemy_health(outcome_output)
                 monster_power = await db_manager.get_enemy_damage(outcome_output)
-                #remove the () and , from the monster power
+                # remove the () and , from the monster power
                 monster_power = str(monster_power)
                 monster_power = monster_power.replace("(", "")
                 monster_power = monster_power.replace(")", "")
@@ -2047,6 +2055,7 @@ class Basic(commands.Cog, name="basic"):
 
                 chance_to_defeat = (user_health + user_weapon - monster_health - monster_power + luck) / 100
                 user_defeats_spawn = random.random() < chance_to_defeat
+
                 if user_defeats_spawn:
                     monster_drops = await db_manager.get_enemy_drops(outcome_output)
                     drops = []
@@ -2072,7 +2081,7 @@ class Basic(commands.Cog, name="basic"):
                         if roll <= cumulative_distribution[i]:
                             chosen_item = drop
                             break
-
+                        
                     item_id = chosen_item[0]
                     item_amount = chosen_item[2]
 
@@ -2082,7 +2091,15 @@ class Basic(commands.Cog, name="basic"):
                     if emote and item_name and item_amount:
                         await db_manager.add_item_to_inventory(ctx.author.id, item_id, item_amount)
                         embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has successfully defeated the monster!", inline=False)
+                else:
+                    # user didn't defeat the monster
+                    # decrease user's health, or other penalty here
+                    user_health = max(user_health - monster_power, 0)  # health can't go below 0
+                    await db_manager.set_health(ctx.author.id, user_health)
+                    embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has been defeated by the monster and lost some health!", inline=False)
+
         await ctx.send(embed=embed)
+
             
     #craft command
     @commands.hybrid_command()
