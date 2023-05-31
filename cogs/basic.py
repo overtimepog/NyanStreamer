@@ -2035,6 +2035,11 @@ class Basic(commands.Cog, name="basic"):
                 user_weapon = await db_manager.get_equipped_weapon(ctx.author.id)
                 monster_health = await db_manager.get_enemy_health(outcome_output)
                 monster_power = await db_manager.get_enemy_damage(outcome_output)
+                #remove the () and , from the monster power
+                monster_power = str(monster_power)
+                monster_power = monster_power.replace("(", "")
+                monster_power = monster_power.replace(")", "")
+                monster_power = monster_power.replace(",", "")
                 monster_power = monster_power.split("-")
                 monster_power = int(monster_power[0])
                 monster_power2 = int(monster_power[1])
