@@ -108,23 +108,29 @@ class TwitchBot(commands.Bot):
                     #`item_effect` varchar(255) NOT NULL,
                     #`isUsable` boolean NOT NULL,
                     #`isEquippable` boolean NOT NULL
+                #CREATE TABLE IF NOT EXISTS `streamer_items` (
+                #  `streamer_prefix` varchar(20) NOT NULL,
+                #  `channel` varchar(20) NOT NULL,
+                #  `item_id` varchar(20) NOT NULL,
+                #  `item_name` varchar NOT NULL,
+                #  `item_emoji` varchar(255) NOT NULL,
+                #  `item_rarity` varchar(255) NOT NULL
+                #);
 
+                prefix = randomItem[0]
+                channel = randomItem[1]
+                itemID = randomItem[2]
+                itemName = randomItem[3]
+
+                #print all of it
+                print(prefix)
+                print(channel)
+                print(itemID)
+                print(itemName)
+                print(randomViewer)
 
                 #get all the data from the item
-                prefix = randomItem[0]
-                itemID = randomItem[1]
-                itemName = randomItem[2]
-                itemPrice = randomItem[3]
-                itemEmoji = randomItem[4]
-                itemRarity = randomItem[5]
-                twitchID = randomItem[6]
-                itemType = randomItem[7]
-                itemDamage = randomItem[8]
-                itemSubType = randomItem[9]
-                itemCritChance = randomItem[10]
-                itemEffect = randomItem[11]
-                isUsable = randomItem[12]
-                isEquippable = randomItem[13]
+
                 #make sure the random user is connected to discord
                 #get the twitch id of the random user
                     #get the discord name of the random user
@@ -136,11 +142,11 @@ class TwitchBot(commands.Bot):
                     itemgiven = await db_manager.add_streamer_item_to_user(userDiscordID, itemID)
                     #send a message to the random user saying they have been given an item
                     if itemgiven == 0:
-                        await ctx.send(f"{randomViewer} already has {randomItem[2]} in their inventory!, you have been given 5000 coins instead!")
+                        await ctx.send(f"{randomViewer} already has {itemName} in their inventory!, you have been given 5000 coins instead!")
                         await db_manager.add_money(userDiscordID, 5000)
                         return
                     elif itemgiven == 1:
-                        await ctx.send(f"{randomViewer} has been given {randomItem[2]} by {ctx.author.name}!")
+                        await ctx.send(f"{randomViewer} has been given {itemName} by {ctx.author.name}!")
                         return
                     #get a random amount of money
                 money = random.randint(25, 1000)
