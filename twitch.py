@@ -62,8 +62,9 @@ class TwitchBot(commands.Bot):
             channel = TwitchBot.get_channel(self, ctx.channel.name)
             chatters = channel.chatters
             names = [chatter.name for chatter in chatters]
+            itemGiven = False  # Introduce a boolean flag
 
-            while True:
+            for _ in range(len(names)):  # Change from infinite loop to finite loop over chatters
                 randomViewer = random.choice(names)
                 userTwitchID = await db_manager.get_twitch_id_of_channel(randomViewer)
                 isConnected = await db_manager.is_twitch_connected(userTwitchID)
@@ -77,7 +78,8 @@ class TwitchBot(commands.Bot):
                         money = random.randint(25, 1000)
                         await db_manager.add_money(userDiscordID, money)
                         await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
-                        return
+                        itemGiven = True
+                        break
 
                     randomItem = random.choice(items)
 
@@ -95,17 +97,15 @@ class TwitchBot(commands.Bot):
                     if itemgiven == 0:
                         await ctx.send(f"{randomViewer} already has {itemName} in their inventory!, you have been given 1000 coins instead!")
                         await db_manager.add_money(userDiscordID, 1000)
-                        return
+                        itemGiven = True
+                        break
                     elif itemgiven == 1:
                         await ctx.send(f"{randomViewer} has been given {itemName} by {ctx.author.name}!")
-                        return
+                        itemGiven = True
+                        break
 
-                    money = random.randint(25, 1000)
-                    await db_manager.add_money(userDiscordID, money)
-                    await ctx.send(f"{randomViewer} has been given {money} coins by {ctx.author.name}!")
-                    return
-                else:
-                    await ctx.send(f"{randomViewer} is not connected to discord! ReRolling...")
+            if not itemGiven:  # If the loop ended and no items were given
+                await ctx.send("No viewer has been given an item.")
         else:
             await ctx.send(f"You do not have permission to use this command!")
         
