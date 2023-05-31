@@ -1971,27 +1971,47 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.explore.reset_cooldown(ctx)
             return
-
+    
         msg = ctx.message
-
+    
         await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
         all_structures = await db_manager.get_all_structures()
         structure = random.choice(all_structures)
-        print(structure)
-        structure_outcomes = structure["structure_outcomes"]
+        print(structure[0])
+        outcomes = await db_manager.get_structure_outcomes(structure[0])
+        structure_outcomes = []
+        for outcome in outcomes:
+            structure_outcomes.append({
+                #quote
+                "structure_quote": outcome[0],
+                #state
+                "structure_state": outcome[1],
+                #chance
+                "outcome_chance": outcome[2],
+                #type
+                "outcome_type": outcome[3],
+                #output
+                "outcome_output": outcome[4],
+                #amount
+                "outcome_amount": outcome[5],
+                #money
+                "outcome_money": outcome[6],
+                #xp
+                "outcome_xp": outcome[7]
+            })
         luck = await db_manager.get_luck(ctx.author.id)
-
+    
         outcomes = []
         for outcome in structure_outcomes:
             outcomes.append(outcome)
-
-        outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)  # Change the sort order to the chance of occurrence
-
-        random_outcomes = random.sample(outcomes, min(3, len(outcomes)))  # Select 3 random outcomes
-
+    
+        outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
+    
+        random_outcomes = random.sample(outcomes, min(3, len(outcomes)))
+    
         embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
-        embed.set_thumbnail(url=structure["structure_image"])
-
+        embed.set_image(url=structure["structure_image"])
+    
         for i, item in enumerate(random_outcomes, start=1):
             outcome_quote = item["structure_quote"]
             outcome_state = item["structure_state"]
@@ -2001,26 +2021,21 @@ class Basic(commands.Cog, name="basic"):
             outcome_amount = item["outcome_amount"]
             outcome_money = item["outcome_money"]
             outcome_xp = item["outcome_xp"]
-
+    
             outcome_output = str(outcome_output)
             outcome_quote = str(outcome_quote).strip()
             embed.add_field(name=f":scroll: Outcome {i}", value=f"**{outcome_quote}**", inline=False)
-
+    
             if outcome_type == "spawn":
                 user_health = await db_manager.get_health(ctx.author.id)
                 user_weapon = await db_manager.get_equipped_weapon(ctx.author.id)
                 monster_health = await db_manager.get_enemy_health(outcome_output)
                 monster_power = await db_manager.get_enemy_damage(outcome_output)
-                #the power is a string ex. 1-5
                 monster_power = monster_power.split("-")
-                #get the first number
                 monster_power = int(monster_power[0])
-                #get the second number
                 monster_power2 = int(monster_power[1])
-                #get a random number between the two numbers
                 monster_power = random.randint(monster_power, monster_power2)
-
-                # Adjust the following formula based on your battle logic
+    
                 chance_to_defeat = (user_health + user_weapon - monster_health - monster_power + luck) / 100
                 user_defeats_spawn = random.random() < chance_to_defeat
                 if user_defeats_spawn:
@@ -2033,37 +2048,33 @@ class Basic(commands.Cog, name="basic"):
                         drop_chance = float(drop_chance)
                         drop_amount = int(drop_amount)
                         drops.append([item, drop_chance, drop_amount])
-
-                    # organize the items by their drop chance
+    
                     drops.sort(key=lambda x: x[1], reverse=True)
-
-                    # create a cumulative distribution from the drop chances
+    
                     cumulative_distribution = []
                     total = 0
                     for drop in drops:
                         total += drop[1]
                         cumulative_distribution.append(total)
-
-                    # roll a number between 0 and the total drop chances, adjusted by luck
+    
                     roll = random.uniform(0, total) - luck
-
-                    # find the item that corresponds to the roll
+    
                     for i, drop in enumerate(drops):
                         if roll <= cumulative_distribution[i]:
                             chosen_item = drop
                             break
-
+                        
                     item_id = chosen_item[0]
                     item_amount = chosen_item[2]
-
+    
                     emote = await db_manager.get_basic_item_emote(item_id)
                     item_name = await db_manager.get_basic_item_name(item_id)
-
+    
                     if emote and item_name and item_amount:
                         await db_manager.add_item_to_inventory(ctx.author.id, item_id, item_amount)
                         embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has successfully defeated the monster!", inline=False)
+    
         await ctx.send(embed=embed)
-
             
     #craft command
     @commands.hybrid_command()
