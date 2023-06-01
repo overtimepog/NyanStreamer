@@ -2015,30 +2015,26 @@ class Basic(commands.Cog, name="basic"):
 
             outcome_output = str(outcome_output)
             outcome_quote = str(outcome_quote).strip()
-            embed.add_field(name=f":scroll: Outcome {i}", value=f"**{outcome_quote}**", inline=False)
 
             if outcome_type == "item_gain":
                 item_id = outcome_output
                 await db_manager.add_item_to_inventory(ctx.author.id, item_id, outcome_amount)
-                embed.add_field(name=":package: Item Gain", value=f"You have gained {outcome_amount} of {outcome_output}!", inline=False)
-    
-            elif outcome_type == "item_loss":
-                item_id = outcome_output
-                await db_manager.remove_item_from_inventory(ctx.author.id, item_id, outcome_amount)
-                embed.add_field(name=":package: Item Loss", value=f"You have lost {outcome_amount} of {outcome_output}!", inline=False)
-    
+                item_name = await db_manager.get_basic_item_name(item_id)
+                item_emoji = await db_manager.get_basic_item_emote(item_id)
+                embed.add_field(name=":package: Item Gain", value=f"You have gained {outcome_amount} of {item_emoji} {item_name}!", inline=False)
+
             elif outcome_type == "health_gain":
                 await db_manager.add_health(ctx.author.id, outcome_amount)
                 embed.add_field(name=":green_heart: Health Gain", value=f"You have gained {outcome_amount} health!", inline=False)
-    
-            elif outcome_type == "health_loss":
-                await db_manager.remove_health(ctx.author.id, outcome_amount)
-                embed.add_field(name=":green_heart: Health Loss", value=f"You have lost {outcome_amount} health!", inline=False)
-    
+
             elif outcome_type == "money_gain":
                 await db_manager.add_money(ctx.author.id, outcome_money)
-                embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {outcome_money} coins!", inline=False)
+                embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {cash}{outcome_money}!", inline=False)
     
+            elif outcome_type == "xp_gain":
+                await db_manager.add_xp(ctx.author.id, outcome_xp)
+                embed.add_field(name=":sparkles: XP Gain", value=f"You have gained {outcome_xp} XP!", inline=False)
+                
             elif outcome_type == "spawn":
                 user_health = await db_manager.get_health(ctx.author.id)
                 user_weapon = await db_manager.get_equipped_weapon(ctx.author.id)

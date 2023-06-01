@@ -7,719 +7,88 @@
             "structure_description": "A dark, foreboding dungeon filled with traps and treasures.",
             "structure_outcomesID": "dungeon",
             "structure_outcomes": [
-              {
-                "structure_quote": "You have narrowly avoided a trap and found a hidden chest!",
-                "structure_state": "success",
-                "outcome_chance": 0.3,
-                "outcome_type": "item_gain",
-                "outcome_output": "chest",
-                "outcome_amount": 1,
-                "outcome_money": 0,
-                "outcome_xp": 10
-              },
-              {
-                "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
-                "structure_state": "success",
-                "outcome_chance": 0.2,
-                "outcome_type": "money_gain",
-                "outcome_output": "gold",
-                "outcome_amount": 200,
-                "outcome_money": 0,
-                "outcome_xp": 10
-              },
-              {
-                "structure_quote": "You Encountered a lone goblin wandering the Dungeon!",
-                "structure_state": "loss",
-                "outcome_chance": 0.1,
-                "outcome_type": "spawn",
-                "outcome_output": "goblin",
-                "outcome_amount": 0,
-                "outcome_money": 0,
-                "outcome_xp": 10
-              },
-              {
-                "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
-                "structure_state": "boss",
-                "outcome_chance": 0.05,
-                "outcome_type": "spawn",
-                "outcome_output": "malik",
-                "outcome_amount": 0,
-                "outcome_money": 0,
-                "outcome_xp": 10
-              },
-              {
-                "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
-                "structure_state": "success",
-                "outcome_chance": 0.05,
-                "outcome_type": "item_gain",
-                "outcome_output": "amulet_dragon",
-                "outcome_amount": 1,
-                "outcome_money": 0,
-                "outcome_xp": 25
-              },
-              {
-                "structure_quote": "You've found a stash of healing potions!",
-                "structure_state": "success",
-                "outcome_chance": 0.1,
-                "outcome_type": "item_gain",
-                "outcome_output": "potion_healing",
-                "outcome_amount": 3,
-                "outcome_money": 0,
-                "outcome_xp": 10
-              },
-              {
-                "structure_quote": "You've been hit by a poisoned dart and lost some health!",
-                "structure_state": "loss",
-                "outcome_chance": 0.15,
-                "outcome_type": "health_loss",
-                "outcome_output": "",
-                "outcome_amount": 30,
-                "outcome_money": 0,
-                "outcome_xp": 10
-              },
-              {
-                "structure_quote": "You've found a map that leads to a hidden treasure!",
-                "structure_state": "success",
-                "outcome_chance": 0.05,
-                "outcome_type": "item_gain",
-                "outcome_output": "tresure_map",
-                "outcome_amount": 1,
-                "outcome_money": 0,
-                "outcome_xp": 10
-                }    
-            ]
-        },
-        {
-          "structure_id": "ancient_temple",
-          "structure_name": "Ancient Temple",
-          "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107346785971732700/OverTime_32-bit_pixel_art_Ancient_Temple_a_grand_structure_of_o_f0007aee-ad4c-4d93-a863-0a28e676b0d9.png",
-          "structure_description": "An ancient temple shrouded in mystery and filled with hidden treasures.",
-          "structure_outcomesID": "ancient_temple",
-          "structure_outcomes": [
-              {
-                  "structure_quote": "You found a hidden chamber filled with ancient relics!",
+                {
+                  "structure_quote": "You have narrowly avoided a trap and found a hidden chest!",
                   "structure_state": "success",
                   "outcome_chance": 0.3,
                   "outcome_type": "item_gain",
-                  "outcome_output": "ancient_relic",
+                  "outcome_output": "chest",
                   "outcome_amount": 1,
                   "outcome_money": 0,
-                  "outcome_xp": 15
-              },
-              {
-                  "structure_quote": "You've been ambushed by temple guardians!",
-                  "structure_state": "loss",
+                  "outcome_xp": 10
+                },
+                {
+                  "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                  "structure_state": "success",
                   "outcome_chance": 0.2,
+                  "outcome_type": "money_gain",
+                  "outcome_output": "gold",
+                  "outcome_amount": 200,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+                },
+                {
+                  "structure_quote": "You Encountered a lone goblin wandering the Dungeon!",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.1,
                   "outcome_type": "spawn",
-                  "outcome_output": "temple_guardian",
+                  "outcome_output": "goblin",
                   "outcome_amount": 0,
                   "outcome_money": 0,
                   "outcome_xp": 10
-              },
-              {
-                  "structure_quote": "You've discovered a hidden altar with valuable offerings!",
-                  "structure_state": "success",
-                  "outcome_chance": 0.1,
-                  "outcome_type": "money_gain",
-                  "outcome_output": "gold",
-                  "outcome_amount": 300,
-                  "outcome_money": 0,
-                  "outcome_xp": 20
-              },
-              {
-                  "structure_quote": "You've triggered a trap and narrowly escaped injury!",
-                  "structure_state": "loss",
-                  "outcome_chance": 0.15,
-                  "outcome_type": "health_loss",
-                  "outcome_output": "",
-                  "outcome_amount": 25,
+                },
+                {
+                  "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
+                  "structure_state": "boss",
+                  "outcome_chance": 0.05,
+                  "outcome_type": "spawn",
+                  "outcome_output": "malik",
+                  "outcome_amount": 0,
                   "outcome_money": 0,
                   "outcome_xp": 10
-              },
-              {
-                  "structure_quote": "You tripped over a weird scroll and decided to pick it up!",
-                  "structure_state": "success",
-                  "outcome_chance": 0.1,
-                  "outcome_type": "item_gain",
-                  "outcome_output": "ancient_scroll",
-                  "outcome_amount": 1,
-                  "outcome_money": 0,
-                  "outcome_xp": 20
-              },
-              {
-                  "structure_quote": "You've stumbled upon a hidden library with ancient scrolls!",
+                },
+                {
+                  "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
                   "structure_state": "success",
                   "outcome_chance": 0.05,
                   "outcome_type": "item_gain",
-                  "outcome_output": "ancient_scroll",
+                  "outcome_output": "amulet_dragon",
+                  "outcome_amount": 1,
+                  "outcome_money": 0,
+                  "outcome_xp": 25
+                },
+                {
+                  "structure_quote": "You've found a stash of healing potions!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "potion_healing",
                   "outcome_amount": 3,
                   "outcome_money": 0,
-                  "outcome_xp": 30
-              },
-              {
-                  "structure_quote": "You've been cursed by an ancient statue and lost some health!",
-                  "structure_state": "loss",
-                  "outcome_chance": 0.1,
-                  "outcome_type": "health_loss",
-                  "outcome_output": "",
-                  "outcome_amount": 20,
-                  "outcome_money": 0,
                   "outcome_xp": 10
-              }
-          ]
-        },
-        {
-          "structure_id": "abandoned_mine",
-          "structure_name": "Abandoned Mine",
-          "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107347338667774144/OverTime_32-bit_pixel_art_Abandoned_Mine_a_desolate_place_with__8a0748a4-d6fd-45fb-9044-3f65606bd63e.png",
-          "structure_description": "An old mine that has been long abandoned, but still holds valuable resources.",
-          "structure_outcomesID": "abandoned_mine",
-          "structure_outcomes": [
-              {
-                  "structure_quote": "You found a rich vein of iron ore!",
-                  "structure_state": "success",
-                  "outcome_chance": 0.25,
-                  "outcome_type": "item_gain",
-                  "outcome_output": "iron_ingot",
-                  "outcome_amount": 5,
-                  "outcome_money": 0,
-                  "outcome_xp": 15
-              },
-              {
-                  "structure_quote": "You've been attacked by a cave spider!",
-                  "structure_state": "loss",
-                  "outcome_chance": 0.2,
-                  "outcome_type": "spawn",
-                  "outcome_output": "giant_spider",
-                  "outcome_amount": 0,
-                  "outcome_money": 0,
-                  "outcome_xp": 10
-              },
-              {
-                  "structure_quote": "You've discovered an old miner's stash of gold nuggets!",
-                  "structure_state": "success",
-                  "outcome_chance": 0.15,
-                  "outcome_type": "money_gain",
-                  "outcome_output": "gold",
-                  "outcome_amount": 150,
-                  "outcome_money": 0,
-                  "outcome_xp": 20
-              },
-              {
-                  "structure_quote": "You've triggered a cave-in and narrowly escaped being crushed!",
-                  "structure_state": "loss",
-                  "outcome_chance": 0.1,
-                  "outcome_type": "health_loss",
-                  "outcome_output": "",
-                  "outcome_amount": 30,
-                  "outcome_money": 0,
-                  "outcome_xp": 10
-              },
-              {
-                  "structure_quote": "You've found a hidden chest containing valuable gems!",
+                },
+                {
+                  "structure_quote": "You've found a map that leads to a hidden treasure!",
                   "structure_state": "success",
                   "outcome_chance": 0.05,
                   "outcome_type": "item_gain",
-                  "outcome_output": "diamond",
+                  "outcome_output": "tresure_map",
                   "outcome_amount": 1,
                   "outcome_money": 0,
-                  "outcome_xp": 30
-              },
-              {
-                  "structure_quote": "You've been exposed to toxic fumes and lost some health!",
-                  "structure_state": "loss",
-                  "outcome_chance": 0.15,
-                  "outcome_type": "health_loss",
-                  "outcome_output": "",
+                  "outcome_xp": 10
+                },
+                {
+                  "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.2,
+                  "outcome_type": "xp_gain",
+                  "outcome_output": "gold",
                   "outcome_amount": 20,
                   "outcome_money": 0,
-                  "outcome_xp": 10
-              }
-          ]
-        },
-        {
-          "structure_id": "demon_portal",
-          "structure_name": "Demon Portal",
-          "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107348194326761572/OverTime_32-bit_pixel_art_Demon_Portal_a_swirling_vortex_of_dar_fac423ca-08e5-4b6e-bccf-047bacc832df.png",
-          "structure_description": "A dark portal that connects to the underworld. Demons are known to emerge from it.",
-          "structure_outcomesID": "demon_portal",
-          "structure_outcomes": [
-              {
-                  "structure_quote": "A demon emerges from the portal!",
-                  "structure_state": "success",
-                  "outcome_chance": 0.1,
-                  "outcome_type": "spawn",
-                  "outcome_output": "demon",
-                  "outcome_amount": 0,
-                  "outcome_money": 0,
-                  "outcome_xp": 50
-              },
-              {
-                  "structure_quote": "The portal remains quiet... for now.",
-                  "structure_state": "loss",
-                  "outcome_chance": 0.9,
-                  "outcome_type": "money_gain",
-                  "outcome_output": "None",
-                  "outcome_amount": 50,
-                  "outcome_money": 0,
-                  "outcome_xp": 10
-              }
-          ]
-        },
-        {
-          "structure_id": "elemental_altar",
-          "structure_name": "Elemental Altar",
-          "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107349122551402516/OverTime_32-bit_pixel_art_Elemental_Altar_a_mystical_platform_w_8ca117dc-92e9-40da-a7ab-166bb571b728.png",
-          "structure_description": "An ancient altar used to summon powerful elemental entities.",
-          "structure_outcomesID": "elemental_altar",
-          "structure_outcomes": [
-            {
-                "structure_quote": "You've summoned a Fire Elemental!",
-                "structure_state": "spawn",
-                "outcome_chance": 0.25,
-                "outcome_type": "spawn",
-                "outcome_output": "fire_elemental",
-                "outcome_amount": 0,
-                "outcome_money": 0,
-                "outcome_xp": 10
-            },
-            {
-                "structure_quote": "You've summoned a Water Elemental!",
-                "structure_state": "spawn",
-                "outcome_chance": 0.25,
-                "outcome_type": "spawn",
-                "outcome_output": "water_elemental",
-                "outcome_amount": 0,
-                "outcome_money": 0,
-                "outcome_xp": 10
-            },
-            {
-                "structure_quote": "You've summoned an Air Elemental!",
-                "structure_state": "spawn",
-                "outcome_chance": 0.25,
-                "outcome_type": "spawn",
-                "outcome_output": "air_elemental",
-                "outcome_amount": 0,
-                "outcome_money": 0,
-                "outcome_xp": 10
-            },
-            {
-                "structure_quote": "You've summoned an Earth Elemental!",
-                "structure_state": "spawn",
-                "outcome_chance": 0.25,
-                "outcome_type": "spawn",
-                "outcome_output": "earth_elemental",
-                "outcome_amount": 0,
-                "outcome_money": 0,
-                "outcome_xp": 10
-            }
-          ]
-        },
-        {
-            "structure_id": "death_knight_lair",
-            "structure_name": "Death Knight's Lair",
-            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107349640354988132/OverTime_32-bit_pixel_art_Death_Knight_Lair_a_sinister_fortress_8d1b9eb3-c996-45c8-980e-055675d7a9ca.png",
-            "structure_description": "A dark, foreboding lair that is home to the formidable Death Knight.",
-            "structure_outcomesID": "death_knight_lair",
-            "structure_outcomes": [
-                {
-                    "structure_quote": "You narrowly avoided a trap and found a hidden chest!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.3,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "chest",
-                    "outcome_amount": 1,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.2,
-                    "outcome_type": "money_gain",
-                    "outcome_output": "Money",
-                    "outcome_amount": 200,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You Encountered the Death Knight in his lair!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "spawn",
-                    "outcome_output": "death_knight",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
-                    "structure_state": "boss",
-                    "outcome_chance": 0.05,
-                    "outcome_type": "spawn",
-                    "outcome_output": "malik_mindflayer",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.05,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "amulet_dragon",
-                    "outcome_amount": 1,
-                    "outcome_money": 0,
-                    "outcome_xp": 30
-                },
-                {
-                    "structure_quote": "You've found a stash of healing potions!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "healthpotion",
-                    "outcome_amount": 3,
-                    "outcome_money": 0,
-                    "outcome_xp": 20
-                },
-                {
-                    "structure_quote": "You've been hit by a poisoned dart and lost some health!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.15,
-                    "outcome_type": "health_loss",
-                    "outcome_output": "",
-                    "outcome_amount": 30,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                }  
-            ]
-        },
-        {
-            "structure_id": "spider_den",
-            "structure_name": "Spider Den",
-            "structure_image": "https://cdn.discordapp.com/attachments/755517144426479786/1106264094589333524/OverTime_32-bit_pixel_art_Spider_Den_a_dark_and_eerie_cave_fill_a32b0e2d-5024-4f42-ba41-e95d6a11bf45.png",
-            "structure_description": "A dark, eerie cave filled with giant spider webs. The home of the Spider Queen.",
-            "structure_outcomesID": "spider_den",
-            "structure_outcomes": [
-                {
-                    "structure_quote": "You've stumbled into a spider's nest and found a hoard of items!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.2,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "spider_venom",
-                    "outcome_amount": 3,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You Encountered a giant spider!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "spawn",
-                    "outcome_output": "giant_spider",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've discovered the Spider Queen's lair!",
-                    "structure_state": "boss",
-                    "outcome_chance": 0.05,
-                    "outcome_type": "spawn",
-                    "outcome_output": "spider_queen",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                "structure_quote": "You've stumbledinto a treasure room filled with rare artifacts!",
-                "structure_state": "success",
-                "outcome_chance": 0.05,
-                "outcome_type": "item_gain",
-                "outcome_output": "queen_spider_venom",
-                "outcome_amount": 1,
-                "outcome_money": 0,
-                "outcome_xp": 30
-                },
-                {
-                "structure_quote": "You've found a stash of spider venom!",
-                "structure_state": "success",
-                "outcome_chance": 0.1,
-                "outcome_type": "item_gain",
-                "outcome_output": "spider_venom",
-                "outcome_amount": 3,
-                "outcome_money": 0,
-                "outcome_xp": 20
-                },
-                {
-                "structure_quote": "You've been hit by a spider's web and lost some health!",
-                "structure_state": "loss",
-                "outcome_chance": 0.15,
-                "outcome_type": "health_loss",
-                "outcome_output": "",
-                "outcome_amount": 30,
-                "outcome_money": 0,
-                "outcome_xp": 10
-                },
-                {
-                "structure_quote": "You've found a hidden chest!",
-                "structure_state": "success",
-                "outcome_chance": 0.3,
-                "outcome_type": "item_gain",
-                "outcome_output": "chest",
-                "outcome_amount": 1,
-                "outcome_money": 0,
-                "outcome_xp": 10
-                },
-                {
-                "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
-                "structure_state": "success",
-                "outcome_chance": 0.2,
-                "outcome_type": "money_gain",
-                "outcome_output": "gold",
-                "outcome_amount": 200,
-                "outcome_money": 0,
-                "outcome_xp": 10
-                }
-        ]
-        },
-        {
-            "structure_id": "deaths_domain",
-            "structure_name": "Death's Domain",
-            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107050896023629844/OverTime_32-bit_pixel_art_Deaths_Domain_a_dark_and_eerie_realm__7de833f7-5c98-4627-aecf-9b001bbcc685.png",
-            "structure_description": "A dark and eerie realm, where the air is thick with the essence of death. It's as dangerous as it is terrifying.",
-            "structure_outcomesID": "deaths_domain",
-            "structure_outcomes": [
-                {
-                    "structure_quote": "You narrowly avoided a spectral trap and found a hidden chest!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.3,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "chest",
-                    "outcome_amount": 1,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've stumbled into a hidden chamber and found a hoard of spectral gold!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.75,
-                    "outcome_type": "money_gain",
-                    "outcome_output": "gold",
-                    "outcome_amount": 200,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You Encountered a lone Death Knight wandering the Domain!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "spawn",
-                    "outcome_output": "death_knight",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You Encountered a lone Hell Hound wandering the Domain!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.3,
-                    "outcome_type": "spawn",
-                    "outcome_output": "hell_hound",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
-                    "structure_state": "boss",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "spawn",
-                    "outcome_output": "death",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.05,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "spectral_sword",
-                    "outcome_amount": 1,
-                    "outcome_money": 0,
-                    "outcome_xp": 30
-                },
-                {
-                    "structure_quote": "You've found a stash of spectral potions!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "healthpotion",
-                    "outcome_amount": 3,
-                    "outcome_money": 0,
-                    "outcome_xp": 20
-                },
-                {
-                    "structure_quote": "You've been hit by a spectral trap and lost some health!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.15,
-                    "outcome_type": "health_loss",
-                    "outcome_output": "",
-                    "outcome_amount": 30,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
+                  "outcome_xp": 0
                 }
             ]
-        },
-        {
-            "structure_id": "volcanic_lair",
-            "structure_name": "Volcanic Lair",
-            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107348203751350363/OverTime_32-bit_pixel_art_Demon_Portal_a_swirling_vortex_of_dar_5b395827-905c-48bd-b4c3-ee536b5c8920.png",
-            "structure_description": "A fiery lair that houses the legendary Flamewing. The heat is almost unbearable.",
-            "structure_outcomesID": "volcanic_lair",
-            "structure_outcomes": [
-                {
-                    "structure_quote": "You've discovered a hidden alcove glittering with precious artifacts, among them a rare Dragon Eye!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.05,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "dragon_eye",
-                    "outcome_amount": 1,
-                    "outcome_money": 0,
-                    "outcome_xp": 30
-                },
-                {
-                    "structure_quote": "You've stumbled upon a treasure room filled with rare artifacts, among them the legendary Dragon Heart!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.01,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "dragon_heart",
-                    "outcome_amount": 1,
-                    "outcome_money": 0,
-                    "outcome_xp": 50
-                },
-                {
-                    "structure_quote": "You've found a stash of Dragon Scales!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.05,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "dragon_scale",
-                    "outcome_amount": 5,
-                    "outcome_money": 0,
-                    "outcome_xp": 30
-                },
-                {
-                    "structure_quote": "You've encountered the legendary Flamewing!",
-                    "structure_state": "boss",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "spawn",
-                    "outcome_output": "flamewing",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 50
-                },
-                {
-                    "structure_quote": "You've found a stash of rare gems in a hidden compartment!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.2,
-                    "outcome_type": "money_gain",
-                    "outcome_output": "gold",
-                    "outcome_amount": 100,
-                    "outcome_money": 0,
-                    "outcome_xp": 20
-                },
-                {
-                    "structure_quote": "You've discovered a hidden cache of gold!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.3,
-                    "outcome_type": "money_gain",
-                    "outcome_output": "gold",
-                    "outcome_amount": 300,
-                    "outcome_money": 0,
-                    "outcome_xp": 20
-                },
-                {
-                    "structure_quote": "You've stumbled into a molten river and suffered severe burns!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "health_loss",
-                    "outcome_output": "",
-                    "outcome_amount": 40,
-                    "outcome_money": 0,
-                    "outcome_xp": 5
-                }
-            ]
-        },
-        {
-            "structure_id": "frost_fortress",
-            "structure_name": "Frost Fortress",
-            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107341407204691979/OverTime_32-bit_pixel_art_Frost_Fortress_a_towering_fortress_ma_0a14f6a6-75e2-488e-afb7-eccba5e504fa.png",
-            "structure_description": "A towering fortress made entirely of ice. It's the home of the Ice Queen and her Frost Giants.",
-            "structure_outcomesID": "frost_fortress",
-            "structure_outcomes": [
-                {
-                    "structure_quote": "You narrowly avoided a frost trap and found a hidden chest!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.3,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "chest",
-                    "outcome_amount": 1,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.2,
-                    "outcome_type": "money_gain",
-                    "outcome_output": "gold",
-                    "outcome_amount": 200,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You Encountered a Frost Giant wandering the Frost Fortress!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "spawn",
-                    "outcome_output": "frost_giant",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've discovered the Ice Queen's throne room, but she's not happy to see you!",
-                    "structure_state": "boss",
-                    "outcome_chance": 0.05,
-                    "outcome_type": "spawn",
-                    "outcome_output": "ice_queen",
-                    "outcome_amount": 0,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                },
-                {
-                    "structure_quote": "You've found a stash of healing potions!",
-                    "structure_state": "success",
-                    "outcome_chance": 0.1,
-                    "outcome_type": "item_gain",
-                    "outcome_output": "healthpotion",
-                    "outcome_amount": 3,
-                    "outcome_money": 0,
-                    "outcome_xp": 20
-                },
-                {
-                    "structure_quote": "You've been hit by a frost trap and lost some health!",
-                    "structure_state": "loss",
-                    "outcome_chance": 0.15,
-                    "outcome_type": "health_loss",
-                    "outcome_output": "",
-                    "outcome_amount": 30,
-                    "outcome_money": 0,
-                    "outcome_xp": 10
-                }  
-            ]
-        }            
+        }      
     ] 
 }
   
