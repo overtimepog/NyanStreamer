@@ -71,6 +71,7 @@ class Basic(commands.Cog, name="basic"):
     @commands.hybrid_command(
         name="inventory",
         description="This command will view your inventory.",
+        aliases=["inv"],
     )
     async def inventory(self, ctx: Context):
         # Get user inventory items from the database
