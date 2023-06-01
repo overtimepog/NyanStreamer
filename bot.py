@@ -96,7 +96,7 @@ The config is available using the following code:
 - bot.config # In this file
 - self.bot.config # In cogs
 """
-bot.config = config
+bot.config = config # type: ignore
     
 
 #every 12 hours the shop will reset, create a task to do this
@@ -114,7 +114,7 @@ async def structure_spawn_task() -> None:
             #print("A channel with the topic dankstreamer-structures does not exist in " + bot_guild.name)
             continue
         
-        if await db_manager.get_current_structure(bot_guild.id) is not None:
+        if await db_manager.get_current_structure(bot_guild.id) is not None: # type: ignore
             #print("A structure is already spawned in " + bot_guild.name)
             continue
         
@@ -140,7 +140,7 @@ async def structure_spawn_task() -> None:
         embed.set_image(url=f"{structure_image}")
         embed.set_footer(text=f"/explore structure:{structureid}")
         await channel.send(embed=embed)
-        await db_manager.edit_current_structure(bot_guild.id, structureid)
+        await db_manager.edit_current_structure(bot_guild.id, structureid) # type: ignore
 
 @tasks.loop(minutes=30)
 async def mob_spawn_task() -> None:
@@ -155,7 +155,7 @@ async def mob_spawn_task() -> None:
             #print("A channel with the topic dankstreamer-structures does not exist in " + bot_guild.name)
             continue
         
-        if await db_manager.get_current_structure(bot_guild.id) is not None:
+        if await db_manager.get_current_structure(bot_guild.id) is not None: # type: ignore
             #print("A structure is already spawned in " + bot_guild.name)
             continue
         #get all the mobs that can spawn
