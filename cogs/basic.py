@@ -1966,44 +1966,6 @@ class Basic(commands.Cog, name="basic"):
     #command cooldown of 2 minutes
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def explore(self, ctx: Context):
-        userExist = await db_manager.check_user(ctx.author.id)
-        if userExist == None or userExist == []:
-            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
-            await self.explore.reset_cooldown(ctx)
-            return
-
-        msg = ctx.message
-
-        await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
-        all_structures = await db_manager.get_all_structures()
-        structure = random.choice(all_structures)
-        print(structure[0])
-        outcomes = await db_manager.get_structure_outcomes(structure[0])
-        structure_outcomes = []
-        for outcome in outcomes:
-            structure_outcomes.append({
-                "structure_quote": outcome[1],
-                "structure_state": outcome[2],
-                "outcome_chance": outcome[3],
-                "outcome_type": outcome[4],
-                "outcome_output": outcome[5],
-                "outcome_amount": outcome[6],
-                "outcome_money": outcome[7],
-                "outcome_xp": outcome[8]
-            })
-        luck = await db_manager.get_luck(ctx.author.id)
-
-        outcomes = [outcome for outcome in structure_outcomes]
-        outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
-
-        # Using set() to ensure unique outcomes
-        unique_outcomes = [dict(t) for t in set([tuple(d.items()) for d in outcomes])]
-        random_outcomes = random.sample(unique_outcomes, min(3, len(unique_outcomes)))
-
-        embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
-        embed.set_image(url=structure[2])
-        embed.set_footer(text="You can Explore again in 2 minutes.")
-
         async def handle_outcomes(ctx, random_outcomes, db_manager, embed):
             def choose_outcome_based_on_chance(outcomes_with_chances):
                 total = sum(chance for _, chance in outcomes_with_chances)
@@ -2128,6 +2090,48 @@ class Basic(commands.Cog, name="basic"):
                     user_health = max(user_health - monster_power, 0)  # health can't go below 0
                     await db_manager.set_health(ctx.author.id, user_health)
                     embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has been defeated by the monster and lost some health!", inline=False)
+        userExist = await db_manager.check_user(ctx.author.id)
+        if userExist == None or userExist == []:
+            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
+            await self.explore.reset_cooldown(ctx)
+            return
+
+        msg = ctx.message
+
+        await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
+        all_structures = await db_manager.get_all_structures()
+        structure = random.choice(all_structures)
+        print(structure[0])
+        outcomes = await db_manager.get_structure_outcomes(structure[0])
+        structure_outcomes = []
+        for outcome in outcomes:
+            structure_outcomes.append({
+                "structure_quote": outcome[1],
+                "structure_state": outcome[2],
+                "outcome_chance": outcome[3],
+                "outcome_type": outcome[4],
+                "outcome_output": outcome[5],
+                "outcome_amount": outcome[6],
+                "outcome_money": outcome[7],
+                "outcome_xp": outcome[8]
+            })
+        luck = await db_manager.get_luck(ctx.author.id)
+
+        outcomes = [outcome for outcome in structure_outcomes]
+        outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
+
+        # Using set() to ensure unique outcomes
+        unique_outcomes = [dict(t) for t in set([tuple(d.items()) for d in outcomes])]
+
+        # Selecting 3 unique random outcomes
+        if len(unique_outcomes) < 3:
+            random_outcomes = unique_outcomes
+        else:
+            random_outcomes = random.sample(unique_outcomes, 3)
+
+        embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
+        embed.set_image(url=structure[2])
+        embed.set_footer(text="You can Explore again in 2 minutes.")
 
         await handle_outcomes(ctx, random_outcomes, db_manager, embed)
         await ctx.send(embed=embed)
