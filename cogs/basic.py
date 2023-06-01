@@ -2041,11 +2041,13 @@ class Basic(commands.Cog, name="basic"):
                 monster_power = await db_manager.get_enemy_damage(chosen_outcome["outcome_output"])
                 # remove the () and , from the monster power
                 monster_power = str(monster_power)
-
+                print(monster_power)
                 monster_power = monster_power.split("-")
                 #turn both [0] and [1] to strings and remove the () and , from them
                 monster_power = str(monster_power[0])
                 monster_power2 = str(monster_power[1])
+                print(monster_power)
+                print(monster_power2)
                 monster_power = monster_power.replace("(", "")
                 monster_power = monster_power.replace(")", "")
                 monster_power = monster_power.replace(",", "")
