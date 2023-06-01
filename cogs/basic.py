@@ -2019,6 +2019,7 @@ class Basic(commands.Cog, name="basic"):
 
             if outcome_type == "item_gain":
                 item_id = outcome_output
+                print(item_id)
                 await db_manager.add_item_to_inventory(ctx.author.id, item_id, outcome_amount)
                 item_name = await db_manager.get_basic_item_name(item_id)
                 item_emoji = await db_manager.get_basic_item_emote(item_id)
