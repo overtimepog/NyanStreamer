@@ -1965,7 +1965,7 @@ class Basic(commands.Cog, name="basic"):
     )
     #command cooldown of 2 minutes
     @commands.cooldown(1, 120, commands.BucketType.user)
-    async def explore(self, ctx: Context):
+    async def explore(self, ctx: commands.Context):
         async def handle_outcomes(ctx, random_outcomes, db_manager, embed):
             def choose_outcome_based_on_chance(outcomes_with_chances):
                 total = sum(chance for _, chance in outcomes_with_chances)
@@ -1975,65 +1975,65 @@ class Basic(commands.Cog, name="basic"):
                     if upto + chance >= r:
                         return outcome
                     upto += chance
-        
+                assert False, "Shouldn't get here"
+
             user_luck = await db_manager.get_luck(ctx.author.id)
-        
-            random_outcomes = [(item, item["outcome_chance"] + user_luck / 100) for item in random_outcomes]
+
+            random_outcomes = [
+                (item, item["outcome_chance"] + user_luck / 100) for item in random_outcomes
+            ]
+
             total_chance = sum(chance for _, chance in random_outcomes)
-            random_outcomes = [(item, chance / total_chance) for item, chance in random_outcomes]
-        
+            random_outcomes = [
+                (item, chance / total_chance) for item, chance in random_outcomes
+            ]
+
             # Call choose_outcome_based_on_chance() three times and store the results
-            # Also, make sure the same outcome isn't chosen more than once
-            chosen_outcomes = []
-            for _ in range(3):
-                outcome = choose_outcome_based_on_chance(random_outcomes)
-                chosen_outcomes.append(outcome)
-                random_outcomes.remove((outcome, outcome["outcome_chance"] + user_luck / 100))
-        
+            chosen_outcomes = [choose_outcome_based_on_chance(random_outcomes) for _ in range(3)]
+
             # Process each chosen outcome
             for chosen_outcome in chosen_outcomes:
-                outcome_quote = chosen_outcome["structure_quote"]
-                outcome_state = chosen_outcome["structure_state"]
-                outcome_chance = chosen_outcome["outcome_chance"] * 100
-                outcome_type = chosen_outcome["outcome_type"]
-                outcome_output = chosen_outcome["outcome_output"]
-                outcome_amount = chosen_outcome["outcome_amount"]
-                outcome_money = chosen_outcome["outcome_money"]
-                outcome_xp = chosen_outcome["outcome_xp"]
-        
-                outcome_output = str(outcome_output)
-                outcome_quote = str(outcome_quote).strip()
+                outcome_dispatcher = {
+                    "item_gain": handle_item_gain,
+                    "health_gain": handle_health_gain,
+                    "money_gain": handle_money_gain,
+                    "xp_gain": handle_xp_gain,
+                    "spawn": handle_spawn
+                }
 
-            if outcome_type == "item_gain":
-                item_id = outcome_output
-                print(item_id)
-                await db_manager.add_item_to_inventory(ctx.author.id, item_id, outcome_amount)
-                isChest = await db_manager.check_chest(item_id)
-                if isChest == 1:
-                    item_name = await db_manager.get_chest_name(item_id)
-                    item_emoji = await db_manager.get_chest_emoji(item_id)
-                else:
-                    item_name = await db_manager.get_basic_item_name(item_id)
-                    item_emoji = await db_manager.get_basic_item_emote(item_id)
-                embed.add_field(name=":package: Item Gain", value=f"You have gained {outcome_amount} of {item_emoji} {item_name}!", inline=False)
+                # Call the corresponding function
+                await outcome_dispatcher[chosen_outcome["outcome_type"]](chosen_outcome, ctx, db_manager, embed)
 
-            elif outcome_type == "health_gain":
-                await db_manager.add_health(ctx.author.id, outcome_amount)
-                embed.add_field(name=":green_heart: Health Gain", value=f"You have gained {outcome_amount} health!", inline=False)
+        async def handle_item_gain(chosen_outcome, ctx, db_manager, embed):
+            item_id = chosen_outcome["outcome_output"]
+            print(item_id)
+            await db_manager.add_item_to_inventory(ctx.author.id, item_id, chosen_outcome["outcome_amount"])
+            isChest = await db_manager.check_chest(item_id)
+            if isChest == 1:
+                item_name = await db_manager.get_chest_name(item_id)
+                item_emoji = await db_manager.get_chest_emoji(item_id)
+            else:
+                item_name = await db_manager.get_basic_item_name(item_id)
+                item_emoji = await db_manager.get_basic_item_emote(item_id)
+            embed.add_field(name=":package: Item Gain", value=f"You have gained {chosen_outcome['outcome_amount']} of {item_emoji} {item_name}!", inline=False)
 
-            elif outcome_type == "money_gain":
-                await db_manager.add_money(ctx.author.id, outcome_amount)
-                embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {cash}{outcome_amount}!", inline=False)
-    
-            elif outcome_type == "xp_gain":
-                await db_manager.add_xp(ctx.author.id, outcome_amount)
-                embed.add_field(name=":sparkles: XP Gain", value=f"You have gained {outcome_amount} XP!", inline=False)
+        async def handle_health_gain(chosen_outcome, ctx, db_manager, embed):
+            await db_manager.add_health(ctx.author.id, chosen_outcome["outcome_amount"])
+            embed.add_field(name=":green_heart: Health Gain", value=f"You have gained {chosen_outcome['outcome_amount']} health!", inline=False)
 
-            elif outcome_type == "spawn":
+        async def handle_money_gain(chosen_outcome, ctx, db_manager, embed):
+            await db_manager.add_money(ctx.author.id, chosen_outcome["outcome_amount"])
+            embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {cash}{chosen_outcome['outcome_amount']}!", inline=False)
+
+        async def handle_xp_gain(chosen_outcome, ctx, db_manager, embed):
+            await db_manager.add_xp(ctx.author.id, chosen_outcome["outcome_amount"])
+            embed.add_field(name=":sparkles: XP Gain", value=f"You have gained {chosen_outcome['outcome_amount']} XP!", inline=False)
+
+        async def handle_spawn(chosen_outcome, ctx, db_manager, embed):
                 user_health = await db_manager.get_health(ctx.author.id)
                 user_weapon = await db_manager.get_equipped_weapon(ctx.author.id)
-                monster_health = await db_manager.get_enemy_health(outcome_output)
-                monster_power = await db_manager.get_enemy_damage(outcome_output)
+                monster_health = await db_manager.get_enemy_health(chosen_outcome["outcome_output"])
+                monster_power = await db_manager.get_enemy_damage(chosen_outcome["outcome_output"])
                 # remove the () and , from the monster power
                 monster_power = str(monster_power)
 
@@ -2056,7 +2056,7 @@ class Basic(commands.Cog, name="basic"):
                 user_defeats_spawn = random.random() < chance_to_defeat
 
                 if user_defeats_spawn:
-                    monster_drops = await db_manager.get_enemy_drops(outcome_output)
+                    monster_drops = await db_manager.get_enemy_drops(chosen_outcome["outcome_output"])
                     drops = []
                     for drop in monster_drops:
                         item = drop[1]
@@ -2096,6 +2096,7 @@ class Basic(commands.Cog, name="basic"):
                     user_health = max(user_health - monster_power, 0)  # health can't go below 0
                     await db_manager.set_health(ctx.author.id, user_health)
                     embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has been defeated by the monster and lost some health!", inline=False)
+
         userExist = await db_manager.check_user(ctx.author.id)
         if userExist == None or userExist == []:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
