@@ -2129,7 +2129,7 @@ class Basic(commands.Cog, name="basic"):
                     await db_manager.set_health(ctx.author.id, user_health)
                     embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has been defeated by the monster and lost some health!", inline=False)
 
-        handle_outcomes(ctx, random_outcomes, db_manager, embed)
+        await handle_outcomes(ctx, random_outcomes, db_manager, embed)
         await ctx.send(embed=embed)
 
             
