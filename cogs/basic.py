@@ -2007,8 +2007,13 @@ class Basic(commands.Cog, name="basic"):
                 item_id = outcome_output
                 print(item_id)
                 await db_manager.add_item_to_inventory(ctx.author.id, item_id, outcome_amount)
-                item_name = await db_manager.get_basic_item_name(item_id)
-                item_emoji = await db_manager.get_basic_item_emote(item_id)
+                isChest = await db_manager.check_chest(item_id)
+                if isChest == 1:
+                    item_name = await db_manager.get_chest_name(item_id)
+                    item_emoji = await db_manager.get_chest_emoji(item_id)
+                else:
+                    item_name = await db_manager.get_basic_item_name(item_id)
+                    item_emoji = await db_manager.get_basic_item_emote(item_id)
                 embed.add_field(name=":package: Item Gain", value=f"You have gained {outcome_amount} of {item_emoji} {item_name}!", inline=False)
 
             elif outcome_type == "health_gain":
