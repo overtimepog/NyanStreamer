@@ -2138,7 +2138,8 @@ class Basic(commands.Cog, name="basic"):
         embed.set_image(url=structure[2])
         embed.set_footer(text="You can Explore again in 2 minutes.")
 
-        await handle_outcomes(ctx, random_outcomes, db_manager, embed)
+        for outcome in random_outcomes:
+            await handle_outcomes(ctx, outcome, db_manager, embed)
         await ctx.send(embed=embed)
 
             
