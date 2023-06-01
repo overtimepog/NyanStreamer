@@ -2004,15 +2004,39 @@ class Basic(commands.Cog, name="basic"):
         embed.set_image(url=structure[2])
         embed.set_footer(text="You can Explore again in 2 minutes.")
 
-        for i, item in enumerate(random_outcomes, start=1):
-            outcome_quote = item["structure_quote"]
-            outcome_state = item["structure_state"]
-            outcome_chance = item["outcome_chance"] * 100
-            outcome_type = item["outcome_type"]
-            outcome_output = item["outcome_output"]
-            outcome_amount = item["outcome_amount"]
-            outcome_money = item["outcome_money"]
-            outcome_xp = item["outcome_xp"]
+        async def handle_outcomes(ctx, random_outcomes, db_manager, embed):
+            def choose_outcome_based_on_chance(outcomes_with_chances):
+                total = sum(chance for _, chance in outcomes_with_chances)
+                r = random.uniform(0, total)
+                upto = 0
+                for outcome, chance in outcomes_with_chances:
+                    if upto + chance >= r:
+                        return outcome
+                    upto += chance
+                assert False, "Shouldn't get here"
+
+            user_luck = await db_manager.get_luck(ctx.author.id)
+
+            random_outcomes = [
+                (item, item["outcome_chance"] + user_luck / 100) for item in random_outcomes
+            ]
+
+            total_chance = sum(chance for _, chance in random_outcomes)
+            random_outcomes = [
+                (item, chance / total_chance) for item, chance in random_outcomes
+            ]
+
+            chosen_outcome = choose_outcome_based_on_chance(random_outcomes)
+
+            # Using chosen_outcome in place of item
+            outcome_quote = chosen_outcome["structure_quote"]
+            outcome_state = chosen_outcome["structure_state"]
+            outcome_chance = chosen_outcome["outcome_chance"] * 100
+            outcome_type = chosen_outcome["outcome_type"]
+            outcome_output = chosen_outcome["outcome_output"]
+            outcome_amount = chosen_outcome["outcome_amount"]
+            outcome_money = chosen_outcome["outcome_money"]
+            outcome_xp = chosen_outcome["outcome_xp"]
 
             outcome_output = str(outcome_output)
             outcome_quote = str(outcome_quote).strip()
@@ -2105,6 +2129,7 @@ class Basic(commands.Cog, name="basic"):
                     await db_manager.set_health(ctx.author.id, user_health)
                     embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has been defeated by the monster and lost some health!", inline=False)
 
+        handle_outcomes(ctx, random_outcomes, db_manager, embed)
         await ctx.send(embed=embed)
 
             
