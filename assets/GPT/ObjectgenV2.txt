@@ -158,85 +158,95 @@ this is all the object templates for the game
                 "OnBoard": true
             }
         this is the structure template for my game structures are areas where players can explore in order to trigger one of the outcomes, use it to create more structures when I ask for them, you will always put the created structure code in a codeblock and correct any spelling mistakes
+        {
+            "structure_id": "dungeon",
+            "structure_name": "Dungeon",
+            "structure_image": "https://cdn.discordapp.com/attachments/1040747535574237274/1107345515781292062/OverTime_32-bit_pixel_art_Dungeon_a_dark_and_damp_underground_l_50b73e59-ac38-4118-8864-6c8446222283.png",
+            "structure_description": "A dark, foreboding dungeon filled with traps and treasures.",
+            "structure_outcomesID": "dungeon",
+            "structure_outcomes": [
                 {
-                    "structure_id": "dungeon",
-                    "structure_name": "Dungeon",
-                    "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
-                    "structure_description": "A dark, foreboding dungeon filled with traps and treasures.",
-                    "structure_outcomesID": "dungeon",
-                    "structure_outcomes": [
-                      {
-                        "structure_quote": "You narrowly avoided a trap and found a hidden chest!",
-                        "structure_state": "success",
-                        "outcome_chance": 0.3,
-                        "outcome_type": "item_gain",
-                        "outcome_output": "chest",
-                        "outcome_amount": 1,
-                        "outcome_money": 0,
-                        "outcome_xp": 10
-                      },
-                      {
-                        "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
-                        "structure_state": "success",
-                        "outcome_chance": 0.2,
-                        "outcome_type": "money_gain",
-                        "outcome_output": "gold",
-                        "outcome_amount": 200,
-                        "outcome_money": 0,
-                        "outcome_xp": 10
-                      },
-                      {
-                        "structure_quote": "You Encountered a lone goblin wandering the Dungeon!",
-                        "structure_state": "loss",
-                        "outcome_chance": 0.1,
-                        "outcome_type": "spawn",
-                        "outcome_output": "goblin",
-                        "outcome_amount": 0,
-                        "outcome_money": 0,
-                        "outcome_xp": 10
-                      },
-                      {
-                        "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
-                        "structure_state": "boss",
-                        "outcome_chance": 0.05,
-                        "outcome_type": "spawn",
-                        "outcome_output": "malik",
-                        "outcome_amount": 0,
-                        "outcome_money": 0,
-                        "outcome_xp": 10
-                      },
-                      {
-                        "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
-                        "structure_state": "success",
-                        "outcome_chance": 0.05,
-                        "outcome_type": "item_gain",
-                        "outcome_output": "amulet_dragon",
-                        "outcome_amount": 1,
-                        "outcome_money": 0,
-                        "outcome_xp": 30
-                      },
-                      {
-                        "structure_quote": "You've found a stash of healing potions!",
-                        "structure_state": "success",
-                        "outcome_chance": 0.1,
-                        "outcome_type": "item_gain",
-                        "outcome_output": "healthpotion",
-                        "outcome_amount": 3,
-                        "outcome_money": 0,
-                        "outcome_xp": 20
-                      },
-                      {
-                        "structure_quote": "You've been hit by a poisoned dart and lost some health!",
-                        "structure_state": "loss",
-                        "outcome_chance": 0.15,
-                        "outcome_type": "health_loss",
-                        "outcome_output": "",
-                        "outcome_amount": 30,
-                        "outcome_money": 0,
-                        "outcome_xp": 10
-                      }  
-                    ]
+                  "structure_quote": "You have narrowly avoided a trap and found a hidden chest!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.3,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "chest",
+                  "outcome_amount": 1,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
                 },
+                {
+                  "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.2,
+                  "outcome_type": "money_gain",
+                  "outcome_output": "gold",
+                  "outcome_amount": 200,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+                },
+                {
+                  "structure_quote": "You Encountered a lone goblin wandering the Dungeon!",
+                  "structure_state": "loss",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "spawn",
+                  "outcome_output": "goblin",
+                  "outcome_amount": 0,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+                },
+                {
+                  "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
+                  "structure_state": "boss",
+                  "outcome_chance": 0.05,
+                  "outcome_type": "spawn",
+                  "outcome_output": "malik",
+                  "outcome_amount": 0,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+                },
+                {
+                  "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.05,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "amulet_dragon",
+                  "outcome_amount": 1,
+                  "outcome_money": 0,
+                  "outcome_xp": 25
+                },
+                {
+                  "structure_quote": "You've found a stash of healing potions!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.1,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "healthpotion",
+                  "outcome_amount": 3,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+                },
+                {
+                  "structure_quote": "You've found a map that leads to a hidden treasure!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.05,
+                  "outcome_type": "item_gain",
+                  "outcome_output": "treasure_map",
+                  "outcome_amount": 1,
+                  "outcome_money": 0,
+                  "outcome_xp": 10
+                },
+                {
+                  "structure_quote": "You've stumbled into a hidden chamber and found a hoard of gold!",
+                  "structure_state": "success",
+                  "outcome_chance": 0.2,
+                  "outcome_type": "xp_gain",
+                  "outcome_output": "gold",
+                  "outcome_amount": 20,
+                  "outcome_money": 0,
+                  "outcome_xp": 0
+                }
+            ]
+        }     
 
         this is the template to create chests
         {
