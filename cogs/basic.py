@@ -529,10 +529,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
         
 
-    @commands.hybrid_group(
-            name="shop",
-            description="Shop Commands",
-    )
+    @commands.hybrid_group(invoke_without_command=True)
     async def shop(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send('Invalid quest command passed...')
@@ -542,8 +539,7 @@ class Basic(commands.Cog, name="basic"):
         name="view",
         description="view the shop.",
     )
-    
-    async def shop(self, ctx: Context):
+    async def view(self, ctx: Context):
         #get the shop items from the database
         shopitems = await db_manager.display_shop_items()
 
@@ -659,6 +655,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(embed=embeds[0], view=view)
                 
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
+    
     @shop.command(
         name="buy",
         description="This command will buy an item from the shop.",
@@ -865,7 +862,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(f"Item doesn't exist in your inventory.")
         
 #view a users profile using the view_profile function from helpers\db_manager.py
-    @shop.command(
+    @commands.hybrid_command(
         name="profile",
         description="This command will view your profile.",
     )

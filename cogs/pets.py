@@ -35,18 +35,29 @@ class Pets(commands.Cog, name="pets"):
         """The parent pet command."""
         await ctx.send('This is the parent pet command. Use `d.help pet` for more options.')
 
-    @pet.command()
+    @pet.command(
+            name="feed",
+            aliases=["eat"],
+            description="Feed your pet.",
+    )
     async def feed(self, ctx):
         """Feed your pet."""
         await ctx.send('You fed your pet!')
 
-    @pet.command()
+    @pet.command(
+            name="name",
+            aliases=["rename"],
+            description="Name your pet.",
+    )
     async def name(self, ctx, name: str):
         """Name your pet."""
         await ctx.send(f'You named your pet {name}!')
 
-    @pet.command()
-    @commands.is_owner()
+    @pet.command(
+            name="level",
+            aliases=["lvl"],
+            description="Shows the level of your pet",
+    )
     async def level(self, ctx):
         """Shows the level of your pet. Only for bot owner."""
         await ctx.send('Your pet is at level 1.')
