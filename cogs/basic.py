@@ -2042,18 +2042,17 @@ class Basic(commands.Cog, name="basic"):
                 # remove the () and , from the monster power
                 monster_power = str(monster_power)
                 print(monster_power)
+                #remove the ' , and () from the monster power
+                monster_power = monster_power.replace("(", "")
+                monster_power = monster_power.replace(")", "")
+                monster_power = monster_power.replace(",", "")
+                monster_power = monster_power.replace("'", "")
                 monster_power = monster_power.split("-")
                 #turn both [0] and [1] to strings and remove the () and , from them
                 monster_power = str(monster_power[0])
                 monster_power2 = str(monster_power[1])
                 print(monster_power)
                 print(monster_power2)
-                monster_power = monster_power.replace("(", "")
-                monster_power = monster_power.replace(")", "")
-                monster_power = monster_power.replace(",", "")
-                monster_power2 = monster_power2.replace(")", "")
-                monster_power2 = monster_power2.replace("(", "")
-                monster_power2 = monster_power2.replace(",", "")
                 #turn both [0] and [1] to ints
                 monster_power = int(monster_power)
                 monster_power2 = int(monster_power2)
