@@ -160,9 +160,7 @@ async def get_enemy_health(enemy_id: str) -> int:
         users = await db.execute(f"SELECT `enemy_health` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
         return users
     else:
-        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_health`) VALUES (?, ?)", (enemy_id, 100))
-        users = await db.execute(f"SELECT `enemy_health` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
-        return users
+        return None
     
 #add health to an enemy
 async def add_enemy_health(enemy_id: str, amount: int) -> None:
@@ -171,7 +169,7 @@ async def add_enemy_health(enemy_id: str, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `enemies` SET `enemy_health` = `enemy_health` + ? WHERE `enemy_id` = ?", (amount, enemy_id))
     else:
-        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_health`) VALUES (?, ?)", (enemy_id, 100))
+        return None
         
 #get enemy damage
 async def get_enemy_damage(enemy_id: str) -> str:
@@ -181,9 +179,7 @@ async def get_enemy_damage(enemy_id: str) -> str:
         users = await db.execute(f"SELECT `enemy_damage` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
         return users
     else:
-        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_damage`) VALUES (?, ?)", (enemy_id, 10))
-        users = await db.execute(f"SELECT `enemy_damage` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
-        return users
+        return None
     
 #get enemy emoji
 async def get_enemy_emoji(enemy_id: str) -> str:
@@ -193,9 +189,7 @@ async def get_enemy_emoji(enemy_id: str) -> str:
         users = await db.execute(f"SELECT `enemy_emoji` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
         return users
     else:
-        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_emoji`) VALUES (?, ?)", (enemy_id, "👹"))
-        users = await db.execute(f"SELECT `enemy_emoji` FROM `enemies` WHERE enemy_id = ?", (enemy_id,), fetch="one")
-        return users
+        return None
     
     
 
@@ -206,7 +200,7 @@ async def remove_enemy_health(enemy_id: str, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `enemies` SET `enemy_health` = `enemy_health` - ? WHERE `enemy_id` = ?", (amount, enemy_id))
     else:
-        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_health`) VALUES (?, ?)", (enemy_id, 100))
+        return None
 
 #set enemy health
 async def set_enemy_health(enemy_id: str, amount: int) -> None:
@@ -215,7 +209,7 @@ async def set_enemy_health(enemy_id: str, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `enemies` SET `enemy_health` = ? WHERE `enemy_id` = ?", (amount, enemy_id))
     else:
-        await db.execute(f"INSERT INTO `enemies` (`enemy_id`, `enemy_health`) VALUES (?, ?)", (enemy_id, 100))
+        return None
 
 #add get the xp of an enemy
 async def get_enemy_xp(enemy_id: str) -> int:
