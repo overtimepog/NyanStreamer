@@ -42,26 +42,35 @@ class General(commands.Cog, name="general"):
     @checks.not_blacklisted()
     async def help(self, context: Context, command_or_cog: str = None) -> None:
         prefix = self.bot.config["prefix"]
-    
+
         # If a command or cog name was provided, look it up and provide specific information about it
         if command_or_cog:
-            command = self.bot.get_command(command_or_cog.lower())
-            if command:
-                # If a command was found, print information about it
-                await context.send(f'**{command.name}**\n{command.description}\nUsage: `{prefix}{command.name}`')
+            command_or_group = self.bot.get_command(command_or_cog.lower())
+            if command_or_group:
+                if isinstance(command_or_group, commands.Group, commands.hybrid_group):
+                    # If a group was found, print information about its commands
+                    group_commands = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in command_or_group.commands])
+                    embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
+                    await context.send(embed=embed)
+                else:
+                    # If a command was found, print information about it
+                    embed = discord.Embed(title=f'**{command_or_group.name}**', description=command_or_group.description, color=0x9C84EF)
+                    embed.add_field(name="Usage", value=f'`{prefix}{command_or_group.name}`', inline=False)
+                    await context.send(embed=embed)
                 return
-    
+
             cog = self.bot.get_cog(command_or_cog.title())
             if cog:
                 # If a cog was found, print information about its commands
                 commands = cog.get_commands()
                 if commands:
                     command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands])
-                    await context.send(f'**{cog.qualified_name}** commands:\n{command_list}')
+                    embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
+                    await context.send(embed=embed)
                 else:
                     await context.send(f'The {cog.qualified_name} category has no commands.')
                 return
-    
+
             # If no command or cog was found, inform the user
             await context.send(f'No command or category named "{command_or_cog}" was found.')
             return

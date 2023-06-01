@@ -532,7 +532,7 @@ class Basic(commands.Cog, name="basic"):
     @commands.hybrid_group(invoke_without_command=True)
     async def shop(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.send('Invalid quest command passed...')
+            await ctx.send('Invalid shop command passed...')
 
     #ANCHOR - shop command that shows the shop
     @shop.command(
