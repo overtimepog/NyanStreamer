@@ -318,7 +318,10 @@ class Basic(commands.Cog, name="basic"):
             #await ctx.send("You cannot view your own items.")
      
 
-    @commands.hybrid_group(invoke_without_command=True)
+    @commands.hybrid_group(
+        name="quest",
+        description="Quest Commands",
+    )
     async def quest(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send('Invalid quest command passed...')
@@ -526,7 +529,10 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
         
 
-    @commands.hybrid_group(invoke_without_command=True)
+    @commands.hybrid_group(
+            name="shop",
+            description="Shop Commands",
+    )
     async def shop(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send('Invalid quest command passed...')
