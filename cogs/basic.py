@@ -2043,12 +2043,20 @@ class Basic(commands.Cog, name="basic"):
                 monster_power = await db_manager.get_enemy_damage(outcome_output)
                 # remove the () and , from the monster power
                 monster_power = str(monster_power)
+
+                monster_power = monster_power.split("-")
+                #turn both [0] and [1] to strings and remove the () and , from them
+                monster_power = str(monster_power[0])
+                monster_power2 = str(monster_power[1])
                 monster_power = monster_power.replace("(", "")
                 monster_power = monster_power.replace(")", "")
                 monster_power = monster_power.replace(",", "")
-                monster_power = monster_power.split("-")
-                monster_power = int(monster_power[0])
-                monster_power2 = int(monster_power[1])
+                monster_power2 = monster_power2.replace(")", "")
+                monster_power2 = monster_power2.replace("(", "")
+                monster_power2 = monster_power2.replace(",", "")
+                #turn both [0] and [1] to ints
+                monster_power = int(monster_power)
+                monster_power2 = int(monster_power2)
                 monster_power = random.randint(monster_power, monster_power2)
 
                 chance_to_defeat = (user_health + user_weapon - monster_health - monster_power + luck) / 100
