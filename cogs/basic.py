@@ -1975,21 +1975,20 @@ class Basic(commands.Cog, name="basic"):
                     if upto + chance >= r:
                         return outcome
                     upto += chance
-                assert False, "Shouldn't get here"
         
             user_luck = await db_manager.get_luck(ctx.author.id)
         
-            random_outcomes = [
-                (item, item["outcome_chance"] + user_luck / 100) for item in random_outcomes
-            ]
-        
+            random_outcomes = [(item, item["outcome_chance"] + user_luck / 100) for item in random_outcomes]
             total_chance = sum(chance for _, chance in random_outcomes)
-            random_outcomes = [
-                (item, chance / total_chance) for item, chance in random_outcomes
-            ]
+            random_outcomes = [(item, chance / total_chance) for item, chance in random_outcomes]
         
             # Call choose_outcome_based_on_chance() three times and store the results
-            chosen_outcomes = [choose_outcome_based_on_chance(random_outcomes) for _ in range(3)]
+            # Also, make sure the same outcome isn't chosen more than once
+            chosen_outcomes = []
+            for _ in range(3):
+                outcome = choose_outcome_based_on_chance(random_outcomes)
+                chosen_outcomes.append(outcome)
+                random_outcomes.remove((outcome, outcome["outcome_chance"] + user_luck / 100))
         
             # Process each chosen outcome
             for chosen_outcome in chosen_outcomes:
