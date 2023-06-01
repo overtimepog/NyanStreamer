@@ -29,3 +29,29 @@ rarity_colors = {
 class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.hybrid_group(invoke_without_command=True)
+    async def pet(self, ctx):
+        """The parent pet command."""
+        await ctx.send('This is the parent pet command. Use `d.help pet` for more options.')
+
+    @pet.command()
+    async def feed(self, ctx):
+        """Feed your pet."""
+        await ctx.send('You fed your pet!')
+
+    @pet.command()
+    async def name(self, ctx, name: str):
+        """Name your pet."""
+        await ctx.send(f'You named your pet {name}!')
+
+    @pet.command()
+    @commands.is_owner()
+    async def level(self, ctx):
+        """Shows the level of your pet. Only for bot owner."""
+        await ctx.send('Your pet is at level 1.')
+    
+    # You can add more pet-related commands here
+
+def setup(bot):
+    bot.add_cog(Pets(bot))

@@ -40,8 +40,31 @@ class General(commands.Cog, name="general"):
         description="List all commands the bot has loaded."
     )
     @checks.not_blacklisted()
-    async def help(self, context: Context) -> None:
+    async def help(self, context: Context, command_or_cog: str = None) -> None:
         prefix = self.bot.config["prefix"]
+    
+        # If a command or cog name was provided, look it up and provide specific information about it
+        if command_or_cog:
+            command = self.bot.get_command(command_or_cog.lower())
+            if command:
+                # If a command was found, print information about it
+                await context.send(f'**{command.name}**\n{command.description}\nUsage: `{prefix}{command.name}`')
+                return
+    
+            cog = self.bot.get_cog(command_or_cog.title())
+            if cog:
+                # If a cog was found, print information about its commands
+                commands = cog.get_commands()
+                if commands:
+                    command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands])
+                    await context.send(f'**{cog.qualified_name}** commands:\n{command_list}')
+                else:
+                    await context.send(f'The {cog.qualified_name} category has no commands.')
+                return
+    
+            # If no command or cog was found, inform the user
+            await context.send(f'No command or category named "{command_or_cog}" was found.')
+            return
 
         # Get all cogs and their commands
         cogs_data = []

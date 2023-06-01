@@ -318,9 +318,14 @@ class Basic(commands.Cog, name="basic"):
             #await ctx.send("You cannot view your own items.")
      
 
+    @commands.hybrid_group(invoke_without_command=True)
+    async def quest(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send('Invalid quest command passed...')
 
-    @commands.hybrid_command(
-        name="questboard",
+
+    @quest.command(
+        name="board",
         description="This command will show the quest board.",
     )
     async def questboard(self, ctx: Context):
@@ -437,8 +442,8 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(embed=embeds[0], view=view)
 
         #when the user clicks the check mark, add the quest to the users quest list, remove the quest from the quest board, check if the user already has the quest, and if they do, tell them they already have it, and if they dont, add it to their quest list
-    @commands.hybrid_command(
-    name="questinfo",
+    @quest.command(
+    name="info",
     description="Get detailed information about a specific quest.",
     )
     async def questinfo(self, ctx: Context, quest_id: str):
@@ -461,8 +466,8 @@ class Basic(commands.Cog, name="basic"):
 
         await ctx.send(embed=quest_embed)
     
-    @commands.hybrid_command(
-        name="acceptquest",
+    @quest.command(
+        name="accept",
         description="Accept a quest from the quest board.",
     )
     async def acceptquest(self, ctx: Context, quest: str):
@@ -512,19 +517,24 @@ class Basic(commands.Cog, name="basic"):
 
         
     #abandon quest hybrid command 
-    @commands.hybrid_command(
-        name="abandonquest",
+    @quest.command(
+        name="abandon",
         description="Abandon your current quest",
     )
     async def abandonquest(self, ctx: Context):
         await db_manager.remove_quest_from_user(ctx.author.id)
         await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
         
-    
+
+    @commands.hybrid_group(invoke_without_command=True)
+    async def shop(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send('Invalid quest command passed...')
+
     #ANCHOR - shop command that shows the shop
-    @commands.hybrid_command(
-        name="shop",
-        description="This command will show the shop.",
+    @shop.command(
+        name="view",
+        description="view the shop.",
     )
     
     async def shop(self, ctx: Context):
@@ -643,7 +653,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(embed=embeds[0], view=view)
                 
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
-    @commands.hybrid_command(
+    @shop.command(
         name="buy",
         description="This command will buy an item from the shop.",
     )
@@ -801,7 +811,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(f"Item doesn't exist in the shop.")
         
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
-    @commands.hybrid_command(
+    @shop.command(
         name="sell",
         description="This command will sell an item from your inventory.",
     )
@@ -849,7 +859,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(f"Item doesn't exist in your inventory.")
         
 #view a users profile using the view_profile function from helpers\db_manager.py
-    @commands.hybrid_command(
+    @shop.command(
         name="profile",
         description="This command will view your profile.",
     )
