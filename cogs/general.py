@@ -47,7 +47,7 @@ class General(commands.Cog, name="general"):
         if command_or_cog:
             command_or_group = self.bot.get_command(command_or_cog.lower())
             if command_or_group:
-                if isinstance(command_or_group, command_or_group.hybrid_group):
+                if isinstance(command_or_group):
                     # If a group was found, print information about its commands
                     group_commands = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in command_or_group.commands])
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
