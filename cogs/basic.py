@@ -2002,6 +2002,7 @@ class Basic(commands.Cog, name="basic"):
 
         embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
         embed.set_image(url=structure[2])
+        embed.set_footer(text="You can Explore again in 2 minutes.")
 
         for i, item in enumerate(random_outcomes, start=1):
             outcome_quote = item["structure_quote"]
@@ -2028,13 +2029,13 @@ class Basic(commands.Cog, name="basic"):
                 embed.add_field(name=":green_heart: Health Gain", value=f"You have gained {outcome_amount} health!", inline=False)
 
             elif outcome_type == "money_gain":
-                await db_manager.add_money(ctx.author.id, outcome_money)
-                embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {cash}{outcome_money}!", inline=False)
+                await db_manager.add_money(ctx.author.id, outcome_amount)
+                embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {cash}{outcome_amount}!", inline=False)
     
             elif outcome_type == "xp_gain":
-                await db_manager.add_xp(ctx.author.id, outcome_xp)
-                embed.add_field(name=":sparkles: XP Gain", value=f"You have gained {outcome_xp} XP!", inline=False)
-                
+                await db_manager.add_xp(ctx.author.id, outcome_amount)
+                embed.add_field(name=":sparkles: XP Gain", value=f"You have gained {outcome_amount} XP!", inline=False)
+
             elif outcome_type == "spawn":
                 user_health = await db_manager.get_health(ctx.author.id)
                 user_weapon = await db_manager.get_equipped_weapon(ctx.author.id)
