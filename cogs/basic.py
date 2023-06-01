@@ -1988,8 +1988,14 @@ class Basic(commands.Cog, name="basic"):
                 (item, chance / total_chance) for item, chance in random_outcomes
             ]
 
-            # Call choose_outcome_based_on_chance() three times and store the results
-            chosen_outcomes = [choose_outcome_based_on_chance(random_outcomes) for _ in range(3)]
+            # Adjust the selection process to ensure different outcomes
+            chosen_outcomes = []
+            for _ in range(3):
+                if len(random_outcomes) == 0:
+                    break  # no more outcomes to choose from
+                chosen_outcome = choose_outcome_based_on_chance(random_outcomes)
+                chosen_outcomes.append(chosen_outcome)
+                random_outcomes.remove((chosen_outcome, chosen_outcome["outcome_chance"] / total_chance))  # remove the chosen outcome from the list
 
             # Process each chosen outcome
             for chosen_outcome in chosen_outcomes:
@@ -2000,7 +2006,6 @@ class Basic(commands.Cog, name="basic"):
                     "xp_gain": handle_xp_gain,
                     "spawn": handle_spawn
                 }
-
                 # Call the corresponding function
                 await outcome_dispatcher[chosen_outcome["outcome_type"]](chosen_outcome, ctx, db_manager, embed)
 
