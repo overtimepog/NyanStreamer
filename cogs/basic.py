@@ -2011,7 +2011,7 @@ class Basic(commands.Cog, name="basic"):
             isChest = await db_manager.check_chest(item_id)
             if isChest == 1:
                 item_name = await db_manager.get_chest_name(item_id)
-                item_emoji = await db_manager.get_chest_emoji(item_id)
+                item_emoji = await db_manager.get_chest_icon(item_id)
             else:
                 item_name = await db_manager.get_basic_item_name(item_id)
                 item_emoji = await db_manager.get_basic_item_emote(item_id)
