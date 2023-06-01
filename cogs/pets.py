@@ -53,5 +53,5 @@ class Pets(commands.Cog, name="pets"):
     
     # You can add more pet-related commands here
 
-def setup(bot):
-    bot.add_cog(Pets(bot))
+async def setup(bot):
+    await bot.add_cog(Pets(bot))
