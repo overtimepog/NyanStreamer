@@ -2042,66 +2042,69 @@ class Basic(commands.Cog, name="basic"):
                 # remove the () and , from the monster power
                 monster_power = str(monster_power)
                 print(monster_power)
-                #remove the ' , and () from the monster power
-                monster_power = monster_power.replace("(", "")
-                monster_power = monster_power.replace(")", "")
-                monster_power = monster_power.replace(",", "")
-                monster_power = monster_power.replace("'", "")
-                monster_power = monster_power.split("-")
-                #turn both [0] and [1] to strings and remove the () and , from them
-                monster_power = str(monster_power[0])
-                monster_power2 = str(monster_power[1])
-                print(monster_power)
-                print(monster_power2)
-                #turn both [0] and [1] to ints
-                monster_power = int(monster_power)
-                monster_power2 = int(monster_power2)
-                monster_power = random.randint(monster_power, monster_power2)
-
-                chance_to_defeat = (user_health + user_weapon - monster_health - monster_power + luck) / 100
-                user_defeats_spawn = random.random() < chance_to_defeat
-
-                if user_defeats_spawn:
-                    monster_drops = await db_manager.get_enemy_drops(chosen_outcome["outcome_output"])
-                    drops = []
-                    for drop in monster_drops:
-                        item = drop[1]
-                        drop_amount = drop[2]
-                        drop_chance = drop[3]
-                        drop_chance = float(drop_chance)
-                        drop_amount = int(drop_amount)
-                        drops.append([item, drop_chance, drop_amount])
-
-                    drops.sort(key=lambda x: x[1], reverse=True)
-
-                    cumulative_distribution = []
-                    total = 0
-                    for drop in drops:
-                        total += drop[1]
-                        cumulative_distribution.append(total)
-
-                    roll = random.uniform(0, total) - luck
-
-                    for i, drop in enumerate(drops):
-                        if roll <= cumulative_distribution[i]:
-                            chosen_item = drop
-                            break
-                        
-                    item_id = chosen_item[0]
-                    item_amount = chosen_item[2]
-
-                    emote = await db_manager.get_basic_item_emote(item_id)
-                    item_name = await db_manager.get_basic_item_name(item_id)
-
-                    if emote and item_name and item_amount:
-                        await db_manager.add_item_to_inventory(ctx.author.id, item_id, item_amount)
-                        embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has successfully defeated the monster!", inline=False)
+                if monster_power == "None" or monster_power is None:
+                    return
                 else:
-                    # user didn't defeat the monster
-                    # decrease user's health, or other penalty here
-                    user_health = max(user_health - monster_power, 0)  # health can't go below 0
-                    await db_manager.set_health(ctx.author.id, user_health)
-                    embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has been defeated by the monster and lost some health!", inline=False)
+                    #remove the ' , and () from the monster power
+                    monster_power = monster_power.replace("(", "")
+                    monster_power = monster_power.replace(")", "")
+                    monster_power = monster_power.replace(",", "")
+                    monster_power = monster_power.replace("'", "")
+                    monster_power = monster_power.split("-")
+                    #turn both [0] and [1] to strings and remove the () and , from them
+                    monster_power = str(monster_power[0])
+                    monster_power2 = str(monster_power[1])
+                    print(monster_power)
+                    print(monster_power2)
+                    #turn both [0] and [1] to ints
+                    monster_power = int(monster_power)
+                    monster_power2 = int(monster_power2)
+                    monster_power = random.randint(monster_power, monster_power2)
+
+                    chance_to_defeat = (user_health + user_weapon - monster_health - monster_power + luck) / 100
+                    user_defeats_spawn = random.random() < chance_to_defeat
+
+                    if user_defeats_spawn:
+                        monster_drops = await db_manager.get_enemy_drops(chosen_outcome["outcome_output"])
+                        drops = []
+                        for drop in monster_drops:
+                            item = drop[1]
+                            drop_amount = drop[2]
+                            drop_chance = drop[3]
+                            drop_chance = float(drop_chance)
+                            drop_amount = int(drop_amount)
+                            drops.append([item, drop_chance, drop_amount])
+
+                        drops.sort(key=lambda x: x[1], reverse=True)
+
+                        cumulative_distribution = []
+                        total = 0
+                        for drop in drops:
+                            total += drop[1]
+                            cumulative_distribution.append(total)
+
+                        roll = random.uniform(0, total) - luck
+
+                        for i, drop in enumerate(drops):
+                            if roll <= cumulative_distribution[i]:
+                                chosen_item = drop
+                                break
+                            
+                        item_id = chosen_item[0]
+                        item_amount = chosen_item[2]
+
+                        emote = await db_manager.get_basic_item_emote(item_id)
+                        item_name = await db_manager.get_basic_item_name(item_id)
+
+                        if emote and item_name and item_amount:
+                            await db_manager.add_item_to_inventory(ctx.author.id, item_id, item_amount)
+                            embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has successfully defeated the monster!", inline=False)
+                    else:
+                        # user didn't defeat the monster
+                        # decrease user's health, or other penalty here
+                        user_health = max(user_health - monster_power, 0)  # health can't go below 0
+                        await db_manager.set_health(ctx.author.id, user_health)
+                        embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has been defeated by the monster and lost some health!", inline=False)
 
         userExist = await db_manager.check_user(ctx.author.id)
         if userExist == None or userExist == []:
