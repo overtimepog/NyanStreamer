@@ -8,7 +8,7 @@ Rules:
     •There must be at least 8 unique quotes for each item or enemy generated
     •There must be at least 8 unique outcomes for structure generated
     •The Item Types are, Consumable, Badge, Weapon, Armor, Material, and Misc
-    •Structures only have the options, (item_gain, item_loss, health_loss, health_gain, money_gain, money_loss, spawn), no others will work
+    •Structures only have the options, (item_gain, health_gain, money_gain, xp_gain, spawn), no others will work
     •There are only three item elements and they can only work on weapons, Fire, Paralysis, and Poison, if the item effect would be "Burn", Replace it with "Fire"
     •If possible, dont use item elements, create weapons with the item_element of None
     •Every item needs "item_damage", even if its 0, it needs to be there
