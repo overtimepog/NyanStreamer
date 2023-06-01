@@ -2128,7 +2128,9 @@ class Basic(commands.Cog, name="basic"):
         outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
 
         # Using set() to ensure unique outcomes
-        unique_outcomes = [dict(t) for t in set([tuple(d.items()) for d in outcomes])]
+        # Get unique outcomes
+        outcome_strs = {json.dumps(outcome) for outcome in structure_outcomes}
+        unique_outcomes = [json.loads(outcome_str) for outcome_str in outcome_strs]
 
         # Selecting 3 unique random outcomes
         if len(unique_outcomes) < 3:
