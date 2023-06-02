@@ -110,13 +110,16 @@ class Pets(commands.Cog, name="pets"):
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
             await db_manager.remove_pet_hunger(pet[1], pet[0], 5)
-            print(f'Updated hunger for {pet[1]}' + f's pet {pet[2]}, It is now {pet[5]}')
+            updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+            print(f'Updated hunger for {pet[1]}' + f's pet {pet[2]}, It is now {updated[5]}')
             if datetime.datetime.now().minute == 0:  # Every 1 hour
                 await db_manager.remove_pet_happiness(pet[1], pet[0], 5)
-                print(f'Updated happiness for {pet[1]}' + f's pet {pet[2]}, It is now {pet[7]}')
+                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+                print(f'Updated happiness for {pet[1]}' + f's pet {pet[2]}, It is now {updated[7]}')
             if datetime.datetime.now().hour % 2 == 0 and datetime.datetime.now().minute == 0:  # Every 2 hours
                 await db_manager.remove_pet_cleanliness(pet[1], pet[0], 5)
-                print(f'Updated cleanliness for {pet[1]}' + f's pet {pet[2]}, It is now {pet[6]}')
+                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+                print(f'Updated cleanliness for {pet[1]}' + f's pet {pet[2]}, It is now {updated[6]}')
 
     @update_pet_attributes.before_loop
     async def before_update(self):
