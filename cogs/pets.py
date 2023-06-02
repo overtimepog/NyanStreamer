@@ -62,6 +62,15 @@ class PetSelectView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return self.user.id == interaction.user.id
 
+def calculate_time_till_empty(current_value, decrease_rate, loop_interval):
+    """Calculate the time until the attribute reaches zero."""
+    if current_value <= 0:
+        return "Already empty"
+    else:
+        remaining_loops = current_value // decrease_rate
+        remaining_time = remaining_loops * loop_interval
+        return str(datetime.timedelta(minutes=remaining_time))
+
 async def create_pet_embed(pet):
     rarity = await db_manager.get_basic_item_rarity(pet[0])
     icon = await db_manager.get_basic_item_emote(pet[0])
@@ -73,12 +82,11 @@ async def create_pet_embed(pet):
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
     embed.add_field(name="Level", value=pet[3], inline=True)
     embed.add_field(name="XP", value=pet[4], inline=True)
-    embed.add_field(name=f"Hunger `{pet[5]}/100`", value="```" + generate_progress_bar(pet[5], 100) + "```", inline=False)
-    embed.add_field(name=f"Cleanliness `{pet[6]}/100`", value="```" + generate_progress_bar(pet[6], 100) + "```", inline=False)
-    embed.add_field(name=f"Happiness `{pet[7]}/100`", value="```" + generate_progress_bar(pet[7], 100) + "```", inline=False)
+    embed.add_field(name=f"Hunger `{pet[5]}/100`", value="```" + generate_progress_bar(pet[5], 100) + "```" + f"\nTime till empty: {calculate_time_till_empty(pet[5], 5, 30)}", inline=False)
+    embed.add_field(name=f"Cleanliness `{pet[6]}/100`", value="```" + generate_progress_bar(pet[6], 100) + "```" + f"\nTime till empty: {calculate_time_till_empty(pet[6], 5, 120)}", inline=False)
+    embed.add_field(name=f"Happiness `{pet[7]}/100`", value="```" + generate_progress_bar(pet[7], 100) + "```" + f"\nTime till empty: {calculate_time_till_empty(pet[7], 5, 60)}", inline=False)
 
     return embed
-
 def generate_progress_bar(value, max_value):
     TOTAL_PARTS = 10
     filled_parts = round((value / max_value) * TOTAL_PARTS)
@@ -112,11 +120,11 @@ class Pets(commands.Cog, name="pets"):
             await db_manager.remove_pet_hunger(pet[1], pet[0], 5)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated hunger for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[5]}')
-    
+
     @update_pet_hunger.before_loop
     async def before_update_hunger(self):
         await self.bot.wait_until_ready()
-    
+
     @tasks.loop(hours=1)
     async def update_pet_happiness(self):
         """Update pets' happiness periodically."""
@@ -125,11 +133,11 @@ class Pets(commands.Cog, name="pets"):
             await db_manager.remove_pet_happiness(pet[1], pet[0], 5)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated happiness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[7]}')
-    
+
     @update_pet_happiness.before_loop
     async def before_update_happiness(self):
         await self.bot.wait_until_ready()
-    
+
     @tasks.loop(hours=2)
     async def update_pet_cleanliness(self):
         """Update pets' cleanliness periodically."""
@@ -138,7 +146,7 @@ class Pets(commands.Cog, name="pets"):
             await db_manager.remove_pet_cleanliness(pet[1], pet[0], 5)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
-    
+
     @update_pet_cleanliness.before_loop
     async def before_update_cleanliness(self):
         await self.bot.wait_until_ready()
