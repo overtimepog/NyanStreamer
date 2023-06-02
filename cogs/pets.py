@@ -105,24 +105,42 @@ class Pets(commands.Cog, name="pets"):
         view.message = message
 
     @tasks.loop(minutes=30)
-    async def update_pet_attributes(self):
-        """Update pets' attributes periodically."""
+    async def update_pet_hunger(self):
+        """Update pets' hunger periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
             await db_manager.remove_pet_hunger(pet[1], pet[0], 5)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated hunger for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[5]}')
-            if datetime.datetime.now().minute == 0:  # Every 1 hour
-                await db_manager.remove_pet_happiness(pet[1], pet[0], 5)
-                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
-                print(f'Updated happiness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[7]}')
-            if datetime.datetime.now().hour % 2 == 0 and datetime.datetime.now().minute == 0:  # Every 2 hours
-                await db_manager.remove_pet_cleanliness(pet[1], pet[0], 5)
-                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
-                print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
-
-    @update_pet_attributes.before_loop
-    async def before_update(self):
+    
+    @update_pet_hunger.before_loop
+    async def before_update_hunger(self):
+        await self.bot.wait_until_ready()
+    
+    @tasks.loop(hours=1)
+    async def update_pet_happiness(self):
+        """Update pets' happiness periodically."""
+        all_pets = await db_manager.get_all_users_pets()
+        for pet in all_pets:
+            await db_manager.remove_pet_happiness(pet[1], pet[0], 5)
+            updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+            print(f'Updated happiness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[7]}')
+    
+    @update_pet_happiness.before_loop
+    async def before_update_happiness(self):
+        await self.bot.wait_until_ready()
+    
+    @tasks.loop(hours=2)
+    async def update_pet_cleanliness(self):
+        """Update pets' cleanliness periodically."""
+        all_pets = await db_manager.get_all_users_pets()
+        for pet in all_pets:
+            await db_manager.remove_pet_cleanliness(pet[1], pet[0], 5)
+            updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+            print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
+    
+    @update_pet_cleanliness.before_loop
+    async def before_update_cleanliness(self):
         await self.bot.wait_until_ready()
 
 async def setup(bot):
