@@ -25,6 +25,31 @@ rarity_colors = {
     "Legendary": 0xf3af19,  # Gold
     # Add more rarities and colors as needed
 }
+class PetSelect(discord.ui.Select):
+    def __init__(self, pets: list):
+        options = []
+        for pet in pets:
+            options.append(discord.SelectOption(label=pet['pet_name'], value=pet['item_id']))
+        super().__init__(placeholder='Select your pet...', min_values=1, max_values=1, options=options)
+    async def callback(self, interaction: discord.Interaction):
+        self.view.value = self.values[0]
+        await interaction.response.send_message(f"You've selected {self.values[0]}", ephemeral=True)
+        self.view.stop()
+
+class PetSelectView(discord.ui.View):
+    def __init__(self, pets: list):
+        super().__init__()
+        self.value = None
+        self.add_item(PetSelect(pets))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return self.user.id == interaction.user.id
+
+    async def on_timeout(self) -> None:
+        for item in self.children:
+            item.disabled = True
+        await self.message.edit(view=self)
+
 # Here we name the cog and create a new class for the cog.
 class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
@@ -43,15 +68,7 @@ class Pets(commands.Cog, name="pets"):
     async def feed(self, ctx):
         """Feed your pet."""
         await ctx.send('You fed your pet!')
-
-    @pet.command(
-            name="name",
-            aliases=["rename"],
-            description="Name your pet.",
-    )
-    async def name(self, ctx, name: str):
-        """Name your pet."""
-        await ctx.send(f'You named your pet {name}!')
+        return
 
     @pet.command(
             name="level",
@@ -61,6 +78,31 @@ class Pets(commands.Cog, name="pets"):
     async def level(self, ctx):
         """Shows the level of your pet. Only for bot owner."""
         await ctx.send('Your pet is at level 1.')
+
+
+    @pet.command(
+        name="name",
+        aliases=["rename"],
+        description="Name your pet.",
+    )
+    async def name(self, ctx: Context, new_name: str):
+        """Name your pet."""
+
+        pets = await db_manager.get_users_pets(ctx.author.id)
+        if not pets:
+            await ctx.send('You do not own any pets.')
+            return
+
+        view = PetSelectView(pets)
+        message = await ctx.send('Select the pet you want to rename:', view=view)
+        view.message = message
+        await view.wait()
+
+        if view.value:
+            await db_manager.rename_pet(ctx.author.id, view.value, new_name)
+            await ctx.send(f'You named your pet {new_name}!')
+        else:
+            await ctx.send('You did not select any pet.')
     
     # You can add more pet-related commands here
 

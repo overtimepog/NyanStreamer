@@ -755,6 +755,8 @@ async def add_structures() -> None:
         structure_image = structure['structure_image']
         structure_description = structure['structure_description']
         structure_outcomesID = structure['structure_outcomesID']
+        #clear the table
+        await db.execute("DELETE FROM `structures`")
         await db.execute("INSERT INTO structures (structure_id, structure_name, structure_image, structure_description, structure_outcomesID) VALUES (?, ?, ?, ?, ?)", (structure_id, structure_name, structure_image, structure_description, structure_outcomesID))
         print(f"Added |{structure_name}| to the structures table")
         
@@ -771,6 +773,8 @@ async def add_structures() -> None:
             outcome_xp = outcome['outcome_xp']
             
             # Insert data into structure_outcomes table
+            #clear the table
+            await db.execute("DELETE FROM `structure_outcomes`")
             await db.execute("INSERT INTO structure_outcomes (structure_id, structure_quote, structure_state, outcome_chance, outcome_type, outcome, outcome_amount, outcome_money, outcome_xp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (structure_id, structure_quote, structure_state, outcome_chance, outcome_type, outcome_output, outcome_amount, outcome_money, outcome_xp))
             print(f"Added |{structure_state}, {outcome_type}, {outcome_output}/{outcome_amount}| to the |{structure_name}| structure")
     
@@ -2304,6 +2308,17 @@ async def get_all_pets() -> list:
             return data
         else:
             return None
+        
+#get all the pets a user owns 
+async def get_users_pets(user_id: int) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_type = 'Pet'", (user_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+        
+#get pet data from pet name
 
 
 async def set_enemy_not_burning(enemy_id: int) -> int:
@@ -2679,7 +2694,7 @@ async def view_inventory_by_type(user_id: int, item_type: str) -> list:
         return data
     else:
         return []
-        
+  
 #add an item to the inventory table, uses the usersID from the users table and the item ID from the streamer_items table, if the item already exists in the inventory table, it will add 1 to the item_amount
 async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) -> int:
     """
@@ -2687,10 +2702,6 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
 
     :param user_id: The ID of the user that the item should be added to.
     :param item_id: The ID of the item that should be added.
-    :param item_name: The name of the item that should be added.
-    :param item_price: The price of the item that should be added.
-    :param item_emoji: The emoji of the item that should be added.
-    :param item_rarity: The rarity of the item that should be added.
     :param item_amount: The amount of the item that should be added.
     """
     async with aiosqlite.connect("database/database.db") as db:
@@ -2732,6 +2743,23 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             isEquipped = 0
                             #add the item to the inventory table
                             await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
+                            # If the item is a pet, add an entry to the pet_attributes table.
+                            if item_type == 'Pet':
+                                # Check if user already owns a pet of this type.
+                                async with db.execute("SELECT * FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
+                                    pet_exists = await cursor.fetchone()
+                                    if pet_exists is not None:
+                                        return 0  # User already owns a pet of this type.
+                                    
+                                # Define the default values for a new pet.
+                                pet_name = item_name
+                                default_level = 1
+                                default_xp = 0
+                                default_hunger_percent = 100.0
+                                default_cleanliness_percent = 100.0
+                                default_happiness_percent = 100.0
+                                await db.execute("INSERT INTO `pet_attributes` (`item_id`, `user_id`, `pet_name`, `level`, `xp`, `hunger_percent`, `cleanliness_percent`, `happiness_percent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                                (item_id, user_id, pet_name, default_level, default_xp, default_hunger_percent, default_cleanliness_percent, default_happiness_percent))
                             await db.commit()
                             return 1
                         else:
@@ -2742,17 +2770,6 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                     async with db.execute("SELECT * FROM chests WHERE chest_id=?", (item_id,)) as cursor:
                         result = await cursor.fetchone()
                         if result is not None:
-                            #   chest_id int(11) NOT NULL,
-                            #   chest_name varchar(255) NOT NULL,
-                            #   chest_price varchar(255) NOT NULL,
-                            #   chest_emoji varchar(255) NOT NULL,
-                            #   chest_rarity varchar(255) NOT NULL,
-                            #   chest_type varchar(255) NOT NULL,
-                            #   chest_description varchar(255) NOT NULL,
-                            #   key_id varchar(255) NOT NULL,
-                            #   chest_contentsID varchar(255) NOT NULL,
-                            
-                            #get the data from the chest table
                             chest_id = result[0]
                             chest_name = result[1]
                             chest_price = result[2]
@@ -2854,27 +2871,35 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
 
     :param user_id: The ID of the user that the item should be removed from.
     :param item_id: The ID of the item that should be removed.
+    :param amount: The amount of the item that should be removed.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        #check if the item already exists in the inventory table
+        # check if the item already exists in the inventory table
         async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
             result = await cursor.fetchone()
             if result is not None:
-                #if the item already exists in the inventory table, remove 1 from the item_amount
+                item_type = result[7]  # index 7 corresponds to item_type in the schema
+                # if the item already exists in the inventory table, remove the specified amount from the item_amount
                 await db.execute("UPDATE inventory SET item_amount = item_amount - ? WHERE user_id=? AND item_id=?", (amount, user_id, item_id))
                 await db.commit()
-                #if the item_amount is 0, remove the item from the inventory table
+
+                # if the item_amount is 0, remove the item from the inventory table
                 async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
                     result = await cursor.fetchone()
-                    if result[6] <= 0:
+                    if result[6] <= 0:  # index 6 corresponds to item_amount in the schema
                         await db.execute("DELETE FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id))
+
+                        # If the item is a pet, remove the corresponding entry from pet_attributes table.
+                        if item_type == 'Pet':
+                            await db.execute("DELETE FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id))
+
                         await db.commit()
                         return 1
                     else:
                         return 1
                 return 1
             else:
-                #if the item does not exist in the inventory table, return 0
+                # if the item does not exist in the inventory table, return 0
                 return 0
             
 #get the amount of an item from a users inventory

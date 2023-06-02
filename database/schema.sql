@@ -290,3 +290,16 @@ CREATE TABLE IF NOT EXISTS `warns` (
   `reason` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS `pet_attributes` (
+  `item_id` varchar(255) NOT NULL, -- pet ID, same as item_id in inventory when item_type is 'Pet'
+  `user_id` varchar(20) NOT NULL, -- the user that owns the pet
+  `pet_name` varchar(255) NOT NULL, -- the name of the pet
+  `level` int(11) NOT NULL, -- the level of the pet
+  `xp` int(11) NOT NULL, -- the experience of the pet
+  `hunger_percent` decimal(3,2) NOT NULL, -- hunger level of the pet in percentage
+  `cleanliness_percent` decimal(3,2) NOT NULL, -- cleanliness level of the pet in percentage
+  `happiness_percent` decimal(3,2) NOT NULL, -- happiness level of the pet in percentage
+  PRIMARY KEY (`item_id`, `user_id`),
+  FOREIGN KEY (`item_id`, `user_id`) REFERENCES inventory(`item_id`, `user_id`)
+);
