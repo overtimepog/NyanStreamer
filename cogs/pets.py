@@ -27,25 +27,35 @@ rarity_colors = {
 
 class PetSelect(discord.ui.Select):
     def __init__(self, pets: list, bot):
+        self.bot = bot
+        self.pets = pets
+        super().__init__(placeholder='Select your pet...', min_values=1, max_values=1)
+
+    async def prepare_options(self):
         options = []
-        for pet in pets:
-            pet_emoji = bot.loop.run_until_complete(db_manager.get_basic_item_emote(pet[0]))
+        for pet in self.pets:
+            pet_emoji = await self.bot.db_manager.get_basic_item_emote(pet[0])
             options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji))
-        super().__init__(placeholder='Select your pet...', min_values=1, max_values=1, options=options)
+        self.options = options
 
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
-        selected_pet = await db_manager.get_pet(self.values[0])
+        selected_pet = await self.bot.db_manager.get_pet(self.values[0])
         embed = await create_pet_embed(selected_pet)
         await interaction.response.edit_message(embed=embed)
         self.view.stop()
+
 
 class PetSelectView(discord.ui.View):
     def __init__(self, pets: list, user: discord.User, bot):
         super().__init__()
         self.user = user
         self.value = None
-        self.add_item(PetSelect(pets, bot))
+        self.select = PetSelect(pets, bot)
+        self.add_item(self.select)
+
+    async def prepare(self):
+        await self.select.prepare_options()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return self.user.id == interaction.user.id
@@ -73,7 +83,7 @@ class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command()
+    @commands.command()
     async def pet(self, ctx: Context):
         """Display your pet's stats."""
         pets = await db_manager.get_users_pets(ctx.author.id)
@@ -82,6 +92,7 @@ class Pets(commands.Cog, name="pets"):
             return
 
         view = PetSelectView(pets, ctx.author, self.bot)
+        await view.prepare()
         message = await ctx.send('Select a pet to see its stats:', view=view)
         view.message = message
 
