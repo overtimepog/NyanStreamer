@@ -29,7 +29,7 @@ class PetSelect(discord.ui.Select):
     def __init__(self, pets: list):
         options = []
         for pet in pets:
-            options.append(discord.SelectOption(label=pet['pet_name'], value=pet['item_id']))
+            options.append(discord.SelectOption(label=pet[2], value=pet[0]))
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
@@ -56,14 +56,14 @@ class PetSelectView(discord.ui.View):
 
 
 def create_pet_embed(pet):
-    rarity = db_manager.get_basic_item_rarity(pet['item_id'])
+    rarity = db_manager.get_basic_item_rarity(pet[0])
     embed = discord.Embed(
         title=f"{pet['pet_name']}'s Statistics",
         description=f"This is the stats of your pet {pet['pet_name']}",
         color=rarity_colors[rarity]
     )
-    embed.add_field(name="Level", value=pet['level'], inline=True)
-    embed.add_field(name="XP", value=pet['xp'], inline=True)
+    embed.add_field(name="Level", value=pet[3], inline=True)
+    embed.add_field(name="XP", value=pet[4], inline=True)
     # Add more stats as needed
     return embed
 
