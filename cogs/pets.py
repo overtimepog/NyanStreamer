@@ -34,13 +34,13 @@ class PetSelect(discord.ui.Select):
     async def prepare_options(self):
         options = []
         for pet in self.pets:
-            pet_emoji = await self.bot.db_manager.get_basic_item_emote(pet[0])
+            pet_emoji = await db_manager.get_basic_item_emote(pet[0])
             options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji))
         self.options = options
 
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
-        selected_pet = await self.bot.db_manager.get_pet(self.values[0])
+        selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])
         embed = await create_pet_embed(selected_pet)
         await interaction.response.edit_message(embed=embed)
         self.view.stop()
