@@ -97,7 +97,9 @@ def generate_progress_bar(value, max_value):
 class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
         self.bot = bot
-        self.update_pet_attributes.start()
+        self.update_pet_hunger.start()
+        self.update_pet_happiness.start()
+        self.update_pet_cleanliness.start()
 
     @commands.hybrid_command()
     async def pet(self, ctx: Context):

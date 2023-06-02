@@ -503,12 +503,12 @@
         "recipe_id": "small_ace_ring",
         "item_recipe": [
             {
-                "item_id": "gold_ring",
-                "item_amount": 1
+                "ingredient_id": "gold_ring",
+                "ingredient_amount": 1
             },
             {
-                "item_id": "ace_gem",
-                "item_amount": 1
+                "ingredient_id": "ace_gem",
+                "ingredient_amount": 1
             }
         ],
         "isHuntable": false,
