@@ -85,7 +85,7 @@ class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.hybrid_command()
     async def pet(self, ctx: Context):
         """Display your pet's stats."""
         pets = await db_manager.get_users_pets(ctx.author.id)
