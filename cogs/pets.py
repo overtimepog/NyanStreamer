@@ -29,6 +29,7 @@ class PetSelect(discord.ui.Select):
     def __init__(self, pets: list, bot):
         self.bot = bot
         self.pets = pets
+        print(self.pets)
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1)
 
     async def prepare_options(self):
