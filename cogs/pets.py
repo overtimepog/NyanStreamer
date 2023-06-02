@@ -29,7 +29,8 @@ class PetSelect(discord.ui.Select):
     def __init__(self, pets: list):
         options = []
         for pet in pets:
-            options.append(discord.SelectOption(label=pet[2], value=pet[0]))
+            pet_emoji = db_manager.get_basic_item_emote(pet[0])
+            options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji))
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
