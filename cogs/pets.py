@@ -47,7 +47,7 @@ class PetSelect(discord.ui.Select):
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
         embed = await create_pet_embed(self.selected_pet)
         await interaction.response.edit_message(embed=embed)
-        await interaction.response.defer(edit_origin=True)
+        await interaction.response.defer()
         await self.prepare_options()
 
 
@@ -75,9 +75,29 @@ async def create_pet_embed(pet):
     )
     embed.add_field(name="Level", value=pet[3], inline=True)
     embed.add_field(name="XP", value=pet[4], inline=True)
+    #create the bar
+    embed.add_field(name="Hunger", value=generate_progress_bar(pet[5], 100), inline=True)
+    embed.add_field(name="Cleanliness", value=generate_progress_bar(pet[6], 100), inline=True)
+    embed.add_field(name="Happiness", value=generate_progress_bar(pet[7], 100), inline=True)
+    #hungry = pet[5]
+    #clean = pet[6]
+    #happy = pet[7]
+    #generate a bar for each stat
+
     # Add more stats as needed
     return embed
 
+def generate_progress_bar(value, max_value):
+    # Number of total parts in the bar.
+    TOTAL_PARTS = 10
+
+    # Calculate how many parts should be filled.
+    filled_parts = round((value / max_value) * TOTAL_PARTS)
+
+    # Create the bar.
+    bar = '▰' * filled_parts + '▱' * (TOTAL_PARTS - filled_parts)
+
+    return bar
 
 class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
@@ -93,7 +113,7 @@ class Pets(commands.Cog, name="pets"):
 
         view = PetSelectView(pets, ctx.author, self.bot)
         await view.prepare()
-        message = await ctx.send('Select a pet to see its stats:', view=view)
+        message = await ctx.send('Select a Pet :)', view=view)
         view.message = message
 
 async def setup(bot):
