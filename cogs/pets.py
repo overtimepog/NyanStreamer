@@ -9,7 +9,7 @@ import aiohttp
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
-from discord.ext.commands import Context, has_permissions
+from discord.ext.commands import Context, has_permissions, Bot
 
 from helpers import battle, checks, db_manager, hunt, mine
 from typing import List, Tuple
@@ -26,7 +26,7 @@ rarity_colors = {
 }
 
 class PetSelect(discord.ui.Select):
-    def __init__(self, pets: list):
+    def __init__(self, pets: list, bot):
         options = []
         for pet in pets:
             pet_emoji = bot.loop.run_until_complete(db_manager.get_basic_item_emote(pet[0]))
@@ -41,11 +41,11 @@ class PetSelect(discord.ui.Select):
         self.view.stop()
 
 class PetSelectView(discord.ui.View):
-    def __init__(self, pets: list, user: discord.User):
+    def __init__(self, pets: list, user: discord.User, bot):
         super().__init__()
         self.user = user
         self.value = None
-        self.add_item(PetSelect(pets))
+        self.add_item(PetSelect(pets, bot))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return self.user.id == interaction.user.id
@@ -81,7 +81,7 @@ class Pets(commands.Cog, name="pets"):
             await ctx.send('You do not own any pets.')
             return
 
-        view = PetSelectView(pets, ctx.author)
+        view = PetSelectView(pets, ctx.author, self.bot)
         message = await ctx.send('Select a pet to see its stats:', view=view)
         view.message = message
 
