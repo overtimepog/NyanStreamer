@@ -71,8 +71,8 @@ class PetSelectView(discord.ui.View):
 async def create_pet_embed(pet):
     rarity = await db_manager.get_basic_item_rarity(pet[0])
     embed = discord.Embed(
-        title=f"{pet['pet_name']}'s Statistics",
-        description=f"This is the stats of your pet {pet['pet_name']}",
+        title=f"{pet[2]}'s Statistics",
+        description=f"This is the stats of your pet {pet[2]}",
         color=rarity_colors[rarity]
     )
     embed.add_field(name="Level", value=pet[3], inline=True)
