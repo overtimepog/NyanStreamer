@@ -31,10 +31,14 @@ class PetSelect(discord.ui.Select):
         for pet in pets:
             options.append(discord.SelectOption(label=pet['pet_name'], value=pet['item_id']))
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1, options=options)
+
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
-        await interaction.response.send_message(f"You've selected {self.values[0]}", ephemeral=True)
+        selected_pet = await db_manager.get_pet(self.values[0])
+        embed = create_pet_embed(selected_pet)
+        await interaction.response.edit_message(embed=embed)
         self.view.stop()
+
 
 class PetSelectView(discord.ui.View):
     def __init__(self, pets: list):
@@ -50,59 +54,38 @@ class PetSelectView(discord.ui.View):
             item.disabled = True
         await self.message.edit(view=self)
 
-# Here we name the cog and create a new class for the cog.
+
+def create_pet_embed(pet):
+    rarity = db_manager.get_basic_item_rarity(pet['item_id'])
+    embed = discord.Embed(
+        title=f"{pet['pet_name']}'s Statistics",
+        description=f"This is the stats of your pet {pet['pet_name']}",
+        color=rarity_colors[rarity]
+    )
+    embed.add_field(name="Level", value=pet['level'], inline=True)
+    embed.add_field(name="XP", value=pet['xp'], inline=True)
+    # Add more stats as needed
+    return embed
+
+
 class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_group(invoke_without_command=True)
-    async def pet(self, ctx):
-        """The parent pet command."""
-        await ctx.send('This is the parent pet command. Use `d.help pet` for more options.')
-
-    @pet.command(
-            name="feed",
-            aliases=["eat"],
-            description="Feed your pet.",
-    )
-    async def feed(self, ctx):
-        """Feed your pet."""
-        await ctx.send('You fed your pet!')
-        return
-
-    @pet.command(
-            name="level",
-            aliases=["lvl"],
-            description="Shows the level of your pet",
-    )
-    async def level(self, ctx):
-        """Shows the level of your pet. Only for bot owner."""
-        await ctx.send('Your pet is at level 1.')
-
-
-    @pet.command(
-        name="name",
-        aliases=["rename"],
-        description="Name your pet.",
-    )
-    async def name(self, ctx: Context, new_name: str):
-        """Name your pet."""
-
+    @commands.command()
+    async def pet(self, ctx: Context):
+        """Display your pet's stats."""
         pets = await db_manager.get_users_pets(ctx.author.id)
         if not pets:
             await ctx.send('You do not own any pets.')
             return
 
         view = PetSelectView(pets)
-        message = await ctx.send('Select the pet you want to rename:', view=view)
+        message = await ctx.send('Select a pet to see its stats:', view=view)
         view.message = message
-        await view.wait()
 
-        if view.value:
-            await db_manager.rename_pet(ctx.author.id, view.value, new_name)
-            await ctx.send(f'You named your pet {new_name}!')
-        else:
-            await ctx.send('You did not select any pet.')
+async def setup(bot):
+    await bot.add_cog(Pets(bot))
     
     # You can add more pet-related commands here
 
