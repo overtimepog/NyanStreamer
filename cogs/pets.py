@@ -41,8 +41,9 @@ class PetSelect(discord.ui.Select):
 
 
 class PetSelectView(discord.ui.View):
-    def __init__(self, pets: list):
+    def __init__(self, pets: list, user: discord.User):
         super().__init__()
+        self.user = user
         self.value = None
         self.add_item(PetSelect(pets))
 
@@ -80,7 +81,7 @@ class Pets(commands.Cog, name="pets"):
             await ctx.send('You do not own any pets.')
             return
 
-        view = PetSelectView(pets)
+        view = PetSelectView(pets, ctx.author)
         message = await ctx.send('Select a pet to see its stats:', view=view)
         view.message = message
 
