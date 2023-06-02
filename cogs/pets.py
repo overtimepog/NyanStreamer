@@ -72,7 +72,7 @@ class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.hybrid_command()
     async def pet(self, ctx: Context):
         """Display your pet's stats."""
         pets = await db_manager.get_users_pets(ctx.author.id)
@@ -83,11 +83,6 @@ class Pets(commands.Cog, name="pets"):
         view = PetSelectView(pets)
         message = await ctx.send('Select a pet to see its stats:', view=view)
         view.message = message
-
-async def setup(bot):
-    await bot.add_cog(Pets(bot))
-    
-    # You can add more pet-related commands here
 
 async def setup(bot):
     await bot.add_cog(Pets(bot))
