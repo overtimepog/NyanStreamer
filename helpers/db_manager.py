@@ -1814,6 +1814,16 @@ async def get_users_pets(user_id: int) -> list:
             return data
         else:
             return None
+        
+#get every users pets
+async def get_all_users_pets() -> list:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `pet_attributes`", fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
+
 #remove some hunger from a pet
 async def remove_pet_hunger(user_id: int, pet_id: str, amount: int) -> None:
         db = DB()

@@ -107,7 +107,7 @@ class Pets(commands.Cog, name="pets"):
     @tasks.loop(minutes=30)
     async def update_pet_attributes(self):
         """Update pets' attributes periodically."""
-        all_pets = await db_manager.get_all_pets()
+        all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
             await db_manager.remove_pet_hunger(pet[1], pet[0], -5)
             print(f'Updated hunger for {pet[1]} + ' + f's pet {pet[2]}')
