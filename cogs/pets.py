@@ -39,15 +39,14 @@ class PetSelect(discord.ui.Select):
             print(pet)
             pet_emoji = await db_manager.get_basic_item_emote(pet[0])
             petitemname = await db_manager.get_basic_item_name(pet[0])
-            is_default = (self.selected_pet is not None and self.selected_pet[0] == pet[0])
             options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji, description=f"Level {pet[3]} {petitemname}"))
         self.options = options
 
     async def callback(self, interaction: discord.Interaction):
-        if self.selected_pet and self.selected_pet[0] == self.values[0]:
-            interaction.response.defer()
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
+        if self.selected_pet and self.selected_pet[0] == self.values[0]:
+            interaction.response.defer()
         embed = await create_pet_embed(self.selected_pet)
         await interaction.response.edit_message(embed=embed)
         await self.prepare_options()
