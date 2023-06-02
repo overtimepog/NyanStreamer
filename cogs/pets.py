@@ -26,10 +26,10 @@ rarity_colors = {
     # Add more rarities and colors as needed
 }
 class PetSelect(discord.ui.Select):
-    def __init__(self, pets: list):
+    async def __init__(self, pets: list):
         options = []
         for pet in pets:
-            pet_emoji = db_manager.get_basic_item_emote(pet[0])
+            pet_emoji = await db_manager.get_basic_item_emote(pet[0])
             options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji))
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1, options=options)
 
@@ -57,8 +57,8 @@ class PetSelectView(discord.ui.View):
         await self.message.edit(view=self)
 
 
-def create_pet_embed(pet):
-    rarity = db_manager.get_basic_item_rarity(pet[0])
+async def create_pet_embed(pet):
+    rarity = await db_manager.get_basic_item_rarity(pet[0])
     embed = discord.Embed(
         title=f"{pet['pet_name']}'s Statistics",
         description=f"This is the stats of your pet {pet['pet_name']}",
