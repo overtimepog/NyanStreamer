@@ -48,6 +48,11 @@ class PetSelect(discord.ui.Select):
         embed = await create_pet_embed(self.selected_pet)
         await interaction.response.edit_message(embed=embed)
         await self.prepare_options()
+        #keep the pet selected
+        for option in self.options:
+            if option.value == self.values[0]:
+                option.default = True
+                break
 
 
 class PetSelectView(discord.ui.View):
