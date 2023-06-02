@@ -45,12 +45,9 @@ class PetSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
-        if self.selected_pet and self.selected_pet[0] == self.values[0]:
-            await interaction.response.defer()
         embed = await create_pet_embed(self.selected_pet)
         await interaction.response.edit_message(embed=embed)
         await self.prepare_options()
-        self.view.stop()
 
 
 class PetSelectView(discord.ui.View):
@@ -66,11 +63,6 @@ class PetSelectView(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return self.user.id == interaction.user.id
-
-    async def on_timeout(self) -> None:
-        for item in self.children:
-            item.disabled = True
-        await self.message.edit(view=self)
 
 
 async def create_pet_embed(pet):
