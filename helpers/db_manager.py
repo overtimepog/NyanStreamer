@@ -1808,7 +1808,7 @@ async def get_equipped_pet(user_id: int) -> list:
 #get all the pets in a users inventory
 async def get_users_pets(user_id: int) -> list:
         db = DB()
-        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_type = 'Pet'", (user_id,), fetch="all")
+        data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ?", (user_id,), fetch="all")
         if data is not None:
             return data
         else:
@@ -2901,6 +2901,19 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
             else:
                 # if the item does not exist in the inventory table, return 0
                 return 0
+            
+#get a pet from the pet_attributes table based on its id
+async def get_pet_attributes(user_id: int, item_id: str) -> list:
+    """
+    This function will get a pet from the pet_attributes table.
+
+    :param user_id: The ID of the user that the pet should be gotten from.
+    :param item_id: The ID of the pet that should be gotten.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
+            result = await cursor.fetchone()
+            return result if result is not None else []
             
 #get the amount of an item from a users inventory
 async def get_item_amount_from_inventory(user_id: int, item_id: str) -> int:
