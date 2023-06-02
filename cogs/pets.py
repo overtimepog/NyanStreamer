@@ -37,7 +37,8 @@ class PetSelect(discord.ui.Select):
         for pet in self.pets:
             print(pet)
             pet_emoji = await db_manager.get_basic_item_emote(pet[0])
-            options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji))
+            petitemname = await db_manager.get_basic_item_name(pet[0])
+            options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji, description=f"Level {pet[3]} {petitemname}"))
         self.options = options
 
     async def callback(self, interaction: discord.Interaction):
