@@ -34,6 +34,7 @@ class PetSelect(discord.ui.Select):
     async def prepare_options(self):
         options = []
         for pet in self.pets:
+            print(pet)
             pet_emoji = await db_manager.get_basic_item_emote(pet[0])
             options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji))
         self.options = options
