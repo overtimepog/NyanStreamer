@@ -30,7 +30,7 @@ class PetSelect(discord.ui.Select):
         self.bot = bot
         self.pets = pets
         self.selected_pet = None
-        print(self.pets)
+        #print(self.pets)
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1)
 
     async def prepare_options(self):
