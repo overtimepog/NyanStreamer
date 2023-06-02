@@ -68,8 +68,24 @@ def calculate_time_till_empty(current_value, decrease_rate, loop_interval):
         return "Already empty"
     else:
         remaining_loops = current_value // decrease_rate
-        remaining_time = remaining_loops * loop_interval
-        return str(datetime.timedelta(minutes=remaining_time))
+        remaining_time = remaining_loops * loop_interval  # in minutes
+
+        hours, remainder = divmod(remaining_time, 60)
+        minutes, seconds = divmod(remainder, 1)
+
+        if hours > 0:
+            return f"{int(hours)}hr"
+        elif minutes > 0:
+            return f"{int(minutes)}m"
+        else:
+            return f"{int(seconds)}s"
+
+def generate_progress_bar(value, max_value):
+    TOTAL_PARTS = 10
+    filled_parts = round((value / max_value) * TOTAL_PARTS)
+    bar = '▰' * filled_parts + '▱' * (TOTAL_PARTS - filled_parts)
+
+    return bar
 
 async def create_pet_embed(pet):
     rarity = await db_manager.get_basic_item_rarity(pet[0])
@@ -82,17 +98,11 @@ async def create_pet_embed(pet):
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
     embed.add_field(name="Level", value=pet[3], inline=True)
     embed.add_field(name="XP", value=pet[4], inline=True)
-    embed.add_field(name=f"Hunger `{pet[5]}/100`", value="```" + generate_progress_bar(pet[5], 100) + "```" + f"\nTime till empty: {calculate_time_till_empty(pet[5], 5, 30)}", inline=False)
-    embed.add_field(name=f"Cleanliness `{pet[6]}/100`", value="```" + generate_progress_bar(pet[6], 100) + "```" + f"\nTime till empty: {calculate_time_till_empty(pet[6], 5, 120)}", inline=False)
-    embed.add_field(name=f"Happiness `{pet[7]}/100`", value="```" + generate_progress_bar(pet[7], 100) + "```" + f"\nTime till empty: {calculate_time_till_empty(pet[7], 5, 60)}", inline=False)
+    embed.add_field(name=f"Hunger `{pet[5]}/100`", value="```" + generate_progress_bar(pet[5], 100) + "```\n<sub>Time till empty: {calculate_time_till_empty(pet[5], 5, 30)}</sub>", inline=False)
+    embed.add_field(name=f"Cleanliness `{pet[6]}/100`", value="```" + generate_progress_bar(pet[6], 100) + "```\n<sub>Time till empty: {calculate_time_till_empty(pet[6], 5, 120)}</sub>", inline=False)
+    embed.add_field(name=f"Happiness `{pet[7]}/100`", value="```" + generate_progress_bar(pet[7], 100) + "```\n<sub>Time till empty: {calculate_time_till_empty(pet[7], 5, 60)}</sub>", inline=False)
 
     return embed
-def generate_progress_bar(value, max_value):
-    TOTAL_PARTS = 10
-    filled_parts = round((value / max_value) * TOTAL_PARTS)
-    bar = '▰' * filled_parts + '▱' * (TOTAL_PARTS - filled_parts)
-
-    return bar
 
 class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
