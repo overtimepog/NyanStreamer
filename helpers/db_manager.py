@@ -1810,6 +1810,7 @@ async def get_users_pets(user_id: int) -> list:
         db = DB()
         data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ?", (user_id,), fetch="all")
         if data is not None:
+            print(data)
             return data
         else:
             return None
@@ -2304,15 +2305,6 @@ async def get_all_enemy_drops() -> list:
 async def get_all_pets() -> list:
         db = DB()
         data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_type = 'Pet'", fetch="all")
-        if data is not None:
-            return data
-        else:
-            return None
-        
-#get all the pets a user owns 
-async def get_users_pets(user_id: int) -> list:
-        db = DB()
-        data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND item_type = 'Pet'", (user_id,), fetch="all")
         if data is not None:
             return data
         else:
