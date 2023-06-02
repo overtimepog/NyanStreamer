@@ -29,6 +29,7 @@ class PetSelect(discord.ui.Select):
     def __init__(self, pets: list, bot):
         self.bot = bot
         self.pets = pets
+        self.selected_pet = None
         print(self.pets)
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1)
 
@@ -44,10 +45,10 @@ class PetSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
-        selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])
-        embed = await create_pet_embed(selected_pet)
+        self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
+        embed = await create_pet_embed(self.selected_pet)
         await interaction.response.edit_message(embed=embed)
-        await self.prepare_options()  
+        await self.prepare_options()
         self.view.stop()
 
 
