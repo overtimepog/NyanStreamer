@@ -23,23 +23,22 @@ rarity_colors = {
     "Rare": 0x4c51f7,  # Blue
     "Epic": 0x9d4dbb,  # Purple
     "Legendary": 0xf3af19,  # Gold
-    # Add more rarities and colors as needed
 }
+
 class PetSelect(discord.ui.Select):
-    async def __init__(self, pets: list):
+    def __init__(self, pets: list):
         options = []
         for pet in pets:
-            pet_emoji = await db_manager.get_basic_item_emote(pet[0])
+            pet_emoji = bot.loop.run_until_complete(db_manager.get_basic_item_emote(pet[0]))
             options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji))
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
         selected_pet = await db_manager.get_pet(self.values[0])
-        embed = create_pet_embed(selected_pet)
+        embed = await create_pet_embed(selected_pet)
         await interaction.response.edit_message(embed=embed)
         self.view.stop()
-
 
 class PetSelectView(discord.ui.View):
     def __init__(self, pets: list, user: discord.User):
@@ -74,7 +73,7 @@ class Pets(commands.Cog, name="pets"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command()
+    @commands.command()
     async def pet(self, ctx: Context):
         """Display your pet's stats."""
         pets = await db_manager.get_users_pets(ctx.author.id)
