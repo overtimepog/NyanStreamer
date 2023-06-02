@@ -77,9 +77,9 @@ async def create_pet_embed(pet):
     embed.add_field(name="Level", value=pet[3], inline=True)
     embed.add_field(name="XP", value=pet[4], inline=True)
     #create the bar
-    embed.add_field(name="Hunger", value=generate_progress_bar(pet[5], 100), inline=False)
-    embed.add_field(name="Cleanliness", value=generate_progress_bar(pet[6], 100), inline=False)
-    embed.add_field(name="Happiness", value=generate_progress_bar(pet[7], 100), inline=False)
+    embed.add_field(name=f"Hunger {pet[5]}/100", value=generate_progress_bar(pet[5], 100), inline=False)
+    embed.add_field(name=f"Cleanliness {pet[6]}/100", value=generate_progress_bar(pet[6], 100), inline=False)
+    embed.add_field(name=f"Happiness {pet[7]}/100", value=generate_progress_bar(pet[7], 100), inline=False)
     #hungry = pet[5]
     #clean = pet[6]
     #happy = pet[7]
