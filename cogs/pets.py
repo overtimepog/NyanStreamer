@@ -90,9 +90,10 @@ def generate_progress_bar(value, max_value):
 async def create_pet_embed(pet):
     rarity = await db_manager.get_basic_item_rarity(pet[0])
     icon = await db_manager.get_basic_item_emote(pet[0])
+    pet_description = await db_manager.get_basic_item_description(pet[0])
     embed = discord.Embed(
         title=f"{pet[2]}'s Statistics",
-        description=f"This is the stats of your pet {pet[2]}",
+        description=f"{pet_description}",
         color=rarity_colors[rarity]
     )
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
