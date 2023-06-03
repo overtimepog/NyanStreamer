@@ -190,5 +190,29 @@
         "isMineable": false,
         "item_mine_chance": 0,
         "item_sub_type": "None"
-    }        
+    },
+    {
+        "item_id": "krul_pet",
+        "item_name": "Mini Krul",
+        "item_price": 2000,
+        "item_emoji": "<a:krul:1114348669639065661>",
+        "item_rarity": "Epic",
+        "item_type": "Pet",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "He's just a little guy",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "item_sub_type": "None"
+    }               
 ]
