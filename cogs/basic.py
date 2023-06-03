@@ -1700,7 +1700,7 @@ class Basic(commands.Cog, name="basic"):
     #mine command
     #command cooldown of 2 hours
     @commands.hybrid_command(
-        name="Search",
+        name="search",
         description="Search for cool stuff",
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
