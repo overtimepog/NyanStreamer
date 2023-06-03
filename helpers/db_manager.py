@@ -428,7 +428,7 @@ async def clear_enemies() -> None:
     db = DB()
     await db.execute(f"DELETE FROM `enemies`")
     #clear the enemie_quotes table
-    await db.execute(f"DELETE FROM `enemie_quotes`")
+    await db.execute(f"DELETE FROM `enemy_quotes`")
     #clear enemy_drops
     await db.execute(f"DELETE FROM `enemy_drops`")
 
