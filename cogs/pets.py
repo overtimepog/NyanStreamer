@@ -141,8 +141,10 @@ class Pets(commands.Cog, name="pets"):
         for pet in all_pets:
             await db_manager.remove_pet_hunger(pet[1], pet[0], 5)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+            hunger = updated[5]
+            hunger = int(hunger)
             #dont let the hunger go below 0
-            if updated[5] < 0:
+            if hunger <= 0:
                 await db_manager.set_pet_happiness(pet[1], pet[0], 0)
                 updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated hunger for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[5]}')
@@ -159,7 +161,9 @@ class Pets(commands.Cog, name="pets"):
             await db_manager.remove_pet_happiness(pet[1], pet[0], 5)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             #dont let the happiness go below 0
-            if updated[7] < 0:
+            happiness = updated[7]
+            happiness = int(happiness)
+            if happiness <= 0:
                 await db_manager.set_pet_happiness(pet[1], pet[0], 0)
                 updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated happiness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[7]}')
@@ -176,7 +180,9 @@ class Pets(commands.Cog, name="pets"):
             await db_manager.remove_pet_cleanliness(pet[1], pet[0], 5)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             #dont let the cleanliness go below 0
-            if updated[6] < 0:
+            cleanliness = updated[6]
+            cleanliness = int(cleanliness)
+            if cleanliness <= 0:
                 await db_manager.set_pet_cleanliness(pet[1], pet[0], 0)
                 updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
