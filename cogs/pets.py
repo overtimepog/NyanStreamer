@@ -139,15 +139,11 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' hunger periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
-            await db_manager.remove_pet_hunger(pet[1], pet[0], 5)
+            new_hunger = max(0, pet[5] - 5)  # pet[5] seems to be the current hunger value
+            await db_manager.set_pet_hunger(pet[1], pet[0], new_hunger)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
-            hunger = updated[5]
-            hunger = int(hunger)
-            #dont let the hunger go below 0
-            if hunger <= 0:
-                await db_manager.set_pet_happiness(pet[1], pet[0], 0)
-                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated hunger for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[5]}')
+
 
     @update_pet_hunger.before_loop
     async def before_update_hunger(self):
@@ -158,15 +154,11 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' happiness periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
-            await db_manager.remove_pet_happiness(pet[1], pet[0], 5)
+            new_happiness = max(0, pet[7] - 5)  # pet[7] seems to be the current happiness value
+            await db_manager.set_pet_happiness(pet[1], pet[0], new_happiness)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
-            #dont let the happiness go below 0
-            happiness = updated[7]
-            happiness = int(happiness)
-            if happiness <= 0:
-                await db_manager.set_pet_happiness(pet[1], pet[0], 0)
-                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated happiness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[7]}')
+
 
     @update_pet_happiness.before_loop
     async def before_update_happiness(self):
@@ -177,15 +169,11 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' cleanliness periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
-            await db_manager.remove_pet_cleanliness(pet[1], pet[0], 5)
+            new_cleanliness = max(0, pet[6] - 5)  # pet[6] seems to be the current cleanliness value
+            await db_manager.set_pet_cleanliness(pet[1], pet[0], new_cleanliness)
             updated = await db_manager.get_pet_attributes(pet[1], pet[0])
-            #dont let the cleanliness go below 0
-            cleanliness = updated[6]
-            cleanliness = int(cleanliness)
-            if cleanliness <= 0:
-                await db_manager.set_pet_cleanliness(pet[1], pet[0], 0)
-                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
             print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
+
 
     @update_pet_cleanliness.before_loop
     async def before_update_cleanliness(self):
