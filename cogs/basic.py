@@ -1697,48 +1697,23 @@ class Basic(commands.Cog, name="basic"):
         #attack the user
         await battle.userattack(ctx, target)
         
-    #hunt command
-    #command cooldown of 2 hours
-    @commands.hybrid_command(
-        name="hunt",
-        description="Hunt for items in the Forest!",
-    )
-    @commands.cooldown(1, 600, commands.BucketType.user)
-    async def hunt(self, ctx: Context):
-        #restset the cooldown
-            #check if the user has a bow
-        userExist = await db_manager.check_user(ctx.author.id)
-        if userExist == None or userExist == []:
-            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
-            await self.hunt.reset_cooldown(ctx)
-            return
-        isbowThere = await db_manager.is_item_in_inventory(ctx.author.id, "huntingbow")
-        if isbowThere == False or isbowThere == None or isbowThere == 0:
-            await ctx.send("You need a Bow to go Hunting!")
-            self.hunt.reset_cooldown(ctx)
-            return
-        else:
-            await hunt.hunt(ctx)
-        
     #mine command
     #command cooldown of 2 hours
     @commands.hybrid_command(
-        name="mine",
-        description="Mine for items in the Caves!",
+        name="Search",
+        description="Search for cool stuff",
     )
     @commands.cooldown(1, 600, commands.BucketType.user)
-    async def mine(self, ctx: Context):
+    async def search(self, ctx: Context):
         userExist = await db_manager.check_user(ctx.author.id)
         if userExist == None or userExist == []:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
-            await self.mine.reset_cooldown(ctx)
+            await self.search.reset_cooldown(ctx)
             return
-        # check if the user has a pickaxe
-        is_pickaxe_there = await db_manager.is_item_in_inventory(ctx.author.id, "pickaxe")
-        if not is_pickaxe_there:
-            await ctx.send("You need a pickaxe to mine! You can buy one in the shop.")
-            self.mine.reset_cooldown(ctx)
-            return
+        #50 / 50 chance of it being hunt or mine
+        chance = random.randint(1, 2)
+        if chance == 1:
+            await hunt.hunt(ctx)
         else:
             await mine.mine(ctx)
 
