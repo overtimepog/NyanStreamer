@@ -1857,6 +1857,15 @@ async def add_pet_hunger(user_id: int, pet_id: str, amount: int) -> None:
         else:
             return None
         
+#set pet hunger
+async def set_pet_hunger(user_id: int, pet_id: str, amount: int) -> None:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ? AND item_id = ?", (user_id, pet_id), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `pet_attributes` SET `hunger_percent` = ? WHERE user_id = ? AND item_id = ?", (amount, user_id, pet_id))
+        else:
+            return None
+        
 #remove some happiness from a pet
 async def remove_pet_happiness(user_id: int, pet_id: str, amount: int) -> None:
         db = DB()
@@ -1875,6 +1884,15 @@ async def add_pet_happiness(user_id: int, pet_id: str, amount: int) -> None:
         else:
             return None
         
+#set pet happiness
+async def set_pet_happiness(user_id: int, pet_id: str, amount: int) -> None:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ? AND item_id = ?", (user_id, pet_id), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `pet_attributes` SET `happiness_percent` = ? WHERE user_id = ? AND item_id = ?", (amount, user_id, pet_id))
+        else:
+            return None
+        
 #remove some cleanliness from a pet
 async def remove_pet_cleanliness(user_id: int, pet_id: str, amount: int) -> None:
         db = DB()
@@ -1890,6 +1908,15 @@ async def add_pet_cleanliness(user_id: int, pet_id: str, amount: int) -> None:
         data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ? AND item_id = ?", (user_id, pet_id), fetch="one")
         if data is not None:
             await db.execute(f"UPDATE `pet_attributes` SET `cleanliness_percent` = `cleanliness_percent` + ? WHERE user_id = ? AND item_id = ?", (amount, user_id, pet_id))
+        else:
+            return None
+        
+#set pet cleanliness
+async def set_pet_cleanliness(user_id: int, pet_id: str, amount: int) -> None:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ? AND item_id = ?", (user_id, pet_id), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `pet_attributes` SET `cleanliness_percent` = ? WHERE user_id = ? AND item_id = ?", (amount, user_id, pet_id))
         else:
             return None
     
