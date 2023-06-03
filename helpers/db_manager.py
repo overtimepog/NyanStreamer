@@ -745,8 +745,8 @@ async def print_items() -> None:
     for chest in chests:
         print("Type: Chest | ID: " + chest['chest_id'] + " | Rarity:" + chest['chest_rarity'])
 
-    for enemy in enemies:
-        print("Type: Enemy | ID: " + enemy['enemy_id'] + " | Rarity:" + enemy['enemy_rarity'] + " | Health: " + str(enemy['enemy_health']) + " | Damage: " + str(enemy['enemy_damage']))
+    #for enemy in enemies:
+    #    print("Type: Enemy | ID: " + enemy['enemy_id'] + " | Rarity:" + enemy['enemy_rarity'] + " | Health: " + str(enemy['enemy_health']) + " | Damage: " + str(enemy['enemy_damage']))
 
     for structure in structures['structures']:
         print("Type: Structure | ID: " + structure['structure_id'])
