@@ -58,7 +58,7 @@
         "isUsable": false,
         "inShop": true,
         "isEquippable": true,
-        "item_description": "A cute Slime Girl, she's always ready to help you in your adventures!",
+        "item_description": "A cute Slime Girl, shes probably breedable!",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
@@ -73,7 +73,7 @@
     },
     {
         "item_id": "fish_pet",
-        "item_name": "Fish Pet",
+        "item_name": "Fish",
         "item_price": 500,
         "item_emoji": "<a:coolfish:1108465143207186524>",
         "item_rarity": "Uncommon",
@@ -97,7 +97,7 @@
     },
     {
         "item_id": "frog_pet",
-        "item_name": "Frog Pet",
+        "item_name": "Frog",
         "item_price": 5000,
         "item_emoji": "<a:frogPet:1108747271912304713>",
         "item_rarity": "Rare",
@@ -121,7 +121,7 @@
     },
     {
         "item_id": "baby_elephant_pet",
-        "item_name": "Baby Elephant Pet",
+        "item_name": "Baby Elephant",
         "item_price": 10000,
         "item_emoji": "<a:babyelePet:1108747675228188762>",
         "item_rarity": "Epic",
@@ -130,7 +130,7 @@
         "isUsable": false,
         "inShop": true,
         "isEquippable": true,
-        "item_description": "A baby elephant that follows you around. It's quite charming!",
+        "item_description": "omg its so cuteeee",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
@@ -169,7 +169,7 @@
     },
     {
         "item_id": "toybox_pet",
-        "item_name": "Demon Pet",
+        "item_name": "Demon",
         "item_price": 1,
         "item_emoji": "<a:demon_petthatsucksalot:1114346094307049523>",
         "item_rarity": "Legendary",
