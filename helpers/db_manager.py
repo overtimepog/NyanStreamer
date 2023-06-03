@@ -422,6 +422,15 @@ async def connect_twitch_name(user_id: int, twitch_name: str) -> None:
         await db.execute(f"UPDATE `users` SET `twitch_name` = ? WHERE `user_id` = ?", (twitch_name, user_id))
     else:
         return None
+    
+#clear the enimies table
+async def clear_enemies() -> None:
+    db = DB()
+    await db.execute(f"DELETE FROM `enemies`")
+    #clear the enemie_quotes table
+    await db.execute(f"DELETE FROM `enemie_quotes`")
+    #clear enemy_drops
+    await db.execute(f"DELETE FROM `enemy_drops`")
 
 #disconnect a twitch account from a discord account
 async def disconnect_twitch_id(user_id: int) -> None:
