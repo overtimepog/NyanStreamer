@@ -2047,6 +2047,16 @@ class Basic(commands.Cog, name="basic"):
         async def handle_xp_gain(chosen_outcome, ctx, db_manager, embed):
             await db_manager.add_xp(ctx.author.id, chosen_outcome["outcome_amount"])
             embed.add_field(name=":sparkles: XP Gain", value=f"You have gained {chosen_outcome['outcome_amount']} XP!", inline=False)
+            # Check if the user can level up
+            if await db_manager.can_level_up(ctx.author.id):
+                #if the user can level up, level them up
+                await db_manager.add_level(ctx.author.id, 1)
+                #set the users xp to 0
+                await db_manager.set_xp(ctx.author.id, 0)
+                #send a message to the channel saying the user has leveled up
+                #get the users new level
+                new_level = await db_manager.get_level(ctx.author.id)
+            await ctx.send(ctx.author.name + " has leveled up! They are now level " + str(new_level) + "!")
 
         async def handle_spawn(chosen_outcome, ctx, db_manager, embed):
                 user_health = await db_manager.get_health(ctx.author.id)

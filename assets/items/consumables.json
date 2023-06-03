@@ -1,32 +1,5 @@
 [
     {
-        "item_id": "healthpotion",
-        "item_name": "Health Potion",
-        "item_price": 25,
-        "item_emoji": "<:HealthPotion_Small:1077645426745942116>",
-        "item_rarity": "Common",
-        "item_type": "Consumable",
-        "item_damage": 0,
-        "isUsable": true,
-        "inShop": true,
-        "isEquippable": false,
-        "item_description": "A basic health potion, used to heal.",
-        "item_element": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "None",
-        "recipe_id": "healthpotion",
-        "item_recipe": [{
-            "ingredient_id": "dahila",
-            "ingredient_amount": 2
-        }, {
-            "ingredient_id": "string",
-            "ingredient_amount": 1
-        }],
-
-        "item_effect": "health + 10",
-        "item_sub_type": "Potion"
-    },
-    {
         "item_id": "revivepotion",
         "item_name": "Revive Potion",
         "item_price": 250,
@@ -42,14 +15,7 @@
         "item_crit_chance": "0%",
         "item_projectile": "None",
         "recipe_id": "revivepotion",
-        "item_recipe": [{
-            "ingredient_id": "diamond",
-            "ingredient_amount": 1
-        },{
-            "ingredient_id": "goldenflower",
-            "ingredient_amount": 1
-        }],
-
+        "item_recipe": [],
         "item_effect": "revive",
         "item_sub_type": "Potion"
     },
