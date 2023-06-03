@@ -99,6 +99,15 @@ async def create_pet_embed(pet):
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
     embed.add_field(name="Level", value=pet[3], inline=True)
     embed.add_field(name="XP", value=pet[4], inline=True)
+    effect = await db_manager.get_basic_item_effect(pet[0])
+    if effect == "None":
+        pass
+    else:
+        #if the effect has a _ in it, it will replace it with a space
+        effect = effect.replace("_", " ")
+        #now make the first letter of each word uppercase
+        effect = effect.title()
+        embed.add_field(name="Effect", value=effect, inline=False)
     embed.add_field(name=f"Hunger `{pet[5]}/100` Time till empty: `{calculate_time_till_empty(pet[5], 5, 30)}`", value="```" + generate_progress_bar(pet[5], 100) + f"```", inline=False)
     embed.add_field(name=f"Cleanliness `{pet[6]}/100` Time till empty: `{calculate_time_till_empty(pet[6], 5, 120)}`", value="```" + generate_progress_bar(pet[6], 100) + f"```", inline=False)
     embed.add_field(name=f"Happiness `{pet[7]}/100` Time till empty: `{calculate_time_till_empty(pet[7], 5, 60)}`", value="```" + generate_progress_bar(pet[7], 100) + f"```", inline=False)
