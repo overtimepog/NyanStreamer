@@ -24,7 +24,7 @@
         "item_sub_type": "None"
     },
     {
-        "item_id": "gold_",
+        "item_id": "gold",
         "item_name": "Gold Ingot",
         "item_price": 500,
         "item_emoji": "<:Gold_Ingot:1092440275672117258>",
@@ -40,7 +40,6 @@
         "item_projectile": "None",
         "recipe_id": "None",
         "item_recipe": [{}],
-
         "item_effect": "None",
         "isMineable": true,
         "item_mine_chance": 0.6,

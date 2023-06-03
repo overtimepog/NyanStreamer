@@ -71,7 +71,9 @@ async def mine(ctx: Context):
             item_emoji = await db_manager.get_basic_item_emote(item_id)
             item_name = await db_manager.get_basic_item_name(item_id)
         #tell the user what they got
-        await ctx.send(random.choice(outcome_phrases) + f"{item_emoji} **{item_name}** - {amount}")
+        embed = discord.Embed(title="Mine", description=random.choice(outcome_phrases), color=0x00ff00)
+        embed.add_field(name=f"{item_emoji} **{item_name}**", value=f"{amount}", inline=False)
+        await ctx.send(embed=embed)
         quest_id = await db_manager.get_user_quest(ctx.author.id)
         #if the user has a quest
         if quest_id != 0:

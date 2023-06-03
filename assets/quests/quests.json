@@ -11,5 +11,18 @@
         "quest_type": "hit",
         "quest": "1 player",
         "OnBoard": true
+    },
+    {
+        "quest_id": "getgoldpartner",
+        "quest_name": "Get some Goldddd",
+        "quest_description": "get some gold so you can do stuff lol",
+        "quest_xp_reward": 5,
+        "quest_reward_type": "Money",
+        "quest_reward": "Money",
+        "quest_reward_amount": 10,
+        "quest_level_required": 1,
+        "quest_type": "collect",
+        "quest": "5 gold",
+        "OnBoard": true
     }
 ]

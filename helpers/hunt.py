@@ -62,7 +62,10 @@ async def hunt(ctx: Context):
             item_name = await db_manager.get_basic_item_name(item_id)
 
         # tell the user what they got
-        await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {amount}")
+        #make it an embed
+        embed = discord.Embed(title="Hunt", description=random.choice(outcomePhrases), color=0x00ff00)
+        embed.add_field(name=f"{item_emoji} **{item_name}**", value=f"{amount}", inline=False)
+        await ctx.send(embed=embed)
         # Rest of your logic goes here...
         quest_id = await db_manager.get_user_quest(ctx.author.id)
         #if the user has a quest
