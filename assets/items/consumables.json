@@ -14,7 +14,7 @@
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
-        "recipe_id": "revivepotion",
+        "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "revive",
         "item_sub_type": "Potion"
