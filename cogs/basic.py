@@ -1224,12 +1224,10 @@ class Basic(commands.Cog, name="basic"):
         if userExist == None or userExist == []:
             await db_manager.get_user(user_id)
             await db_manager.add_money(user_id, 200)
-            await db_manager.add_item_to_inventory(user_id, "iron_sword", 1)
             await db_manager.add_item_to_inventory(user_id, "huntingbow", 1)
             await db_manager.add_item_to_inventory(user_id, "pickaxe", 1)
             #equip the iron sword
-            await db_manager.equip_item(user_id, "iron_sword")
-            await ctx.send(f"You have started your Journey and your Iron Sword has been Equipped, Welcome {ctx.message.author.name} to **Dank Streamer**.")
+            await ctx.send(f"You have started your Journey, Welcome {ctx.message.author.name} to **Dank Streamer**.")
         else:
             await ctx.send("You have already started your journey.")
         
@@ -1620,91 +1618,8 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(message)
         else:
             await ctx.send(f"`{item_name}` is not equipped.")
-            
-    @commands.hybrid_command(
-        name="deathbattle",
-        description="Battle another player",
-    )
-    async def deathbattle(self, ctx: Context, user: discord.Member):
-        #run the battle function from helper/battle.py
-        enemy_id = user.id
-        user_id = ctx.author.id
-
-        #check if the user is in the database
-        user_in_db = await db_manager.check_if_user_in_db(user_id)
-        if user_in_db == False:
-            await ctx.send("You are not in the database yet, please use the start command to start your adventure!")
-            return
-        #check if the enemy is in the database
-        enemy_in_db = await db_manager.check_if_user_in_db(enemy_id)
-        if enemy_in_db == False:
-            await ctx.send("The enemy is not in the database yet, they need to use the start command to start their adventure!")
-            return
-        #check if the user is in a battle
-        user_in_battle = await db_manager.is_in_combat(user_id)
-        if user_in_battle == True:
-            await ctx.send("You are already in a battle!")
-            return
-        #check if the enemy is in a battle
-        enemy_in_battle = await db_manager.is_in_combat(enemy_id)
-        if enemy_in_battle == True:
-            await ctx.send("The enemy is already in a battle!")
-            return
-        #check if the user is dead
-        user_is_alive = await db_manager.is_alive(user_id)
-        if user_is_alive == False:
-            await ctx.send("You are dead! wait to respawn! or use an item to revive!")
-            return
-        #check if the enemy is dead
-        enemy_is_alive = await db_manager.is_alive(enemy_id)
-        if enemy_is_alive == False:
-            await ctx.send("The enemy is dead! wait for them to respawn! or tell them to use an item to revive!")
-            return
-
-        await ctx.send(f"{ctx.author.name} is challenging {user.name} to a death battle!")
-        author_name = ctx.author.name
-        enemy_name = user.name
-        await battle.deathbattle(ctx, user_id, enemy_id, author_name, enemy_name)
-        
     #hybrid command to battle a monster
-    @commands.hybrid_command(
-        name="battle",
-        description="Battle a monster",
-    )
-    async def battle(self, ctx: Context, monsterid: str):
-        #run the battle function from helper/battle.py
-        user_id = ctx.author.id
-        #check if the user is in the database
-        user_in_db = await db_manager.check_if_user_in_db(user_id)
-        if user_in_db == False:
-            await ctx.send("You are not in the database yet, please use the `/start` command to start your adventure!")
-            return
-        #check if the user is in a battle
-        user_in_battle = await db_manager.is_in_combat(user_id)
-        if user_in_battle == True:
-            await ctx.send("You are already in a battle!")
-            return
-        #check if the user is dead
-        user_is_alive = await db_manager.is_alive(user_id)
-        if user_is_alive == False:
-            await ctx.send("You are dead! wait to respawn! or use an item to revive!")
-            return
-        #check if the monster is in the database
-        monster_in_db = await db_manager.check_enemy(monsterid)
-        if monster_in_db == False:
-            await ctx.send("This monster does not exist!")
-            return
-        
-        #get the monster name from its ID
-        monsterName = await db_manager.get_enemy_name(monsterid)
-        
-        #check if the monster is alive
-        #check if the monster is in a battle
-        await ctx.send(f"{ctx.author.name} is challenging {monsterid} to a battle!")
-        author_name = ctx.author.name
-        await battle.deathbattle_monster(ctx, user_id, author_name, monsterid, monsterName)
-    
-        
+
     @commands.hybrid_command(
         name="connect",
         description="Connect your twitch account to your discord account!",
@@ -1975,7 +1890,7 @@ class Basic(commands.Cog, name="basic"):
     @commands.hybrid_command(
             name="explore",
             description="Explore a structure in the current channel.",
-            usage="explore <structure>",
+            usage="explore",
     )
     #command cooldown of 2 minutes
     @commands.cooldown(1, 120, commands.BucketType.user)
@@ -2018,7 +1933,6 @@ class Basic(commands.Cog, name="basic"):
                     "health_gain": handle_health_gain,
                     "money_gain": handle_money_gain,
                     "xp_gain": handle_xp_gain,
-                    "spawn": handle_spawn
                 }
                 # Call the corresponding function
                 await outcome_dispatcher[chosen_outcome["outcome_type"]](chosen_outcome, ctx, db_manager, embed)
@@ -2057,69 +1971,6 @@ class Basic(commands.Cog, name="basic"):
                 #get the users new level
                 new_level = await db_manager.get_level(ctx.author.id)
             await ctx.send(ctx.author.name + " has leveled up! They are now level " + str(new_level) + "!")
-
-        async def handle_spawn(chosen_outcome, ctx, db_manager, embed):
-                user_health = await db_manager.get_health(ctx.author.id)
-                user_weapon = await db_manager.get_equipped_weapon(ctx.author.id)
-                monster_health = await db_manager.get_enemy_health(chosen_outcome["outcome_output"])
-                monster_power = await db_manager.get_enemy_damage(chosen_outcome["outcome_output"])
-                # remove the () and , from the monster power
-                monster_power = str(monster_power)
-                print(monster_power)
-                if monster_power == "None" or monster_power is None:
-                    return
-                #remove the ' , and () from the monster power
-                monster_power = monster_power.replace("(", "")
-                monster_power = monster_power.replace(")", "")
-                monster_power = monster_power.replace(",", "")
-                monster_power = monster_power.replace("'", "")
-                monster_power = monster_power.split("-")
-                #turn both [0] and [1] to strings and remove the () and , from them
-                monster_power1 = str(monster_power[0])
-                monster_power2 = str(monster_power[1])
-                print(monster_power1)
-                print(monster_power2)
-                #turn both [0] and [1] to ints
-                monster_power = int(monster_power1)
-                monster_power2 = int(monster_power2)
-                monster_power = random.randint(monster_power1, monster_power2)
-                chance_to_defeat = (user_health + user_weapon - monster_health - monster_power1 + luck) / 100
-                user_defeats_spawn = random.random() < chance_to_defeat
-                if user_defeats_spawn:
-                    monster_drops = await db_manager.get_enemy_drops(chosen_outcome["outcome_output"])
-                    drops = []
-                    for drop in monster_drops:
-                        item = drop[1]
-                        drop_amount = drop[2]
-                        drop_chance = drop[3]
-                        drop_chance = float(drop_chance)
-                        drop_amount = int(drop_amount)
-                        drops.append([item, drop_chance, drop_amount])
-                    drops.sort(key=lambda x: x[1], reverse=True)
-                    cumulative_distribution = []
-                    total = 0
-                    for drop in drops:
-                        total += drop[1]
-                        cumulative_distribution.append(total)
-                    roll = random.uniform(0, total) - luck
-                    for i, drop in enumerate(drops):
-                        if roll <= cumulative_distribution[i]:
-                            chosen_item = drop
-                            break
-                        
-                    item_id = chosen_item[0]
-                    item_amount = chosen_item[2]
-                    emote = await db_manager.get_basic_item_emote(item_id)
-                    item_name = await db_manager.get_basic_item_name(item_id)
-                    if emote and item_name and item_amount:
-                        await db_manager.add_item_to_inventory(ctx.author.id, item_id, item_amount)
-                        embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has successfully defeated the monster!", inline=False)
-                else:
-                    # user didn't defeat the monster
-                    # decrease user's health, or other penalty here
-                    user_health = max(user_health - monster_power, 0)  # health can't go below 0
-                    await db_manager.set_health(ctx.author.id, user_health)
-                    embed.add_field(name=":crossed_swords: Battle Report", value=f"{ctx.author.name} has been defeated by the monster and lost some health!", inline=False)
 
         userExist = await db_manager.check_user(ctx.author.id)
         if userExist == None or userExist == []:
