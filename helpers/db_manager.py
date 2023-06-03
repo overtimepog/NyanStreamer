@@ -869,6 +869,12 @@ async def clear_shop() -> None:
     db = DB()
     await db.execute(f"DELETE FROM `shop`")
     print("Cleared the shop table")
+
+#questBoard
+async def clear_board() -> None:
+    db = DB()
+    await db.execute(f"DELETE FROM `questBoard`")
+    print("Cleared the questBoard table")
         
 #add the enemies to the database enemies table
 async def add_enemies() -> None:

@@ -327,6 +327,7 @@ async def setup() -> None:
     print("\n" + "---------Quests----------")
     await db_manager.add_quests()
     print("\n" + "---------Quests to Board----------")
+    await db_manager.clear_board()
     await db_manager.add_quests_to_board()
     print("\n" + "---------Structures----------")
     await db_manager.add_structures()
