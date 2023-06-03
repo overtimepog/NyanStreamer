@@ -10,7 +10,7 @@
         "isUsable": true,
         "inShop": true,
         "isEquippable": false,
-        "item_description": "A powerful vile containing a liquid capable of resurecting a dead player.",
+        "item_description": "tastes like death but it works",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
@@ -18,41 +18,5 @@
         "item_recipe": [],
         "item_effect": "revive",
         "item_sub_type": "Potion"
-    },
-    {
-        "item_id": "bread",
-        "item_name": "Bread",
-        "item_price": 10,
-        "item_emoji": "<:bread1:1101143610465996926>",
-        "item_rarity": "Common",
-        "item_type": "Consumable",
-        "item_damage": 0,
-        "isUsable": true,
-        "inShop": false,
-        "isEquippable": false,
-        "item_description": "A fresh loaf of bread. Good for filling your belly.",
-        "item_element": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "None",
-        "item_effect": "health + 3",
-        "item_sub_type": "None"
-    },    
-    {
-        "item_id": "ale",
-        "item_name": "Ale",
-        "item_price": 50,
-        "item_emoji": "<:ale:1101143122399993856>",
-        "item_rarity": "Common",
-        "item_type": "Consumable",
-        "item_damage": 0,
-        "isUsable": true,
-        "inShop": false,
-        "isEquippable": false,
-        "item_description": "A foamy mug of ale. It'll make you feel warm and fuzzy inside.",
-        "item_element": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "None",
-        "item_effect": "health + 2",
-        "item_sub_type": "None"
-    }    
+    } 
 ]
