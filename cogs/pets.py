@@ -49,51 +49,40 @@ class PetSelect(discord.ui.Select):
         await interaction.response.edit_message(embed=embed)
         await self.prepare_options()
 
-class PetButton(discord.ui.Button):
-    def __init__(self, cost: int, attribute: str):
-        super().__init__(style=discord.ButtonStyle.primary, label=f'Pet ({cost} {cash})', custom_id=f'{attribute}_pet_button', emoji="🥰")
-        self.cost = cost
-        self.attribute = attribute
+class FeedButton(discord.ui.Button):
+    def __init__(self, cost: int, pet: list):
+        self.pet = pet
+        super().__init__(style=discord.ButtonStyle.blurple, label=f'Feed ({cost} coins)', custom_id="feed_button")
 
     async def callback(self, interaction: discord.Interaction):
-        # Create and send the pet pet gif
-        pet_emoji = interaction.message.embeds[0].thumbnail.url
+        # Implement your callback here
+        pass
 
-class PetRefillButtons(discord.ui.View):
-    def __init__(self, pet: list):
-        super().__init__()
-        self.feed_cost = 10
-        self.clean_cost = 15
-        self.play_cost = 5
+class CleanButton(discord.ui.Button):
+    def __init__(self, cost: int, pet: list):
         self.pet = pet
+        super().__init__(style=discord.ButtonStyle.blurple, label=f'Clean ({cost} coins)', custom_id="clean_button")
 
-        self.add_item(discord.ui.Button(label=f'Feed ({self.feed_cost} coins)', style=discord.ButtonStyle.blurple, custom_id="feed_button"))
-        self.add_item(discord.ui.Button(label=f'Clean ({self.clean_cost} coins)', style=discord.ButtonStyle.blurple, custom_id="clean_button"))
-        self.add_item(discord.ui.Button(label=f'Play ({self.play_cost} coins)', style=discord.ButtonStyle.blurple, custom_id="play_button"))
-        self.add_item(discord.ui.Button(label='Pet', style=discord.ButtonStyle.grey, custom_id="pet_button"))
-        
-    @discord.ui.button(custom_id="feed_button")
-    async def feed_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        # Check if user has enough money to feed pet, deduct the cost and refill hunger stat
-        # If not enough money, send error message
+    async def callback(self, interaction: discord.Interaction):
+        # Implement your callback here
         pass
 
-    @discord.ui.button(custom_id="clean_button")
-    async def clean_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        # Check if user has enough money to clean pet, deduct the cost and refill cleanliness stat
-        # If not enough money, send error message
+class PlayButton(discord.ui.Button):
+    def __init__(self, cost: int, pet: list):
+        self.pet = pet
+        super().__init__(style=discord.ButtonStyle.blurple, label=f'Play ({cost} coins)', custom_id="play_button")
+
+    async def callback(self, interaction: discord.Interaction):
+        # Implement your callback here
         pass
 
-    @discord.ui.button(custom_id="play_button")
-    async def play_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        # Check if user has enough money to play with pet, deduct the cost and refill happiness stat
-        # If not enough money, send error message
-        pass
+class PetButton(discord.ui.Button):
+    def __init__(self, pet: list):
+        self.pet = pet
+        super().__init__(style=discord.ButtonStyle.grey, label='Pet', custom_id="pet_button")
 
-    @discord.ui.button(custom_id="pet_button")
-    async def pet_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        # Send a message to the user indicating they pet their pet
-        # Send a message to the user indicating they pet their pet
+    async def callback(self, interaction: discord.Interaction):
+        # Implement your callback here
         pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
         if pet_emoji is not None:
                 pet_emoji = pet_emoji.split(':')[2].replace('>', '')
@@ -111,18 +100,24 @@ class PetRefillButtons(discord.ui.View):
                 await interaction.response.send_message(f"You Pet {self.pet[2]}", file=discord.File(dest, filename="petpet.gif"))
 
 
-
 class PetSelectView(discord.ui.View):
     def __init__(self, pets: list, user: discord.User, bot):
         super().__init__()
         self.user = user
         self.value = None
         self.select = PetSelect(pets, bot)
-        self.buttons = PetRefillButtons(self.select.selected_pet)
+        self.feed_button = FeedButton(10, self.select.selected_pet)
+        self.clean_button = CleanButton(15, self.select.selected_pet)
+        self.play_button = PlayButton(5, self.select.selected_pet)
+        self.pet_button = PetButton(self.select.selected_pet)
+
+        self.add_item(self.feed_button)
+        self.add_item(self.clean_button)
+        self.add_item(self.play_button)
+        self.add_item(self.pet_button)
         self.add_item(self.select)
-        self.buttons = PetRefillButtons(self.select.selected_pet)  # this is a View, not an Item
-        for item in self.buttons.children:  # add each button separately
-            self.add_item(item)
+
+
     async def prepare(self):
         await self.select.prepare_options()
 
