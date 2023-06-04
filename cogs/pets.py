@@ -67,12 +67,24 @@ class FeedButton(discord.ui.Button):
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
-        self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
-        self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
-        self.petview.add_item(PlayButton(self.pet, self.petview, self.select))
+
+        feed_button = FeedButton(self.pet, self.petview, self.select)
+        feed_button.disabled = pet_attributes['hunger_percent'] >= 100
+        self.petview.add_item(feed_button)
+
+        clean_button = CleanButton(self.pet, self.petview, self.select)
+        clean_button.disabled = pet_attributes['cleanliness_percent'] >= 100
+        self.petview.add_item(clean_button)
+
+        play_button = PlayButton(self.pet, self.petview, self.select)
+        play_button.disabled = pet_attributes['happiness_percent'] >= 100
+        self.petview.add_item(play_button)
+
         self.petview.add_item(PetButton(self.pet))
         self.petview.add_item(self.select)
+        
         await interaction.response.edit_message(embed=embed, view=self.petview)
+
 
 
 class CleanButton(discord.ui.Button):
@@ -87,8 +99,15 @@ class CleanButton(discord.ui.Button):
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
+
+        if pet_attributes['cleanliness_percent'] < 100:
+            self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
+        else:
+            clean_button_disabled = CleanButton(self.pet, self.petview, self.select)
+            clean_button_disabled.disabled = True
+            self.petview.add_item(clean_button_disabled)
+
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
-        self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
         self.petview.add_item(PlayButton(self.pet, self.petview, self.select))
         self.petview.add_item(PetButton(self.pet))
         self.petview.add_item(self.select)
@@ -104,11 +123,19 @@ class PlayButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
-        embed = await create_pet_embed(self.pet)
+        pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
+        embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
+
+        if pet_attributes['happiness_percent'] < 100:
+            self.petview.add_item(PlayButton(self.pet, self.petview, self.select))
+        else:
+            play_button_disabled = PlayButton(self.pet, self.petview, self.select)
+            play_button_disabled.disabled = True
+            self.petview.add_item(play_button_disabled)
+
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
         self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
-        self.petview.add_item(PlayButton(self.pet, self.petview, self.select))
         self.petview.add_item(PetButton(self.pet))
         self.petview.add_item(self.select)
         await interaction.response.edit_message(embed=embed, view=self.petview)
