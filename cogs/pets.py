@@ -48,6 +48,11 @@ class PetSelect(discord.ui.Select):
         embed = await create_pet_embed(self.selected_pet)
         await interaction.response.edit_message(embed=embed)
         await self.prepare_options()
+        # Add buttons only after a pet is chosen
+        self.view.add_item(self.view.feed_button)
+        self.view.add_item(self.view.clean_button)
+        self.view.add_item(self.view.play_button)
+        self.view.add_item(self.view.pet_button)
 
 class FeedButton(discord.ui.Button):
     def __init__(self, cost: int, pet: list):
@@ -106,16 +111,13 @@ class PetSelectView(discord.ui.View):
         self.user = user
         self.value = None
         self.select = PetSelect(pets, bot)
+        self.add_item(self.select)
         self.feed_button = FeedButton(10, self.select.selected_pet)
         self.clean_button = CleanButton(15, self.select.selected_pet)
         self.play_button = PlayButton(5, self.select.selected_pet)
         self.pet_button = PetButton(self.select.selected_pet)
 
-        self.add_item(self.feed_button)
-        self.add_item(self.clean_button)
-        self.add_item(self.play_button)
-        self.add_item(self.pet_button)
-        self.add_item(self.select)
+        
 
 
     async def prepare(self):
