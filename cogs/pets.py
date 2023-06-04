@@ -56,6 +56,7 @@ class PetSelect(discord.ui.Select):
         self.view.clear_items()
 
         user_balance = await db_manager.get_money(interaction.user.id)
+        user_balance = int(user_balance)
 
         feed_button = FeedButton(self.selected_pet, self.view, self, hunger_cost)
         feed_button.disabled = self.selected_pet[5] >= 100 or user_balance < hunger_cost
@@ -96,6 +97,7 @@ class FeedButton(discord.ui.Button):
         self.petview.clear_items()
 
         user_balance = await db_manager.get_money(interaction.user.id)
+        user_balance = int(user_balance)
 
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
@@ -135,6 +137,7 @@ class CleanButton(discord.ui.Button):
         self.petview.clear_items()
 
         user_balance = await db_manager.get_money(interaction.user.id)
+        user_balance = int(user_balance)
 
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
@@ -174,6 +177,7 @@ class PlayButton(discord.ui.Button):
         self.petview.clear_items()
 
         user_balance = await db_manager.get_money(interaction.user.id)
+        user_balance = int(user_balance)
 
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
