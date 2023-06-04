@@ -47,37 +47,70 @@ class PetSelect(discord.ui.Select):
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
         embed = await create_pet_embed(self.selected_pet)
         self.view.clear_items()
-        self.view.add_item(FeedButton())
-        self.view.add_item(CleanButton())
-        self.view.add_item(PlayButton())
+        self.view.add_item(FeedButton(self.selected_pet, self.view, self))
+        self.view.add_item(CleanButton(self.selected_pet, self.view, self))
+        self.view.add_item(PlayButton(self.selected_pet, self.view, self))
         self.view.add_item(PetButton(self.selected_pet))
         self.view.add_item(self)
         await interaction.response.edit_message(embed=embed, view=self.view)
         await self.prepare_options()
 
 class FeedButton(discord.ui.Button):
-    def __init__(self):
+    def __init__(self, pet, view, select):
+        self.pet = pet
+        self.view = view
+        self.select = select
         super().__init__(style=discord.ButtonStyle.green, label="Feed", emoji="🍔")
 
     async def callback(self, interaction: discord.Interaction):
         # You can put any code you want to run when the button is clicked here
-        await interaction.response.send_message("You fed the pet!", ephemeral=True)
+        # You can put any code you want to run when the button is clicked here
+        # Assuming there is a function to update the hunger level of the pet
+        self.pet[5] = await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 25)
+        embed = await create_pet_embed(self.pet)
+        self.view.clear_items()
+        self.view.add_item(FeedButton(self.pet, self.view))
+        self.view.add_item(CleanButton(self.pet, self.view))
+        self.view.add_item(PlayButton(self.pet, self.view))
+        self.view.add_item(PetButton(self.pet, self.view))
+        self.view.add_item(self.view.select)
+        await interaction.response.edit_message(embed=embed, view=self.view)
 
 class CleanButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.green, label='Clean', emoji='🛁')
+    def __init__(self, pet, view, select):
+        self.pet = pet
+        self.view = view
+        self.select = select
+        super().__init__(style=discord.ButtonStyle.green, label="Clean", emoji="🛀")
 
     async def callback(self, interaction: discord.Interaction):
-        # Add your cleaning functionality here
-        await interaction.response.send_message('Pet Cleaned!')
+        self.pet[6] = await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
+        embed = await create_pet_embed(self.pet)
+        self.view.clear_items()
+        self.view.add_item(FeedButton(self.pet, self.view, self.select))
+        self.view.add_item(CleanButton(self.pet, self.view, self.select))
+        self.view.add_item(PlayButton(self.pet, self.view, self.select))
+        self.view.add_item(PetButton(self.pet, self.view, self.select))
+        self.view.add_item(self.select)
+        await interaction.response.edit_message(embed=embed, view=self.view)
 
 class PlayButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.blurple, label='Play', emoji='🏀')
+    def __init__(self, pet, view, select):
+        self.pet = pet
+        self.view = view
+        self.select = select
+        super().__init__(style=discord.ButtonStyle.green, label="Play", emoji="⚽")
 
     async def callback(self, interaction: discord.Interaction):
-        # Add your play functionality here
-        await interaction.response.send_message('Played with Pet!')
+        self.pet[7] = await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
+        embed = await create_pet_embed(self.pet)
+        self.view.clear_items()
+        self.view.add_item(FeedButton(self.pet, self.view, self.select))
+        self.view.add_item(CleanButton(self.pet, self.view, self.select))
+        self.view.add_item(PlayButton(self.pet, self.view, self.select))
+        self.view.add_item(PetButton(self.pet, self.view, self.select))
+        self.view.add_item(self.select)
+        await interaction.response.edit_message(embed=embed, view=self.view)
 
 class PetButton(discord.ui.Button):
     def __init__(self, pet: list):
