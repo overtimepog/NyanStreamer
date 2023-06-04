@@ -45,7 +45,8 @@ class PetSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
-        embed = await create_pet_embed(self.selected_pet)
+        pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
+        embed = await create_pet_embed(pet_attributes)
         self.view.clear_items()
         self.view.add_item(FeedButton(self.selected_pet, self.view, self))
         self.view.add_item(CleanButton(self.selected_pet, self.view, self))
@@ -64,7 +65,8 @@ class FeedButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 25)
-        embed = await create_pet_embed(self.pet)
+        pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
+        embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
         self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
@@ -83,7 +85,8 @@ class CleanButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
-        embed = await create_pet_embed(self.pet)
+        pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
+        embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
         self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
