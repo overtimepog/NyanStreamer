@@ -65,15 +65,15 @@ class PetSelect(discord.ui.Select):
         user_balance = user_balance.replace(",", "")
         user_balance = int(user_balance)
 
-        feed_button = FeedButton(self.selected_pet, self.view, self, hunger_cost)
+        feed_button = FeedButton(self.selected_pet, self.view, self, hunger_cost, user_balance)
         feed_button.disabled = self.selected_pet[5] >= 100 or user_balance < hunger_cost
         self.view.add_item(feed_button)
 
-        clean_button = CleanButton(self.selected_pet, self.view, self, cleanliness_cost)
+        clean_button = CleanButton(self.selected_pet, self.view, self, cleanliness_cost, user_balance)
         clean_button.disabled = self.selected_pet[6] >= 100 or user_balance < cleanliness_cost
         self.view.add_item(clean_button)
 
-        play_button = PlayButton(self.selected_pet, self.view, self, happiness_cost)
+        play_button = PlayButton(self.selected_pet, self.view, self, happiness_cost, user_balance)
         play_button.disabled = self.selected_pet[7] >= 100 or user_balance < happiness_cost
         self.view.add_item(play_button)
 
