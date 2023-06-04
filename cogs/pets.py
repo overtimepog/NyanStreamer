@@ -45,7 +45,7 @@ class PetSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
-        embed = await create_pet_embed(self.selected_pet)
+        embed = await create_pet_embed(self.selected_pet, interaction.user)
         rarity = await db_manager.get_basic_item_rarity(self.selected_pet[0])
         rarity_multiplier = {"Common": 1, "Uncommon": 2, "Rare": 3, "Epic": 4, "Legendary": 5}
         # Cost calculations
@@ -55,16 +55,18 @@ class PetSelect(discord.ui.Select):
 
         self.view.clear_items()
 
+        user_balance = await db_manager.get_money(interaction.user.id)
+
         feed_button = FeedButton(self.selected_pet, self.view, self, hunger_cost)
-        feed_button.disabled = self.selected_pet[5] >= 100
+        feed_button.disabled = self.selected_pet[5] >= 100 or user_balance < hunger_cost
         self.view.add_item(feed_button)
 
         clean_button = CleanButton(self.selected_pet, self.view, self, cleanliness_cost)
-        clean_button.disabled = self.selected_pet[6] >= 100
+        clean_button.disabled = self.selected_pet[6] >= 100 or user_balance < cleanliness_cost
         self.view.add_item(clean_button)
 
         play_button = PlayButton(self.selected_pet, self.view, self, happiness_cost)
-        play_button.disabled = self.selected_pet[7] >= 100
+        play_button.disabled = self.selected_pet[7] >= 100 or user_balance < happiness_cost
         self.view.add_item(play_button)
 
         self.view.add_item(PetButton(self.selected_pet))
@@ -84,25 +86,27 @@ class FeedButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 100)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
-        embed = await create_pet_embed(pet_attributes)
-        rarity = await db_manager.get_basic_item_rarity(self.selected_pet[0])
+        embed = await create_pet_embed(pet_attributes, interaction.user)
+        rarity = await db_manager.get_basic_item_rarity(self.pet[0])
         rarity_multiplier = {"Common": 1, "Uncommon": 2, "Rare": 3, "Epic": 4, "Legendary": 5}
         # Cost calculations
-        hunger_cost = (100 - self.selected_pet[5]) * rarity_multiplier[rarity]
-        cleanliness_cost = (100 - self.selected_pet[6]) * rarity_multiplier[rarity]
-        happiness_cost = (100 - self.selected_pet[7]) * rarity_multiplier[rarity]
+        hunger_cost = (100 - pet_attributes[5]) * rarity_multiplier[rarity]
+        cleanliness_cost = (100 - pet_attributes[6]) * rarity_multiplier[rarity]
+        happiness_cost = (100 - pet_attributes[7]) * rarity_multiplier[rarity]
         self.petview.clear_items()
 
+        user_balance = await db_manager.get_money(interaction.user.id)
+
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
-        feed_button.disabled = pet_attributes[5] >= 100
+        feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
         self.petview.add_item(feed_button)
 
         clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost)
-        clean_button.disabled = pet_attributes[6] >= 100
+        clean_button.disabled = pet_attributes[6] >= 100 or user_balance < cleanliness_cost
         self.petview.add_item(clean_button)
 
         play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost)
-        play_button.disabled = pet_attributes[7] >= 100
+        play_button.disabled = pet_attributes[7] >= 100 or user_balance < happiness_cost
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
@@ -121,25 +125,27 @@ class CleanButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
-        embed = await create_pet_embed(pet_attributes)
-        rarity = await db_manager.get_basic_item_rarity(self.selected_pet[0])
+        embed = await create_pet_embed(pet_attributes, interaction.user)
+        rarity = await db_manager.get_basic_item_rarity(self.pet[0])
         rarity_multiplier = {"Common": 1, "Uncommon": 2, "Rare": 3, "Epic": 4, "Legendary": 5}
         # Cost calculations
-        hunger_cost = (100 - self.selected_pet[5]) * rarity_multiplier[rarity]
-        cleanliness_cost = (100 - self.selected_pet[6]) * rarity_multiplier[rarity]
-        happiness_cost = (100 - self.selected_pet[7]) * rarity_multiplier[rarity]
+        hunger_cost = (100 - pet_attributes[5]) * rarity_multiplier[rarity]
+        cleanliness_cost = (100 - pet_attributes[6]) * rarity_multiplier[rarity]
+        happiness_cost = (100 - pet_attributes[7]) * rarity_multiplier[rarity]
         self.petview.clear_items()
 
+        user_balance = await db_manager.get_money(interaction.user.id)
+
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
-        feed_button.disabled = pet_attributes[5] >= 100
+        feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
         self.petview.add_item(feed_button)
 
         clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost)
-        clean_button.disabled = pet_attributes[6] >= 100
+        clean_button.disabled = pet_attributes[6] >= 100 or user_balance < cleanliness_cost
         self.petview.add_item(clean_button)
 
         play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost)
-        play_button.disabled = pet_attributes[7] >= 100
+        play_button.disabled = pet_attributes[7] >= 100 or user_balance < happiness_cost
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
@@ -158,25 +164,27 @@ class PlayButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
-        embed = await create_pet_embed(pet_attributes)
-        rarity = await db_manager.get_basic_item_rarity(self.selected_pet[0])
+        embed = await create_pet_embed(pet_attributes, interaction.user)
+        rarity = await db_manager.get_basic_item_rarity(self.pet[0])
         rarity_multiplier = {"Common": 1, "Uncommon": 2, "Rare": 3, "Epic": 4, "Legendary": 5}
         # Cost calculations
-        hunger_cost = (100 - self.selected_pet[5]) * rarity_multiplier[rarity]
-        cleanliness_cost = (100 - self.selected_pet[6]) * rarity_multiplier[rarity]
-        happiness_cost = (100 - self.selected_pet[7]) * rarity_multiplier[rarity]
+        hunger_cost = (100 - pet_attributes[5]) * rarity_multiplier[rarity]
+        cleanliness_cost = (100 - pet_attributes[6]) * rarity_multiplier[rarity]
+        happiness_cost = (100 - pet_attributes[7]) * rarity_multiplier[rarity]
         self.petview.clear_items()
 
+        user_balance = await db_manager.get_money(interaction.user.id)
+
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
-        feed_button.disabled = pet_attributes[5] >= 100
+        feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
         self.petview.add_item(feed_button)
 
         clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost)
-        clean_button.disabled = pet_attributes[6] >= 100
+        clean_button.disabled = pet_attributes[6] >= 100 or user_balance < cleanliness_cost
         self.petview.add_item(clean_button)
 
         play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost)
-        play_button.disabled = pet_attributes[7] >= 100
+        play_button.disabled = pet_attributes[7] >= 100 or user_balance < happiness_cost
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
@@ -249,7 +257,7 @@ def generate_progress_bar(value, max_value):
 
     return bar
 
-async def create_pet_embed(pet):
+async def create_pet_embed(pet, user):
     rarity = await db_manager.get_basic_item_rarity(pet[0])
     icon = await db_manager.get_basic_item_emote(pet[0])
     pet_description = await db_manager.get_basic_item_description(pet[0])
@@ -273,7 +281,9 @@ async def create_pet_embed(pet):
     embed.add_field(name=f"Hunger `{pet[5]}/100` Time till empty: `{calculate_time_till_empty(pet[5], 5, 30)}`", value="```" + generate_progress_bar(pet[5], 100) + f"```", inline=False)
     embed.add_field(name=f"Cleanliness `{pet[6]}/100` Time till empty: `{calculate_time_till_empty(pet[6], 5, 120)}`", value="```" + generate_progress_bar(pet[6], 100) + f"```", inline=False)
     embed.add_field(name=f"Happiness `{pet[7]}/100` Time till empty: `{calculate_time_till_empty(pet[7], 5, 60)}`", value="```" + generate_progress_bar(pet[7], 100) + f"```", inline=False)
-
+    await db_manager.get_money(pet[1])
+    #get the name of a user by their id
+    embed.set_footer(text=f"Owner: {user.name} | Balance: {await db_manager.get_money(pet[1])}")
     return embed
 
 class Pets(commands.Cog, name="pets"):
