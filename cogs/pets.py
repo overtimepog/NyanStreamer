@@ -47,26 +47,31 @@ class PetSelect(discord.ui.Select):
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
         embed = await create_pet_embed(self.selected_pet)
         self.view.clear_items()
-        self.view.add_item(FeedButton(self.selected_pet, self.view, self))
-        self.view.add_item(CleanButton(self.selected_pet, self.view, self))
-        self.view.add_item(PlayButton(self.selected_pet, self.view, self))
+
+        feed_button = FeedButton(self.selected_pet, self.view, self)
+        feed_button.disabled = self.selected_pet[5] >= 100
+        self.view.add_item(feed_button)
+
+        clean_button = CleanButton(self.selected_pet, self.view, self)
+        clean_button.disabled = self.selected_pet[6] >= 100
+        self.view.add_item(clean_button)
+
+        play_button = PlayButton(self.selected_pet, self.view, self)
+        play_button.disabled = self.selected_pet[7] >= 100
+        self.view.add_item(play_button)
+
         self.view.add_item(PetButton(self.selected_pet))
         self.view.add_item(self)
+        
         await interaction.response.edit_message(embed=embed, view=self.view)
         await self.prepare_options()
 
 class FeedButton(discord.ui.Button):
-    def __init__(self, pet, petview, select, disabled):
+    def __init__(self, pet, petview, select):
         self.pet = pet
         self.petview = petview
         self.select = select
-        super().__init__(style=discord.ButtonStyle.green, label="Feed", emoji="🍔", disabled=disabled)
-
-    @classmethod
-    async def create(cls, pet, petview, select):
-        pet_attributes = await db_manager.get_pet_attributes(pet[0])
-        disabled = pet_attributes[5] >= 100
-        return cls(pet, petview, select, disabled)
+        super().__init__(style=discord.ButtonStyle.green, label="Feed", emoji="🍔")
 
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 25)
@@ -74,13 +79,16 @@ class FeedButton(discord.ui.Button):
         embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
 
-        feed_button = await FeedButton.create(self.pet, self.petview, self.select)
+        feed_button = FeedButton(self.pet, self.petview, self.select)
+        feed_button.disabled = pet_attributes[5] >= 100
         self.petview.add_item(feed_button)
 
-        clean_button = await CleanButton.create(self.pet, self.petview, self.select)
+        clean_button = CleanButton(self.pet, self.petview, self.select)
+        clean_button.disabled = pet_attributes[6] >= 100
         self.petview.add_item(clean_button)
 
-        play_button = await PlayButton.create(self.pet, self.petview, self.select)
+        play_button = PlayButton(self.pet, self.petview, self.select)
+        play_button.disabled = pet_attributes[7] >= 100
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
@@ -89,17 +97,11 @@ class FeedButton(discord.ui.Button):
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
 class CleanButton(discord.ui.Button):
-    def __init__(self, pet, petview, select, disabled):
+    def __init__(self, pet, petview, select):
         self.pet = pet
         self.petview = petview
         self.select = select
-        super().__init__(style=discord.ButtonStyle.green, label="Clean", emoji="🛀", disabled=disabled)
-
-    @classmethod
-    async def create(cls, pet, petview, select):
-        pet_attributes = await db_manager.get_pet_attributes(pet[0])
-        disabled = pet_attributes[6] >= 100
-        return cls(pet, petview, select, disabled)
+        super().__init__(style=discord.ButtonStyle.green, label="Clean", emoji="🛀")
 
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
@@ -107,13 +109,16 @@ class CleanButton(discord.ui.Button):
         embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
 
-        feed_button = await FeedButton.create(self.pet, self.petview, self.select)
+        feed_button = FeedButton(self.pet, self.petview, self.select)
+        feed_button.disabled = pet_attributes[5] >= 100
         self.petview.add_item(feed_button)
 
-        clean_button = await CleanButton.create(self.pet, self.petview, self.select)
+        clean_button = CleanButton(self.pet, self.petview, self.select)
+        clean_button.disabled = pet_attributes[6] >= 100
         self.petview.add_item(clean_button)
 
-        play_button = await PlayButton.create(self.pet, self.petview, self.select)
+        play_button = PlayButton(self.pet, self.petview, self.select)
+        play_button.disabled = pet_attributes[7] >= 100
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
@@ -122,17 +127,11 @@ class CleanButton(discord.ui.Button):
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
 class PlayButton(discord.ui.Button):
-    def __init__(self, pet, petview, select, disabled):
+    def __init__(self, pet, petview, select):
         self.pet = pet
         self.petview = petview
         self.select = select
-        super().__init__(style=discord.ButtonStyle.green, label="Play", emoji="⚽", disabled=disabled)
-
-    @classmethod
-    async def create(cls, pet, petview, select):
-        pet_attributes = await db_manager.get_pet_attributes(pet[0])
-        disabled = pet_attributes[7] >= 100
-        return cls(pet, petview, select, disabled)
+        super().__init__(style=discord.ButtonStyle.green, label="Play", emoji="⚽")
 
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
@@ -140,13 +139,16 @@ class PlayButton(discord.ui.Button):
         embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
 
-        feed_button = await FeedButton.create(self.pet, self.petview, self.select)
+        feed_button = FeedButton(self.pet, self.petview, self.select)
+        feed_button.disabled = pet_attributes[5] >= 100
         self.petview.add_item(feed_button)
 
-        clean_button = await CleanButton.create(self.pet, self.petview, self.select)
+        clean_button = CleanButton(self.pet, self.petview, self.select)
+        clean_button.disabled = pet_attributes[6] >= 100
         self.petview.add_item(clean_button)
 
-        play_button = await PlayButton.create(self.pet, self.petview, self.select)
+        play_button = PlayButton(self.pet, self.petview, self.select)
+        play_button.disabled = pet_attributes[7] >= 100
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
