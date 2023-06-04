@@ -18,5 +18,25 @@
         "item_recipe": [],
         "item_effect": "revive",
         "item_sub_type": "Potion"
-    } 
+    },
+    {
+        "item_id": "nametag",
+        "item_name": "Name Tag",
+        "item_price": 3000,
+        "item_emoji": "<:NameTag:1115058710448980038>",
+        "item_rarity": "Uncommon",
+        "item_type": "Consumable",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "Used to Rename a pet from the /pet menu",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "item_sub_type": "None"
+    }
 ]

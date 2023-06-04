@@ -1929,6 +1929,15 @@ async def set_pet_cleanliness(user_id: int, pet_id: str, amount: int) -> None:
             await db.execute(f"UPDATE `pet_attributes` SET `cleanliness_percent` = ? WHERE user_id = ? AND item_id = ?", (amount, user_id, pet_id))
         else:
             return None
+        
+#set pet name
+async def set_pet_name(user_id: int, pet_id: str, name: str) -> None:
+        db = DB()
+        data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ? AND item_id = ?", (user_id, pet_id), fetch="one")
+        if data is not None:
+            await db.execute(f"UPDATE `pet_attributes` SET `pet_name` = ? WHERE user_id = ? AND item_id = ?", (name, user_id, pet_id))
+        else:
+            return None
     
         
 #get equipped weapon damage

@@ -127,6 +127,7 @@ class FeedButton(discord.ui.Button):
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
+        self.petview.add_item(NameButton(self.pet))
         self.petview.add_item(self.select)
         
         await interaction.response.edit_message(embed=embed, view=self.petview)
@@ -176,6 +177,7 @@ class CleanButton(discord.ui.Button):
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
+        self.petview.add_item(NameButton(self.pet))
         self.petview.add_item(self.select)
         
         await interaction.response.edit_message(embed=embed, view=self.petview)
@@ -224,6 +226,7 @@ class PlayButton(discord.ui.Button):
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
+        self.petview.add_item(NameButton(self.pet))
         self.petview.add_item(self.select)
         
         await interaction.response.edit_message(embed=embed, view=self.petview)
@@ -251,6 +254,50 @@ class PetButton(discord.ui.Button):
                 petpet.make(source, dest)
                 dest.seek(0)  # set the file pointer back to the beginning so it doesn't upload a blank file.
                 await interaction.response.send_message(file=discord.File(dest, filename="petpet.gif"))
+
+class NameButton(discord.ui.Button):
+    def __init__(self, pet: list):
+        self.pet = pet
+        super().__init__(style=discord.ButtonStyle.gray, label='Name', emoji='🔤', row=1)
+
+    async def callback(self, interaction: discord.Interaction):
+        # Add your pet functionality here
+        #check if the user has the nametag item
+        hasone = await db_manager.check_user_has_item(interaction.user.id, "nametag")
+        if hasone == True:
+            #remove the nametag from the user
+            await db_manager.remove_item_from_inventory(interaction.user.id, "nametag", 1)
+            #send a message to the user asking them what they want to name their pet
+            await interaction.response.send_message("What would you like to name your pet?")
+            #wait for the user to respond
+            def check(m):
+                return m.author == interaction.user
+            msg = await self.bot.wait_for('message', check=check)
+            #set the name of the pet to the message content
+            await db_manager.set_pet_name(interaction.user.id, self.pet[0], msg.content)
+            pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
+            pet_emoji = pet_emoji.split(':')[2].replace('>', '')
+            pet_emoji = f"https://cdn.discordapp.com/emojis/{pet_emoji}.gif?size=240&quality=lossless"
+            #send a message to the user saying their pet has been named in a embed
+            embed = discord.Embed(
+                title=f"Your pet has been named!",
+                description=f"Your pet has been named {msg.content}!",
+                color=0x00ff00
+            )
+            embed.set_thumbnail(url=pet_emoji)
+            await interaction.response.send_message(embed=embed)
+        else:
+            #send a message to the user saying they don't have a nametag
+            icon = await db_manager.get_basic_item_emote("nametag")
+            embed = discord.Embed(
+                title=f"You don't have a Name Tag!",
+                description=f"You don't have a Name Tag to name your pet with! You can buy one from the shop.",
+                color=0xff0000
+            )
+            embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.png?size=240&quality=lossless")
+            await interaction.response.send_message(embed=embed)
+        
+
 
 
 class PetSelectView(discord.ui.View):
