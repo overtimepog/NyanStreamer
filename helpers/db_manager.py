@@ -2850,6 +2850,7 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             isEquipped = 0
                             #add the item to the inventory table
                             await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
+                            await db.commit()
                             # If the item is a pet, add an entry to the pet_attributes table.
                             if item_type == 'Pet':
                                 # Check if user already owns a pet of this type.
@@ -2867,6 +2868,7 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                                 default_happiness_percent = 100.0
                                 await db.execute("INSERT INTO `pet_attributes` (`item_id`, `user_id`, `pet_name`, `level`, `xp`, `hunger_percent`, `cleanliness_percent`, `happiness_percent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                                 (item_id, user_id, pet_name, default_level, default_xp, default_hunger_percent, default_cleanliness_percent, default_happiness_percent))
+                                await db.commit()
                                 
                             item_effect = await get_basic_item_effect(item_id)
     
@@ -3082,37 +3084,37 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
                             await remove_luck(user_id, effect_amount)
                         elif effect_add_or_minus == "-":
                             await add_luck(user_id, effect_amount)
-                    
+
                     elif effect == "crit_chance":
                         if effect_add_or_minus == "+":
                             await remove_crit_chance(user_id, effect_amount)
                         elif effect_add_or_minus == "-":
                             await add_crit_chance(user_id, effect_amount)
-                    
+
                     elif effect == "dodge_chance":
                         if effect_add_or_minus == "+":
                             await remove_dodge_chance(user_id, effect_amount)
                         elif effect_add_or_minus == "-":
                             await add_dodge_chance(user_id, effect_amount)
-                    
+
                     elif effect == "fire_resistance":
                         if effect_add_or_minus == "+":
                             await remove_fire_resistance(user_id, effect_amount)
                         elif effect_add_or_minus == "-":
                             await add_fire_resistance(user_id, effect_amount)
-                    
+
                     elif effect == "paralysis_resistance":
                         if effect_add_or_minus == "+":
                             await remove_paralysis_resistance(user_id, effect_amount)
                         elif effect_add_or_minus == "-":
                             await add_paralysis_resistance(user_id, effect_amount)
-                    
+
                     elif effect == "poison_resistance":
                         if effect_add_or_minus == "+":
                             await remove_poison_resistance(user_id, effect_amount)
                         elif effect_add_or_minus == "-":
                             await add_poison_resistance(user_id, effect_amount)
-                    
+
                     elif effect == "frost_resistance":
                         if effect_add_or_minus == "+":
                             await remove_frost_resistance(user_id, effect_amount)
