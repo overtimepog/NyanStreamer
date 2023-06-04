@@ -18,7 +18,7 @@ from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from petpetgif import petpet
 
-cash = "<:cash:1077573941515792384>"
+cash = "⚙"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
@@ -85,17 +85,23 @@ class FeedButton(discord.ui.Button):
         await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 100)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes)
+        rarity = await db_manager.get_basic_item_rarity(self.selected_pet[0])
+        rarity_multiplier = {"Common": 1, "Uncommon": 2, "Rare": 3, "Epic": 4, "Legendary": 5}
+        # Cost calculations
+        hunger_cost = (100 - self.selected_pet[5]) * rarity_multiplier[rarity]
+        cleanliness_cost = (100 - self.selected_pet[6]) * rarity_multiplier[rarity]
+        happiness_cost = (100 - self.selected_pet[7]) * rarity_multiplier[rarity]
         self.petview.clear_items()
 
-        feed_button = FeedButton(self.pet, self.petview, self.select)
+        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100
         self.petview.add_item(feed_button)
 
-        clean_button = CleanButton(self.pet, self.petview, self.select)
+        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost)
         clean_button.disabled = pet_attributes[6] >= 100
         self.petview.add_item(clean_button)
 
-        play_button = PlayButton(self.pet, self.petview, self.select)
+        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost)
         play_button.disabled = pet_attributes[7] >= 100
         self.petview.add_item(play_button)
 
@@ -116,17 +122,23 @@ class CleanButton(discord.ui.Button):
         await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes)
+        rarity = await db_manager.get_basic_item_rarity(self.selected_pet[0])
+        rarity_multiplier = {"Common": 1, "Uncommon": 2, "Rare": 3, "Epic": 4, "Legendary": 5}
+        # Cost calculations
+        hunger_cost = (100 - self.selected_pet[5]) * rarity_multiplier[rarity]
+        cleanliness_cost = (100 - self.selected_pet[6]) * rarity_multiplier[rarity]
+        happiness_cost = (100 - self.selected_pet[7]) * rarity_multiplier[rarity]
         self.petview.clear_items()
 
-        feed_button = FeedButton(self.pet, self.petview, self.select)
+        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100
         self.petview.add_item(feed_button)
 
-        clean_button = CleanButton(self.pet, self.petview, self.select)
+        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost)
         clean_button.disabled = pet_attributes[6] >= 100
         self.petview.add_item(clean_button)
 
-        play_button = PlayButton(self.pet, self.petview, self.select)
+        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost)
         play_button.disabled = pet_attributes[7] >= 100
         self.petview.add_item(play_button)
 
@@ -147,17 +159,23 @@ class PlayButton(discord.ui.Button):
         await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes)
+        rarity = await db_manager.get_basic_item_rarity(self.selected_pet[0])
+        rarity_multiplier = {"Common": 1, "Uncommon": 2, "Rare": 3, "Epic": 4, "Legendary": 5}
+        # Cost calculations
+        hunger_cost = (100 - self.selected_pet[5]) * rarity_multiplier[rarity]
+        cleanliness_cost = (100 - self.selected_pet[6]) * rarity_multiplier[rarity]
+        happiness_cost = (100 - self.selected_pet[7]) * rarity_multiplier[rarity]
         self.petview.clear_items()
 
-        feed_button = FeedButton(self.pet, self.petview, self.select)
+        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100
         self.petview.add_item(feed_button)
 
-        clean_button = CleanButton(self.pet, self.petview, self.select)
+        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost)
         clean_button.disabled = pet_attributes[6] >= 100
         self.petview.add_item(clean_button)
 
-        play_button = PlayButton(self.pet, self.petview, self.select)
+        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost)
         play_button.disabled = pet_attributes[7] >= 100
         self.petview.add_item(play_button)
 

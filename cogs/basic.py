@@ -26,7 +26,7 @@ from discord.ext.commands.errors import CommandInvokeError
 
 global i
 i = 0
-cash = "<:cash:1077573941515792384>"
+cash = "⚙"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
