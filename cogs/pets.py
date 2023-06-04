@@ -273,7 +273,7 @@ class NameButton(discord.ui.Button):
             #remove the nametag from the user
             await db_manager.remove_item_from_inventory(interaction.user.id, "nametag", 1)
             #send a message to the user asking them what they want to name their pet
-            message = await interaction.response.send_message("What would you like to name your pet?")
+            await interaction.response.send_message("What would you like to name your pet?")
             #wait for the user to respond
             def check(m):
                 return m.author == interaction.user
@@ -290,7 +290,7 @@ class NameButton(discord.ui.Button):
                 color=0x00ff00
             )
             embed.set_thumbnail(url=pet_emoji)
-            await message.edit(embed=embed)
+            await msg.edit(embed=embed)
         else:
             #send a message to the user saying they don't have a nametag
             icon = await db_manager.get_basic_item_emote("nametag")
@@ -300,7 +300,7 @@ class NameButton(discord.ui.Button):
                 color=0xff0000
             )
             embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
-            await message.edit(embed=embed)
+            await interaction.response.send_message(embed=embed)
         
 
 
