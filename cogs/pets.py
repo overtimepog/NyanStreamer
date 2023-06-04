@@ -280,17 +280,22 @@ class NameButton(discord.ui.Button):
             msg = await self.bot.wait_for('message', check=check)
             #set the name of the pet to the message content
             await db_manager.set_pet_name(interaction.user.id, self.pet[0], msg.content)
+            #save the pet's name to a variable
+            pet_name = msg.content
+            #now delete the message the user sent
+            await msg.delete()
             pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
             pet_emoji = pet_emoji.split(':')[2].replace('>', '')
             pet_emoji = f"https://cdn.discordapp.com/emojis/{pet_emoji}.gif?size=240&quality=lossless"
             #send a message to the user saying their pet has been named in a embed
             embed = discord.Embed(
                 title=f"Your pet has been named!",
-                description=f"Your pet has been named {msg.content}!",
+                description=f"Your pet has been named {pet_name}!",
                 color=0x00ff00
             )
             embed.set_thumbnail(url=pet_emoji)
-            await msg.edit(embed=embed)
+            message = await interaction.original_response()
+            await message.edit(embed=embed)
         else:
             #send a message to the user saying they don't have a nametag
             icon = await db_manager.get_basic_item_emote("nametag")
