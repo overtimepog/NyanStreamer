@@ -91,7 +91,8 @@ class FeedButton(discord.ui.Button):
         super().__init__(style=discord.ButtonStyle.green, label=f"{cash}{cost} Feed", emoji="🍔")
 
     async def callback(self, interaction: discord.Interaction):
-        await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 100)
+        await db_manager.remove_money(interaction.user.id, self.cost)
+        await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 25)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes, interaction.user)
         rarity = await db_manager.get_basic_item_rarity(self.pet[0])
@@ -137,6 +138,7 @@ class CleanButton(discord.ui.Button):
         super().__init__(style=discord.ButtonStyle.green, label=f"{cash}{cost} Clean", emoji="🛀")
 
     async def callback(self, interaction: discord.Interaction):
+        await db_manager.remove_money(interaction.user.id, self.cost)
         await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes, interaction.user)
@@ -183,6 +185,7 @@ class PlayButton(discord.ui.Button):
         super().__init__(style=discord.ButtonStyle.green, label=f"{cash}{cost} Play", emoji="⚽")
 
     async def callback(self, interaction: discord.Interaction):
+        await db_manager.remove_money(interaction.user.id, self.cost)
         await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes, interaction.user)
