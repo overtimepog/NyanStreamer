@@ -69,7 +69,7 @@ class FeedButton(discord.ui.Button):
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
         self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
         self.petview.add_item(PlayButton(self.pet, self.petview, self.select))
-        self.petview.add_item(PetButton(self.pet, self.petview, self.select))
+        self.petview.add_item(PetButton(self.pet))
         self.petview.add_item(self.select)
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
@@ -88,7 +88,7 @@ class CleanButton(discord.ui.Button):
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
         self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
         self.petview.add_item(PlayButton(self.pet, self.petview, self.select))
-        self.petview.add_item(PetButton(self.pet, self.petview, self.select))
+        self.petview.add_item(PetButton(self.pet))
         self.petview.add_item(self.select)
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
@@ -107,7 +107,7 @@ class PlayButton(discord.ui.Button):
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
         self.petview.add_item(CleanButton(self.pet, self.petview, self.select))
         self.petview.add_item(PlayButton(self.pet, self.petview, self.select))
-        self.petview.add_item(PetButton(self.pet, self.petview, self.select))
+        self.petview.add_item(PetButton(self.pet))
         self.petview.add_item(self.select)
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
