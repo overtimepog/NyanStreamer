@@ -119,9 +119,10 @@ class PetSelectView(discord.ui.View):
         self.value = None
         self.select = PetSelect(pets, bot)
         self.buttons = PetRefillButtons(self.select.selected_pet)
-        self.add_item(self.buttons)
         self.add_item(self.select)
-
+        self.buttons = PetRefillButtons(self.select.selected_pet)  # this is a View, not an Item
+        for item in self.buttons.children:  # add each button separately
+            self.add_item(item)
     async def prepare(self):
         await self.select.prepare_options()
 
