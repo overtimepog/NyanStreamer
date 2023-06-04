@@ -63,7 +63,7 @@ class FeedButton(discord.ui.Button):
         super().__init__(style=discord.ButtonStyle.green, label="Feed", emoji="🍔")
 
     async def callback(self, interaction: discord.Interaction):
-        self.pet[5] = await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 25)
+        await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 25)
         embed = await create_pet_embed(self.pet)
         self.petview.clear_items()
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
@@ -82,7 +82,7 @@ class CleanButton(discord.ui.Button):
         super().__init__(style=discord.ButtonStyle.green, label="Clean", emoji="🛀")
 
     async def callback(self, interaction: discord.Interaction):
-        self.pet[6] = await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
+        await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
         embed = await create_pet_embed(self.pet)
         self.petview.clear_items()
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
@@ -101,7 +101,7 @@ class PlayButton(discord.ui.Button):
         super().__init__(style=discord.ButtonStyle.green, label="Play", emoji="⚽")
 
     async def callback(self, interaction: discord.Interaction):
-        self.pet[7] = await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
+        await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
         embed = await create_pet_embed(self.pet)
         self.petview.clear_items()
         self.petview.add_item(FeedButton(self.pet, self.petview, self.select))
