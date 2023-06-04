@@ -89,7 +89,7 @@ class FeedButton(discord.ui.Button):
         self.petview = petview
         self.select = select
         self.cost = cost
-        can_afford = pet[5] < 100 and user_balance >= cost
+        can_afford = pet[5] <= 100 and user_balance >= cost
         super().__init__(style=discord.ButtonStyle.danger if not can_afford else discord.ButtonStyle.green, label=f"{cash}{cost} Feed", emoji="🍔")
 
     async def callback(self, interaction: discord.Interaction):
@@ -137,7 +137,7 @@ class CleanButton(discord.ui.Button):
         self.petview = petview
         self.select = select
         self.cost = cost
-        can_afford = pet[6] < 100 and user_balance >= cost
+        can_afford = pet[6] <= 100 and user_balance >= cost
         super().__init__(style=discord.ButtonStyle.danger if not can_afford else discord.ButtonStyle.green, label=f"{cash}{cost} Clean", emoji="🛀")
 
 
@@ -186,7 +186,7 @@ class PlayButton(discord.ui.Button):
         self.petview = petview  
         self.select = select
         self.cost = cost
-        can_afford = pet[7] < 100 and user_balance >= cost
+        can_afford = pet[7] <= 100 and user_balance >= cost
         super().__init__(style=discord.ButtonStyle.danger if not can_afford else discord.ButtonStyle.green, label=f"{cash}{cost} Play", emoji="⚽")
 
     async def callback(self, interaction: discord.Interaction):
