@@ -295,7 +295,7 @@ class NameButton(discord.ui.Button):
                 description=f"You don't have a Name Tag to name your pet with! You can buy one from the shop.",
                 color=0xff0000
             )
-            embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.png?size=240&quality=lossless")
+            embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
             await interaction.response.send_message(embed=embed)
         
 
