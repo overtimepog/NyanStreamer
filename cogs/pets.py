@@ -78,6 +78,7 @@ class PetSelect(discord.ui.Select):
         self.view.add_item(play_button)
 
         self.view.add_item(PetButton(self.selected_pet))
+        self.view.add_item(NameButton(self.selected_pet))
         self.view.add_item(self)
         
         await interaction.response.edit_message(embed=embed, view=self.view)
