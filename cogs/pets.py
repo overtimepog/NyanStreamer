@@ -67,8 +67,8 @@ class PetRefillButtons(discord.ui.View):
         self.play_cost = 5
         self.pet = pet
 
-        self.add_item(discord.ui.Button(label=f'Feed ({self.feed_cost} coins)', style=discord.ButtonStyle.green, custom_id="feed_button"))
-        self.add_item(discord.ui.Button(label=f'Clean ({self.clean_cost} coins)', style=discord.ButtonStyle.blue, custom_id="clean_button"))
+        self.add_item(discord.ui.Button(label=f'Feed ({self.feed_cost} coins)', style=discord.ButtonStyle.blurple, custom_id="feed_button"))
+        self.add_item(discord.ui.Button(label=f'Clean ({self.clean_cost} coins)', style=discord.ButtonStyle.blurple, custom_id="clean_button"))
         self.add_item(discord.ui.Button(label=f'Play ({self.play_cost} coins)', style=discord.ButtonStyle.blurple, custom_id="play_button"))
         self.add_item(discord.ui.Button(label='Pet', style=discord.ButtonStyle.grey, custom_id="pet_button"))
         
@@ -97,12 +97,12 @@ class PetRefillButtons(discord.ui.View):
         if pet_emoji is not None:
                 pet_emoji = pet_emoji.split(':')[2].replace('>', '')
                 pet_emoji = f"https://cdn.discordapp.com/emojis/{pet_emoji}.gif?size=240&quality=lossless"
-        
+
                 # Use aiohttp to download the image
                 async with aiohttp.ClientSession() as session:
                     async with session.get(pet_emoji) as resp:
                         image = await resp.read()
-        
+
                 source = BytesIO(image)  # file-like container to hold the emoji in memory
                 dest = BytesIO()  # container to store the petpet gif in memory
                 petpet.make(source, dest)
