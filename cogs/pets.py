@@ -69,11 +69,11 @@ class FeedButton(discord.ui.Button):
         self.pet[5] = await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 25)
         embed = await create_pet_embed(self.pet)
         self.view.clear_items()
-        self.view.add_item(FeedButton(self.pet, self.view))
-        self.view.add_item(CleanButton(self.pet, self.view))
-        self.view.add_item(PlayButton(self.pet, self.view))
-        self.view.add_item(PetButton(self.pet, self.view))
-        self.view.add_item(self.view.select)
+        self.view.add_item(FeedButton(self.pet, self.view, self.select))
+        self.view.add_item(CleanButton(self.pet, self.view, self.select))
+        self.view.add_item(PlayButton(self.pet, self.view, self.select))
+        self.view.add_item(PetButton(self.pet, self.view, self.select))
+        self.view.add_item(self.select)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 class CleanButton(discord.ui.Button):
