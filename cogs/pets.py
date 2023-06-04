@@ -57,6 +57,12 @@ class PetSelect(discord.ui.Select):
 
         user_balance = await db_manager.get_money(interaction.user.id)
         user_balance = user_balance[0]
+        user_balance = str(user_balance)
+        #remove the ( and ) and , from the balance
+        user_balance = user_balance.replace("(", "")
+        user_balance = user_balance.replace(")", "")
+        user_balance = user_balance.replace(",", "")
+        user_balance = int(user_balance)
 
         feed_button = FeedButton(self.selected_pet, self.view, self, hunger_cost)
         feed_button.disabled = self.selected_pet[5] >= 100 or user_balance < hunger_cost
@@ -98,6 +104,12 @@ class FeedButton(discord.ui.Button):
 
         user_balance = await db_manager.get_money(interaction.user.id)
         user_balance = user_balance[0]
+        user_balance = str(user_balance)
+        #remove the ( and ) and , from the balance
+        user_balance = user_balance.replace("(", "")
+        user_balance = user_balance.replace(")", "")
+        user_balance = user_balance.replace(",", "")
+        user_balance = int(user_balance)
 
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
@@ -138,6 +150,12 @@ class CleanButton(discord.ui.Button):
 
         user_balance = await db_manager.get_money(interaction.user.id)
         user_balance = user_balance[0]
+        user_balance = str(user_balance)
+        #remove the ( and ) and , from the balance
+        user_balance = user_balance.replace("(", "")
+        user_balance = user_balance.replace(")", "")
+        user_balance = user_balance.replace(",", "")
+        user_balance = int(user_balance)
 
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
@@ -178,6 +196,12 @@ class PlayButton(discord.ui.Button):
 
         user_balance = await db_manager.get_money(interaction.user.id)
         user_balance = user_balance[0]
+        user_balance = str(user_balance)
+        #remove the ( and ) and , from the balance
+        user_balance = user_balance.replace("(", "")
+        user_balance = user_balance.replace(")", "")
+        user_balance = user_balance.replace(",", "")
+        user_balance = int(user_balance)
 
         feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
@@ -287,7 +311,15 @@ async def create_pet_embed(pet, user):
     embed.add_field(name=f"Happiness `{pet[7]}/100` Time till empty: `{calculate_time_till_empty(pet[7], 5, 60)}`", value="```" + generate_progress_bar(pet[7], 100) + f"```", inline=False)
     await db_manager.get_money(pet[1])
     #get the name of a user by their id
-    embed.set_footer(text=f"Owner: {user.name} | Balance: {await db_manager.get_money(pet[1])}")
+    user_balance = await db_manager.get_money(user.id)
+    user_balance = user_balance[0]
+    user_balance = str(user_balance)
+    #remove the ( and ) and , from the balance
+    user_balance = user_balance.replace("(", "")
+    user_balance = user_balance.replace(")", "")
+    user_balance = user_balance.replace(",", "")
+    user_balance = int(user_balance)
+    embed.set_footer(text=f"Owner: {user.name} | Balance: {cash}{user_balance}")
     return embed
 
 class Pets(commands.Cog, name="pets"):
