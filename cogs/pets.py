@@ -65,31 +65,32 @@ class PetSelect(discord.ui.Select):
         user_balance = user_balance.replace(",", "")
         user_balance = int(user_balance)
 
-        feed_button = FeedButton(self.selected_pet, self.view, self, hunger_cost, user_balance)
+        feed_button = FeedButton(self.selected_pet, self.view, self, hunger_cost, user_balance, self.bot)
         feed_button.disabled = self.selected_pet[5] >= 100 or user_balance < hunger_cost
         self.view.add_item(feed_button)
 
-        clean_button = CleanButton(self.selected_pet, self.view, self, cleanliness_cost, user_balance)
+        clean_button = CleanButton(self.selected_pet, self.view, self, cleanliness_cost, user_balance, self.bot)
         clean_button.disabled = self.selected_pet[6] >= 100 or user_balance < cleanliness_cost
         self.view.add_item(clean_button)
 
-        play_button = PlayButton(self.selected_pet, self.view, self, happiness_cost, user_balance)
+        play_button = PlayButton(self.selected_pet, self.view, self, happiness_cost, user_balance, self.bot)
         play_button.disabled = self.selected_pet[7] >= 100 or user_balance < happiness_cost
         self.view.add_item(play_button)
 
         self.view.add_item(PetButton(self.selected_pet))
-        self.view.add_item(NameButton(self.selected_pet))
+        self.view.add_item(NameButton(self.selected_pet, self.bot))
         self.view.add_item(self)
         
         await interaction.response.edit_message(embed=embed, view=self.view)
         await self.prepare_options()
 
 class FeedButton(discord.ui.Button):
-    def __init__(self, pet, petview, select, cost, user_balance):
+    def __init__(self, pet, petview, select, cost, user_balance, bot):
         self.pet = pet
         self.petview = petview
         self.select = select
         self.cost = cost
+        self.bot = bot
         can_afford = pet[5] <= 100 and user_balance >= cost
         super().__init__(style=discord.ButtonStyle.danger if not can_afford else discord.ButtonStyle.green, label=f"{cash}{cost} Feed", emoji="🍔")
 
@@ -115,30 +116,31 @@ class FeedButton(discord.ui.Button):
         user_balance = user_balance.replace(",", "")
         user_balance = int(user_balance)
 
-        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost, user_balance)
+        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost, user_balance, self.bot)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
         self.petview.add_item(feed_button)
 
-        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost, user_balance)
+        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost, user_balance, self.bot)
         clean_button.disabled = pet_attributes[6] >= 100 or user_balance < cleanliness_cost
         self.petview.add_item(clean_button)
 
-        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost, user_balance)
+        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost, user_balance, self.bot)
         play_button.disabled = pet_attributes[7] >= 100 or user_balance < happiness_cost
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
-        self.petview.add_item(NameButton(self.pet))
+        self.petview.add_item(NameButton(self.pet, self.bot))
         self.petview.add_item(self.select)
         
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
 class CleanButton(discord.ui.Button):
-    def __init__(self, pet, petview, select, cost, user_balance):
+    def __init__(self, pet, petview, select, cost, user_balance, bot):
         self.pet = pet
         self.petview = petview
         self.select = select
         self.cost = cost
+        self.bot = bot
         can_afford = pet[6] <= 100 and user_balance >= cost
         super().__init__(style=discord.ButtonStyle.danger if not can_afford else discord.ButtonStyle.green, label=f"{cash}{cost} Clean", emoji="🛀")
 
@@ -165,30 +167,31 @@ class CleanButton(discord.ui.Button):
         user_balance = user_balance.replace(",", "")
         user_balance = int(user_balance)
 
-        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost, user_balance)
+        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost, user_balance, self.bot)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
         self.petview.add_item(feed_button)
 
-        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost, user_balance)
+        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost, user_balance, self.bot)
         clean_button.disabled = pet_attributes[6] >= 100 or user_balance < cleanliness_cost
         self.petview.add_item(clean_button)
 
-        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost, user_balance)
+        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost, user_balance, self.bot)
         play_button.disabled = pet_attributes[7] >= 100 or user_balance < happiness_cost
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
-        self.petview.add_item(NameButton(self.pet))
+        self.petview.add_item(NameButton(self.pet, self.bot))
         self.petview.add_item(self.select)
         
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
 class PlayButton(discord.ui.Button):
-    def __init__(self, pet, petview, select, cost, user_balance):
+    def __init__(self, pet, petview, select, cost, user_balance, bot):
         self.pet = pet
         self.petview = petview  
         self.select = select
         self.cost = cost
+        self.bot = bot
         can_afford = pet[7] <= 100 and user_balance >= cost
         super().__init__(style=discord.ButtonStyle.danger if not can_afford else discord.ButtonStyle.green, label=f"{cash}{cost} Play", emoji="⚽")
 
@@ -214,20 +217,20 @@ class PlayButton(discord.ui.Button):
         user_balance = user_balance.replace(",", "")
         user_balance = int(user_balance)
 
-        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost, user_balance)
+        feed_button = FeedButton(self.pet, self.petview, self.select, hunger_cost, user_balance, self.bot)
         feed_button.disabled = pet_attributes[5] >= 100 or user_balance < hunger_cost
         self.petview.add_item(feed_button)
 
-        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost, user_balance)
+        clean_button = CleanButton(self.pet, self.petview, self.select, cleanliness_cost, user_balance, self.bot)
         clean_button.disabled = pet_attributes[6] >= 100 or user_balance < cleanliness_cost
         self.petview.add_item(clean_button)
 
-        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost, user_balance)
+        play_button = PlayButton(self.pet, self.petview, self.select, happiness_cost, user_balance, self.bot)
         play_button.disabled = pet_attributes[7] >= 100 or user_balance < happiness_cost
         self.petview.add_item(play_button)
 
         self.petview.add_item(PetButton(self.pet))
-        self.petview.add_item(NameButton(self.pet))
+        self.petview.add_item(NameButton(self.pet, self.bot))
         self.petview.add_item(self.select)
         
         await interaction.response.edit_message(embed=embed, view=self.petview)
@@ -257,8 +260,9 @@ class PetButton(discord.ui.Button):
                 await interaction.response.send_message(file=discord.File(dest, filename="petpet.gif"))
 
 class NameButton(discord.ui.Button):
-    def __init__(self, pet: list):
+    def __init__(self, pet: list, bot):
         self.pet = pet
+        self.bot = bot
         super().__init__(style=discord.ButtonStyle.gray, label='Name', emoji='🔤', row=1)
 
     async def callback(self, interaction: discord.Interaction):
