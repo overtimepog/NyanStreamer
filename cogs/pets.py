@@ -46,17 +46,24 @@ class PetSelect(discord.ui.Select):
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
         embed = await create_pet_embed(self.selected_pet)
+        rarity = await db_manager.get_basic_item_rarity(self.selected_pet[0])
+        rarity_multiplier = {"Common": 1, "Uncommon": 2, "Rare": 3, "Epic": 4, "Legendary": 5}
+        # Cost calculations
+        hunger_cost = (100 - self.selected_pet[5]) * rarity_multiplier[rarity]
+        cleanliness_cost = (100 - self.selected_pet[6]) * rarity_multiplier[rarity]
+        happiness_cost = (100 - self.selected_pet[7]) * rarity_multiplier[rarity]
+
         self.view.clear_items()
 
-        feed_button = FeedButton(self.selected_pet, self.view, self)
+        feed_button = FeedButton(self.selected_pet, self.view, self, hunger_cost)
         feed_button.disabled = self.selected_pet[5] >= 100
         self.view.add_item(feed_button)
 
-        clean_button = CleanButton(self.selected_pet, self.view, self)
+        clean_button = CleanButton(self.selected_pet, self.view, self, cleanliness_cost)
         clean_button.disabled = self.selected_pet[6] >= 100
         self.view.add_item(clean_button)
 
-        play_button = PlayButton(self.selected_pet, self.view, self)
+        play_button = PlayButton(self.selected_pet, self.view, self, happiness_cost)
         play_button.disabled = self.selected_pet[7] >= 100
         self.view.add_item(play_button)
 
@@ -67,14 +74,15 @@ class PetSelect(discord.ui.Select):
         await self.prepare_options()
 
 class FeedButton(discord.ui.Button):
-    def __init__(self, pet, petview, select):
+    def __init__(self, pet, petview, select, cost):
         self.pet = pet
         self.petview = petview
         self.select = select
-        super().__init__(style=discord.ButtonStyle.green, label="Feed", emoji="🍔")
+        self.cost = cost
+        super().__init__(style=discord.ButtonStyle.green, label=f"{cash}{cost} Feed", emoji="🍔")
 
     async def callback(self, interaction: discord.Interaction):
-        await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 25)
+        await db_manager.add_pet_hunger(interaction.user.id, self.pet[0], 100)
         pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
         embed = await create_pet_embed(pet_attributes)
         self.petview.clear_items()
@@ -97,11 +105,12 @@ class FeedButton(discord.ui.Button):
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
 class CleanButton(discord.ui.Button):
-    def __init__(self, pet, petview, select):
+    def __init__(self, pet, petview, select, cost):
         self.pet = pet
         self.petview = petview
         self.select = select
-        super().__init__(style=discord.ButtonStyle.green, label="Clean", emoji="🛀")
+        self.cost = cost
+        super().__init__(style=discord.ButtonStyle.green, label=f"{cash}{cost} Clean", emoji="🛀")
 
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_cleanliness(interaction.user.id, self.pet[0], 25)
@@ -127,11 +136,12 @@ class CleanButton(discord.ui.Button):
         await interaction.response.edit_message(embed=embed, view=self.petview)
 
 class PlayButton(discord.ui.Button):
-    def __init__(self, pet, petview, select):
+    def __init__(self, pet, petview, select, cost):
         self.pet = pet
         self.petview = petview
         self.select = select
-        super().__init__(style=discord.ButtonStyle.green, label="Play", emoji="⚽")
+        self.cost = cost
+        super().__init__(style=discord.ButtonStyle.green, label=f"{cash}{cost} Play", emoji="⚽")
 
     async def callback(self, interaction: discord.Interaction):
         await db_manager.add_pet_happiness(interaction.user.id, self.pet[0], 25)
@@ -155,7 +165,6 @@ class PlayButton(discord.ui.Button):
         self.petview.add_item(self.select)
         
         await interaction.response.edit_message(embed=embed, view=self.petview)
-
 
 class PetButton(discord.ui.Button):
     def __init__(self, pet: list):
