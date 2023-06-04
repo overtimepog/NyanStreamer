@@ -1853,9 +1853,13 @@ async def add_pet_hunger(user_id: int, pet_id: str, amount: int) -> None:
         db = DB()
         data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ? AND item_id = ?", (user_id, pet_id), fetch="one")
         if data is not None:
-            await db.execute(f"UPDATE `pet_attributes` SET `hunger_percent` = `hunger_percent` + ? WHERE user_id = ? AND item_id = ?", (amount, user_id, pet_id))
+            new_hunger = data['hunger_percent'] + amount
+            if new_hunger > 100:
+                new_hunger = 100
+            await db.execute(f"UPDATE `pet_attributes` SET `hunger_percent` = ? WHERE user_id = ? AND item_id = ?", (new_hunger, user_id, pet_id))
         else:
             return None
+
         
 #set pet hunger
 async def set_pet_hunger(user_id: int, pet_id: str, amount: int) -> None:
@@ -1880,7 +1884,10 @@ async def add_pet_happiness(user_id: int, pet_id: str, amount: int) -> None:
         db = DB()
         data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ? AND item_id = ?", (user_id, pet_id), fetch="one")
         if data is not None:
-            await db.execute(f"UPDATE `pet_attributes` SET `happiness_percent` = `happiness_percent` + ? WHERE user_id = ? AND item_id = ?", (amount, user_id, pet_id))
+            new_happiness = data['happiness_percent'] + amount
+            if new_happiness > 100:
+                new_happiness = 100
+            await db.execute(f"UPDATE `pet_attributes` SET `happiness_percent` = ? WHERE user_id = ? AND item_id = ?", (new_happiness, user_id, pet_id))
         else:
             return None
         
@@ -1907,7 +1914,10 @@ async def add_pet_cleanliness(user_id: int, pet_id: str, amount: int) -> None:
         db = DB()
         data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ? AND item_id = ?", (user_id, pet_id), fetch="one")
         if data is not None:
-            await db.execute(f"UPDATE `pet_attributes` SET `cleanliness_percent` = `cleanliness_percent` + ? WHERE user_id = ? AND item_id = ?", (amount, user_id, pet_id))
+            new_cleanliness = data['cleanliness_percent'] + amount
+            if new_cleanliness > 100:
+                new_cleanliness = 100
+            await db.execute(f"UPDATE `pet_attributes` SET `cleanliness_percent` = ? WHERE user_id = ? AND item_id = ?", (new_cleanliness, user_id, pet_id))
         else:
             return None
         
