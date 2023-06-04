@@ -73,25 +73,26 @@ class PetRefillButtons(discord.ui.View):
         self.add_item(discord.ui.Button(label='Pet', style=discord.ButtonStyle.grey, custom_id="pet_button"))
         
     @discord.ui.button(custom_id="feed_button")
-    async def feed_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def feed_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         # Check if user has enough money to feed pet, deduct the cost and refill hunger stat
         # If not enough money, send error message
         pass
 
     @discord.ui.button(custom_id="clean_button")
-    async def clean_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def clean_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         # Check if user has enough money to clean pet, deduct the cost and refill cleanliness stat
         # If not enough money, send error message
         pass
 
     @discord.ui.button(custom_id="play_button")
-    async def play_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def play_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         # Check if user has enough money to play with pet, deduct the cost and refill happiness stat
         # If not enough money, send error message
         pass
 
     @discord.ui.button(custom_id="pet_button")
-    async def pet_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def pet_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        # Send a message to the user indicating they pet their pet
         # Send a message to the user indicating they pet their pet
         pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
         if pet_emoji is not None:
