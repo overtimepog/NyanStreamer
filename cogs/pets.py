@@ -51,12 +51,13 @@ class PetSelect(discord.ui.Select):
         self.view.add_item(CleanButton())
         self.view.add_item(PlayButton())
         self.view.add_item(PetButton(self.selected_pet))
+        self.view.add_item(self)
         await interaction.response.edit_message(embed=embed, view=self.view)
         await self.prepare_options()
 
 class FeedButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.green, label="Feed Pet")
+        super().__init__(style=discord.ButtonStyle.green, label="Feed", emoji="🍔")
 
     async def callback(self, interaction: discord.Interaction):
         # You can put any code you want to run when the button is clicked here
@@ -100,7 +101,7 @@ class PetButton(discord.ui.Button):
                 dest = BytesIO()  # container to store the petpet gif in memory
                 petpet.make(source, dest)
                 dest.seek(0)  # set the file pointer back to the beginning so it doesn't upload a blank file.
-                await interaction.response.send_message(f"You Pet {self.pet[2]}", file=discord.File(dest, filename="petpet.gif"))
+                await interaction.response.send_message(file=discord.File(dest, filename="petpet.gif"))
 
 
 class PetSelectView(discord.ui.View):
