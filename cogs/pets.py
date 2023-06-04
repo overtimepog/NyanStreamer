@@ -46,7 +46,14 @@ class PetSelect(discord.ui.Select):
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
         embed = await create_pet_embed(self.selected_pet)
-        self.view.add_item(FeedButton())
+        if not any(isinstance(item, FeedButton) for item in self.view.children):
+            self.view.add_item(FeedButton())
+        if not any(isinstance(item, CleanButton) for item in self.view.children):
+            self.view.add_item(CleanButton())
+        if not any(isinstance(item, PlayButton) for item in self.view.children):
+            self.view.add_item(PlayButton())
+        if not any(isinstance(item, PetButton) for item in self.view.children):
+            self.view.add_item(PetButton(self.selected_pet))
         await interaction.response.edit_message(embed=embed, view=self.view)
         await self.prepare_options()
 
@@ -57,6 +64,46 @@ class FeedButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         # You can put any code you want to run when the button is clicked here
         await interaction.response.send_message("You fed the pet!", ephemeral=True)
+
+class CleanButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.green, label='Clean', emoji='🛁')
+
+    async def callback(self, interaction: discord.Interaction):
+        # Add your cleaning functionality here
+        await interaction.response.send_message('Pet Cleaned!')
+
+class PlayButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.blurple, label='Play', emoji='🏀')
+
+    async def callback(self, interaction: discord.Interaction):
+        # Add your play functionality here
+        await interaction.response.send_message('Played with Pet!')
+
+class PetButton(discord.ui.Button):
+    def __init__(self, pet: list):
+        self.pet = pet
+        super().__init__(style=discord.ButtonStyle.gray, label='Pet', emoji='🖐️', row=1)
+
+    async def callback(self, interaction: discord.Interaction):
+        # Add your pet functionality here
+        # Send a message to the user indicating they pet their pet
+        pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
+        if pet_emoji is not None:
+                pet_emoji = pet_emoji.split(':')[2].replace('>', '')
+                pet_emoji = f"https://cdn.discordapp.com/emojis/{pet_emoji}.gif?size=240&quality=lossless"
+
+                # Use aiohttp to download the image
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(pet_emoji) as resp:
+                        image = await resp.read()
+
+                source = BytesIO(image)  # file-like container to hold the emoji in memory
+                dest = BytesIO()  # container to store the petpet gif in memory
+                petpet.make(source, dest)
+                dest.seek(0)  # set the file pointer back to the beginning so it doesn't upload a blank file.
+                await interaction.response.send_message(f"You Pet {self.pet[2]}", file=discord.File(dest, filename="petpet.gif"))
 
 
 class PetSelectView(discord.ui.View):
