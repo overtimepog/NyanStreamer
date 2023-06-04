@@ -46,68 +46,17 @@ class PetSelect(discord.ui.Select):
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
         embed = await create_pet_embed(self.selected_pet)
-        await interaction.response.edit_message(embed=embed)
+        self.view.add_item(FeedButton())
+        await interaction.response.edit_message(embed=embed, view=self.view)
         await self.prepare_options()
-        self.view.feed_button = FeedButton(10, self.selected_pet)
-        self.view.clean_button = CleanButton(15, self.selected_pet)
-        self.view.play_button = PlayButton(5, self.selected_pet)
-        self.view.pet_button = PetButton(self.selected_pet)
-
-        # Add buttons only after a pet is chosen
-        self.view.add_item(self.view.feed_button)
-        self.view.add_item(self.view.clean_button)
-        self.view.add_item(self.view.play_button)
-        self.view.add_item(self.view.pet_button)
 
 class FeedButton(discord.ui.Button):
-    def __init__(self, cost: int, pet: list):
-        self.pet = pet
-        super().__init__(style=discord.ButtonStyle.blurple, label=f'Feed ({cost} coins)', custom_id="feed_button")
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.green, label="Feed Pet")
 
     async def callback(self, interaction: discord.Interaction):
-        # Implement your callback here
-        pass
-
-class CleanButton(discord.ui.Button):
-    def __init__(self, cost: int, pet: list):
-        self.pet = pet
-        super().__init__(style=discord.ButtonStyle.blurple, label=f'Clean ({cost} coins)', custom_id="clean_button")
-
-    async def callback(self, interaction: discord.Interaction):
-        # Implement your callback here
-        pass
-
-class PlayButton(discord.ui.Button):
-    def __init__(self, cost: int, pet: list):
-        self.pet = pet
-        super().__init__(style=discord.ButtonStyle.blurple, label=f'Play ({cost} coins)', custom_id="play_button")
-
-    async def callback(self, interaction: discord.Interaction):
-        # Implement your callback here
-        pass
-
-class PetButton(discord.ui.Button):
-    def __init__(self, pet: list):
-        self.pet = pet
-        super().__init__(style=discord.ButtonStyle.grey, label='Pet', custom_id="pet_button")
-
-    async def callback(self, interaction: discord.Interaction):
-        # Implement your callback here
-        pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
-        if pet_emoji is not None:
-                pet_emoji = pet_emoji.split(':')[2].replace('>', '')
-                pet_emoji = f"https://cdn.discordapp.com/emojis/{pet_emoji}.gif?size=240&quality=lossless"
-
-                # Use aiohttp to download the image
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(pet_emoji) as resp:
-                        image = await resp.read()
-
-                source = BytesIO(image)  # file-like container to hold the emoji in memory
-                dest = BytesIO()  # container to store the petpet gif in memory
-                petpet.make(source, dest)
-                dest.seek(0)  # set the file pointer back to the beginning so it doesn't upload a blank file.
-                await interaction.response.send_message(f"You Pet {self.pet[2]}", file=discord.File(dest, filename="petpet.gif"))
+        # You can put any code you want to run when the button is clicked here
+        await interaction.response.send_message("You fed the pet!", ephemeral=True)
 
 
 class PetSelectView(discord.ui.View):
