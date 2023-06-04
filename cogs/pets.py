@@ -45,8 +45,7 @@ class PetSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
-        pet_attributes = await db_manager.get_pet_attributes(interaction.user.id, self.pet[0])
-        embed = await create_pet_embed(pet_attributes)
+        embed = await create_pet_embed(self.selected_pet)
         self.view.clear_items()
         self.view.add_item(FeedButton(self.selected_pet, self.view, self))
         self.view.add_item(CleanButton(self.selected_pet, self.view, self))
