@@ -46,14 +46,11 @@ class PetSelect(discord.ui.Select):
         self.view.value = self.values[0]
         self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])  # Update instance attribute
         embed = await create_pet_embed(self.selected_pet)
-        if not any(isinstance(item, FeedButton) for item in self.view.children):
-            self.view.add_item(FeedButton())
-        if not any(isinstance(item, CleanButton) for item in self.view.children):
-            self.view.add_item(CleanButton())
-        if not any(isinstance(item, PlayButton) for item in self.view.children):
-            self.view.add_item(PlayButton())
-        if not any(isinstance(item, PetButton) for item in self.view.children):
-            self.view.add_item(PetButton(self.selected_pet))
+        self.view.clear_items()
+        self.view.add_item(FeedButton())
+        self.view.add_item(CleanButton())
+        self.view.add_item(PlayButton())
+        self.view.add_item(PetButton(self.selected_pet))
         await interaction.response.edit_message(embed=embed, view=self.view)
         await self.prepare_options()
 
