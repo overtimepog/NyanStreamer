@@ -603,6 +603,15 @@ async def profile(user_id: int) -> list:
         return users
     else:
         return None
+    
+#clear the basic items table
+async def clear_basic_items() -> None:
+    db = DB()
+    await db.execute(f"DELETE FROM `basic_items`")
+    #clear the item_quotes table
+    await db.execute(f"DELETE FROM `item_quotes`")
+    #clear recipes
+    await db.execute(f"DELETE FROM `recipes`")
 
 #add the basic items to the database basic_items table
 async def add_basic_items() -> None:

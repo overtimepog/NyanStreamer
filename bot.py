@@ -317,6 +317,7 @@ async def setup() -> None:
     await init_db()
     await load_cogs()
     print("\n" + "---------Basic Items----------")
+    await db_manager.clear_basic_items()
     await db_manager.add_basic_items()
     print("\n" + "---------Chests----------")
     await db_manager.add_chests()   
