@@ -28,14 +28,16 @@ rarity_colors = {
 }
 
 class PetSelect(discord.ui.Select):
-    def __init__(self, pets: list, bot):
+    def __init__(self, pets: list, bot, user):
         self.bot = bot
         self.pets = pets
+        self.user = user
         self.selected_pet = None
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1)
 
     async def prepare_options(self):
         options = []
+        self.pets = await db_manager.get_users_pets(self.user.id)
         for pet in self.pets:
             pet_emoji = await db_manager.get_basic_item_emote(pet[0])
             petitemname = await db_manager.get_basic_item_name(pet[0])
@@ -333,7 +335,7 @@ class PetSelectView(discord.ui.View):
         super().__init__()
         self.user = user
         self.value = None
-        self.select = PetSelect(pets, bot)
+        self.select = PetSelect(pets, bot, user)
         self.add_item(self.select)
 
 
