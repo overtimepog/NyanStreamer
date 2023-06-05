@@ -305,6 +305,7 @@ class NameButton(discord.ui.Button):
                 color= rarity_colors[rarity]
             )
             embed.set_thumbnail(url=pet_emoji)
+            embed.set_footer(text=f"Owner: {user.name} | Balance: {cash}{user_balance}", icon_url=user.avatar.url)
             message = await interaction.original_response()
             await message.edit(content="Nice Name :)", embed=embed)
         else:
@@ -360,7 +361,7 @@ def generate_progress_bar(value, max_value):
 
     return bar
 
-async def create_pet_embed(pet, user):
+async def create_pet_embed(pet, user: discord.User):
     rarity = await db_manager.get_basic_item_rarity(pet[0])
     icon = await db_manager.get_basic_item_emote(pet[0])
     pet_description = await db_manager.get_basic_item_description(pet[0])
@@ -394,7 +395,7 @@ async def create_pet_embed(pet, user):
     user_balance = user_balance.replace(")", "")
     user_balance = user_balance.replace(",", "")
     user_balance = int(user_balance)
-    embed.set_footer(text=f"Owner: {user.name} | Balance: {cash}{user_balance}")
+    embed.set_footer(text=f"Owner: {user.name} | Balance: {cash}{user_balance}", icon_url=user.avatar.url)
     return embed
 
 class Pets(commands.Cog, name="pets"):
