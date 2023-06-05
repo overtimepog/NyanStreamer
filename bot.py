@@ -321,6 +321,7 @@ async def setup() -> None:
     print("\n" + "---------Chests----------")
     await db_manager.add_chests()   
     print("\n" + "---------Shop Items----------")
+    await db_manager.clear_shop()
     await db_manager.add_shop_items()
     #print("\n" + "---------Enemies----------")
     #await db_manager.add_enemies()
