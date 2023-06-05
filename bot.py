@@ -316,8 +316,6 @@ async def load_cogs() -> None:
 async def setup() -> None:
     await init_db()
     await load_cogs()
-    print("\n" + "---------Inventory Check----------")
-    await db_manager.clean_inventory()
     print("\n" + "---------Basic Items----------")
     await db_manager.clear_basic_items()
     await db_manager.add_basic_items()
@@ -337,7 +335,8 @@ async def setup() -> None:
     await db_manager.add_structures()
     print("\n" + "---------COPY PASTE ITEMS----------")
     await db_manager.print_items()
-    print("\n" + "-------------------")
+    print("\n" + "---------Inventory Check----------")
+    await db_manager.clean_inventory()
 
 @bot.event
 async def on_ready() -> None:
