@@ -281,7 +281,8 @@ class NameButton(discord.ui.Button):
                 msg = await self.bot.wait_for('message', check=check)
                 if len(msg.content) > 25:
                     #send a message to the user saying the name is too long
-                    await interaction.response.send_message("Your pet's name is too long! Please try again with a shorter name.")
+                    message = await interaction.original_response()
+                    await message.edit(content="Your pet's name is too long! Please try again with a shorter name.")
                     await db_manager.add_item_to_inventory(interaction.user.id, "nametag", 1)
                     msg.delete()
                 else:
