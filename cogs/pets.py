@@ -293,6 +293,12 @@ class NameButton(discord.ui.Button):
             pet_name = msg.content
             #now delete the message the user sent
             await msg.delete()
+
+            for option in self.view.select.options:
+                if option.value == self.pet[0]:
+                    option.label = pet_name
+                    break
+
             pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
             item_name = await db_manager.get_basic_item_name(self.pet[0])
             rarity = await db_manager.get_basic_item_rarity(self.pet[0])
@@ -308,9 +314,7 @@ class NameButton(discord.ui.Button):
             embed.set_footer(text=f"Owner: {interaction.user.name}", icon_url=interaction.user.avatar.url)
             message = await interaction.original_response()
             await message.edit(content="Nice Name :)", embed=embed)
-            self.view.pets = await db_manager.get_users_pets(interaction.user.id)
-            await self.view.prepare()
-            await self.view.message.edit(view=self.view)
+            # Update the pet's name in the select menu
         else:
             #send a message to the user saying they don't have a nametag
             icon = await db_manager.get_basic_item_emote("nametag")
