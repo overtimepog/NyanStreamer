@@ -2989,7 +2989,31 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
   #`streamer_item_name` varchar(255) NOT NULL,
   #`streamer_item_emoji` varchar(255) NOT NULL, 
   #`streamer_item_rarity` varchar(255) NOT NULL
-  
+
+#clean all users inventorys of all items that are not in the basic_items table
+async def clean_inventory() -> int:
+    """
+    This function will clean all users inventorys of all items that are not in the basic_items table.
+
+    :return: An integer.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        # Fetching records to be deleted
+        cur = await db.execute("SELECT user_id, item_id FROM inventory WHERE item_id NOT IN (SELECT item_id FROM basic_items)")
+        items_to_remove = await cur.fetchall()
+        
+        await db.execute("DELETE FROM inventory WHERE item_id NOT IN (SELECT item_id FROM basic_items)")
+        await db.commit()
+
+        for item in items_to_remove:
+            user_id, item_id = item
+            print(f"Removed {item_id} from {user_id}'s inventory")
+
+        rows = await db.execute("SELECT COUNT(*) FROM inventory")
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0
+
 #check if a user has an item in their inventory
 async def check_user_has_item(user_id: int, item_id: str) -> int:
     """
