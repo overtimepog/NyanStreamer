@@ -301,13 +301,16 @@ class NameButton(discord.ui.Button):
             #send a message to the user saying their pet has been named in a embed
             embed = discord.Embed(
                 title=f"Your {item_name} has been named!",
-                description=f"Your {item_name} has been named {pet_name}!",
+                description=f"Your {item_name} has been named **{pet_name}**!",
                 color= rarity_colors[rarity]
             )
             embed.set_thumbnail(url=pet_emoji)
             embed.set_footer(text=f"Owner: {interaction.user.name}", icon_url=interaction.user.avatar.url)
             message = await interaction.original_response()
             await message.edit(content="Nice Name :)", embed=embed)
+            self.view.pets = await db_manager.get_users_pets(interaction.user.id)
+            await self.view.prepare()
+            await self.view.message.edit(view=self.view)
         else:
             #send a message to the user saying they don't have a nametag
             icon = await db_manager.get_basic_item_emote("nametag")
