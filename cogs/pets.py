@@ -277,7 +277,15 @@ class NameButton(discord.ui.Button):
             #wait for the user to respond
             def check(m):
                 return m.author == interaction.user
-            msg = await self.bot.wait_for('message', check=check)
+            while True:
+                msg = await self.bot.wait_for('message', check=check)
+                if len(msg.content) > 25:
+                    #send a message to the user saying the name is too long
+                    await interaction.response.send_message("Your pet's name is too long! Please try again with a shorter name.")
+                    await db_manager.add_item_to_inventory(interaction.user.id, "nametag", 1)
+                    msg.delete()
+                else:
+                    break
             #set the name of the pet to the message content
             await db_manager.set_pet_name(interaction.user.id, self.pet[0], msg.content)
             #save the pet's name to a variable
@@ -304,7 +312,6 @@ class NameButton(discord.ui.Button):
                 description=f"You don't have a Name Tag to name your pet with! You can buy one from the shop.",
                 color=0xff0000
             )
-            embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
             await interaction.response.send_message(embed=embed)
         
 
