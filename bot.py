@@ -337,7 +337,8 @@ async def setup() -> None:
     await db_manager.print_items()
     print("\n" + "---------Inventory Check----------")
     await db_manager.clean_inventory()
-
+    print("\n" + "-------------------")
+    
 @bot.event
 async def on_ready() -> None:
     await setup()
