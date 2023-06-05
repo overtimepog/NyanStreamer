@@ -584,12 +584,7 @@ class Basic(commands.Cog, name="basic"):
                         shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
                     else:
                         #get the item effect
-                        item_effect = await db_manager.get_basic_item_effect(item_id)
-                        item_effect = item_effect.split()
-                        effect = item_effect[0]
-                        effect_add_or_minus = item_effect[1]
-                        effect_amount = int(item_effect[2])
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n Effect: `{effect}{effect_add_or_minus}{effect_amount}` \n ID | `{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
                 embeds.append(shop_embed)
 
             return embeds
