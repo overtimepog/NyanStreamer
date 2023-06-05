@@ -3001,12 +3001,18 @@ async def clean_inventory() -> int:
         # Fetching records to be deleted
         cur = await db.execute("SELECT user_id, item_id FROM inventory WHERE item_id NOT IN (SELECT item_id FROM basic_items)")
         items_to_remove = await cur.fetchall()
-        
-        await db.execute("DELETE FROM inventory WHERE item_id NOT IN (SELECT item_id FROM basic_items)")
-        await db.commit()
 
         for item in items_to_remove:
             user_id, item_id = item
+
+            # Deleting from pet_attributes
+            await db.execute("DELETE FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id))
+
+            # Deleting from inventory
+            await db.execute("DELETE FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id))
+
+            await db.commit()
+
             print(f"Removed {item_id} from {user_id}'s inventory")
 
         rows = await db.execute("SELECT COUNT(*) FROM inventory")
