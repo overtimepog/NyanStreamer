@@ -284,7 +284,7 @@ class NameButton(discord.ui.Button):
                     message = await interaction.original_response()
                     await message.edit(content="Your pet's name is too long! Please try again with a shorter name.")
                     await db_manager.add_item_to_inventory(interaction.user.id, "nametag", 1)
-                    msg.delete()
+                    await msg.delete()
                 else:
                     break
             #set the name of the pet to the message content
@@ -294,17 +294,19 @@ class NameButton(discord.ui.Button):
             #now delete the message the user sent
             await msg.delete()
             pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
+            item_name = await db_manager.get_basic_item_name(self.pet[0])
+            rarity = await db_manager.get_basic_item_rarity(self.pet[0])
             pet_emoji = pet_emoji.split(':')[2].replace('>', '')
             pet_emoji = f"https://cdn.discordapp.com/emojis/{pet_emoji}.gif?size=240&quality=lossless"
             #send a message to the user saying their pet has been named in a embed
             embed = discord.Embed(
-                title=f"Your pet has been named!",
-                description=f"Your pet has been named {pet_name}!",
-                color=0x00ff00
+                title=f"Your {item_name} has been named!",
+                description=f"Your {item_name} has been named {pet_name}!",
+                color= rarity_colors[rarity]
             )
             embed.set_thumbnail(url=pet_emoji)
             message = await interaction.original_response()
-            await message.edit(embed=embed)
+            await message.edit(content="Nice Name :)", embed=embed)
         else:
             #send a message to the user saying they don't have a nametag
             icon = await db_manager.get_basic_item_emote("nametag")
