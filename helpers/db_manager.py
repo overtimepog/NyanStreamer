@@ -1834,7 +1834,7 @@ async def get_users_pets(user_id: int) -> list:
         db = DB()
         data = await db.execute(f"SELECT * FROM `pet_attributes` WHERE user_id = ?", (user_id,), fetch="all")
         if data is not None:
-            print(data)
+            #print(data)
             return data
         else:
             return None
