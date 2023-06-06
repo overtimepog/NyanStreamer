@@ -57,7 +57,7 @@ class PetSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
-        self.selected_pet = self.values[0]
+        self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0]) 
         # Retrieve the selected pet from the dropdown menu
         selected_pet = self.selected_pet
         if selected_pet is not None:
