@@ -1949,7 +1949,6 @@ class Basic(commands.Cog, name="basic"):
                 await view.prepare()
                 message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
                 view.message = message
-                await view.wait()
                 return
         else:
             await ctx.send(f"`{item_name}` is not usable.")
