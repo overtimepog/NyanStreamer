@@ -502,6 +502,7 @@ class Pets(commands.Cog, name="pets"):
                     for pet_item in pet_items:
                         if item[0] == pet_item[0]:
                             effect = await db_manager.get_basic_item_effect(item[0])
+                            print(effect)
                             effect = effect.split(" ")
                             if effect[0] == "halt_cleanliness":
                                 halt_cleanliness = True
