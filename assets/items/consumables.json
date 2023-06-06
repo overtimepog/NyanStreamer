@@ -57,7 +57,7 @@
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "halt_cleanliness + 1 24hr",
-        "item_sub_type": "None"
+        "item_sub_type": "Pet Item"
     },
     {
         "item_id": "pet_bowl",
@@ -77,7 +77,7 @@
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "halt_hunger + 1 24hr",
-        "item_sub_type": "None"
+        "item_sub_type": "Pet Item"
     },
     {
         "item_id": "pet_toy",
@@ -97,6 +97,6 @@
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "halt_happiness + 1 24hr",
-        "item_sub_type": "None"
+        "item_sub_type": "Pet Item"
     }
 ]
