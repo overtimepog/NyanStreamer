@@ -503,6 +503,10 @@ class Pets(commands.Cog, name="pets"):
                     for pet_item in pet_items:
                         print(pet_item)
                         if item[0] == pet_item[0]:
+                            print("\n")
+                            print(item)
+                            print(pet_item)
+                            print(item[0])
                             effect = await db_manager.get_basic_item_effect(item[0])
                             print(effect)
                             effect = effect.split(" ")
