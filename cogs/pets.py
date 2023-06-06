@@ -398,14 +398,15 @@ async def create_pet_embed(pet, user):
         items_info = ""
         for item in pet_items:
             item_name = await db_manager.get_basic_item_name(item['item_id'])
+            item_emoji = await db_manager.get_basic_item_emote(item['item_id'])
             if item['expires_at']:
                 # Parse the timestamp into a datetime object
                 expiration_datetime = datetime.datetime.strptime(item['expires_at'], '%Y-%m-%d %H:%M:%S')
                 # Format the datetime object into a string
                 expiration_str = expiration_datetime.strftime('%B %d, %Y, %H:%M')
-                items_info += f"{item_name} - Expires at: {expiration_str}\n"
+                items_info += f"{item_emoji}{item_name} - Expires: `{expiration_str}`\n"
             else:
-                items_info += f"{item_name} - Permanent\n"
+                items_info += f"{item_emoji}{item_name}\n"
         embed.add_field(name="Items", value=items_info, inline=True)
 
     user_balance = await db_manager.get_money(user.id)
