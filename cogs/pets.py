@@ -499,16 +499,16 @@ class Pets(commands.Cog, name="pets"):
             halt_cleanliness = False
             if timed_items is not None:
                 for item in timed_items:
-                    print(item)
+                    #print(item)
                     for pet_item in pet_items:
-                        print(pet_item)
+                        #print(pet_item)
                         if item[0] == pet_item[0]:
-                            print("\n")
-                            print(item)
-                            print(pet_item)
-                            print(item[0])
+                            #print("\n")
+                            #print(item)
+                            #print(pet_item)
+                            #print(item[0])
                             effect = await db_manager.get_basic_item_effect(item[0])
-                            print(effect)
+                            #print(effect)
                             effect = effect.split(" ")
                             if effect[0] == "halt_cleanliness":
                                 halt_cleanliness = True
