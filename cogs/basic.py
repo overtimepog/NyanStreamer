@@ -96,6 +96,12 @@ class PetSelect(discord.ui.Select):
             #if the time is not 0, it is a temporary effect
             #get the effect
             effect = await db_manager.get_basic_item_effect(self.item)
+            pet_items = await db_manager.get_pet_items(pet_id, self.user.id)
+            #check if the pet already has the item
+            for i in pet_items:
+                if self.item in i:
+                    await interaction.response.send_message(f"{pet_name} already has this item, Please wait for its Durration to run out", ephemeral=True)
+                    return
             await db_manager.add_pet_item(self.user.id, pet_id, self.item)
             await db_manager.add_timed_item(self.user.id, self.item, effect)
             embed = discord.Embed(
@@ -1944,7 +1950,6 @@ class Basic(commands.Cog, name="basic"):
                 if not pets:
                     await ctx.send('You do not own any pets.')
                     return
-
                 view = PetSelectView(pets, ctx.author, self.bot, item)
                 await view.prepare()
                 message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
