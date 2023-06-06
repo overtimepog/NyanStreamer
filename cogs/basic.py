@@ -56,9 +56,8 @@ class PetSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
-        self.view.add_item(self)
         self.selected_pet = self.values[0]
-        await self.prepare_options()
+        await interaction.response.defer()
 
 class PetSelectView(discord.ui.View):
         def __init__(self, pets: list, user: discord.User, bot):
@@ -1900,6 +1899,8 @@ class Basic(commands.Cog, name="basic"):
                 await view.prepare()
                 message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
                 view.message = message
+
+                await view.wait()
 
                 # Retrieve the selected pet from the dropdown menu
                 selected_pet = view.select.selected_pet
