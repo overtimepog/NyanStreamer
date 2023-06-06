@@ -499,7 +499,9 @@ class Pets(commands.Cog, name="pets"):
             halt_cleanliness = False
             if timed_items is not None:
                 for item in timed_items:
+                    print(item)
                     for pet_item in pet_items:
+                        print(pet_item)
                         if item[0] == pet_item[0]:
                             effect = await db_manager.get_basic_item_effect(item[0])
                             print(effect)
