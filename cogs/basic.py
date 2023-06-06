@@ -62,7 +62,7 @@ class PetSelect(discord.ui.Select):
         selected_pet = self.selected_pet
         if selected_pet is not None:
             #get the items effect
-            pet_id = selected_pet[1]
+            pet_id = selected_pet[0]
             pet_name = selected_pet[2]
             item_effect = await db_manager.get_basic_item_effect(self.item)
             item_name = await db_manager.get_basic_item_name(self.item)
@@ -1950,6 +1950,7 @@ class Basic(commands.Cog, name="basic"):
                 message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
                 view.message = message
                 await view.wait()
+                return
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
