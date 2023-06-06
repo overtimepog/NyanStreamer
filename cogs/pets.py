@@ -433,7 +433,7 @@ class Pets(commands.Cog, name="pets"):
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
             timed_items = await db_manager.view_timed_items(pet[1])
-            pet_items = await db_manager.get_pet_items(pet[0])
+            pet_items = await db_manager.get_pet_items(pet[0], pet[1])
             halt_hunger = False
             if timed_items is not None:
                 for item in timed_items:
@@ -465,7 +465,7 @@ class Pets(commands.Cog, name="pets"):
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
             timed_items = await db_manager.view_timed_items(pet[1])
-            pet_items = await db_manager.get_pet_items(pet[0])
+            pet_items = await db_manager.get_pet_items(pet[0], pet[1])
             halt_happiness = False
             if timed_items is not None:
                 for item in timed_items:
@@ -495,7 +495,7 @@ class Pets(commands.Cog, name="pets"):
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
             timed_items = await db_manager.view_timed_items(pet[1])
-            pet_items = await db_manager.get_pet_items(pet[0])
+            pet_items = await db_manager.get_pet_items(pet[0], pet[1])
             halt_cleanliness = False
             if timed_items is not None:
                 for item in timed_items:
