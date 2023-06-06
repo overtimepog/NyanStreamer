@@ -6,8 +6,11 @@ This is a template to create your own discord bot in python.
 Version: 5.4
 """
 
+from datetime import timedelta
+import datetime
 import json
 import random
+import re
 from typing import Any, Optional, Tuple, Union
 
 import aiohttp
@@ -4196,3 +4199,166 @@ async def get_nameOfThirdDamageDealer(monster_id: str, server_id: int) -> str:
         async with db.execute("SELECT * FROM spawns WHERE monster_id=? AND server_id=?", (monster_id, server_id,)) as cursor:
             result = await cursor.fetchone()
             return result[11] if result is not None else None
+        
+
+async def add_timed_item(user_id: str, item_id: str, effect: str) -> None:
+    """
+    This function will add a timed item to a user's inventory.
+
+    :param user_id: The ID of the user that the item should be added for.
+    :param item_id: The ID of the item that should be added.
+    :param effect: The effect of the item (e.g., "luck + 20 24hr").
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.cursor() as cursor:
+            now = datetime.datetime.now()
+
+            # parse effect for time units (days, hours, minutes, seconds)
+            time_units = re.findall(r'(\d+(?:d|hr|m|s))', effect)
+
+            expiry_date = now
+            for unit in time_units:
+                if 'd' in unit:
+                    days = int(unit.replace('d', ''))
+                    expiry_date += timedelta(days=days)
+                elif 'hr' in unit:
+                    hours = int(unit.replace('hr', ''))
+                    expiry_date += timedelta(hours=hours)
+                elif 'm' in unit:
+                    minutes = int(unit.replace('m', ''))
+                    expiry_date += timedelta(minutes=minutes)
+                elif 's' in unit:
+                    seconds = int(unit.replace('s', ''))
+                    expiry_date += timedelta(seconds=seconds)
+
+            # Insert new timed item into the database
+            await cursor.execute(
+                "INSERT INTO timed_items (user_id, item_id, activated_at, expires_at) VALUES (?, ?, ?, ?)", 
+                (user_id, item_id, now.strftime('%Y-%m-%d %H:%M:%S'), expiry_date.strftime('%Y-%m-%d %H:%M:%S'))
+            )
+            
+        await db.commit()
+
+
+async def remove_timed_item(user_id: int, item_id: str):
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute(
+            "DELETE FROM timed_items WHERE user_id = ? AND item_id = ?",
+            (user_id, item_id),
+        )
+        await db.commit()
+
+
+async def view_timed_items(user_id: int):
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute(
+            "SELECT * FROM timed_items WHERE user_id = ? AND expires_at > CURRENT_TIMESTAMP",
+            (user_id,),
+        ) as cursor:
+            result = await cursor.fetchall()
+            return result
+        
+async def add_pet_item(user_id: int, pet_id: str, item_id: str):
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute(
+            """
+            INSERT INTO pet_items (item_id, pet_id, user_id)
+            VALUES (?, ?, ?)
+            """,
+            (item_id, pet_id, user_id)
+        )
+        await db.commit()
+
+        
+async def get_pet_items(pet_id: str, user_id: str):
+    """
+    Retrieves the items of a specific pet from the database.
+
+    :param pet_id: The ID of the pet.
+    :param user_id: The ID of the user who owns the pet.
+    :return: The items of the pet.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute(
+            "SELECT * FROM pet_items WHERE pet_id = ? AND user_id = ?",
+            (pet_id, user_id,)
+        ) as cursor:
+            result = await cursor.fetchall()
+            return result
+
+        
+
+async def check_and_remove_expired_items():
+    """
+    This function will check for expired items and remove them.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute(
+            "SELECT * FROM timed_items WHERE expires_at <= CURRENT_TIMESTAMP"
+        ) as cursor:
+            expired_items = await cursor.fetchall()
+
+    for item in expired_items:
+        user_id, item_id, activated_at, expires_at = item
+        print(f"Item {item_id} of user {user_id} has expired!")
+        await remove_timed_item(user_id, item_id)
+
+
+async def pet_xp_needed(item_id: str, user_id: int) -> int:
+    data = await get_pet_attributes(user_id, item_id)
+    if data is not None:
+        current_level = data[3]
+        # Times the pet's level by 6 to get the amount of xp needed to level up
+        xp_needed = current_level * 6
+        return xp_needed
+    else:
+        return None
+
+async def pet_can_level_up(item_id: str, user_id: int) -> bool:
+    data = await get_pet_attributes(user_id, item_id)
+    if data is not None:
+        current_xp = data[4]
+        if current_xp >= await pet_xp_needed(item_id, user_id):
+            return True
+        else:
+            return False
+    else:
+        return None
+    
+async def set_pet_xp(item_id: str, user_id: int, xp: int):
+    db = DB()
+    await db.execute("UPDATE `pet_attributes` SET `xp` = ? WHERE `item_id` = ? AND `user_id` = ?", (xp, item_id, user_id))
+    db.close()
+
+async def add_pet_xp(item_id: str, user_id: int, xp: int):
+    data = await get_pet_attributes(user_id, item_id)
+    if data is not None:
+        current_xp = data[3]
+        new_xp = current_xp + xp
+        await set_pet_xp(item_id, user_id, new_xp)
+
+async def remove_pet_xp(item_id: str, user_id: int, xp: int):
+    data = await get_pet_attributes(user_id, item_id)
+    if data is not None:
+        current_xp = data[3]
+        new_xp = max(0, current_xp - xp) # Ensure XP doesn't go negative
+        await set_pet_xp(item_id, user_id, new_xp)
+
+async def set_pet_level(item_id: str, user_id: int, level: int):
+    db = DB()
+    await db.execute("UPDATE `pet_attributes` SET `level` = ? WHERE `item_id` = ? AND `user_id` = ?", (level, item_id, user_id))
+    db.close()
+
+async def add_pet_level(item_id: str, user_id: int, level: int):
+    data = await get_pet_attributes(user_id, item_id)
+    if data is not None:
+        current_level = data[4]
+        new_level = current_level + level
+        await set_pet_level(item_id, user_id, new_level)
+
+async def remove_pet_level(item_id: str, user_id: int, level: int):
+    data = await get_pet_attributes(user_id, item_id)
+    if data is not None:
+        current_level = data[4]
+        new_level = max(1, current_level - level) # Ensure level doesn't go negative
+        await set_pet_level(item_id, user_id, new_level)

@@ -303,3 +303,19 @@ CREATE TABLE IF NOT EXISTS `pet_attributes` (
   PRIMARY KEY (`item_id`, `user_id`),
   FOREIGN KEY (`item_id`, `user_id`) REFERENCES inventory(`item_id`, `user_id`)
 );
+
+CREATE TABLE IF NOT EXISTS `pet_items` (
+  `item_id` varchar(255) NOT NULL, -- pet item ID
+  `pet_id` varchar(255) NOT NULL, -- the pet that owns the item, same as item_id in pet_attributes
+  `user_id` varchar(20) NOT NULL, -- the user that owns the pet item
+  PRIMARY KEY (`item_id`, `pet_id`, `user_id`),
+  FOREIGN KEY (`pet_id`, `user_id`) REFERENCES pet_attributes(`item_id`, `user_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `timed_items` (
+  `item_id` varchar(255) NOT NULL,
+  `user_id` varchar(20) NOT NULL,
+  `activated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `expires_at` timestamp NOT NULL,
+  FOREIGN KEY (`item_id`, `user_id`) REFERENCES inventory(`item_id`, `user_id`)
+);

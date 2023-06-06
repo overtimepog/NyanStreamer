@@ -16,7 +16,7 @@ from discord import Webhook, SyncWebhook
 import aiohttp
 import discord
 from discord import Embed, app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 
 from helpers import battle, checks, db_manager, hunt, mine
@@ -35,6 +35,46 @@ rarity_colors = {
     "Legendary": 0xf3af19,  # Gold
     # Add more rarities and colors as needed
 }
+
+class PetSelect(discord.ui.Select):
+    def __init__(self, pets: list, bot, user):
+        self.bot = bot
+        self.pets = pets
+        self.user = user
+        self.selected_pet = None
+        super().__init__(placeholder='Select your pet...', min_values=1, max_values=1)
+
+    async def prepare_options(self):
+        options = []
+        self.pets = await db_manager.get_users_pets(self.user.id)
+        for pet in self.pets:
+            pet_emoji = await db_manager.get_basic_item_emote(pet[0])
+            petitemname = await db_manager.get_basic_item_name(pet[0])
+            rarity = await db_manager.get_basic_item_rarity(pet[0])
+            options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji, description=f"{rarity} Level {pet[3]} {petitemname}"))
+        self.options = options
+
+    async def callback(self, interaction: discord.Interaction):
+        self.view.value = self.values[0]
+        self.view.add_item(self)
+        self.selected_pet = self.values[0]
+        await self.prepare_options()
+
+class PetSelectView(discord.ui.View):
+        def __init__(self, pets: list, user: discord.User, bot):
+            super().__init__()
+            self.user = user
+            self.value = None
+            self.select = PetSelect(pets, bot, user)
+            self.add_item(self.select)
+
+
+        async def prepare(self):
+            await self.select.prepare_options()
+
+        async def interaction_check(self, interaction: discord.Interaction) -> bool:
+            return self.user.id == interaction.user.id
+
 # Here we name the cog and create a new class for the cog.
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
@@ -1717,7 +1757,7 @@ class Basic(commands.Cog, name="basic"):
             await hunt.hunt(ctx)
         else:
             await mine.mine(ctx)
-
+    
     #ANCHOR use command
     #a cooldown of 2 minutes
     @commands.cooldown(1, 120, commands.BucketType.user)
@@ -1770,17 +1810,10 @@ class Basic(commands.Cog, name="basic"):
                 item_effect_type = item_effect[0]
                 #get the item effect amount
                 item_effect_amount = item_effect[2]
-            #if the item effect type is "health"
-            if item_effect_type == "health":
-                userHealth = await db_manager.get_health(user_id)
-                #if the user is full health, don't add health and send a message
-                if userHealth == 100:
-                    await ctx.send("You are already at full health!")
-                    return
-                #add the item effect amount to the users health
-                await db_manager.add_health(user_id, item_effect_amount)
-                await ctx.send(f"You used `{item_name}` and healed for {item_effect_amount} health!")
-
+                try:
+                    item_effect_time = item_effect[3]
+                except:
+                    item_effect_time = 0
             #if the item effect is "revive"
             if item_effect_type == "revive":
                 #if the user is alive, don't revive them and send a message
@@ -1798,13 +1831,8 @@ class Basic(commands.Cog, name="basic"):
             chest_name = await db_manager.get_chest_name(item)
             itemID = item
             #get the item type 
-            try:
-                item = item.split("_")
-            except:
-                pass
             luck = await db_manager.get_luck(user_id)
-
-            if item[0] == "chest" or item[0] == "pet_chest":
+            if item == "chest" or item == "pet_chest":
                 print(item)
                 contents = await db_manager.get_chest_contents(itemID)
 
@@ -1858,6 +1886,68 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {chosen_item['item_amount']}")
                 else:
                     await ctx.send(f"It seems {chest_name} ended up being empty!")
+
+            #if the item_subtype is pet_item
+            sub_type = await db_manager.get_basic_item_sub_type(item)
+            item_emoji = await db_manager.get_basic_item_emote(item)
+            if sub_type == "Pet Item":
+                pets = await db_manager.get_users_pets(ctx.author.id)
+                if not pets:
+                    await ctx.send('You do not own any pets.')
+                    return
+
+                view = PetSelectView(pets, ctx.author, self.bot)
+                await view.prepare()
+                message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
+
+                # Wait until the dropdown menu has been used (the view has been stopped)
+                await view.wait()
+
+                # Retrieve the selected pet from the dropdown menu
+                selected_pet = view.select.selected_pet
+                if selected_pet is not None:
+                    #get the items effect
+                    pet_id = selected_pet[0]
+                    pet_name = selected_pet[1]
+
+                    item_effect = await db_manager.get_basic_item_effect(item)
+                    #if the item effect is "None":
+                    if item_effect == "None":
+                        print("Shouldn't get here")
+                        return
+                    
+                    #split the item effect by space
+                    item_effect = item_effect.split(" ")
+                    #get the item effect type
+                    item_effect_type = item_effect[0]
+                    #get the item effect amount
+                    item_effect_amount = item_effect[2]
+                    try:
+                        item_effect_time = item_effect[3]
+                    except:
+                        item_effect_time = 0
+                    
+                    #if the time is 0, it is a permanent effect
+                    if item_effect_time == 0:
+                        #get the effect
+                        effecttype = item_effect_type
+                        #if the item_effect is pet_xp 
+                        if effecttype == "pet_xp":
+                            #add the effect amount to the pet's xp
+                            await db_manager.add_pet_xp(pet_id, item_effect_amount)
+                            await ctx.send(f"You used `{item_name}` on `{pet_name}` and gave them {item_effect_amount} xp!")
+                            return
+                    
+                    #if the time is not 0, it is a temporary effect
+                    #get the effect
+                    effect = await db_manager.get_basic_item_effect(item)
+                    await db_manager.add_pet_item(user_id, pet_id, item)
+                    await db_manager.add_timed_item(user_id, item, effect)
+                    await ctx.send(f"You used `{item_name}` on `{pet_name}` and gave them the effect `{item_effect_type}` for `{item_effect_time}`!")
+                    return
+                else:
+                    await ctx.send('No pet was selected.')
+
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
@@ -2403,6 +2493,14 @@ class Basic(commands.Cog, name="basic"):
         else:
             await ctx.send(f"{ctx.author.name} has given {item_emoji}{item} (x{item_count}) to {user.name}.")
         
+#trade command
+    @tasks.loop(minutes=2)
+    async def expired_item_check():
+        await db_manager.check_and_remove_expired_items()
+
+    @expired_item_check.before_loop
+    async def before_item_check(self):
+        await self.bot.wait_until_ready()
 
     
 

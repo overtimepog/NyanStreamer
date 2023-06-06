@@ -432,10 +432,27 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' hunger periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
-            new_hunger = max(0, pet[5] - 5)  # pet[5] seems to be the current hunger value
-            await db_manager.set_pet_hunger(pet[1], pet[0], new_hunger)
-            updated = await db_manager.get_pet_attributes(pet[1], pet[0])
-            print(f'Updated hunger for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[5]}')
+            timed_items = await db_manager.view_timed_items(pet[1])
+            pet_items = await db_manager.get_pet_items(pet[0])
+            halt_hunger = False
+            if timed_items is not None:
+                for item in timed_items:
+                    for pet_item in pet_items:
+                        if item[0] == pet_item[0]:
+                            effect = await db_manager.get_basic_item_effect(item[0])
+                            effect = effect.split(" ")
+                            if effect[0] == "halt_hunger":
+                                halt_hunger = True
+                                print(f"{pet[2]} has halt_hunger from {item[0]} for {pet[1]}")
+                                break  # add this break statement
+                    if halt_hunger:  # add this check
+                        break  # and this break statement
+            if not halt_hunger:
+                new_hunger = max(0, pet[5] - 5)
+                await db_manager.set_pet_hunger(pet[1], pet[0], new_hunger)
+                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+                print(f'Updated hunger for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[5]}')
+
 
 
     @update_pet_hunger.before_loop
@@ -447,11 +464,26 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' happiness periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
-            new_happiness = max(0, pet[7] - 5)  # pet[7] seems to be the current happiness value
-            await db_manager.set_pet_happiness(pet[1], pet[0], new_happiness)
-            updated = await db_manager.get_pet_attributes(pet[1], pet[0])
-            print(f'Updated happiness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[7]}')
-
+            timed_items = await db_manager.view_timed_items(pet[1])
+            pet_items = await db_manager.get_pet_items(pet[0])
+            halt_happiness = False
+            if timed_items is not None:
+                for item in timed_items:
+                    for pet_item in pet_items:
+                        if item[0] == pet_item[0]:
+                            effect = await db_manager.get_basic_item_effect(item[0])
+                            effect = effect.split(" ")
+                            if effect[0] == "halt_happiness":
+                                halt_happiness = True
+                                print(f"{pet[2]} has halt_happiness from {item[0]} for {pet[1]}")
+                                break  # add this break statement
+                    if halt_happiness:  # add this check
+                        break  # and this break statement
+            if not halt_happiness:
+                new_happiness = max(0, pet[7] - 5)
+                await db_manager.set_pet_happiness(pet[1], pet[0], new_happiness)
+                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+                print(f'Updated happiness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[7]}')
 
     @update_pet_happiness.before_loop
     async def before_update_happiness(self):
@@ -462,11 +494,26 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' cleanliness periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
-            new_cleanliness = max(0, pet[6] - 5)  # pet[6] seems to be the current cleanliness value
-            await db_manager.set_pet_cleanliness(pet[1], pet[0], new_cleanliness)
-            updated = await db_manager.get_pet_attributes(pet[1], pet[0])
-            print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
-
+            timed_items = await db_manager.view_timed_items(pet[1])
+            pet_items = await db_manager.get_pet_items(pet[0])
+            halt_cleanliness = False
+            if timed_items is not None:
+                for item in timed_items:
+                    for pet_item in pet_items:
+                        if item[0] == pet_item[0]:
+                            effect = await db_manager.get_basic_item_effect(item[0])
+                            effect = effect.split(" ")
+                            if effect[0] == "halt_cleanliness":
+                                halt_cleanliness = True
+                                print(f"{pet[2]} has halt_cleanliness from {item[0]} for {pet[1]}")
+                                break  # add this break statement
+                    if halt_cleanliness:  # add this check
+                        break  # and this break statement
+            if not halt_cleanliness:
+                new_cleanliness = max(0, pet[6] - 5)
+                await db_manager.set_pet_cleanliness(pet[1], pet[0], new_cleanliness)
+                updated = await db_manager.get_pet_attributes(pet[1], pet[0])
+                print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
 
     @update_pet_cleanliness.before_loop
     async def before_update_cleanliness(self):

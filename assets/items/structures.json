@@ -38,16 +38,6 @@
                   "outcome_xp": 10
                 },
                 {
-                  "structure_quote": "You've discovered a hidden chamber, but it's guarded by a powerful boss!",
-                  "structure_state": "boss",
-                  "outcome_chance": 0.05,
-                  "outcome_type": "spawn",
-                  "outcome_output": "malik",
-                  "outcome_amount": 0,
-                  "outcome_money": 0,
-                  "outcome_xp": 10
-                },
-                {
                   "structure_quote": "You've stumbled into a treasure room filled with rare artifacts!",
                   "structure_state": "success",
                   "outcome_chance": 0.05,
