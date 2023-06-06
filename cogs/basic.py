@@ -62,8 +62,8 @@ class PetSelect(discord.ui.Select):
         selected_pet = self.selected_pet
         if selected_pet is not None:
             #get the items effect
-            pet_id = selected_pet[0]
-            pet_name = selected_pet[1]
+            pet_id = selected_pet[1]
+            pet_name = selected_pet[2]
             item_effect = await db_manager.get_basic_item_effect(self.item)
             item_name = await db_manager.get_basic_item_name(self.item)
             #if the item effect is "None":
