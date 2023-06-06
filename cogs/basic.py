@@ -37,10 +37,11 @@ rarity_colors = {
 }
 
 class PetSelect(discord.ui.Select):
-    def __init__(self, pets: list, bot, user):
+    def __init__(self, pets: list, bot, user, item):
         self.bot = bot
         self.pets = pets
         self.user = user
+        self.item = item
         self.selected_pet = None
         super().__init__(placeholder='Select your pet...', min_values=1, max_values=1)
 
@@ -57,14 +58,63 @@ class PetSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
         self.selected_pet = self.values[0]
-        await interaction.response.defer()
+        # Retrieve the selected pet from the dropdown menu
+        selected_pet = self.selected_pet
+        if selected_pet is not None:
+            #get the items effect
+            pet_id = selected_pet[0]
+            pet_name = selected_pet[1]
+            item_effect = await db_manager.get_basic_item_effect(self.item)
+            item_name = await db_manager.get_basic_item_name(self.item)
+            #if the item effect is "None":
+            if item_effect == "None":
+                print("Shouldn't get here")
+                return
+            
+            #split the item effect by space
+            item_effect = item_effect.split(" ")
+            #get the item effect type
+            item_effect_type = item_effect[0]
+            #get the item effect amount
+            item_effect_amount = item_effect[2]
+            try:
+                item_effect_time = item_effect[3]
+            except:
+                item_effect_time = 0
+            
+            #if the time is 0, it is a permanent effect
+            if item_effect_time == 0:
+                #get the effect
+                effecttype = item_effect_type
+                #if the item_effect is pet_xp 
+                if effecttype == "pet_xp":
+                    #add the effect amount to the pet's xp
+                    await db_manager.add_pet_xp(pet_id, item_effect_amount)
+                    await interaction.response.send_message(f"You used `{item_name}` on `{pet_name}` and gave them {item_effect_amount} xp!")
+                    return
+            
+            #if the time is not 0, it is a temporary effect
+            #get the effect
+            effect = await db_manager.get_basic_item_effect(self.item)
+            await db_manager.add_pet_item(self.user.id, pet_id, self.item)
+            await db_manager.add_timed_item(self.user.id, self.item, effect)
+            embed = discord.Embed(
+                title=f"You used {item_name}",
+                description=f"You used `{item_name}` on `{pet_name}` and gave them the effect `{item_effect_type}` for `{item_effect_time}`!",
+                color=discord.Color.green(),
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+        else:
+            await interaction.response.send_message('No pet was selected.', ephemeral=True)
+            return
+        
 
 class PetSelectView(discord.ui.View):
-        def __init__(self, pets: list, user: discord.User, bot):
+        def __init__(self, pets: list, user: discord.User, bot, item):
             super().__init__()
             self.user = user
             self.value = None
-            self.select = PetSelect(pets, bot, user)
+            self.select = PetSelect(pets, bot, user, item)
             self.add_item(self.select)
 
 
@@ -1895,58 +1945,11 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send('You do not own any pets.')
                     return
 
-                view = PetSelectView(pets, ctx.author, self.bot)
+                view = PetSelectView(pets, ctx.author, self.bot, item)
                 await view.prepare()
                 message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
                 view.message = message
-
                 await view.wait()
-
-                # Retrieve the selected pet from the dropdown menu
-                selected_pet = view.select.selected_pet
-                if selected_pet is not None:
-                    #get the items effect
-                    pet_id = selected_pet[0]
-                    pet_name = selected_pet[1]
-
-                    item_effect = await db_manager.get_basic_item_effect(item)
-                    #if the item effect is "None":
-                    if item_effect == "None":
-                        print("Shouldn't get here")
-                        return
-                    
-                    #split the item effect by space
-                    item_effect = item_effect.split(" ")
-                    #get the item effect type
-                    item_effect_type = item_effect[0]
-                    #get the item effect amount
-                    item_effect_amount = item_effect[2]
-                    try:
-                        item_effect_time = item_effect[3]
-                    except:
-                        item_effect_time = 0
-                    
-                    #if the time is 0, it is a permanent effect
-                    if item_effect_time == 0:
-                        #get the effect
-                        effecttype = item_effect_type
-                        #if the item_effect is pet_xp 
-                        if effecttype == "pet_xp":
-                            #add the effect amount to the pet's xp
-                            await db_manager.add_pet_xp(pet_id, item_effect_amount)
-                            await ctx.send(f"You used `{item_name}` on `{pet_name}` and gave them {item_effect_amount} xp!")
-                            return
-                    
-                    #if the time is not 0, it is a temporary effect
-                    #get the effect
-                    effect = await db_manager.get_basic_item_effect(item)
-                    await db_manager.add_pet_item(user_id, pet_id, item)
-                    await db_manager.add_timed_item(user_id, item, effect)
-                    await ctx.send(f"You used `{item_name}` on `{pet_name}` and gave them the effect `{item_effect_type}` for `{item_effect_time}`!")
-                    return
-                else:
-                    await ctx.send('No pet was selected.')
-
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
