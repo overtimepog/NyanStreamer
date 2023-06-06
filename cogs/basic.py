@@ -1899,9 +1899,7 @@ class Basic(commands.Cog, name="basic"):
                 view = PetSelectView(pets, ctx.author, self.bot)
                 await view.prepare()
                 message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
-
-                # Wait until the dropdown menu has been used (the view has been stopped)
-                await view.wait()
+                view.message = message
 
                 # Retrieve the selected pet from the dropdown menu
                 selected_pet = view.select.selected_pet
