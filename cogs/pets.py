@@ -403,7 +403,7 @@ async def create_pet_embed(pet, user):
                 # Parse the timestamp into a datetime object
                 expiration_datetime = datetime.datetime.strptime(item['expires_at'], '%Y-%m-%d %H:%M:%S')
                 # Format the datetime object into a string
-                expiration_str = expiration_datetime.strftime('%B %d, %Y, %H:%M')
+                expiration_str = expiration_datetime.strftime('%B %d, %Y, %I:%M %p')
                 items_info += f"{item_emoji}{item_name} - Expires: `{expiration_str}`\n"
             else:
                 items_info += f"{item_emoji}{item_name}\n"
