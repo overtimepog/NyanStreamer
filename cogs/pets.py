@@ -386,20 +386,25 @@ async def create_pet_embed(pet, user):
     if effect == "None":
         pass
     else:
-        #if the effect has a _ in it, it will replace it with a space
         effect = effect.replace("_", " ")
-        #now make the first letter of each word uppercase
         effect = effect.title()
         embed.add_field(name="Effect", value=effect, inline=False)
     embed.add_field(name=f"Hunger `{pet[5]}/100` Time till empty: `{calculate_time_till_empty(pet[5], 5, 30)}`", value="```" + generate_progress_bar(pet[5], 100) + f"```", inline=False)
     embed.add_field(name=f"Cleanliness `{pet[6]}/100` Time till empty: `{calculate_time_till_empty(pet[6], 5, 120)}`", value="```" + generate_progress_bar(pet[6], 100) + f"```", inline=False)
     embed.add_field(name=f"Happiness `{pet[7]}/100` Time till empty: `{calculate_time_till_empty(pet[7], 5, 60)}`", value="```" + generate_progress_bar(pet[7], 100) + f"```", inline=False)
-    await db_manager.get_money(pet[1])
-    #get the name of a user by their id
+    
+    pet_items = await db_manager.get_pet_items_and_durations(pet[0], user.id)
+    if pet_items:
+        for item in pet_items:
+            item_name = await db_manager.get_basic_item_name(item['item_id'])
+            if item['expires_at']:
+                embed.add_field(name=f"Item: {item_name}", value=f"Expires at: {item['expires_at']}", inline=True)
+            else:
+                embed.add_field(name=f"Item: {item_name}", value="Permanent", inline=True)
+
     user_balance = await db_manager.get_money(user.id)
     user_balance = user_balance[0]
     user_balance = str(user_balance)
-    #remove the ( and ) and , from the balance
     user_balance = user_balance.replace("(", "")
     user_balance = user_balance.replace(")", "")
     user_balance = user_balance.replace(",", "")

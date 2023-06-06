@@ -4362,3 +4362,19 @@ async def remove_pet_level(item_id: str, user_id: int, level: int):
         current_level = data[4]
         new_level = max(1, current_level - level) # Ensure level doesn't go negative
         await set_pet_level(item_id, user_id, new_level)
+
+
+async def get_pet_items_and_durations(pet_id: str, user_id: str):
+    db = DB()
+    items_data = await db.execute("SELECT `item_id` FROM `pet_items` WHERE `pet_id` = ? AND `user_id` = ?", (pet_id, user_id,), fetch="all")
+
+    items_and_durations = []
+    for item in items_data:
+        item_id = item[0]
+        duration_data = await db.execute("SELECT `expires_at` FROM `timed_items` WHERE `item_id` = ? AND `user_id` = ?", (item_id, user_id,), fetch="one")
+        if duration_data is not None:
+            items_and_durations.append({'item_id': item_id, 'expires_at': duration_data[0]})
+        else:
+            items_and_durations.append({'item_id': item_id, 'expires_at': None})
+
+    return items_and_durations
