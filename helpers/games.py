@@ -511,11 +511,25 @@ class TriviaButton(Button):
                 await db_manager.add_xp(interaction.user.id, 50)
                 pet_chest_emoji = await db_manager.get_chest_icon("pet_chest")
                 await interaction.message.reply(f"{interaction.user.mention} got a {pet_chest_emoji}Pet Chest and ⭐50 xp!")
+                canLevelUp = await db_manager.can_level_up(interaction.user.id)
+                if canLevelUp:
+                    await db_manager.add_level(interaction.user.id, 1)
+                    new_level = await db_manager.get_level(interaction.user.id)
+                    await interaction.message.reply(f"{interaction.user.mention} has leveled up! They are now level " + str(new_level) + "!")
             else:
                 await db_manager.add_item_to_inventory(interaction.user.id, "chest", 1)
                 await db_manager.add_xp(interaction.user.id, 10)
                 chest_emoji = await db_manager.get_chest_icon("chest")
                 await interaction.message.reply(f"{interaction.user.mention} got a {chest_emoji}Chest and ⭐10 xp!")
+                #check if the user can level up 
+                canLevelUp = await db_manager.can_level_up(interaction.user.id)
+                if canLevelUp:
+                    await db_manager.add_level(interaction.user.id, 1)
+                    new_level = await db_manager.get_level(interaction.user.id)
+                    await interaction.message.reply(f"{interaction.user.mention} has leveled up! They are now level " + str(new_level) + "!")
+
+
+
         else:
             color = discord.Color.red()
             text = f"Sorry, that's incorrect. The correct answer was {self.trivia_view.answer}."
