@@ -3008,7 +3008,7 @@ async def clean_inventory() -> int:
     """
     async with aiosqlite.connect("database/database.db") as db:
         # Fetching records to be deleted
-        cur = await db.execute("SELECT user_id, item_id FROM inventory WHERE item_id NOT IN (SELECT item_id FROM basic_items)")
+        cur = await db.execute("SELECT user_id, item_id FROM inventory WHERE item_id NOT IN (SELECT item_id FROM basic_items or item_id FROM chests`)")
         items_to_remove = await cur.fetchall()
 
         for item in items_to_remove:
