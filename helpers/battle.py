@@ -2081,6 +2081,8 @@ async def userattack(ctx: Context, target: discord.Member):
         ]
     else:
         weapon_quotes = await db_manager.get_item_quotes(weapon)
+        print(weapon_quotes)
+        weapon_quotes = weapon_quotes
     Promt = random.choice(weapon_quotes)
     if Promt == weapon:
         Promt = random.choice(weapon_quotes)
