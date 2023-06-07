@@ -2061,8 +2061,8 @@ async def userattack(ctx: Context, target: discord.Member):
     if damage < 0:
         damage = 0
     
-    if damage >= target_health:
-        damage = target_health
+    if damage >= target_health[0]:
+        damage = target_health[0]
 
 
     weapon = await db_manager.get_item_id(weapon_name)

@@ -281,6 +281,12 @@ async def get_level(user_id: int) -> int:
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
         users = await db.execute(f"SELECT `player_level` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        users = str(users)
+        #remove the () and , from it
+        users = users.replace("(", "")
+        users = users.replace(")", "")
+        users = users.replace(",", "")
+        users = int(users)
         return users
     else:
         return None
