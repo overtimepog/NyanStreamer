@@ -2092,7 +2092,7 @@ async def userattack(ctx: Context, target: discord.Member):
     full_promt = Promt
 
     #send the message
-    ctx.send(full_promt)
+    await ctx.send(full_promt)
     #deal the damage
     await db_manager.remove_health(target.id, damage)
     #check if the target is dead
