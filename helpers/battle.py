@@ -2097,7 +2097,7 @@ async def userattack(ctx: Context, target: discord.Member):
     await db_manager.remove_health(target.id, damage)
     #check if the target is dead
     target_health = await db_manager.get_health(target.id)
-    if target_health <= 0:
+    if target_health[0] <= 0:
         #if they are dead, give the attacker some of the targets gold
         target_money = await db_manager.get_money(target.id)
         attacker_money = await db_manager.get_money(attacker.id)
