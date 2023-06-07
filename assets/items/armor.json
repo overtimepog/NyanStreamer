@@ -49,7 +49,7 @@
         "item_projectile": "None",
         "recipe_id": "iron_helmet",
         "item_recipe": [{
-            "ingredient_id": "iron_ingot",
+            "ingredient_id": "iron",
             "ingredient_amount": 3
         }],
         "item_effect": "None",
@@ -72,7 +72,7 @@
         "item_projectile": "None",
         "recipe_id": "iron_chestplate",
         "item_recipe": [{
-            "ingredient_id": "iron_ingot",
+            "ingredient_id": "iron",
             "ingredient_amount": 5
         }],
         "item_effect": "None",
@@ -95,7 +95,7 @@
         "item_projectile": "None",
         "recipe_id": "iron_leggings",
         "item_recipe": [{
-            "ingredient_id": "iron_ingot",
+            "ingredient_id": "iron",
             "ingredient_amount": 4
         }],
         "item_effect": "None",
@@ -118,7 +118,7 @@
         "item_projectile": "None",
         "recipe_id": "iron_boots",
         "item_recipe": [{
-            "ingredient_id": "iron_ingot",
+            "ingredient_id": "iron",
             "ingredient_amount": 2
         }],
         "item_effect": "None",
@@ -141,7 +141,7 @@
         "item_projectile": "None",
         "recipe_id": "gold_helmet",
         "item_recipe": [{
-            "ingredient_id": "gold_ingot",
+            "ingredient_id": "gold",
             "ingredient_amount": 3
         }],
         "item_effect": "None",
@@ -164,7 +164,7 @@
         "item_projectile": "None",
         "recipe_id": "gold_chestplate",
         "item_recipe": [{
-            "ingredient_id": "gold_ingot",
+            "ingredient_id": "gold",
             "ingredient_amount": 5
         }],
         "item_effect": "None",
@@ -187,7 +187,7 @@
         "item_projectile": "None",
         "recipe_id": "gold_leggings",
         "item_recipe": [{
-            "ingredient_id": "gold_ingot",
+            "ingredient_id": "gold",
             "ingredient_amount": 4
         }],
         "item_effect": "None",
@@ -210,7 +210,7 @@
         "item_projectile": "None",
         "recipe_id": "gold_boots",
         "item_recipe": [{
-            "ingredient_id": "gold_ingot",
+            "ingredient_id": "gold",
             "ingredient_amount": 2
         }],
         "item_effect": "None",

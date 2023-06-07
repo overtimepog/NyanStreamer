@@ -143,7 +143,7 @@
             "recipe_id": "gold_chain",
             "item_recipe": [
                 {
-                    "ingredient_id": "gold_ingot",
+                    "ingredient_id": "gold",
                     "ingredient_amount": 2
                 }
             ],
@@ -176,7 +176,7 @@
             "recipe_id": "gold_ring",
             "item_recipe": [
                 {
-                    "ingredient_id": "gold_ingot",
+                    "ingredient_id": "gold",
                     "ingredient_amount": 2
                 }
             ],
