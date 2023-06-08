@@ -2499,16 +2499,6 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(f"{ctx.author.name} has traded their {item_emoji}{item} (x{item_count}) for {user.name}'s {requested_item_emoji}{requested_item} (x{requested_item_count}).")
         else:
             await ctx.send(f"{ctx.author.name} has given {item_emoji}{item} (x{item_count}) to {user.name}.")
-        
-
-    @tasks.loop(seconds=30)
-    async def expired_item_check():
-        print("Checking for expired items...")
-        await db_manager.check_and_remove_expired_items()
-
-    @expired_item_check.before_loop
-    async def before_item_check(self):
-        await self.bot.wait_until_ready()
 
     
 
