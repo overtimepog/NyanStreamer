@@ -4336,7 +4336,7 @@ async def check_and_remove_expired_items():
             expired_items = await cursor.fetchall()
 
     for item in expired_items:
-        user_id, item_id, activated_at, expires_at = item
+        item_id, user_id, activated_at, expires_at = item
         print(f"Item {item_id} of user {user_id} has expired!")
         await remove_timed_item(user_id, item_id)
         
