@@ -174,9 +174,11 @@ async def mob_spawn_task() -> None:
 
 @tasks.loop(seconds=30.0)
 async def expired_item_check():
+    print("-----------------------------")
     print("Checking for Expired items...")
     await db_manager.check_and_remove_expired_items()
     print("Done Checking for Expired items...")
+    print("-----------------------------")
 
 @tasks.loop(minutes=1.0)
 async def status_task() -> None:
@@ -358,7 +360,6 @@ async def on_ready() -> None:
         print("Done syncing commands globally!")
     print("-------------------")
     expired_item_check.start()
-    print("-------------------")
     #print("Structure Spawn Task Started")
     #structure_spawn_task.start()
     #print("-------------------")
