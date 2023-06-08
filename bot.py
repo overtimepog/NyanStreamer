@@ -339,6 +339,15 @@ async def setup() -> None:
     await db_manager.clean_inventory()
     print("\n" + "-------------------")
 
+@tasks.loop(seconds=30)
+async def expired_item_check():
+    print("Checking for expired items...")
+    await db_manager.check_and_remove_expired_items()
+    
+@expired_item_check.before_loop
+async def before_item_check(self):
+    await self.bot.wait_until_ready()
+
 @bot.event
 async def on_ready() -> None:
     await setup()
