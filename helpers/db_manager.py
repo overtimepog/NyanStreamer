@@ -3009,7 +3009,6 @@ async def clean_inventory() -> int:
     async with aiosqlite.connect("database/database.db") as db:
         # Fetching records to be deleted
         cur = await db.execute("SELECT user_id, item_id FROM inventory WHERE item_id NOT IN (SELECT item_id FROM basic_items) AND item_id NOT IN (SELECT chest_id FROM chests)")
-
         items_to_remove = await cur.fetchall()
 
         for item in items_to_remove:
@@ -4276,6 +4275,38 @@ async def add_pet_item(user_id: int, pet_id: str, item_id: str):
         )
         await db.commit()
 
+async def remove_pet_item(user_id: int, pet_id: str, item_id: str):
+    """
+    This function will remove a pet item.
+
+    :param user_id: The ID of the user.
+    :param pet_id: The ID of the pet.
+    :param item_id: The ID of the item.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute(
+            "DELETE FROM pet_items WHERE user_id = ? AND pet_id = ? AND item_id = ?",
+            (user_id, pet_id, item_id),
+        )
+        await db.commit()
+
+#check if its a pet item
+async def isPetItem(user_id: str, item_id: str):
+    """
+    This function will check if an item is a pet item.
+
+    :param user_id: The ID of the user that should be checked.
+    :param item_id: The ID of the item that should be checked.
+    :return: The pet_id if the item is a pet item, None if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM pet_items WHERE user_id=? AND item_id=?", (user_id, item_id,)) as cursor:
+            result = await cursor.fetchall()
+            if result:
+                # If multiple pets have the same item, this will return a list of pet_ids
+                return [row[1] for row in result]
+    return None
+
         
 async def get_pet_items(pet_id: str, user_id: str):
     """
@@ -4292,8 +4323,7 @@ async def get_pet_items(pet_id: str, user_id: str):
         ) as cursor:
             result = await cursor.fetchall()
             return result
-
-        
+    
 
 async def check_and_remove_expired_items():
     """
@@ -4309,6 +4339,13 @@ async def check_and_remove_expired_items():
         user_id, item_id, activated_at, expires_at = item
         print(f"Item {item_id} of user {user_id} has expired!")
         await remove_timed_item(user_id, item_id)
+        
+        # Check if the item is a pet item
+        pet_ids = await isPetItem(user_id, item_id)
+        if pet_ids:
+            for pet_id in pet_ids:
+                print(f"Item {item_id} of pet {pet_id} owned by user {user_id} is also a pet item. Removing from pet items...")
+                await remove_pet_item(user_id, pet_id, item_id)
 
 
 async def pet_xp_needed(item_id: str, user_id: int) -> int:
