@@ -2423,7 +2423,7 @@ class Basic(commands.Cog, name="basic"):
             view = BeastiaryButton(current_page=0, embeds=embeds)
             await ctx.send(embed=embeds[0], view=view)
 
-#trade command
+    #trade command
     @commands.hybrid_command(
         name="trade",
         description="This command will trade with another user.",
@@ -2503,6 +2503,7 @@ class Basic(commands.Cog, name="basic"):
 
     @tasks.loop(seconds=30)
     async def expired_item_check():
+        print("Checking for expired items...")
         await db_manager.check_and_remove_expired_items()
 
     @expired_item_check.before_loop
