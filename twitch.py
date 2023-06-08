@@ -45,7 +45,10 @@ class TwitchBot(commands.Bot):
                 #add each channel a list of channels to join
                 channels.append(streamer_channel_name)
                 print(f"Joining {streamer_channel_name}...")
-            await TwitchBot.join_channels(self, channels)
+            try:
+                await TwitchBot.join_channels(self, channels)
+            except TimeoutError or KeyError:
+                pass
             print(f"Joined {len(channels)} channels.")
             await asyncio.sleep(600)
 
