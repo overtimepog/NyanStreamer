@@ -2500,8 +2500,8 @@ class Basic(commands.Cog, name="basic"):
         else:
             await ctx.send(f"{ctx.author.name} has given {item_emoji}{item} (x{item_count}) to {user.name}.")
         
-#trade command
-    @tasks.loop(minutes=2)
+
+    @tasks.loop(seconds=30)
     async def expired_item_check():
         await db_manager.check_and_remove_expired_items()
 
