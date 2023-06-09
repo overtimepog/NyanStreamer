@@ -538,5 +538,17 @@ class Pets(commands.Cog, name="pets"):
     async def before_update_cleanliness(self):
         await self.bot.wait_until_ready()
 
+    @tasks.loop(seconds=30.0)
+    async def expired_item_check():
+        print("-----------------------------")
+        print("Checking for Expired items...")
+        await db_manager.check_and_remove_expired_items()
+        print("Done Checking for Expired items...")
+        print("-----------------------------")
+
+    @expired_item_check.before_loop
+    async def before_expired_item_check(self):
+        await self.bot.wait_until_ready()
+
 async def setup(bot):
     await bot.add_cog(Pets(bot))
