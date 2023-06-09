@@ -425,6 +425,7 @@ class Pets(commands.Cog, name="pets"):
         self.update_pet_hunger.start()
         self.update_pet_happiness.start()
         self.update_pet_cleanliness.start()
+        self.expired_item_check.start()
 
     @commands.hybrid_command()
     async def pet(self, ctx: Context):
