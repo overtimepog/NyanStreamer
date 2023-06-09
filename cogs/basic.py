@@ -1906,7 +1906,7 @@ class Basic(commands.Cog, name="basic"):
             luck = await db_manager.get_luck(user_id)
             if item == "chest" or item == "pet_chest":
                 print(item)
-                contents = await db_manager.get_chest_contents(itemID)
+                contents = await db_manager.get_chest_contents(item)
 
                 outcomePhrases = [
                     "You opened the chest and found ",
@@ -1921,7 +1921,7 @@ class Basic(commands.Cog, name="basic"):
                     "Inside the chest, you were delighted to find "
                 ]
 
-                chest_contents = await db_manager.get_chest_contents(itemID)
+                chest_contents = await db_manager.get_chest_contents(item)
 
                 def choose_item_based_on_chance(items_with_chances: List[Tuple]):
                     total = sum(w for _, w in items_with_chances)
