@@ -1054,9 +1054,12 @@ class Basic(commands.Cog, name="basic"):
                 item_emoji = await db_manager.get_basic_item_emoji(item[0])
                 #get the item expire time
                 expire_time = item[3]
+                expiration_datetime = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
+                # Format the datetime object into a string
+                expiration_str = expiration_datetime.strftime('%B %d, %Y, %I:%M %p')
                 
                 #display it
-                embed.add_field(name=f"{item_emoji}{item_name}", value=f"Expires: `{expire_time}`", inline=False)
+                embed.add_field(name=f"{item_emoji}{item_name}", value=f"Expires: `{expiration_str}`", inline=False)
 
 
         
