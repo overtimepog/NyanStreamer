@@ -1918,6 +1918,7 @@ class Basic(commands.Cog, name="basic"):
                 #get the item effect amount
                 item_effect_amount = item_effect[2]
                 print(item_effect)
+                print(item_effect_type, plus_or_minus, item_effect_amount)
                 try:
                     item_effect_time = item_effect[3]
                 except: 
