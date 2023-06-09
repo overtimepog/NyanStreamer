@@ -346,7 +346,6 @@ async def setup() -> None:
     print("\n" + "-----------------------------")
     print("Setup Complete")
     print("-----------------------------")
-    await db_manager.delete_timedItemsTable()
 
 @bot.event
 async def on_ready() -> None:
