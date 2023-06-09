@@ -344,6 +344,9 @@ async def setup() -> None:
     print("\n" + "---------Expired Items Check----------")
     await db_manager.check_and_remove_expired_items()
     print("\n" + "-----------------------------")
+    print("Setup Complete")
+    print("-----------------------------")
+    await db_manager.delete_timedItemsTable()
 
 @bot.event
 async def on_ready() -> None:
