@@ -333,8 +333,6 @@ async def setup() -> None:
     await db_manager.print_items()
     print("\n" + "---------Inventory Check----------")
     await db_manager.clean_inventory()
-    print("\n" + "---------Expired Items Check----------")
-    await db_manager.check_and_remove_expired_items()
     print("\n" + "-----------------------------")
     print("Setup Complete")
     print("-----------------------------")
