@@ -546,9 +546,5 @@ class Pets(commands.Cog, name="pets"):
         print("Done Checking for Expired items...")
         print("-----------------------------")
 
-    @expired_item_check.before_loop
-    async def before_expired_item_check(self):
-        await self.bot.wait_until_ready()
-
 async def setup(bot):
     await bot.add_cog(Pets(bot))
