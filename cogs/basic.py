@@ -1919,15 +1919,17 @@ class Basic(commands.Cog, name="basic"):
                 item_effect = item_effect.split(" ")
                 #get the item effect type
                 item_effect_type = item_effect[0]
-                plus_or_minus = item_effect[1]
-                #get the item effect amount
-                item_effect_amount = item_effect[2]
+                try:
+                    plus_or_minus = item_effect[1]
+                    #get the item effect amount
+                    item_effect_amount = item_effect[2]
+                    item_effect_time = item_effect[3]
+                except:
+                    plus_or_minus = "+"
+                    item_effect_amount = 0
+                    item_effect_time = 0
                 print(item_effect)
                 print(item_effect_type, plus_or_minus, item_effect_amount)
-                try:
-                    item_effect_time = item_effect[3]
-                except: 
-                    item_effect_time = 0
             #if the item effect is "revive"
             if item_effect_type == "revive":
                 #if the user is alive, don't revive them and send a message
