@@ -3118,65 +3118,128 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
                 if item_effect is not None and item_effect != "None":
                     item_effect = item_effect.split()
                     effect = item_effect[0]
-                    effect_add_or_minus = item_effect[1]
-                    effect_amount = item_effect[2]
+                    try:
+                        effect_add_or_minus = item_effect[1]
+                        effect_amount = item_effect[2]
+                    except IndexError:
+                        effect_add_or_minus = "+"
+                        effect_amount = 0
 
-                    # handle all possible effects
-                    if effect == "health":
-                        if effect_add_or_minus == "+":
-                            await remove_health_boost(user_id, effect_amount)
-                            await remove_health(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_health_boost(user_id, effect_amount)
-                            await add_health(user_id, effect_amount)
+                    item_sub_type = await get_basic_item_sub_type(item_id)
+                    if item_sub_type == "Potion":
+                        if effect == "health":
+                            if effect_add_or_minus == "+":
+                                await add_health(user_id, effect_amount)
+                                await add_health_boost(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_health(user_id, effect_amount)
+                                await remove_health_boost(user_id, effect_amount)
 
-                    elif effect == "damage":
-                        if effect_add_or_minus == "+":
-                            await remove_damage_boost(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_damage_boost(user_id, effect_amount)
+                        elif effect == "damage":
+                            if effect_add_or_minus == "+":
+                                await add_damage_boost(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_damage_boost(user_id, effect_amount)
 
-                    elif effect == "luck":
-                        if effect_add_or_minus == "+":
-                            await remove_luck(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_luck(user_id, effect_amount)
+                        elif effect == "luck":
+                            if effect_add_or_minus == "+":
+                                await add_luck(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_luck(user_id, effect_amount)
 
-                    elif effect == "crit_chance":
-                        if effect_add_or_minus == "+":
-                            await remove_crit_chance(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_crit_chance(user_id, effect_amount)
+                        elif effect == "crit_chance":
+                            if effect_add_or_minus == "+":
+                                await add_crit_chance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_crit_chance(user_id, effect_amount)
 
-                    elif effect == "dodge_chance":
-                        if effect_add_or_minus == "+":
-                            await remove_dodge_chance(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_dodge_chance(user_id, effect_amount)
+                        elif effect == "dodge_chance":
+                            if effect_add_or_minus == "+":
+                                await add_dodge_chance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_dodge_chance(user_id, effect_amount)
 
-                    elif effect == "fire_resistance":
-                        if effect_add_or_minus == "+":
-                            await remove_fire_resistance(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_fire_resistance(user_id, effect_amount)
+                        elif effect == "fire_resistance":
+                            if effect_add_or_minus == "+":
+                                await add_fire_resistance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_fire_resistance(user_id, effect_amount)
 
-                    elif effect == "paralysis_resistance":
-                        if effect_add_or_minus == "+":
-                            await remove_paralysis_resistance(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_paralysis_resistance(user_id, effect_amount)
+                        elif effect == "paralysis_resistance":
+                            if effect_add_or_minus == "+":
+                                await add_paralysis_resistance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_paralysis_resistance(user_id, effect_amount)
 
-                    elif effect == "poison_resistance":
-                        if effect_add_or_minus == "+":
-                            await remove_poison_resistance(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_poison_resistance(user_id, effect_amount)
+                        elif effect == "poison_resistance":
+                            if effect_add_or_minus == "+":
+                                await add_poison_resistance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_poison_resistance(user_id, effect_amount)
 
-                    elif effect == "frost_resistance":
-                        if effect_add_or_minus == "+":
-                            await remove_frost_resistance(user_id, effect_amount)
-                        elif effect_add_or_minus == "-":
-                            await add_frost_resistance(user_id, effect_amount)
+                        elif effect == "frost_resistance":
+                            if effect_add_or_minus == "+":
+                                await add_frost_resistance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_frost_resistance(user_id, effect_amount)
+
+                    else:   
+                        # handle all possible effects
+                        if effect == "health":
+                            if effect_add_or_minus == "+":
+                                await remove_health_boost(user_id, effect_amount)
+                                await remove_health(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_health_boost(user_id, effect_amount)
+                                await add_health(user_id, effect_amount)
+
+                        elif effect == "damage":
+                            if effect_add_or_minus == "+":
+                                await remove_damage_boost(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_damage_boost(user_id, effect_amount)
+
+                        elif effect == "luck":
+                            if effect_add_or_minus == "+":
+                                await remove_luck(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_luck(user_id, effect_amount)
+
+                        elif effect == "crit_chance":
+                            if effect_add_or_minus == "+":
+                                await remove_crit_chance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_crit_chance(user_id, effect_amount)
+
+                        elif effect == "dodge_chance":
+                            if effect_add_or_minus == "+":
+                                await remove_dodge_chance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_dodge_chance(user_id, effect_amount)
+
+                        elif effect == "fire_resistance":
+                            if effect_add_or_minus == "+":
+                                await remove_fire_resistance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_fire_resistance(user_id, effect_amount)
+
+                        elif effect == "paralysis_resistance":
+                            if effect_add_or_minus == "+":
+                                await remove_paralysis_resistance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_paralysis_resistance(user_id, effect_amount)
+
+                        elif effect == "poison_resistance":
+                            if effect_add_or_minus == "+":
+                                await remove_poison_resistance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_poison_resistance(user_id, effect_amount)
+
+                        elif effect == "frost_resistance":
+                            if effect_add_or_minus == "+":
+                                await remove_frost_resistance(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await add_frost_resistance(user_id, effect_amount)
 
                 # if the item_amount is 0, remove the item from the inventory table
                 async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
@@ -4235,47 +4298,7 @@ async def add_timed_item(user_id: str, item_id: str, effect: str) -> None:
         elif 's' in unit:
             seconds = int(unit.replace('s', ''))
             expiry_date += datetime.timedelta(seconds=seconds)
-
-    # parse the effect and apply the effect to the user
-    effect_parts = effect.split(" ")   
-    effect_name = effect_parts[0]
-    effect_add_or_minus = effect_parts[1]
-    effect_amount = int(effect_parts[2])
-    print(effect_parts)
-    print(effect_name, effect_add_or_minus, effect_amount)
-
-    # call the relevant function to apply the effect
-    # Note: You'll need to implement these functions or provide them from elsewhere
-    if effect_name == "health":
-        if effect_add_or_minus == "+":
-            await add_health(user_id, effect_amount)
-            await add_health_boost(user_id, effect_amount)
-            print("added health")
-        elif effect_add_or_minus == "-":
-            await remove_health(user_id, effect_amount)
-            await remove_health_boost(user_id, effect_amount)
-    elif effect_name == "damage":
-        if effect_add_or_minus == "+":
-            await add_damage_boost(user_id, effect_amount)
-        elif effect_add_or_minus == "-":
-            await remove_damage_boost(user_id, effect_amount)
-    elif effect_name == "luck":
-        if effect_add_or_minus == "+":
-            await add_luck(user_id, effect_amount)
-        elif effect_add_or_minus == "-":
-            await remove_luck(user_id, effect_amount)
-    elif effect_name == "crit_chance":
-        if effect_add_or_minus == "+":
-            await add_crit_chance(user_id, effect_amount)
-        elif effect_add_or_minus == "-":
-            await remove_crit_chance(user_id, effect_amount)
-    elif effect_name == "dodge_chance":
-        if effect_add_or_minus == "+":
-            await add_dodge_chance(user_id, effect_amount)
-        elif effect_add_or_minus == "-":
-            await remove_dodge_chance(user_id, effect_amount)
-    # other effect types...
-
+            
     # Insert new timed item into the database
     await db.execute(
         "INSERT INTO timed_items (user_id, item_id, activated_at, expires_at, effect) VALUES (?, ?, ?, ?, ?)", 

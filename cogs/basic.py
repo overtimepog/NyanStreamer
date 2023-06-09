@@ -1944,18 +1944,6 @@ class Basic(commands.Cog, name="basic"):
                 await db_manager.add_health(user_id, 100)
                 await ctx.send(f"You used `{item_name}` and revived!")
                 return
-            #if the item effect is "health"
-            elif item_effect_type == "health":
-                if plus_or_minus == "+":
-                    #add the item effect amount to the users health
-                    await db_manager.add_health(user_id, item_effect_amount)
-                    await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` health!")
-                    return
-                elif plus_or_minus == "-":
-                    #remove the item effect amount from the users health
-                    await db_manager.remove_health(user_id, item_effect_amount)
-                    await ctx.send(f"You used `{item_name}` and got -`{item_effect_amount}` health!")
-                    return
 
             #split the item_id by the "_"
             chest_name = await db_manager.get_chest_name(item)
