@@ -317,5 +317,6 @@ CREATE TABLE IF NOT EXISTS `timed_items` (
   `user_id` varchar(20) NOT NULL,
   `activated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expires_at` timestamp NOT NULL,
+  `effect` varchar(255) NOT NULL,
   FOREIGN KEY (`item_id`, `user_id`) REFERENCES inventory(`item_id`, `user_id`)
 );
