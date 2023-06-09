@@ -4237,7 +4237,7 @@ async def add_timed_item(user_id: str, item_id: str, effect: str) -> None:
             expiry_date += datetime.timedelta(seconds=seconds)
 
     # parse the effect and apply the effect to the user
-    effect_parts = effect.split()   
+    effect_parts = effect.split(" ")   
     effect_name = effect_parts[0]
     effect_add_or_minus = effect_parts[1]
     effect_amount = int(effect_parts[2])

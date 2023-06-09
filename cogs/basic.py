@@ -1876,6 +1876,29 @@ class Basic(commands.Cog, name="basic"):
         if isUsable == 1:
             #remove item from inventory
             await db_manager.remove_item_from_inventory(user_id, item, 1)
+            sub_type = await db_manager.get_basic_item_sub_type(item)
+            item_emoji = await db_manager.get_basic_item_emoji(item)
+            if sub_type == "Pet Item":
+                pets = await db_manager.get_users_pets(ctx.author.id)
+                if not pets:
+                    await ctx.send('You do not own any pets.')
+                    return
+                view = PetSelectView(pets, ctx.author, self.bot, item)
+                await view.prepare()
+                message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
+                view.message = message
+                return
+            
+            isTimed = await db_manager.is_timed_item(item)
+            #if its true
+            if isTimed == True:
+                #get the effect 
+                item_effect = await db_manager.get_basic_item_effect(item)
+                print(item_effect)
+                #add it to the user
+                await db_manager.add_timed_item(user_id, item, item_effect)
+                #send a message
+                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
             #if the item's name is "Potion", add 10 health to the user
             #get the items effect
             item_effect = await db_manager.get_basic_item_effect(item)
@@ -1902,12 +1925,20 @@ class Basic(commands.Cog, name="basic"):
                 #if the user is alive, don't revive them and send a message
                 if await db_manager.is_alive(user_id) == True or 1:
                     await ctx.send("You are already alive!")
+                    #give the item back to the user
+                    await db_manager.add_item_to_inventory(user_id, item, 1)
                     return
                 #revive the user
                 await db_manager.set_alive(user_id)
                 #add the item effect amount to the users health
                 await db_manager.add_health(user_id, 100)
                 await ctx.send(f"You used `{item_name}` and revived!")
+                return
+            #if the item effect is "health"
+            elif item_effect_type == "health":
+                #add the item effect amount to the users health
+                await db_manager.add_health(user_id, item_effect_amount)
+                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` health!")
                 return
 
             #split the item_id by the "_"
@@ -1970,30 +2001,6 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(f"It seems {chest_name} ended up being empty!")
 
             #if the item_subtype is pet_item
-            sub_type = await db_manager.get_basic_item_sub_type(item)
-            item_emoji = await db_manager.get_basic_item_emoji(item)
-            if sub_type == "Pet Item":
-                pets = await db_manager.get_users_pets(ctx.author.id)
-                if not pets:
-                    await ctx.send('You do not own any pets.')
-                    return
-                view = PetSelectView(pets, ctx.author, self.bot, item)
-                await view.prepare()
-                message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
-                view.message = message
-                return
-            
-            isTimed = await db_manager.is_timed_item(item)
-            #if its true
-            if isTimed == True:
-                #get the effect 
-                item_effect = await db_manager.get_basic_item_effect(item)
-                print(item_effect)
-                #add it to the user
-                await db_manager.add_timed_item(user_id, item, item_effect)
-                #send a message
-                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
-
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
