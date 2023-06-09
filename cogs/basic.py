@@ -1981,6 +1981,7 @@ class Basic(commands.Cog, name="basic"):
             if isTimed == True:
                 #get the effect 
                 item_effect = await db_manager.get_basic_item_effect(item)
+                print(item_effect)
                 #add it to the user
                 await db_manager.add_timed_item(user_id, item, item_effect)
                 #send a message
