@@ -4247,28 +4247,38 @@ async def add_timed_item(user_id: str, item_id: str, effect: str) -> None:
             if effect_name == "health":
                 if effect_add_or_minus == "+":
                     await add_health_boost(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await remove_health_boost(user_id, effect_amount)
+                    await db.commit()
             elif effect_name == "damage":
                 if effect_add_or_minus == "+":
                     await add_damage_boost(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await remove_damage_boost(user_id, effect_amount)
+                    await db.commit()
             elif effect_name == "luck":
                 if effect_add_or_minus == "+":
                     await add_luck(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await remove_luck(user_id, effect_amount)
+                    await db.commit()
             elif effect_name == "crit_chance":
                 if effect_add_or_minus == "+":
                     await add_crit_chance(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await remove_crit_chance(user_id, effect_amount)
+                    await db.commit()
             elif effect_name == "dodge_chance":
                 if effect_add_or_minus == "+":
                     await add_dodge_chance(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await remove_dodge_chance(user_id, effect_amount)
+                    await db.commit()
             # other effect types...
 
             # Insert new timed item into the database
@@ -4295,28 +4305,37 @@ async def remove_timed_item(user_id: int, item_id: str, effect: str):
             if effect_name == "health":
                 if effect_add_or_minus == "+":
                     await remove_health_boost(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await add_health_boost(user_id, effect_amount)
+                    await db.commit()
             elif effect_name == "damage":
                 if effect_add_or_minus == "+":
                     await remove_damage_boost(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await add_damage_boost(user_id, effect_amount)
+                    await db.commit()
             elif effect_name == "luck":
                 if effect_add_or_minus == "+":
                     await remove_luck(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await add_luck(user_id, effect_amount)
+                    await db.commit()
             elif effect_name == "crit_chance":
                 if effect_add_or_minus == "+":
                     await remove_crit_chance(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await add_crit_chance(user_id, effect_amount)
             elif effect_name == "dodge_chance":
                 if effect_add_or_minus == "+":
                     await remove_dodge_chance(user_id, effect_amount)
+                    await db.commit()
                 elif effect_add_or_minus == "-":
                     await add_dodge_chance(user_id, effect_amount)
+                    await db.commit()
             # other effect types...
         
         await db.execute(
