@@ -1053,7 +1053,7 @@ class Basic(commands.Cog, name="basic"):
                 #get the item emoji
                 item_emoji = await db_manager.get_basic_item_emoji(item[0])
                 #get the item expire time
-                expire_time = item[4]
+                expire_time = item[3]
                 
                 #display it
                 embed.add_field(name=f"{item_emoji}{item_name}", value=f"Expires: `{expire_time}`", inline=False)
