@@ -17,7 +17,6 @@ import aiohttp
 import aiosqlite
 import discord
 import requests
-import pytz
 
 #`item_id` varchar(20) NOT NULL,
 #`item_name` varchar(255) NOT NULL,
@@ -4218,8 +4217,7 @@ async def add_timed_item(user_id: str, item_id: str, effect: str) -> None:
     """
     async with aiosqlite.connect("database/database.db") as db:
         async with db.cursor() as cursor:
-            est = pytz.timezone('US/Eastern')
-            now = datetime.datetime.now(est)
+            now = datetime.datetime.now()
 
             # parse effect for time units (days, hours, minutes, seconds)
             time_units = re.findall(r'(\d+(?:d|hr|m|s))', effect)
@@ -4336,14 +4334,6 @@ async def view_timed_items(user_id: int):
             result = await cursor.fetchall()
             return result
         
-#delete the timed items table in the database
-async def delete_timedItemsTable() -> None:
-    """
-    This function will delete the timed items table in the database.
-    """
-    async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("DROP TABLE timed_items")
-        await db.commit()
         
 async def is_timed_item(item_id: str) -> bool:
     """
