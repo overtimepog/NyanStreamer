@@ -4439,8 +4439,8 @@ async def check_and_remove_expired_items():
 
     for item in expired_items:
         item_id, user_id, activated_at, expires_at, effect = item
-        print(f"Item {item_id} of user {user_id} has expired!")
         effect = await get_basic_item_effect(item_id)
+        print(f"Item {item_id} of user {user_id} has expired. Removing... | Removed effect: {effect}")
         await remove_timed_item(user_id, item_id, effect)
         
         # Check if the item is a pet item
