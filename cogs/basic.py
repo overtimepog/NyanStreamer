@@ -1902,7 +1902,6 @@ class Basic(commands.Cog, name="basic"):
 
             #split the item_id by the "_"
             chest_name = await db_manager.get_chest_name(item)
-            itemID = item
             #get the item type 
             luck = await db_manager.get_luck(user_id)
             if item == "chest" or item == "pet_chest":
@@ -1973,6 +1972,25 @@ class Basic(commands.Cog, name="basic"):
                 message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
                 view.message = message
                 return
+            
+            isTimed = await db_manager.is_timed_item(item)
+            #if its true
+            if isTimed == True:
+                #get the effect 
+                item_effect = await db_manager.get_basic_item_effect(item)
+                #split the effect by space
+                item_effect = item_effect.split(" ")
+                #get the effect type
+                item_effect_type = item_effect[0]
+                #get the effect amount
+                item_effect_amount = item_effect[2]
+                #get the effect time
+                item_effect_time = item_effect[3]
+                #add it to the user
+                await db_manager.add_timed_item(user_id, item, item_effect)
+                #send a message
+                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
+
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             

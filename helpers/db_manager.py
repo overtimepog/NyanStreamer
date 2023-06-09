@@ -4334,6 +4334,28 @@ async def view_timed_items(user_id: int):
             result = await cursor.fetchall()
             return result
         
+async def is_timed_item(item_id: str) -> bool:
+    """
+    This function checks whether the item is a timed item based on the effect description.
+
+    :param item_id: The ID of the item to check.
+    :return: True if the item is a timed item, False otherwise.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        # Get the item's effect from the database
+        async with db.execute("SELECT item_effect FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            if result is not None:
+                effect = result[0]
+            else:
+                # If the item doesn't exist in the database, it's not a timed item
+                return False
+
+    # Check if the effect string contains any time indicators
+    time_indicators = re.findall(r'(\d+(?:d|hr|m|s))', effect)
+    
+    return len(time_indicators) > 0
+        
 async def add_pet_item(user_id: int, pet_id: str, item_id: str):
     async with aiosqlite.connect("database/database.db") as db:
         await db.execute(
