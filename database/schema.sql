@@ -312,7 +312,7 @@ CREATE TABLE IF NOT EXISTS `pet_items` (
   FOREIGN KEY (`pet_id`, `user_id`) REFERENCES pet_attributes(`item_id`, `user_id`)
 );
 
-CREATE TABLE `timed_items` (
+CREATE TABLE IF NOT EXISTS `timed_items` (
   `item_id` varchar(255) NOT NULL,
   `user_id` varchar(20) NOT NULL,
   `activated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
