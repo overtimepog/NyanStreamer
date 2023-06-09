@@ -7,6 +7,7 @@ Version: 5.4
 """
 
 import asyncio
+from collections import defaultdict
 import datetime
 import json
 import random
@@ -1043,23 +1044,29 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name=f"Pet", value=f'{pet_emoji}{pet_name}', inline=False)
 
         timed_items = await db_manager.view_timed_items(user.id)
+        
+        item_info = defaultdict(lambda: {"count": 0, "latest_expire": datetime.datetime.min})
+        
         if timed_items:
             for item in timed_items:
-                #itemID = item[0]
-                #exprire time = item[4]
-
-                #get the item name
+                # get the item name
                 item_name = await db_manager.get_basic_item_name(item[0])
-                #get the item emoji
+                # get the item emoji
                 item_emoji = await db_manager.get_basic_item_emoji(item[0])
-                #get the item expire time
+                # get the item expire time
                 expire_time = item[3]
                 expiration_datetime = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
-                # Format the datetime object into a string
-                expiration_str = expiration_datetime.strftime('%B %d, %Y, %I:%M %p')
-                
-                #display it
-                embed.add_field(name=f"{item_emoji}{item_name}", value=f"Expires: `{expiration_str}`", inline=False)
+        
+                # Update item_info
+                item_key = f"{item_emoji}{item_name}"
+                item_info[item_key]["count"] += 1
+                item_info[item_key]["latest_expire"] = max(item_info[item_key]["latest_expire"], expiration_datetime)
+        
+        # Display information
+        for item_key, info in item_info.items():
+            # Format the datetime object into a string
+            expiration_str = info["latest_expire"].strftime('%B %d, %Y, %I:%M %p')
+            embed.add_field(name=f"{item_key} x{info['count']}", value=f"Latest expiration: `{expiration_str}`", inline=False)
 
 
         
