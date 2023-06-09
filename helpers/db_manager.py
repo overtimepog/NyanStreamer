@@ -4248,11 +4248,12 @@ async def add_timed_item(user_id: str, item_id: str, effect: str) -> None:
     # Note: You'll need to implement these functions or provide them from elsewhere
     if effect_name == "health":
         if effect_add_or_minus == "+":
-            await add_health_boost(user_id, effect_amount)
             await add_health(user_id, effect_amount)
+            await add_health_boost(user_id, effect_amount)
+            print("added health")
         elif effect_add_or_minus == "-":
-            await remove_health_boost(user_id, effect_amount)
             await remove_health(user_id, effect_amount)
+            await remove_health_boost(user_id, effect_amount)
     elif effect_name == "damage":
         if effect_add_or_minus == "+":
             await add_damage_boost(user_id, effect_amount)
