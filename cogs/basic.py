@@ -49,7 +49,7 @@ class PetSelect(discord.ui.Select):
         options = []
         self.pets = await db_manager.get_users_pets(self.user.id)
         for pet in self.pets:
-            pet_emoji = await db_manager.get_basic_item_emote(pet[0])
+            pet_emoji = await db_manager.get_basic_item_emoji(pet[0])
             petitemname = await db_manager.get_basic_item_name(pet[0])
             rarity = await db_manager.get_basic_item_rarity(pet[0])
             options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji, description=f"{rarity} Level {pet[3]} {petitemname}"))
@@ -468,7 +468,7 @@ class Basic(commands.Cog, name="basic"):
                         quest_parts = quest.split(" ")
                         item_id = quest_parts[1]
                         item_name = await db_manager.get_basic_item_name(item_id)
-                        item_emoji = await db_manager.get_basic_item_emote(item_id)
+                        item_emoji = await db_manager.get_basic_item_emoji(item_id)
                         quest = f"**{quest_parts[0]}** {item_emoji}{item_name}"
                     
                     elif quest_type == "kill":
@@ -492,7 +492,7 @@ class Basic(commands.Cog, name="basic"):
                     else:
                         # If the reward is an item, get the item name from the database
                         item_name = await db_manager.get_basic_item_name(quest_reward)
-                        item_emoji = await db_manager.get_basic_item_emote(quest_reward)
+                        item_emoji = await db_manager.get_basic_item_emoji(quest_reward)
                         quest_reward = f"{item_emoji}{item_name} x{quest_reward_amount}"
 
                     quest_embed.add_field(name=f"**{quest_name}**", value=f"ID | `{quest_id}` \n **Quest**: {quest_type} {quest} \n **XP**: {quest_xp} \n **Reward**: {quest_reward} \n", inline=False)
@@ -1041,6 +1041,24 @@ class Basic(commands.Cog, name="basic"):
             pet_description = await db_manager.get_basic_item_description(pet_id)
     
             embed.add_field(name=f"Pet", value=f'{pet_emoji}{pet_name}', inline=False)
+
+        timed_items = await db_manager.view_timed_items(user.id)
+        if timed_items:
+            for item in timed_items:
+                #itemID = item[0]
+                #exprire time = item[4]
+
+                #get the item name
+                item_name = await db_manager.get_basic_item_name(item[0])
+                #get the item emoji
+                item_emoji = await db_manager.get_basic_item_emoji(item[0])
+                #get the item expire time
+                expire_time = item[4]
+                
+                #display it
+                embed.add_field(name=f"{item_emoji}{item_name}", value=f"Expires: `{expire_time}`", inline=False)
+
+
         
         #add xp and level
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
@@ -1937,14 +1955,14 @@ class Basic(commands.Cog, name="basic"):
                 if chosen_item is not None:
                     await db_manager.add_item_to_inventory(ctx.author.id, chosen_item['item_id'], chosen_item['item_amount'])
                     item_name = await db_manager.get_basic_item_name(chosen_item['item_id'])
-                    item_emoji = await db_manager.get_basic_item_emote(chosen_item['item_id'])
+                    item_emoji = await db_manager.get_basic_item_emoji(chosen_item['item_id'])
                     await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {chosen_item['item_amount']}")
                 else:
                     await ctx.send(f"It seems {chest_name} ended up being empty!")
 
             #if the item_subtype is pet_item
             sub_type = await db_manager.get_basic_item_sub_type(item)
-            item_emoji = await db_manager.get_basic_item_emote(item)
+            item_emoji = await db_manager.get_basic_item_emoji(item)
             if sub_type == "Pet Item":
                 pets = await db_manager.get_users_pets(ctx.author.id)
                 if not pets:
@@ -2020,7 +2038,7 @@ class Basic(commands.Cog, name="basic"):
                 item_emoji = await db_manager.get_chest_icon(item_id)
             else:
                 item_name = await db_manager.get_basic_item_name(item_id)
-                item_emoji = await db_manager.get_basic_item_emote(item_id)
+                item_emoji = await db_manager.get_basic_item_emoji(item_id)
             embed.add_field(name=":package: Item Gain", value=f"You have gained {chosen_outcome['outcome_amount']} of {item_emoji} {item_name}!", inline=False)
 
         async def handle_health_gain(chosen_outcome, ctx, db_manager, embed):
@@ -2131,7 +2149,7 @@ class Basic(commands.Cog, name="basic"):
             item_ammount = await db_manager.get_item_amount_from_inventory(ctx.author.id, component)
             # Check if the user has the item and enough quantity of it
             if not hasone or item_ammount < component_amount:
-                component_emoji = await db_manager.get_basic_item_emote(component)
+                component_emoji = await db_manager.get_basic_item_emoji(component)
                 component_name = await db_manager.get_basic_item_name(component)
                 # Send a message saying the user does not have the item or enough quantity of it
                 await ctx.send(f"You do not have enough {component_emoji} **{component_name}**!")
@@ -2222,8 +2240,8 @@ class Basic(commands.Cog, name="basic"):
                 recipe_id = recipe[0]
                 item_id = recipe[1]
                 item_quantity = recipe[2]
-                recipe_emote = await db_manager.get_basic_item_emote(recipe_id)
-                item_emote = await db_manager.get_basic_item_emote(item_id)
+                recipe_emote = await db_manager.get_basic_item_emoji(recipe_id)
+                item_emote = await db_manager.get_basic_item_emoji(item_id)
                 item_name = await db_manager.get_basic_item_name(item_id)
                 recipe_name = await db_manager.get_basic_item_name(recipe_id)
                 if recipe_id not in recipes_dict:
@@ -2373,7 +2391,7 @@ class Basic(commands.Cog, name="basic"):
                             unique_drops = set([drop[1] for drop in drop_infos])
                             drop_info_list = []
                             for unique_drop in unique_drops:
-                                item_emote = await db_manager.get_basic_item_emote(unique_drop)
+                                item_emote = await db_manager.get_basic_item_emoji(unique_drop)
                                 item_name = await db_manager.get_basic_item_name(unique_drop)
                                 drop_info_list.append(f"\t{item_emote} {item_name}")
                             drop_info = "\n".join(drop_info_list)
@@ -2457,14 +2475,14 @@ class Basic(commands.Cog, name="basic"):
         if item == "chest" or "pet_chest":
             item_emoji = await db_manager.get_chest_icon(item)
         else:
-            item_emoji = await db_manager.get_basic_item_emote(item)
+            item_emoji = await db_manager.get_basic_item_emoji(item)
 
         # Get the requested item emoji
         if requested_item:
             if requested_item == "chest" or "pet_chest":
                 requested_item_emoji = await db_manager.get_chest_icon(requested_item)
             else:
-                requested_item_emoji = await db_manager.get_basic_item_emote(requested_item)
+                requested_item_emoji = await db_manager.get_basic_item_emoji(requested_item)
 
         # Ask the other user if they accept the trade/gift
         if requested_item:

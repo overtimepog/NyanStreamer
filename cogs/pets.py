@@ -39,7 +39,7 @@ class PetSelect(discord.ui.Select):
         options = []
         self.pets = await db_manager.get_users_pets(self.user.id)
         for pet in self.pets:
-            pet_emoji = await db_manager.get_basic_item_emote(pet[0])
+            pet_emoji = await db_manager.get_basic_item_emoji(pet[0])
             petitemname = await db_manager.get_basic_item_name(pet[0])
             rarity = await db_manager.get_basic_item_rarity(pet[0])
             options.append(discord.SelectOption(label=pet[2], value=pet[0], emoji=pet_emoji, description=f"{rarity} Level {pet[3]} {petitemname}"))
@@ -245,7 +245,7 @@ class PetButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         # Add your pet functionality here
         # Send a message to the user indicating they pet their pet
-        pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
+        pet_emoji = await db_manager.get_basic_item_emoji(self.pet[0])
         if pet_emoji is not None:
                 pet_emoji = pet_emoji.split(':')[2].replace('>', '')
                 pet_emoji = f"https://cdn.discordapp.com/emojis/{pet_emoji}.gif?size=240&quality=lossless"
@@ -301,7 +301,7 @@ class NameButton(discord.ui.Button):
                     option.label = pet_name
                     break
 
-            pet_emoji = await db_manager.get_basic_item_emote(self.pet[0])
+            pet_emoji = await db_manager.get_basic_item_emoji(self.pet[0])
             item_name = await db_manager.get_basic_item_name(self.pet[0])
             rarity = await db_manager.get_basic_item_rarity(self.pet[0])
             pet_emoji = pet_emoji.split(':')[2].replace('>', '')
@@ -319,7 +319,7 @@ class NameButton(discord.ui.Button):
             # Update the pet's name in the select menu
         else:
             #send a message to the user saying they don't have a nametag
-            icon = await db_manager.get_basic_item_emote("nametag")
+            icon = await db_manager.get_basic_item_emoji("nametag")
             embed = discord.Embed(
                 title=f"You don't have a Name Tag!",
                 description=f"You don't have a Name Tag to name your pet with! You can buy one from the shop.",
@@ -372,7 +372,7 @@ def generate_progress_bar(value, max_value):
 
 async def create_pet_embed(pet, user):
     rarity = await db_manager.get_basic_item_rarity(pet[0])
-    icon = await db_manager.get_basic_item_emote(pet[0])
+    icon = await db_manager.get_basic_item_emoji(pet[0])
     pet_description = await db_manager.get_basic_item_description(pet[0])
     embed = discord.Embed(
         title=f"{pet[2]}'s Statistics",
@@ -398,7 +398,7 @@ async def create_pet_embed(pet, user):
         items_info = ""
         for item in pet_items:
             item_name = await db_manager.get_basic_item_name(item['item_id'])
-            item_emoji = await db_manager.get_basic_item_emote(item['item_id'])
+            item_emoji = await db_manager.get_basic_item_emoji(item['item_id'])
             if item['expires_at']:
                 # Parse the timestamp into a datetime object
                 expiration_datetime = datetime.datetime.strptime(item['expires_at'], '%Y-%m-%d %H:%M:%S')

@@ -996,7 +996,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                                 item_name = await db_manager.get_basic_item_name(quest_reward)
                                 item_price = await db_manager.get_basic_item_price(quest_reward)
                                 item_type = await db_manager.get_basic_item_type(quest_reward)
-                                item_emoji = await db_manager.get_basic_item_emote(quest_reward)
+                                item_emoji = await db_manager.get_basic_item_emoji(quest_reward)
                                 item_rarity = await db_manager.get_basic_item_rarity(quest_reward)
                                 item_damage = await db_manager.get_basic_item_damage(quest_reward)
                                 item_element = await db_manager.get_basic_item_element(quest_reward)
@@ -1030,7 +1030,7 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 item_name = await db_manager.get_basic_item_name(monster_drop)
                 item_price = await db_manager.get_basic_item_price(monster_drop)
                 item_type = await db_manager.get_basic_item_type(monster_drop)
-                item_emoji = await db_manager.get_basic_item_emote(monster_drop)
+                item_emoji = await db_manager.get_basic_item_emoji(monster_drop)
                 item_rarity = await db_manager.get_basic_item_rarity(monster_drop)
                 #convert the item name to str
                 item_name = str(item_name)
@@ -1721,7 +1721,7 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
             item_id = chosen_item[0]
             item_amount = chosen_item[2]
 
-            emote = await db_manager.get_basic_item_emote(item_id)
+            emote = await db_manager.get_basic_item_emoji(item_id)
             item_name = await db_manager.get_basic_item_name(item_id)
 
             if emote and item_name and item_amount:
@@ -1857,7 +1857,7 @@ async def spawn_monster(ctx, monsterID):
         for drop in drops:
             drop_id = drop[1]
             # get the item emote
-            item_emote = await db_manager.get_basic_item_emote(drop_id)
+            item_emote = await db_manager.get_basic_item_emoji(drop_id)
             # get the item name
             item_name = await db_manager.get_basic_item_name(drop_id)
             drop_info_set.add(f"{item_emote} {item_name}")
@@ -1958,7 +1958,7 @@ async def send_spawned_embed(ctx: Context):
             for drop in drops:
                 drop_id = drop[1]
                 # get the item emote
-                item_emote = await db_manager.get_basic_item_emote(drop_id)
+                item_emote = await db_manager.get_basic_item_emoji(drop_id)
                 # get the item name
                 item_name = await db_manager.get_basic_item_name(drop_id)
                 drop_info_set.add(f"{item_emote} {item_name}")

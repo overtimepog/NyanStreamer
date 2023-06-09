@@ -68,7 +68,7 @@ async def mine(ctx: Context):
             item_emoji = await db_manager.get_chest_icon(item_id)
             item_name = await db_manager.get_chest_name(item_id)
         else:
-            item_emoji = await db_manager.get_basic_item_emote(item_id)
+            item_emoji = await db_manager.get_basic_item_emoji(item_id)
             item_name = await db_manager.get_basic_item_name(item_id)
         #tell the user what they got
         embed = discord.Embed(title="Mine", description=random.choice(outcome_phrases), color=0x00ff00)
@@ -112,7 +112,7 @@ async def mine(ctx: Context):
                             item_name = await db_manager.get_basic_item_name(quest_reward)
                             item_price = await db_manager.get_basic_item_price(quest_reward)
                             item_type = await db_manager.get_basic_item_type(quest_reward)
-                            item_emoji = await db_manager.get_basic_item_emote(quest_reward)
+                            item_emoji = await db_manager.get_basic_item_emoji(quest_reward)
                             item_rarity = await db_manager.get_basic_item_rarity(quest_reward)
                             item_damage = await db_manager.get_basic_item_damage(quest_reward)
                             item_element = await db_manager.get_basic_item_element(quest_reward)

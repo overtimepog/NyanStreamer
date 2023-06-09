@@ -431,7 +431,7 @@ async def fishing_game():
             if points >= 60:
                 prizeID = "fish_pet_epic"
                 prizeName = await db_manager.get_basic_item_name(prizeID)
-                prizeEmoji = await db_manager.get_basic_item_emote(prizeID)
+                prizeEmoji = await db_manager.get_basic_item_emoji(prizeID)
                 prizeAmount = 1
                 prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
                 if view.cancelled:
@@ -479,7 +479,7 @@ async def fishing_game():
             elif points >= 5:
                 prizeID = "bait"
                 prizeName = await db_manager.get_basic_item_name(prizeID)
-                prizeEmoji = await db_manager.get_basic_item_emote(prizeID)
+                prizeEmoji = await db_manager.get_basic_item_emoji(prizeID)
                 prizeAmount = 2
                 prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
                 if view.cancelled:
