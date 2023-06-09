@@ -4215,134 +4215,121 @@ async def add_timed_item(user_id: str, item_id: str, effect: str) -> None:
     :param item_id: The ID of the item that should be added.
     :param effect: The effect of the item (e.g., "luck + 20 24hr").
     """
-    async with aiosqlite.connect("database/database.db") as db:
-        async with db.cursor() as cursor:
-            now = datetime.datetime.now()
+    db = DB()
+    now = datetime.datetime.now()
 
-            # parse effect for time units (days, hours, minutes, seconds)
-            time_units = re.findall(r'(\d+(?:d|hr|m|s))', effect)
+    # parse effect for time units (days, hours, minutes, seconds)
+    time_units = re.findall(r'(\d+(?:d|hr|m|s))', effect)
 
-            expiry_date = now
-            for unit in time_units:
-                if 'd' in unit:
-                    days = int(unit.replace('d', ''))
-                    expiry_date += timedelta(days=days)
-                elif 'hr' in unit:
-                    hours = int(unit.replace('hr', ''))
-                    expiry_date += timedelta(hours=hours)
-                elif 'm' in unit:
-                    minutes = int(unit.replace('m', ''))
-                    expiry_date += timedelta(minutes=minutes)
-                elif 's' in unit:
-                    seconds = int(unit.replace('s', ''))
-                    expiry_date += timedelta(seconds=seconds)
+    expiry_date = now
+    for unit in time_units:
+        if 'd' in unit:
+            days = int(unit.replace('d', ''))
+            expiry_date += datetime.timedelta(days=days)
+        elif 'hr' in unit:
+            hours = int(unit.replace('hr', ''))
+            expiry_date += datetime.timedelta(hours=hours)
+        elif 'm' in unit:
+            minutes = int(unit.replace('m', ''))
+            expiry_date += datetime.timedelta(minutes=minutes)
+        elif 's' in unit:
+            seconds = int(unit.replace('s', ''))
+            expiry_date += datetime.timedelta(seconds=seconds)
 
-            # parse the effect and apply the effect to the user
-            effect_parts = effect.split()
-            effect_name = effect_parts[0]
-            effect_add_or_minus = effect_parts[1]
-            effect_amount = int(effect_parts[2])
+    # parse the effect and apply the effect to the user
+    effect_parts = effect.split()
+    effect_name = effect_parts[0]
+    effect_add_or_minus = effect_parts[1]
+    effect_amount = int(effect_parts[2])
 
-            # call the relevant function to apply the effect
-            if effect_name == "health":
-                if effect_add_or_minus == "+":
-                    await add_health_boost(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await remove_health_boost(user_id, effect_amount)
-                    await db.commit()
-            elif effect_name == "damage":
-                if effect_add_or_minus == "+":
-                    await add_damage_boost(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await remove_damage_boost(user_id, effect_amount)
-                    await db.commit()
-            elif effect_name == "luck":
-                if effect_add_or_minus == "+":
-                    await add_luck(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await remove_luck(user_id, effect_amount)
-                    await db.commit()
-            elif effect_name == "crit_chance":
-                if effect_add_or_minus == "+":
-                    await add_crit_chance(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await remove_crit_chance(user_id, effect_amount)
-                    await db.commit()
-            elif effect_name == "dodge_chance":
-                if effect_add_or_minus == "+":
-                    await add_dodge_chance(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await remove_dodge_chance(user_id, effect_amount)
-                    await db.commit()
-            # other effect types...
+    # call the relevant function to apply the effect
+    # Note: You'll need to implement these functions or provide them from elsewhere
+    if effect_name == "health":
+        if effect_add_or_minus == "+":
+            await add_health_boost(user_id, effect_amount)
+            await add_health(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await remove_health_boost(user_id, effect_amount)
+            await remove_health(user_id, effect_amount)
+    elif effect_name == "damage":
+        if effect_add_or_minus == "+":
+            await add_damage_boost(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await remove_damage_boost(user_id, effect_amount)
+    elif effect_name == "luck":
+        if effect_add_or_minus == "+":
+            await add_luck(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await remove_luck(user_id, effect_amount)
+    elif effect_name == "crit_chance":
+        if effect_add_or_minus == "+":
+            await add_crit_chance(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await remove_crit_chance(user_id, effect_amount)
+    elif effect_name == "dodge_chance":
+        if effect_add_or_minus == "+":
+            await add_dodge_chance(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await remove_dodge_chance(user_id, effect_amount)
+    # other effect types...
 
-            # Insert new timed item into the database
-            await cursor.execute(
-                "INSERT INTO timed_items (user_id, item_id, activated_at, expires_at, effect) VALUES (?, ?, ?, ?, ?)", 
-                (user_id, item_id, now.strftime('%Y-%m-%d %H:%M:%S'), expiry_date.strftime('%Y-%m-%d %H:%M:%S'), effect)
-            )
-        await db.commit()
+    # Insert new timed item into the database
+    await db.execute(
+        "INSERT INTO timed_items (user_id, item_id, activated_at, expires_at, effect) VALUES (?, ?, ?, ?, ?)", 
+        (user_id, item_id, now.strftime('%Y-%m-%d %H:%M:%S'), expiry_date.strftime('%Y-%m-%d %H:%M:%S'), effect)
+    )
 
 async def remove_timed_item(user_id: int, item_id: str, effect: str):
-    async with aiosqlite.connect("database/database.db") as db:
-        async with db.cursor() as cursor:
-            # Fetch the item to remove to retrieve its effect
-            await cursor.execute(
-                "SELECT effect FROM timed_items WHERE user_id = ? AND item_id = ?",
-                (user_id, item_id),
-            )
-            # parse the effect and reverse it
-            effect_parts = effect.split()
-            effect_name = effect_parts[0]
-            effect_add_or_minus = effect_parts[1]
-            effect_amount = int(effect_parts[2])
-            # call the relevant function to reverse the effect
-            if effect_name == "health":
-                if effect_add_or_minus == "+":
-                    await remove_health_boost(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await add_health_boost(user_id, effect_amount)
-                    await db.commit()
-            elif effect_name == "damage":
-                if effect_add_or_minus == "+":
-                    await remove_damage_boost(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await add_damage_boost(user_id, effect_amount)
-                    await db.commit()
-            elif effect_name == "luck":
-                if effect_add_or_minus == "+":
-                    await remove_luck(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await add_luck(user_id, effect_amount)
-                    await db.commit()
-            elif effect_name == "crit_chance":
-                if effect_add_or_minus == "+":
-                    await remove_crit_chance(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await add_crit_chance(user_id, effect_amount)
-            elif effect_name == "dodge_chance":
-                if effect_add_or_minus == "+":
-                    await remove_dodge_chance(user_id, effect_amount)
-                    await db.commit()
-                elif effect_add_or_minus == "-":
-                    await add_dodge_chance(user_id, effect_amount)
-                    await db.commit()
-            # other effect types...
-        
-        await db.execute(
-            "DELETE FROM timed_items WHERE user_id = ? AND item_id = ?",
-            (user_id, item_id),
-        )
-        await db.commit()
+    db = DB()
+
+    # Fetch the item to remove to retrieve its effect
+    effect = await db.execute(
+        "SELECT effect FROM timed_items WHERE user_id = ? AND item_id = ?",
+        (user_id, item_id,),
+        fetch='one'
+    )
+
+    # parse the effect and reverse it
+    effect_parts = effect[0].split()
+    effect_name = effect_parts[0]
+    effect_add_or_minus = effect_parts[1]
+    effect_amount = int(effect_parts[2])
+
+    # call the relevant function to reverse the effect
+    if effect_name == "health":
+        if effect_add_or_minus == "+":
+            await remove_health_boost(user_id, effect_amount)
+            await remove_health(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await add_health_boost(user_id, effect_amount)
+            await add_health(user_id, effect_amount)
+    elif effect_name == "damage":
+        if effect_add_or_minus == "+":
+            await remove_damage_boost(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await add_damage_boost(user_id, effect_amount)
+    elif effect_name == "luck":
+        if effect_add_or_minus == "+":
+            await remove_luck(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await add_luck(user_id, effect_amount)
+    elif effect_name == "crit_chance":
+        if effect_add_or_minus == "+":
+            await remove_crit_chance(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await add_crit_chance(user_id, effect_amount)
+    elif effect_name == "dodge_chance":
+        if effect_add_or_minus == "+":
+            await remove_dodge_chance(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await add_dodge_chance(user_id, effect_amount)
+    # other effect types...
+
+    # Delete the item
+    await db.execute(
+        "DELETE FROM timed_items WHERE user_id = ? AND item_id = ?",
+        (user_id, item_id),
+    )
 
 async def view_timed_items(user_id: int):
     async with aiosqlite.connect("database/database.db") as db:
@@ -4361,6 +4348,7 @@ async def is_timed_item(item_id: str) -> bool:
     :param item_id: The ID of the item to check.
     :return: True if the item is a timed item, False otherwise.
     """
+    db = DB()
     async with aiosqlite.connect("database/database.db") as db:
         # Get the item's effect from the database
         async with db.execute("SELECT item_effect FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
@@ -4395,6 +4383,7 @@ async def remove_pet_item(user_id: int, pet_id: str, item_id: str):
     :param pet_id: The ID of the pet.
     :param item_id: The ID of the item.
     """
+    db = DB()
     async with aiosqlite.connect("database/database.db") as db:
         await db.execute(
             "DELETE FROM pet_items WHERE user_id = ? AND pet_id = ? AND item_id = ?",
@@ -4441,6 +4430,7 @@ async def check_and_remove_expired_items():
     """
     This function will check for expired items and remove them.
     """
+    db = DB()
     async with aiosqlite.connect("database/database.db") as db:
         async with db.execute(
             "SELECT * FROM timed_items WHERE expires_at <= CURRENT_TIMESTAMP"
