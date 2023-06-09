@@ -10,7 +10,6 @@ import sys
 
 import aiosqlite
 import aiohttp
-
 from helpers import db_manager
 
 if not os.path.isfile("config.json"):
@@ -47,7 +46,7 @@ class TwitchBot(commands.Bot):
                 print(f"Joining {streamer_channel_name}...")
             try:
                 await TwitchBot.join_channels(self, channels)
-            except TimeoutError or KeyError:
+            except KeyError or asyncio.exceptions.CancelledError:
                 pass
             print(f"Joined {len(channels)} channels.")
             await asyncio.sleep(600)
