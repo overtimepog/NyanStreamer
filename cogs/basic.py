@@ -1006,7 +1006,12 @@ class Basic(commands.Cog, name="basic"):
         print(f"User Twitch Name: {user_twitch_name}")
         user_items = await db_manager.view_inventory(user_id)
         embed = discord.Embed(title="Profile", description=f"{user.mention}'s Profile.")
-        if user_health == 0:
+        if user_health <= 0:
+            #check if the user is marked as dead
+            isalive = await db_manager.is_alive(user_id)
+            if isalive == True:
+                #if they are, mark them as dead
+                await db_manager.set_dead(user_id)
             embed.add_field(name="Health", value=f"{user_health} (Dead)", inline=True)
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
