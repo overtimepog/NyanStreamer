@@ -87,7 +87,7 @@
         "item_rarity": "Uncommon",
         "item_type": "Consumable",
         "item_damage": 0,
-        "isUsable": false,
+        "isUsable": true,
         "inShop": true,
         "isEquippable": false,
         "item_description": "Used to Rename a pet from the /pet menu",
