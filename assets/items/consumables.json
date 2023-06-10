@@ -2,7 +2,7 @@
     {
         "item_id": "revivepotion",
         "item_name": "Revive Potion",
-        "item_price": 250,
+        "item_price": 100000,
         "item_emoji": "<:RevivePotion:1077645427647725578>",
         "item_rarity": "Rare",
         "item_type": "Consumable",
@@ -22,7 +22,7 @@
     {
         "item_id": "luckpotion",
         "item_name": "Luck Potion",
-        "item_price": 250,
+        "item_price": 250000,
         "item_emoji": "<:luckpotion:1116535793054392421>",
         "item_rarity": "Rare",
         "item_type": "Consumable",
@@ -42,7 +42,7 @@
     {
         "item_id": "healthpotion",
         "item_name": "Health Potion",
-        "item_price": 300,
+        "item_price": 30000,
         "item_emoji": "<:HealthPotion_Small:1077645426745942116>",
         "item_rarity": "Rare",
         "item_type": "Consumable",
@@ -62,7 +62,7 @@
     {
         "item_id": "glue",
         "item_name": "Glue",
-        "item_price": 300,
+        "item_price": 300000,
         "item_emoji": "<:glue:1114319335637393438>",
         "item_rarity": "Rare",
         "item_type": "Consumable",
