@@ -221,6 +221,8 @@ class Basic(commands.Cog, name="basic"):
                         pet_name = await db_manager.get_pet_name(ctx.author.id, item_id)
                         if pet_name != item_name:
                             inventory_embed.add_field(name=f"{item_emoji}{pet_name} (`{item_name}`) - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                        else:
+                            inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
                     else:
                         inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
 
