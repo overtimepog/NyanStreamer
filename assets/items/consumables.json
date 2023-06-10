@@ -2,7 +2,7 @@
     {
         "item_id": "revivepotion",
         "item_name": "Revive Potion",
-        "item_price": 100000,
+        "item_price": 10000,
         "item_emoji": "<:RevivePotion:1077645427647725578>",
         "item_rarity": "Rare",
         "item_type": "Consumable",
