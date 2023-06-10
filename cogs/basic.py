@@ -992,14 +992,14 @@ class Basic(commands.Cog, name="basic"):
         choices = []
         for item in user_inventory:
             if argument.lower() in item[2].lower():
-                try:
                     pet_name = await db_manager.get_pet_name(item[0], item[1])
                     rarity = await db_manager.get_basic_item_rarity(item[1])
-                    item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{item[3]})"
-                    choices.append(app_commands.Choice(name=item_name, value=item[1]))
-                except:
-                    item_name = f"{item[2]} ({cash}{item[3]})"
-                    choices.append(app_commands.Choice(name=item_name, value=item[1]))
+                    if item[7] == "Pet":
+                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{item[3]})"
+                        choices.append(app_commands.Choice(name=item_name, value=item[1]))
+                    else:
+                        item_name = f"{item[2]} ({cash}{item[3]})"
+                        choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
 #view a users profile using the view_profile function from helpers\db_manager.py
