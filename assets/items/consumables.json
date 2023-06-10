@@ -70,13 +70,13 @@
         "isUsable": true,
         "inShop": true,
         "isEquippable": false,
-        "item_description": "Sniff it to Gain 20 health for 2 hours",
+        "item_description": "Sniff it to Gain 200 health for 2 hours",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
         "recipe_id": "None",
         "item_recipe": [],
-        "item_effect": "health + 20 2hr",
+        "item_effect": "health + 200 2hr",
         "item_sub_type": "Potion"
     },
     {
