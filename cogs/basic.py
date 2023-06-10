@@ -2008,9 +2008,9 @@ class Basic(commands.Cog, name="basic"):
             #if the item_subtype is pet_item
             #print the use message
             if item_effect_type == "None":
-                ctx.send(f"You used `{item_name}`!")
+                await ctx.send(f"You used `{item_name}`!")
             else:
-                ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
+                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
