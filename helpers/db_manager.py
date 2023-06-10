@@ -3272,6 +3272,19 @@ async def get_pet_attributes(user_id: int, item_id: str) -> list:
         async with db.execute("SELECT * FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
             result = await cursor.fetchone()
             return result if result is not None else []
+        
+#get the name of a pet from the pet_attributes table based on its id
+async def get_pet_name(user_id: int, item_id: str) -> str:
+    """
+    This function will get the name of a pet from the pet_attributes table.
+
+    :param user_id: The ID of the user that the pet should be gotten from.
+    :param item_id: The ID of the pet that should be gotten.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
+            result = await cursor.fetchone()
+            return result[2] if result is not None else 0
             
 #get the amount of an item from a users inventory
 async def get_item_amount_from_inventory(user_id: int, item_id: str) -> int:
