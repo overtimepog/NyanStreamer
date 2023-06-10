@@ -426,6 +426,7 @@ class Pets(commands.Cog, name="pets"):
         self.update_pet_happiness.start()
         self.update_pet_cleanliness.start()
         self.expired_item_check.start()
+        self.shop_reset.start()
 
     @commands.hybrid_command()
     async def pet(self, ctx: Context):
@@ -550,6 +551,16 @@ class Pets(commands.Cog, name="pets"):
     @expired_item_check.before_loop
     async def before_expired_item_check(self):
         await self.bot.wait_until_ready()
+
+    #every 8 hours the shop will reset
+    @tasks.loop(hours=8)
+    async def shop_reset(self):
+        print("-----------------------------")
+        print("Resetting Shop...")
+        await db_manager.clear_shop()
+        await db_manager.add_shop_items()
+        print("Done Resetting Shop...")
+        print("-----------------------------")
 
 async def setup(bot):
     await bot.add_cog(Pets(bot))
