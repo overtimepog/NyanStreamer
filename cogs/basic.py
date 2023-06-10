@@ -928,7 +928,7 @@ class Basic(commands.Cog, name="basic"):
         choices = []
         for item in shopitems:
             if argument.lower() in item[1].lower():
-                if item[4] == 'Pet':
+                if item[5] == 'Pet':
                     rarity = await db_manager.get_basic_item_rarity(item[0])
                     item_name = f"{item[1]} {rarity} ({cash}{item[2]})"
                 else:
