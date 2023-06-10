@@ -16,7 +16,7 @@
         "item_projectile": "None",
         "recipe_id": "None",
         "item_recipe": [],
-        "item_effect": "revive",
+        "item_effect": "revive + 1",
         "item_sub_type": "Potion"
     },
     {
