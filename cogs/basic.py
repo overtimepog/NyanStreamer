@@ -926,10 +926,10 @@ class Basic(commands.Cog, name="basic"):
     async def buy_autocomplete(self, ctx: Context, argument):
         shopitems = await db_manager.display_shop_items()
         choices = [
-            app_commands.Choice(name=item[1], value=item[0])
+            app_commands.Choice(name=f"{item[3]} {item[1]}", value=item[0])
             for item in shopitems if argument.lower() in item[1].lower()
         ]
-        return choices[:25] 
+        return choices[:25]
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
     @shop.command(
         name="sell",
@@ -988,10 +988,12 @@ class Basic(commands.Cog, name="basic"):
         for item in user_inventory:
             if argument.lower() in item[2].lower():
                 try:
-                    pet_name = await db_manager.get_pet_name(argument)
-                    choices.append(app_commands.Choice(name=pet_name if item[7] == 'Pet' else item[2], value=item[1]))
+                    pet_name = await db_manager.get_pet_name(item[1])
+                    item_name = f"{item[4]} {pet_name if item[7] == 'Pet' else item[2]} ({item[3]})"
+                    choices.append(app_commands.Choice(name=item_name, value=item[1]))
                 except:
-                    choices.append(app_commands.Choice(name=item[2], value=item[1]))
+                    item_name = f"{item[4]} {item[2]} ({item[3]})"
+                    choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
 #view a users profile using the view_profile function from helpers\db_manager.py
@@ -2052,7 +2054,7 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory_useable(user_id)
         choices = [
-            app_commands.Choice(name=item[2], value=item[1])
+            app_commands.Choice(name=f"{item[4]} {item[2]}", value=item[1])
             for item in user_inventory if argument.lower() in item[2].lower()
         ]
         return choices[:25]
