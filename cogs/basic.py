@@ -926,7 +926,7 @@ class Basic(commands.Cog, name="basic"):
     async def buy_autocomplete(self, ctx: Context, argument):
         shopitems = await db_manager.display_shop_items()
         choices = [
-            app_commands.Choice(name=f"{item[3]} {item[1]}", value=item[0])
+            app_commands.Choice(name=f"{item[1]} ({cash}{item[2]})", value=item[0])
             for item in shopitems if argument.lower() in item[1].lower()
         ]
         return choices[:25]
@@ -989,10 +989,10 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[2].lower():
                 try:
                     pet_name = await db_manager.get_pet_name(item[1])
-                    item_name = f"{item[4]} {pet_name if item[7] == 'Pet' else item[2]} ({item[3]})"
+                    item_name = f"{pet_name if item[7] == 'Pet' else item[2]} ({cash}{item[3]})"
                     choices.append(app_commands.Choice(name=item_name, value=item[1]))
                 except:
-                    item_name = f"{item[4]} {item[2]} ({item[3]})"
+                    item_name = f"{item[2]} ({cash}{item[3]})"
                     choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
@@ -2054,7 +2054,7 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory_useable(user_id)
         choices = [
-            app_commands.Choice(name=f"{item[4]} {item[2]}", value=item[1])
+            app_commands.Choice(name=f"{item[2]}", value=item[1])
             for item in user_inventory if argument.lower() in item[2].lower()
         ]
         return choices[:25]
