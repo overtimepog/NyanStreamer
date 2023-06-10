@@ -978,6 +978,15 @@ class Basic(commands.Cog, name="basic"):
                     return
         await ctx.send(f"Item doesn't exist in your inventory.")
         
+    @sell.autocomplete("item")
+    async def sell_autocomplete(self, ctx: Context, argument):
+        user_id = ctx.message.author.id
+        user_inventory = await db_manager.view_inventory(user_id)
+        choices = [
+            app_commands.Choice(name=item[2], value=item[1])
+            for item in user_inventory if argument.lower() in item[2].lower()
+        ]
+        return choices[:25]
 #view a users profile using the view_profile function from helpers\db_manager.py
     @commands.hybrid_command(
         name="profile",
@@ -2030,8 +2039,17 @@ class Basic(commands.Cog, name="basic"):
                 await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
-            
-            
+    
+    @use.autocomplete("item")
+    async def use_autocomplete(self, ctx: Context, argument):
+        user_id = ctx.message.author.id
+        user_inventory = await db_manager.view_inventory_useable(user_id)
+        choices = [
+            app_commands.Choice(name=item[2], value=item[1])
+            for item in user_inventory if argument.lower() in item[2].lower()
+        ]
+        return choices[:25]
+
     #explore command
     @commands.hybrid_command(
             name="explore",
