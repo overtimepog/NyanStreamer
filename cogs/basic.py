@@ -981,7 +981,7 @@ class Basic(commands.Cog, name="basic"):
     @sell.autocomplete("item")
     async def sell_autocomplete(self, ctx: discord.Interaction, argument):
         print(argument)
-        user_id = ctx.message.author.id
+        user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory(user_id)
         choices = [
             app_commands.Choice(name=item[2], value=item[1])
