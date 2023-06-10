@@ -1904,6 +1904,7 @@ class Basic(commands.Cog, name="basic"):
                 await db_manager.add_timed_item(user_id, item, item_effect)
                 #send a message
                 await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
+                return
             #if the item's name is "Potion", add 10 health to the user
             #get the items effect
             item_effect = await db_manager.get_basic_item_effect(item)
@@ -2005,6 +2006,11 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(f"It seems {chest_name} ended up being empty!")
 
             #if the item_subtype is pet_item
+            #print the use message
+            if item_effect_type == "None":
+                ctx.send(f"You used `{item_name}`!")
+            else:
+                ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
             
