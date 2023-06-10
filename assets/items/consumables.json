@@ -87,7 +87,7 @@
         "item_rarity": "Uncommon",
         "item_type": "Consumable",
         "item_damage": 0,
-        "isUsable": true,
+        "isUsable": false,
         "inShop": true,
         "isEquippable": false,
         "item_description": "Used to Rename a pet from the /pet menu",
@@ -97,7 +97,7 @@
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "None",
-        "item_sub_type": "Pet Item"
+        "item_sub_type": "None"
     },
     {
         "item_id": "pet_shampoo",
