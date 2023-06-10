@@ -2829,20 +2829,6 @@ async def view_inventory_by_type(user_id: int, item_type: str) -> list:
         return data
     else:
         return []
-    
-#view all useable items in a users inventory
-async def view_inventory_useable(user_id: int) -> list:
-    """
-    This function will view all useable items in a users imventory.
-
-    :return: A list of all useable items in a users imventory.
-    """
-    db = DB()
-    data = await db.execute(f"SELECT * FROM `inventory` WHERE user_id = ? AND isUsable = 1", (user_id,), fetch="all")
-    if data is not None:
-        return data
-    else:
-        return []
   
 #add an item to the inventory table, uses the usersID from the users table and the item ID from the streamer_items table, if the item already exists in the inventory table, it will add 1 to the item_amount
 async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) -> int:

@@ -2057,12 +2057,15 @@ class Basic(commands.Cog, name="basic"):
     
     @use.autocomplete("item")
     async def use_autocomplete(self, ctx: discord.Interaction, argument):
+        print(argument)
         user_id = ctx.user.id
-        user_inventory = await db_manager.view_inventory_useable(user_id)
-        choices = [
-            app_commands.Choice(name=f"{item[2]}", value=item[1])
-            for item in user_inventory if argument.lower() in item[2].lower()
-        ]
+        user_inventory = await db_manager.view_inventory(user_id)
+        choices = []
+        for item in user_inventory:
+            if argument.lower() in item[2].lower():
+                isUsable = await db_manager.is_basic_item_usable(item[1])
+                if isUsable == 1 or isUsable == True:
+                    choices.append(app_commands.Choice(name=item[2], value=item[1]))
         return choices[:25]
 
     #explore command
