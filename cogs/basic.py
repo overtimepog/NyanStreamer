@@ -925,9 +925,10 @@ class Basic(commands.Cog, name="basic"):
     @buy.autocomplete("item")
     async def buy_autocomplete(self, ctx: Context, argument):
         shopitems = await db_manager.display_shop_items()
-        #print(shopitems)
-        for item in shopitems:
-            print(item)
+        return [
+            app_commands.Choice(name=item[1], value=item[0])
+            for item in shopitems if argument.lower() in item[1].lower()
+        ]
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
     @shop.command(
         name="sell",
