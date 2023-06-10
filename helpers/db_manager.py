@@ -134,6 +134,11 @@ async def add_health(user_id: int, amount: int) -> None:
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
         await db.execute(f"UPDATE `users` SET `health` = `health` + ? WHERE `user_id` = ?", (amount, user_id))
+        #if the users health is over 100, set it to 100
+        users = await db.execute(f"SELECT `health` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        users = int(users[0])
+        if users > 100:
+            await db.execute(f"UPDATE `users` SET `health` = 100 WHERE `user_id` = ?", (user_id,))
     else:
         return None
 
@@ -143,6 +148,11 @@ async def remove_health(user_id: int, amount: int) -> None:
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
         await db.execute(f"UPDATE `users` SET `health` = `health` - ? WHERE `user_id` = ?", (amount, user_id))
+        #if the users health is under 0, set it to 0
+        users = await db.execute(f"SELECT `health` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        users = int(users[0])
+        if users < 0:
+            await db.execute(f"UPDATE `users` SET `health` = 0 WHERE `user_id` = ?", (user_id,))
     else:
         return None
 
