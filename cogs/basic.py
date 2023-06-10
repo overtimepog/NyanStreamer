@@ -980,7 +980,8 @@ class Basic(commands.Cog, name="basic"):
         
     @sell.autocomplete("item")
     async def sell_autocomplete(self, ctx: Context, argument):
-        user_id = ctx.author.id
+        print(argument)
+        user_id = ctx.message.author.id
         user_inventory = await db_manager.view_inventory(user_id)
         choices = [
             app_commands.Choice(name=item[2], value=item[1])
