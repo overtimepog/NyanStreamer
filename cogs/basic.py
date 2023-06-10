@@ -983,11 +983,17 @@ class Basic(commands.Cog, name="basic"):
         print(argument)
         user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory(user_id)
-        choices = [
-            app_commands.Choice(name=item[2], value=item[1])
-            for item in user_inventory if argument.lower() in item[2].lower()
-        ]
+        #if the item type is a pet
+        choices = []
+        for item in user_inventory:
+            if argument.lower() in item[2].lower():
+                try:
+                    pet_name = await db_manager.get_pet_name(argument)
+                    choices.append(app_commands.Choice(name=pet_name if item[7] == 'Pet' else item[2], value=item[1]))
+                except:
+                    choices.append(app_commands.Choice(name=item[2], value=item[1]))
         return choices[:25]
+
 #view a users profile using the view_profile function from helpers\db_manager.py
     @commands.hybrid_command(
         name="profile",
@@ -2042,8 +2048,8 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(f"`{item_name}` is not usable.")
     
     @use.autocomplete("item")
-    async def use_autocomplete(self, ctx: Context, argument):
-        user_id = ctx.author.id
+    async def use_autocomplete(self, ctx: discord.Interaction, argument):
+        user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory_useable(user_id)
         choices = [
             app_commands.Choice(name=item[2], value=item[1])
