@@ -925,10 +925,15 @@ class Basic(commands.Cog, name="basic"):
     @buy.autocomplete("item")
     async def buy_autocomplete(self, ctx: Context, argument):
         shopitems = await db_manager.display_shop_items()
-        choices = [
-            app_commands.Choice(name=f"{item[1]} ({cash}{item[2]})", value=item[0])
-            for item in shopitems if argument.lower() in item[1].lower()
-        ]
+        choices = []
+        for item in shopitems:
+            if argument.lower() in item[1].lower():
+                if item[7] == 'Pet':
+                    rarity = await db_manager.get_basic_item_rarity(item[1])
+                    item_name = f"{item[1]} {rarity} ({cash}{item[2]})"
+                else:
+                    item_name = f"{item[1]} ({cash}{item[2]})"
+                choices.append(app_commands.Choice(name=item_name, value=item[0]))
         return choices[:25]
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
     @shop.command(
@@ -989,7 +994,8 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[2].lower():
                 try:
                     pet_name = await db_manager.get_pet_name(item[0], item[1])
-                    item_name = f"{pet_name if item[7] == 'Pet' else item[2]} ({cash}{item[3]})"
+                    rarity = await db_manager.get_basic_item_rarity(item[1])
+                    item_name = f"{pet_name if item[7] == 'Pet' else item[2]} {rarity} ({cash}{item[3]})"
                     choices.append(app_commands.Choice(name=item_name, value=item[1]))
                 except:
                     item_name = f"{item[2]} ({cash}{item[3]})"
