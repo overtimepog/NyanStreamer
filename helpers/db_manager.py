@@ -863,7 +863,8 @@ async def add_shop_items() -> None:
     await db.execute(f"DELETE FROM `shop`")
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
     #add the items to the shop table
-    #select 10 random items if there are more than 10 items
+    #pick 25 rndom items from the list
+    data = random.sample(data, 25)
     for item in data:
         item_id = item[0]
         item_amount = 1
