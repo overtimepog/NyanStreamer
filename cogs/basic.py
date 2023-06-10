@@ -766,7 +766,10 @@ class Basic(commands.Cog, name="basic"):
         name="buy",
         description="This command will buy an item from the shop.",
     )
+    #add options for items to buy
+    
     async def buy(self, ctx: Context, item: str, amount: int):
+        shopitems = await db_manager.display_shop_items()
         """
         This command will buy an item from the shop.
 
@@ -918,7 +921,12 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(f"You don't have enough bucks to buy `{amount}` of `{item_name}`.")
                     return
         await ctx.send(f"Item doesn't exist in the shop.")
-        
+    
+    @buy.autocomplete("item")
+    async def buy_autocomplete(self, ctx: Context, argument):
+        shopitems = await db_manager.display_shop_items()
+        return [item[0] for item in shopitems if argument in item[0]]
+
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
     @shop.command(
         name="sell",
