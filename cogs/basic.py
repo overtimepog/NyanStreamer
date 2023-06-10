@@ -930,7 +930,7 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[1].lower():
                 if item[5] == 'Pet':
                     rarity = await db_manager.get_basic_item_rarity(item[0])
-                    item_name = f"{item[1]} {rarity} ({cash}{item[2]})"
+                    item_name = f"{rarity} {item[1]} ({cash}{item[2]})"
                 else:
                     item_name = f"{item[1]} ({cash}{item[2]})"
                 choices.append(app_commands.Choice(name=item_name, value=item[0]))
@@ -995,7 +995,7 @@ class Basic(commands.Cog, name="basic"):
                 try:
                     pet_name = await db_manager.get_pet_name(item[0], item[1])
                     rarity = await db_manager.get_basic_item_rarity(item[1])
-                    item_name = f"{pet_name if item[7] == 'Pet' else item[2]} {rarity} ({cash}{item[3]})"
+                    item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{item[3]})"
                     choices.append(app_commands.Choice(name=item_name, value=item[1]))
                 except:
                     item_name = f"{item[2]} ({cash}{item[3]})"
