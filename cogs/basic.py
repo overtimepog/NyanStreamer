@@ -1924,7 +1924,7 @@ class Basic(commands.Cog, name="basic"):
                     #get the item effect amount
                     item_effect_amount = item_effect[2]
                     item_effect_time = item_effect[3]
-                except:
+                except IndexError:
                     plus_or_minus = "+"
                     item_effect_amount = 0
                     item_effect_time = 0
