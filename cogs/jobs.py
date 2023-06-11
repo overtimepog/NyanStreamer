@@ -189,13 +189,13 @@ class Jobs(commands.Cog, name="jobs"):
 
         game_data = await db_manager.get_data_for_minigame(minigame)
 
-        if minigame['type'] == 'Trivia':
+        if minigame[0] == 'Trivia':
             result = await games.play_trivia(ctx, game_data)
-        elif minigame['type'] == 'Order':
+        elif minigame[0] == 'Order':
             result = await games.play_order_game(ctx, game_data)
-        elif minigame['type'] == 'Matching':
+        elif minigame[0] == 'Matching':
             result = await games.play_matching_game(ctx, game_data)
-        elif minigame['type'] == 'Choice':
+        elif minigame[0] == 'Choice':
             result = await games.play_choice_game(ctx, game_data)
 
         if result:
