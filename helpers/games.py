@@ -636,10 +636,10 @@ class TriviaGameButton(Button):
         selected_choice = self.label
         if selected_choice == self.trivia_view.answer:
             self.style = discord.ButtonStyle.success
-            await self.trivia_view.resolve_callback.set_result(True)
+            self.trivia_view.resolve_callback.set_result(True)
         else:
             self.style = discord.ButtonStyle.danger
-            await self.trivia_view.resolve_callback.set_result(False)
+            self.trivia_view.resolve_callback.set_result(False)
 
         embed = interaction.message.embeds[0]
         embed.color = discord.Color.green() if selected_choice == self.trivia_view.answer else discord.Color.red()
