@@ -151,11 +151,9 @@ class Jobs(commands.Cog, name="jobs"):
         await db_manager.add_user_job(ctx.author.id, job)
         await ctx.send(f"You have accepted the job: {job['name']}.")
 
-
     @acceptjob.autocomplete("job")
     async def job_autocomplete(self, ctx: discord.Interaction, argument):
         #print(argument)
-        user_id = self.ctx.author.id
         user_jobs = await db_manager.get_jobs_on_board()
         choices = []
         for job in user_jobs:
