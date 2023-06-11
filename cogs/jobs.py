@@ -204,6 +204,8 @@ class Jobs(commands.Cog, name="jobs"):
                 # Get the rewards and sort them by their probabilities
                 rewards = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[4], reverse=True)
                 earned_rewards = defaultdict(lambda: (None, 0))
+                print("Rewards: ", rewards)
+                print("Earned Rewards: ", earned_rewards)
 
                 # Always give at least the reward with the highest probability
                 reward_id, minigame_id, reward_type, reward_value, reward_probability = rewards[0]
@@ -239,7 +241,7 @@ class Jobs(commands.Cog, name="jobs"):
                         for _ in range(total_count):
                             await db_manager.add_item_to_inventory(user_id, reward_value, 1)
                         reward_icon = await db_manager.get_basic_item_emoji(reward_value)
-                        reward_messages.append(f"You earned {reward_icon}{reward_value}!")
+                        reward_messages.append(f"You earned {reward_icon} {reward_value}!")
 
                 # Create a new embed to show the rewards
                 reward_embed = discord.Embed(
@@ -247,7 +249,7 @@ class Jobs(commands.Cog, name="jobs"):
                     description="\n".join(reward_messages),
                     color=discord.Color.gold()
                 )
-                await message.edit(embed=reward_embed)
+                await message.edit(embed=reward_embed, view=None)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
