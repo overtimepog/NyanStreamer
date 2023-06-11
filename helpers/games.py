@@ -644,6 +644,7 @@ class TriviaGameView(TriviaView):
 
 async def play_trivia(ctx, game_data):
     random_trivia = random.choice(game_data)
+    print(random_trivia)
     trivia_question = random_trivia['question']
     trivia_choices = json.loads(random_trivia['options'])
     trivia_answer = random_trivia['answer']
