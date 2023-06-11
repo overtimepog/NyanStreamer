@@ -203,7 +203,7 @@ class Jobs(commands.Cog, name="jobs"):
 
                 # Get the rewards
                 rewards = await db_manager.get_rewards_for_minigame(minigame[0])
-                earned_rewards = []
+                earned_rewards = defaultdict(int)
 
                 # Go through each possible reward
                 for reward in rewards:
@@ -214,23 +214,26 @@ class Jobs(commands.Cog, name="jobs"):
 
                     # Roll a random number to see if the user gets this reward
                     if random.random() <= adjusted_probability:
-                        earned_rewards.append((reward_type, reward_value))
+                        earned_rewards[reward_type] += int(reward_value)
 
-                    reward_messages = []
-                    for reward_type, reward_value in earned_rewards:
-                        if reward_type == "money":
-                            # Add the money to the user's account
-                            await db_manager.add_money(user_id, reward_value)
-                            reward_messages.append(f"You earned {reward_value} money!")
-                        elif reward_type == "item":
-                            # Give the item to the user
-                            await db_manager.add_item_to_inventory(user_id, reward_value, 1)
-                            reward_messages.append(f"You earned a {reward_value}!")
-                    
-                    # Edit the message to include the rewards
-                    embed = message.embeds[0]
-                    embed.description += "\n" + "\n".join(reward_messages)
-                    await message.edit(embed=embed)
+                reward_messages = []
+                for reward_type, total_value in earned_rewards.items():
+                    if reward_type == "money":
+                        # Add the money to the user's account
+                        await db_manager.add_money(user_id, total_value)
+                        reward_messages.append(f"You earned {total_value} money!")
+                    elif reward_type == "item":
+                        # Give the item to the user
+                        await db_manager.add_item_to_inventory(user_id, reward_value, total_value)
+                        reward_messages.append(f"You earned {total_value} of {reward_value}!")
+
+                # Create a new embed to show the rewards
+                reward_embed = discord.Embed(
+                    title="Rewards Earned!",
+                    description="\n".join(reward_messages),
+                    color=discord.Color.gold()
+                )
+                await message.edit(embed=reward_embed)
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
