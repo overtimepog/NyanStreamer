@@ -197,38 +197,50 @@ class Jobs(commands.Cog, name="jobs"):
             if result == True:
                 # Assume user_luck is a value between 0 and 100
                 user_luck = await db_manager.get_luck(user_id)
-            
+
                 # Adjust user's luck into scale of 0 to 1
                 adjusted_luck = user_luck / 100
-            
-                # Get the rewards
-                rewards = await db_manager.get_rewards_for_minigame(minigame[0])
+
+                # Get the rewards and sort them by their probabilities
+                rewards = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[4], reverse=True)
                 earned_rewards = defaultdict(lambda: (None, 0))
-            
-                # Go through each possible reward
-                for reward in rewards:
+
+                # Always give at least the reward with the highest probability
+                reward_id, minigame_id, reward_type, reward_value, reward_probability = rewards[0]
+                earned_rewards[reward_type] = (reward_value, 1)
+
+                # Go through the remaining possible rewards
+                for reward in rewards[1:]:
                     reward_id, minigame_id, reward_type, reward_value, reward_probability = reward
-            
+
                     # Adjust the reward probability with the user's luck
                     adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
-            
+
                     # Roll a random number to see if the user gets this reward
                     if random.random() <= adjusted_probability:
                         prev_value, prev_count = earned_rewards[reward_type]
                         earned_rewards[reward_type] = (reward_value, prev_count+1)
-            
+
                 reward_messages = []
                 for reward_type, (reward_value, total_count) in earned_rewards.items():
                     if reward_type == "money":
+                        # Check if reward_value can be converted into integer
+                        try:
+                            int_reward_value = int(reward_value)
+                        except ValueError:
+                            print(f"Invalid value for money reward: {reward_value}")
+                            continue
+                        
                         # Add the money to the user's account
-                        await db_manager.add_money(user_id, int(reward_value)*total_count)
-                        reward_messages.append(f"You earned {int(reward_value)*total_count} money!")
+                        await db_manager.add_money(user_id, int_reward_value * total_count)
+                        reward_messages.append(f"You earned {int_reward_value * total_count} money!")
                     elif reward_type == "item":
                         # Give the item to the user
                         for _ in range(total_count):
-                            await db_manager.add_item_to_inventory(user_id, reward_value)
-                        reward_messages.append(f"You earned {total_count} of {reward_value}!")
-            
+                            await db_manager.add_item_to_inventory(user_id, reward_value, 1)
+                        reward_icon = await db_manager.get_basic_item_emoji(reward_value)
+                        reward_messages.append(f"You earned {reward_icon}{reward_value}!")
+
                 # Create a new embed to show the rewards
                 reward_embed = discord.Embed(
                     title="Rewards Earned!",
