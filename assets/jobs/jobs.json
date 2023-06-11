@@ -1,0 +1,130 @@
+[
+    {
+        "id": "developer",
+        "name": "Developer",
+        "description": "Build and maintain software systems",
+        "job_icon": "<:jobIcon:12345678910>",
+        "minigames": [
+            {
+                "type": "Trivia",
+                "questions": [
+                    {
+                        "question": "What does HTML stand for?",
+                        "options": ["Hyper Text Markup Language", "Hyperlinks Text Mark Language", "Hyperlinking Text Marking Language"],
+                        "answer": "Hyper Text Markup Language"
+                    },
+                    {
+                        "question": "In web design, what does CSS stand for?",
+                        "options": ["Cascading Style Sheet", "Creative Style System", "Cascading System Sheet"],
+                        "answer": "Cascading Style Sheet"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "chef",
+        "name": "Chef",
+        "description": "Prepare and cook food",
+        "job_icon": "<:jobIcon:12345678910>",
+        "minigames": [
+            {
+                "type": "Order",
+                "task": "Sort the ingredients according to the recipe order",
+                "items": ["Flour", "Eggs", "Milk", "Butter"],
+                "correctOrder": ["Flour", "Butter", "Eggs", "Milk"]
+            },
+            {
+                "type": "Trivia",
+                "questions": [
+                    {
+                        "question": "What temperature does water boil at sea level?",
+                        "options": ["100°C", "50°C", "150°C"],
+                        "answer": "100°C"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "doctor",
+        "name": "Doctor",
+        "description": "Diagnose and treat patients",
+        "job_icon": "<:jobIcon:12345678910>",
+        "minigames": [
+            {
+                "type": "Matching",
+                "items": [
+                    {"name": "Heart", "description": "Pumps blood"},
+                    {"name": "Lungs", "description": "Helps in breathing"},
+                    {"name": "Liver", "description": "Detoxifies chemicals"}
+                ],
+                "correctMatches": [
+                    {"name": "Heart", "description": "Pumps blood"},
+                    {"name": "Lungs", "description": "Helps in breathing"},
+                    {"name": "Liver", "description": "Detoxifies chemicals"}
+                ]
+            },
+            {
+                "type": "Trivia",
+                "questions": [
+                    {
+                        "question": "What's the normal body temperature for adults?",
+                        "options": ["98.6°F (37°C)", "102.2°F (39°C)", "104°F (40°C)"],
+                        "answer": "98.6°F (37°C)"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "astronaut",
+        "name": "Astronaut",
+        "description": "Travel and work in space",
+        "job_icon": "<:jobIcon:12345678910>",
+        "minigames": [
+            {
+                "type": "Choice",
+                "prompt": "You are outside the spaceship. What do you want to do?",
+                "options": [
+                    {
+                        "description": "Inspect the spacecraft",
+                        "outcomes": [
+                            {"result": "You found a minor glitch and fixed it. Good job!", "rewardType": "experience", "reward": 50, "chance": 0.6},
+                            {"result": "All looks good. Nothing to fix.", "rewardType": null, "reward": null, "chance": 0.4}
+                        ]
+                    },
+                    {
+                        "description": "Look into space",
+                        "outcomes": [
+                            {"result": "You spotted a meteor shower. Amazing!", "rewardType": "item", "reward": "meteor_shard", "chance": 0.3},
+                            {"result": "Just infinite darkness. Nothing special.", "rewardType": null, "reward": null, "chance": 0.7}
+                        ]
+                    },
+                    {
+                        "description": "Return inside the spaceship",
+                        "outcomes": [
+                            {"result": "You found an issue with the airlock but fixed it promptly.", "rewardType": "money", "reward": 100, "chance": 0.5},
+                            {"result": "You returned inside safely.", "rewardType": null, "reward": null, "chance": 0.5}
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Trivia",
+                "questions": [
+                    {
+                        "question": "Which planet is known as the Red Planet?",
+                        "options": ["Mars", "Jupiter", "Saturn"],
+                        "answer": "Mars"
+                    },
+                    {
+                        "question": "What is the largest planet in our solar system?",
+                        "options": ["Jupiter", "Earth", "Saturn"],
+                        "answer": "Jupiter"
+                    }
+                ]
+            }
+        ]
+    }
+]

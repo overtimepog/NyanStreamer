@@ -58,6 +58,10 @@ enemies = enemies  + bosses
 with open("assets/quests/quests.json", "r", encoding="utf8") as f:
     quests = json.load(f)
 
+# Load jobs data
+with open("assets/jobs/jobs.json", "r", encoding="utf8") as f:
+    jobs = json.load(f)
+
 
 #chests
 with open("assets/items/chests.json", "r", encoding="utf8") as f:
@@ -1000,7 +1004,46 @@ async def add_quests() -> None:
         else:
             await db.execute("INSERT INTO `quests` (`quest_id`, `quest_name`, `quest_description`, `quest_xp_reward`, `quest_reward_type`, `quest_reward`, `quest_reward_amount`, `quest_level_required`, `quest_type`, `quest`, `OnBoard`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (quest['quest_id'], quest['quest_name'], quest['quest_description'], quest['quest_xp_reward'], quest['quest_reward_type'], quest['quest_reward'], quest['quest_reward_amount'], quest['quest_level_required'], quest['quest_type'], quest['quest'], quest['OnBoard']))
             print(f"Added |{quest['quest_name']}| to the database")
-        
+
+# Async function to add jobs and minigames
+async def add_jobs_and_minigames():
+    db = DB()
+    for job in jobs:
+        # Process job
+        data = await db.execute("SELECT * FROM `jobs` WHERE id = ?", (job['id'],), fetch="one")
+        if data is not None:
+            await db.execute("DELETE FROM `jobs` WHERE id = ?", (job['id'],))
+        await db.execute("INSERT INTO `jobs` (`id`, `name`, `description`, `job_icon`) VALUES (?, ?, ?, ?)", (job['id'], job['name'], job['description'], job['job_icon']))
+        print(f"Processed job {job['name']}")
+
+        # Process minigames for this job
+        for minigame in job['minigames']:
+            minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True)
+
+            # Process data depending on minigame type
+            if minigame['type'] == 'Trivia':
+                for question in minigame['questions']:
+                    await db.execute("INSERT INTO `trivia` (`minigame_id`, `question`, `options`, `answer`) VALUES (?, ?, ?, ?)", (minigame_id, question['question'], json.dumps(question['options']), question['answer']))
+            elif minigame['type'] == 'Order':
+                await db.execute("INSERT INTO `order_game` (`minigame_id`, `task`, `items`, `correct_order`) VALUES (?, ?, ?, ?)", (minigame_id, minigame['task'], json.dumps(minigame['items']), json.dumps(minigame['correct_order'])))
+            elif minigame['type'] == 'Matching':
+                await db.execute("INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)", (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correct_matches'])))
+            elif minigame['type'] == 'Choice':
+                for choice in minigame['choices']:
+                    choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)", (minigame_id, choice['description']), lastrowid=True)
+                    for outcome in choice['outcomes']:
+                        await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome['reward_type'], outcome['reward'], outcome['chance']))
+
+async def add_jobs_to_jobboard():
+    db = DB()
+    for job in jobs:
+        # Process job
+        data = await db.execute("SELECT * FROM `jobboard` WHERE id = ?", (job['id'],), fetch="one")
+        if data is not None:
+            await db.execute("DELETE FROM `jobboard` WHERE id = ?", (job['id'],))
+        await db.execute("INSERT INTO `jobboard` (`id`, `name`, `job_icon`) VALUES (?, ?, ?)", (job['id'], job['name'], job['job_icon']))
+        print(f"Processed job {job['name']} for the job board")
+
     
 #add the quests to the board if they have the OnBoard property set to True, check if they are already on the board
 async def add_quests_to_board() -> None:

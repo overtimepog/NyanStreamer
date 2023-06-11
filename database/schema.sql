@@ -320,3 +320,67 @@ CREATE TABLE IF NOT EXISTS `timed_items` (
   `effect` varchar(255) NOT NULL,
   FOREIGN KEY (`item_id`, `user_id`) REFERENCES inventory(`item_id`, `user_id`)
 );
+
+CREATE TABLE IF NOT EXISTS jobs (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    description TEXT,
+    job_icon TEXT
+);
+
+CREATE TABLE IF NOT EXISTS minigames (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id TEXT,
+    type TEXT,
+    prompt TEXT,
+    FOREIGN KEY(job_id) REFERENCES jobs(id)
+);
+
+CREATE TABLE IF NOT EXISTS trivia (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    minigame_id INTEGER,
+    question TEXT,
+    options TEXT,
+    answer TEXT,
+    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+);
+
+CREATE TABLE IF NOT EXISTS order_game (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    minigame_id INTEGER,
+    task TEXT,
+    items TEXT,
+    correct_order TEXT,
+    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+);
+
+CREATE TABLE IF NOT EXISTS matching (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    minigame_id INTEGER,
+    items TEXT,
+    correct_matches TEXT,
+    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+);
+
+CREATE TABLE IF NOT EXISTS choices (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    minigame_id INTEGER,
+    description TEXT,
+    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+);
+
+CREATE TABLE IF NOT EXISTS outcomes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    choice_id INTEGER,
+    result TEXT,
+    reward_type TEXT,
+    reward TEXT,
+    chance REAL,
+    FOREIGN KEY(choice_id) REFERENCES choices(id)
+);
+
+CREATE TABLE IF NOT EXISTS jobboard (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    job_icon TEXT
+);
