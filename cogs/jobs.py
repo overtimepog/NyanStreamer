@@ -192,7 +192,7 @@ class Jobs(commands.Cog, name="jobs"):
         print(game_data)
 
         if minigame[2] == 'Trivia':
-            result = await games.play_trivia(ctx, game_data)
+            result, message = await games.play_trivia(ctx, game_data)
             print(result)
             if result == True:
                 # Assume user_luck is a value between 0 and 100
@@ -216,16 +216,21 @@ class Jobs(commands.Cog, name="jobs"):
                     if random.random() <= adjusted_probability:
                         earned_rewards.append((reward_type, reward_value))
 
-                print(f"You earned: {earned_rewards}")
-                for reward_type, reward_value in earned_rewards:
-                    if reward_type == "money":
-                        # Add the money to the user's account
-                        await db_manager.add_money(user_id, reward_value)
-                        print(f"You earned {reward_value} money!")
-                    elif reward_type == "item":
-                        # Give the item to the user
-                        await db_manager.add_item_to_inventory(user_id, reward_value, 1)
-                        print(f"You earned a {reward_value}!")
+                    reward_messages = []
+                    for reward_type, reward_value in earned_rewards:
+                        if reward_type == "money":
+                            # Add the money to the user's account
+                            await db_manager.add_money(user_id, reward_value)
+                            reward_messages.append(f"You earned {reward_value} money!")
+                        elif reward_type == "item":
+                            # Give the item to the user
+                            await db_manager.add_item_to_inventory(user_id, reward_value, 1)
+                            reward_messages.append(f"You earned a {reward_value}!")
+                    
+                    # Edit the message to include the rewards
+                    embed = message.embeds[0]
+                    embed.description += "\n" + "\n".join(reward_messages)
+                    await message.edit(embed=embed)
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

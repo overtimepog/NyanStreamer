@@ -667,14 +667,14 @@ async def play_trivia(ctx, game_data):
     for choice in trivia_choices:
         view.add_choice(choice)
 
-    await ctx.send(embed=trivia_embed, view=view)
+    message = await ctx.send(embed=trivia_embed, view=view)
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
     except asyncio.TimeoutError:
         await ctx.send("Time's up!")
         result = False
 
-    return result
+    return result, message
 
 async def play_order_game(ctx, game_data):
     correct_order = json.loads(game_data['correctOrder'])
