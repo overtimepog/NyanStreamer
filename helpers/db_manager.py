@@ -1070,6 +1070,15 @@ async def get_user_job(user_id: int) -> str:
         return data[0]
     else:
         return None
+    
+#get job description from job ID
+async def get_job_description_from_id(job_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[2]
+    else:
+        return 0
 
 async def get_jobs_on_board() -> list:
     db = DB()

@@ -83,8 +83,9 @@ class Jobs(commands.Cog, name="jobs"):
                     job_id = job[0]
                     job_name = job[1]
                     icon = job[2]
+                    desc = await db_manager.get_job_description_from_id(job_id)
 
-                    job_embed.add_field(name=f"{icon}**{job_name}**", value=f"ID | `{job_id}`", inline=False)
+                    job_embed.add_field(name=f"{icon}**{job_name}**", value=f"{desc} \n ID | `{job_id}`", inline=False)
 
                 embeds.append(job_embed)
 
