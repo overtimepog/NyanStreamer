@@ -780,7 +780,7 @@ async def print_items() -> None:
         print("Type: Quest | ID: " + quest['quest_id'])
 
     for job in jobs:
-        print("Type: Job | ID: " + job['job_id'])    
+        print("Type: Job | ID: " + job['id'])    
 
 async def add_structures() -> None:
     db = DB()
