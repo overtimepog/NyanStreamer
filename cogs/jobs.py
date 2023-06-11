@@ -148,6 +148,7 @@ class Jobs(commands.Cog, name="jobs"):
 
         # Check if the user already has a job
         user_job = await db_manager.get_user_job(ctx.author.id)
+        print(user_job)
         if user_job != "None":
             # If the user already has a job, send a message
             await ctx.send("You already have a job. Quit it before accepting a new one.")
