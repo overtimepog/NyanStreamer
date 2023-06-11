@@ -253,7 +253,7 @@ class Jobs(commands.Cog, name="jobs"):
                         
                         # Add the money to the user's account
                         await db_manager.add_money(user_id, int_reward_value * total_count)
-                        reward_messages.append(f"You earned {int_reward_value * total_count} money!")
+                        reward_messages.append(f"You earned {cash}{int_reward_value * total_count}!")
                     elif reward_type == "item":
                         # Give the item to the user
                         for _ in range(total_count):
