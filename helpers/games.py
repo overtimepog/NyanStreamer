@@ -612,10 +612,11 @@ async def trivia(self, ctx: commands.Context):
 # -------------------- for WORK COMMAND --------------------
 
 class TriviaGameView(View):
-    def __init__(self, answer, resolve_callback, *args, **kwargs):
+    def __init__(self, answer, resolve_callback, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.answer = answer
         self.resolve_callback = resolve_callback
+        self.user = user
 
     async def interaction_check(self, interaction: discord.Interaction):
         if interaction.user.id == self.user.id:
@@ -659,7 +660,9 @@ async def play_trivia(ctx, game_data):
 
     resolve_promise = ctx.bot.loop.create_future()
 
-    view = TriviaGameView(answer=trivia_answer, resolve_callback=resolve_promise)
+    view = TriviaGameView(answer=trivia_answer, resolve_callback=resolve_promise, user=ctx.author)
+
+    random.shuffle(trivia_choices)  # Shuffle the choices
 
     for choice in trivia_choices:
         view.add_choice(choice)
