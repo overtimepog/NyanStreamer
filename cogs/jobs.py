@@ -191,7 +191,7 @@ class Jobs(commands.Cog, name="jobs"):
         game_data = await db_manager.get_data_for_minigame(minigame)
         print(game_data)
 
-        if minigame[0] == 'Trivia':
+        if minigame[2] == 'Trivia':
             await games.play_trivia(ctx, game_data)
 
 

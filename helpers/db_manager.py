@@ -1087,7 +1087,7 @@ async def get_rewards_for_minigame(minigame_id):
 
 async def get_data_for_minigame(minigame):
     db = DB()
-    game_type = minigame[0]
+    game_type = minigame[2]
     game_data = None
     if game_type == 'Trivia':
         game_data = await db.execute("SELECT * FROM `trivia` WHERE minigame_id = ?", (minigame['id'],), fetch="all")
