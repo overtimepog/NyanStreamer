@@ -192,7 +192,8 @@ class Jobs(commands.Cog, name="jobs"):
         print(game_data)
 
         if minigame[2] == 'Trivia':
-            await games.play_trivia(ctx, game_data)
+            result = await games.play_trivia(ctx, game_data)
+            print(result)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
