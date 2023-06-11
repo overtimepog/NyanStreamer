@@ -610,7 +610,7 @@ async def trivia(self, ctx: commands.Context):
         await ctx.send(embed=embed, view=view)
 
 
-class TriviaGameView(TriviaView):
+class TriviaGameView(View):
     def __init__(self, answer, resolve_callback, *args, **kwargs):
         super().__init__(answer, *args, **kwargs)
         self.resolve_callback = resolve_callback
@@ -620,7 +620,7 @@ class TriviaGameView(TriviaView):
             return True
         return False
 
-class TriviaGameButton(TriviaButton):
+class TriviaGameButton(Button):
     def __init__(self, label, trivia_view, *args, **kwargs):
         super().__init__(label, trivia_view, *args, **kwargs)
 
@@ -637,7 +637,7 @@ class TriviaGameButton(TriviaButton):
         embed.color = discord.Color.green() if selected_choice == self.trivia_view.answer else discord.Color.red()
         await interaction.message.edit(embed=embed, view=None)
 
-class TriviaGameView(TriviaView):
+class TriviaGameView(TriviaGameView):
     def add_choice(self, choice):
         self.add_item(TriviaGameButton(label=choice, trivia_view=self, style=discord.ButtonStyle.secondary))
 
@@ -657,7 +657,7 @@ async def play_trivia(ctx, game_data):
 
     resolve_promise = ctx.bot.loop.create_future()
 
-    view = TriviaGameView(answer=trivia_answer)
+    view = TriviaGameView(answer=trivia_answer, resolve_callback=resolve_promise)
 
     for choice in trivia_choices:
         view.add_choice(choice)
