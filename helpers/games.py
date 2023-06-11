@@ -633,6 +633,7 @@ class TriviaGameButton(Button):
         self.trivia_view = trivia_view
 
     async def callback(self, interaction: discord.Interaction):
+        self.disabled = True
         selected_choice = self.label
         if selected_choice == self.trivia_view.answer:
             self.style = discord.ButtonStyle.success
