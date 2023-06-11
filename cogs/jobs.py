@@ -222,6 +222,9 @@ class Jobs(commands.Cog, name="jobs"):
                     if random.random() <= adjusted_probability:
                         prev_value, prev_count = earned_rewards[reward_type]
                         earned_rewards[reward_type] = (reward_value, prev_count+1)
+                    
+                # Print earned rewards after processing
+                print("Earned Rewards after processing: ", earned_rewards)
 
                 reward_messages = []
                 for reward_type, (reward_value, total_count) in earned_rewards.items():
