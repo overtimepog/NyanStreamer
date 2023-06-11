@@ -194,7 +194,10 @@ class Jobs(commands.Cog, name="jobs"):
         if minigame[2] == 'Trivia':
             result = await games.play_trivia(ctx, game_data)
             print(result)
-
+            if result == True:
+                await ctx.send("You have completed your job and earned some money!")
+                rewards = await db_manager.get_rewards_for_minigame(minigame[0])
+                print(rewards)
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
