@@ -757,9 +757,9 @@ async def print_items() -> None:
     #get the items
     for item in basic_items:
         if item['item_sub_type'] == 'None':
-            print("Type: " + item['item_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'] + " | Damage: " + str(item['item_damage'])  + " | Price: " + item['price'] + " | Description: " + item['item_description'])
+            print("Type: " + item['item_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'] + " | Damage: " + str(item['item_damage'])  + " | Price: " + item['item_price'] + " | Description: " + item['item_description'])
         else:
-            print("Type: " + item['item_type'] + " SubType: " + item['item_sub_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'] + " | Damage: " + str(item['item_damage']) + " | Price: " + item['price'] + " | Description: " + item['item_description'])
+            print("Type: " + item['item_type'] + " SubType: " + item['item_sub_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'] + " | Damage: " + str(item['item_damage']) + " | Price: " + item['item_price'] + " | Description: " + item['item_description'])
     for chest in chests:
         print("Type: Chest | ID: " + chest['chest_id'] + " | Rarity:" + chest['chest_rarity'])
 
