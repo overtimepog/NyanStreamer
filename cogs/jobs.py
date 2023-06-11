@@ -205,7 +205,6 @@ class Jobs(commands.Cog, name="jobs"):
                 rewards = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[4], reverse=True)
                 earned_rewards = defaultdict(lambda: (None, 0))
                 print("Rewards: ", rewards)
-                print("Earned Rewards: ", earned_rewards)
 
                 # Always give at least the reward with the highest probability
                 reward_id, minigame_id, reward_type, reward_value, reward_probability = rewards[0]
