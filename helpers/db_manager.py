@@ -1090,15 +1090,15 @@ async def get_data_for_minigame(minigame):
     game_type = minigame[2]
     game_data = None
     if game_type == 'Trivia':
-        game_data = await db.execute("SELECT * FROM `trivia` WHERE minigame_id = ?", (minigame['id'],), fetch="all")
+        game_data = await db.execute("SELECT * FROM `trivia` WHERE minigame_id = ?", (minigame[0],), fetch="all")
     elif game_type == 'Order':
-        game_data = await db.execute("SELECT * FROM `order_game` WHERE minigame_id = ?", (minigame['id'],), fetch="one")
+        game_data = await db.execute("SELECT * FROM `order_game` WHERE minigame_id = ?", (minigame[0],), fetch="one")
     elif game_type == 'Matching':
-        game_data = await db.execute("SELECT * FROM `matching` WHERE minigame_id = ?", (minigame['id'],), fetch="one")
+        game_data = await db.execute("SELECT * FROM `matching` WHERE minigame_id = ?", (minigame[0],), fetch="one")
     elif game_type == 'Choice':
-        choices = await db.execute("SELECT * FROM `choices` WHERE minigame_id = ?", (minigame['id'],), fetch="all")
+        choices = await db.execute("SELECT * FROM `choices` WHERE minigame_id = ?", (minigame[0],), fetch="all")
         for choice in choices:
-            outcomes = await db.execute("SELECT * FROM `outcomes` WHERE choice_id = ?", (choice['id'],), fetch="all")
+            outcomes = await db.execute("SELECT * FROM `outcomes` WHERE choice_id = ?", (choice[0],), fetch="all")
             choice['outcomes'] = outcomes
         game_data = choices
     return game_data
