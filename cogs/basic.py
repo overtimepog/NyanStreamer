@@ -985,7 +985,7 @@ class Basic(commands.Cog, name="basic"):
         
     @sell.autocomplete("item")
     async def sell_autocomplete(self, ctx: discord.Interaction, argument):
-        print(argument)
+        #print(argument)
         user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory(user_id)
         #if the item type is a pet
@@ -2057,7 +2057,7 @@ class Basic(commands.Cog, name="basic"):
     
     @use.autocomplete("item")
     async def use_autocomplete(self, ctx: discord.Interaction, argument):
-        print(argument)
+        #print(argument)
         user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory(user_id)
         choices = []
