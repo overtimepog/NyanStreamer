@@ -149,18 +149,15 @@ class Jobs(commands.Cog, name="jobs"):
         # Check if the user already has a job
         user_job = await db_manager.get_user_job(ctx.author.id)
         print(user_job)
+        #if the user doesnt have a job
         if user_job is not None:
-            # If the user already has a job, send a message
-            await ctx.send("You already have a job. Quit it before accepting a new one.")
+            # Assign the job to the user in the database
+            await db_manager.add_user_job(ctx.author.id, job)
+            await ctx.send(f"You have accepted the job: {job.title()}.")
             return
-        elif user_job is not "None":
-            # If the user already has a job, send a message
-            await ctx.send("You already have a job. Quit it before accepting a new one.")
+        else:
+            await ctx.send("You already have a job, please quit your current job before accepting a new one.")
             return
-
-        # Assign the job to the user in the database
-        await db_manager.add_user_job(ctx.author.id, job)
-        await ctx.send(f"You have accepted the job: {job.title()}.")
 
     @acceptjob.autocomplete("job")
     async def job_autocomplete(self, ctx: discord.Interaction, argument):
