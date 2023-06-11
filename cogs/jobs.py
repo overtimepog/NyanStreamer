@@ -191,8 +191,9 @@ class Jobs(commands.Cog, name="jobs"):
         game_data = await db_manager.get_data_for_minigame(minigame)
         print(game_data)
 
+        callback_processed_future = ctx.bot.loop.create_future()
         if minigame[2] == 'Trivia':
-            result, message = await games.play_trivia(ctx, game_data)
+            result, message = await games.play_trivia(ctx, game_data, callback_processed_future)
             print(result)
             if result == True:
                 # Assume user_luck is a value between 0 and 100
@@ -251,6 +252,7 @@ class Jobs(commands.Cog, name="jobs"):
                     description="\n".join(reward_messages),
                     color=discord.Color.gold()
                 )
+                await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
                 await message.edit(embed=reward_embed, view=None)
 
 

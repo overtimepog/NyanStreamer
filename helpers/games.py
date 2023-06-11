@@ -612,10 +612,11 @@ async def trivia(self, ctx: commands.Context):
 # -------------------- for WORK COMMAND --------------------
 
 class TriviaGameView(View):
-    def __init__(self, answer, resolve_callback, user, *args, **kwargs):
+    def __init__(self, answer, resolve_callback, callback_processed_future, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.answer = answer
         self.resolve_callback = resolve_callback
+        self.callback_processed_future = callback_processed_future
         self.user = user
 
     async def interaction_check(self, interaction: discord.Interaction):
@@ -624,13 +625,14 @@ class TriviaGameView(View):
         return False
 
     def add_choice(self, choice):
-        self.add_item(TriviaGameButton(label=choice, trivia_view=self, style=discord.ButtonStyle.secondary))
+        self.add_item(TriviaGameButton(label=choice, trivia_view=self, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
 
 class TriviaGameButton(Button):
-    def __init__(self, label, trivia_view, *args, **kwargs):
+    def __init__(self, label, trivia_view, callback_processed_future, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label = label
         self.trivia_view = trivia_view
+        self.callback_processed_future = callback_processed_future
 
     async def callback(self, interaction: discord.Interaction):
         self.disabled = True
@@ -646,7 +648,10 @@ class TriviaGameButton(Button):
         embed.color = discord.Color.green() if selected_choice == self.trivia_view.answer else discord.Color.red()
         await interaction.message.edit(embed=embed, view=None)
 
-async def play_trivia(ctx, game_data):
+        # Set callback_processed_future result here
+        self.callback_processed_future.set_result(True)
+
+async def play_trivia(ctx, game_data, callback_processed_future):
     random_trivia = random.choice(game_data)
     print(random_trivia)
     trivia_question = random_trivia[2]
@@ -661,7 +666,7 @@ async def play_trivia(ctx, game_data):
 
     resolve_promise = ctx.bot.loop.create_future()
 
-    view = TriviaGameView(answer=trivia_answer, resolve_callback=resolve_promise, user=ctx.author)
+    view = TriviaGameView(answer=trivia_answer, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
 
     random.shuffle(trivia_choices)  # Shuffle the choices
 
