@@ -82,10 +82,9 @@ class Jobs(commands.Cog, name="jobs"):
                 for job in job_list[start_idx:end_idx]:
                     job_id = job[0]
                     job_name = job[1]
-                    job_reward = job[2]
-                    job_requirement = job[3]
+                    icon = job[2]
 
-                    job_embed.add_field(name=f"**{job_name}**", value=f"ID | `{job_id}` \n **Reward**: {job_reward} \n **Requirement**: {job_requirement} \n", inline=False)
+                    job_embed.add_field(name=f"{icon}**{job_name}**", value=f"ID | `{job_id}`", inline=False)
 
                 embeds.append(job_embed)
 
