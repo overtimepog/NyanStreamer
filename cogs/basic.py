@@ -1032,6 +1032,8 @@ class Basic(commands.Cog, name="basic"):
         user_quest = user_profile[13]
         user_twitch_id = user_profile[14]
         user_twitch_name = user_profile[15]
+        player_title = user_profile[25]
+        job_id = user_profile[26]
         #print all this info
         #get the xp needed for the next level
         xp_needed = await db_manager.xp_needed(user_id)
@@ -1130,15 +1132,14 @@ class Basic(commands.Cog, name="basic"):
         #        embed.add_field(name=f"{item_emote} {item_name}", value=f"Damage: {item_amount}", inline=True)
             
         #create a section for the users current quest
-        if user_quest == 0 or user_quest == None or user_quest == "" or user_quest == "None":
-            embed.add_field(name="Current Quest", value="`No Current Quest, Check the Quest Board to get one`", inline=False)
+
+        if job_id is None or job_id == 0 or job_id == "None":
+            embed.add_field(name="Current Job", value="`You currently have no job. Use the job command to get one.`", inline=False)
         else:
-            quest_name = await db_manager.get_quest_name_from_quest_id(user_quest)
-            quest_description = await db_manager.get_quest_description_from_quest_id(user_quest)
-            questTotal = await db_manager.get_quest_total_from_id(user_quest)
-            quest_progress = await db_manager.get_quest_progress(user_id, user_quest)
-            quest_progress = str(quest_progress)
-            embed.add_field(name="Current Quest", value=f"`{quest_name} - {quest_progress}/{questTotal}`", inline=False)
+            job_name = await db_manager.get_job_name_from_id(job_id)
+            job_description = await db_manager.get_job_description_from_id(job_id)
+            job_progress = str(job_progress)
+            embed.add_field(name="Current Job", value=f"`**{job_name}**", inline=False)
         embed.set_thumbnail(url=user.avatar.url)
         if isStreamer == 1:
             isStreamer = "Yes"
