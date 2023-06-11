@@ -195,9 +195,37 @@ class Jobs(commands.Cog, name="jobs"):
             result = await games.play_trivia(ctx, game_data)
             print(result)
             if result == True:
-                await ctx.send("You have completed your job and earned some money!")
+                # Assume user_luck is a value between 0 and 100
+                user_luck = await db_manager.get_luck(user_id)
+
+                # Adjust user's luck into scale of 0 to 1
+                adjusted_luck = user_luck / 100
+
+                # Get the rewards
                 rewards = await db_manager.get_rewards_for_minigame(minigame[0])
-                print(rewards)
+                earned_rewards = []
+
+                # Go through each possible reward
+                for reward in rewards:
+                    reward_id, minigame_id, reward_type, reward_value, reward_probability = reward
+
+                    # Adjust the reward probability with the user's luck
+                    adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
+
+                    # Roll a random number to see if the user gets this reward
+                    if random.random() <= adjusted_probability:
+                        earned_rewards.append((reward_type, reward_value))
+
+                print(f"You earned: {earned_rewards}")
+                for reward_type, reward_value in earned_rewards:
+                    if reward_type == "money":
+                        # Add the money to the user's account
+                        await db_manager.add_money(user_id, reward_value)
+                        print(f"You earned {reward_value} money!")
+                    elif reward_type == "item":
+                        # Give the item to the user
+                        await db_manager.add_item_to_inventory(user_id, reward_value, 1)
+                        print(f"You earned a {reward_value}!")
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
