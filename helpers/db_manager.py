@@ -1054,6 +1054,30 @@ async def add_jobs_to_jobboard():
         await db.execute("INSERT INTO `jobboard` (`id`, `name`, `job_icon`) VALUES (?, ?, ?)", (job['id'], job['name'], job['job_icon']))
         print(f"Processed job {job['name']} for the job board")
 
+
+async def add_user_job(user_id: int, job_id: str) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET `job_id` = ? WHERE `user_id` = ?", (job_id, user_id))
+
+async def remove_user_job(user_id: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET `job_id` = NULL WHERE `user_id` = ?", (user_id,))
+
+async def get_user_job(user_id: int) -> str:
+    db = DB()
+    data = await db.execute("SELECT `job_id` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    if data is not None:
+        return data[0]
+    else:
+        return None
+
+async def get_jobs_on_board() -> list:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobBoard`", fetch="all")
+    if data is not None:
+        return data
+    else:
+        return []
     
 #add the quests to the board if they have the OnBoard property set to True, check if they are already on the board
 async def add_quests_to_board() -> None:
