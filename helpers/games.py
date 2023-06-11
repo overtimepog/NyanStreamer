@@ -646,8 +646,8 @@ async def play_trivia(ctx, game_data):
     random_trivia = random.choice(game_data)
     print(random_trivia)
     trivia_question = random_trivia[2]
-    trivia_choices = json.loads(random_trivia['options'])
-    trivia_answer = random_trivia[7]
+    trivia_choices = json.loads(random_trivia[3])
+    trivia_answer = random_trivia[4]
 
     trivia_embed = Embed(
         title="Trivia Time!",
