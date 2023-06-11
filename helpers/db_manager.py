@@ -1024,8 +1024,8 @@ async def add_jobs_and_minigames():
             minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True)
 
             # Process rewards for this minigame
-            if 'reward' in minigame:
-                await db.execute("INSERT INTO `rewards` (`minigame_id`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?)", (minigame_id, minigame['reward']['rewardType'], minigame['reward']['reward'], minigame['reward']['chance']))
+            for reward in minigame['rewards']:
+                await db.execute("INSERT INTO `rewards` (`minigame_id`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?)", (minigame_id, reward['rewardType'], reward['reward'], reward['chance']))
 
             # Process data depending on minigame type
             if minigame['type'] == 'Trivia':
@@ -1039,7 +1039,7 @@ async def add_jobs_and_minigames():
                 for option in minigame['options']:
                     choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)", (minigame_id, option['description']), lastrowid=True)
                     for outcome in option['outcomes']:
-                        await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome['rewardType'], str(outcome['reward']), outcome['chance']))
+                        await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`) VALUES (?, ?)", (choice_id, outcome['result']))
 
 async def add_jobs_to_jobboard():
     db = DB()
