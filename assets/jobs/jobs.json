@@ -7,6 +7,10 @@
         "minigames": [
             {
                 "type": "Trivia",
+                "reward": [
+                    {"rewardType": "money", "reward": 50, "chance": 0.5},
+                    {"rewardType": "item", "reward": "debugger", "chance": 0.3}
+                ],
                 "questions": [
                     {
                         "question": "What does HTML stand for?",
@@ -30,12 +34,20 @@
         "minigames": [
             {
                 "type": "Order",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5}
+                ],
                 "task": "Sort the ingredients according to the recipe order",
                 "items": ["Flour", "Eggs", "Milk", "Butter"],
                 "correctOrder": ["Flour", "Butter", "Eggs", "Milk"]
             },
             {
                 "type": "Trivia",
+                "reward": [
+                    {"rewardType": "money", "reward": 50, "chance": 0.5},
+                    {"rewardType": "item", "reward": "chef_hat", "chance": 0.2}
+                ],
                 "questions": [
                     {
                         "question": "What temperature does water boil at sea level?",
@@ -54,6 +66,10 @@
         "minigames": [
             {
                 "type": "Matching",
+                "reward": [
+                    {"rewardType": "money", "reward": 70, "chance": 0.5},
+                    {"rewardType": "experience", "reward": 40, "chance": 0.3}
+                ],
                 "items": [
                     {"name": "Heart", "description": "Pumps blood"},
                     {"name": "Lungs", "description": "Helps in breathing"},
@@ -67,6 +83,10 @@
             },
             {
                 "type": "Trivia",
+                "reward": [
+                    {"rewardType": "money", "reward": 50, "chance": 0.5},
+                    {"rewardType": "item", "reward": "stethoscope", "chance": 0.3}
+                ],
                 "questions": [
                     {
                         "question": "What's the normal body temperature for adults?",
@@ -112,6 +132,10 @@
             },
             {
                 "type": "Trivia",
+                "reward": [
+                    {"rewardType": "money", "reward": 50, "chance": 0.5},
+                    {"rewardType": "item", "reward": "moon_rock", "chance": 0.4}
+                ],
                 "questions": [
                     {
                         "question": "Which planet is known as the Red Planet?",

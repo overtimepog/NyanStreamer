@@ -170,7 +170,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `poison_resistance` int(11) NOT NULL,
   `frost_resistance` int(11) NOT NULL,
   `paralysis_resistance` int(11) NOT NULL,
-  `luck` int(11) NOT NULL
+  `luck` int(11) NOT NULL,
+  `player_title` varchar(255) NOT NULL,
+  `job_id` TEXT,
 );
 
 CREATE TABLE IF NOT EXISTS `stats`(
@@ -334,6 +336,15 @@ CREATE TABLE IF NOT EXISTS minigames (
     type TEXT,
     prompt TEXT,
     FOREIGN KEY(job_id) REFERENCES jobs(id)
+);
+
+CREATE TABLE IF NOT EXISTS rewards (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    minigame_id INTEGER,
+    reward_type TEXT,
+    reward TEXT,
+    chance REAL,
+    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
 );
 
 CREATE TABLE IF NOT EXISTS trivia (
