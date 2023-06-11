@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `paralysis_resistance` int(11) NOT NULL,
   `luck` int(11) NOT NULL,
   `player_title` varchar(255) NOT NULL,
-  `job_id` TEXT,
+  `job_id` TEXT
 );
 
 CREATE TABLE IF NOT EXISTS `stats`(
