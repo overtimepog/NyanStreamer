@@ -135,6 +135,13 @@ class Jobs(commands.Cog, name="jobs"):
 )
     async def acceptjob(self, ctx: Context, job: str):
         # Retrieve the specific job from the database
+        #check if the user exists
+        user = await db_manager.get_user(ctx.author.id)
+        if user is None:
+            # If the user does not exist, send a message
+            await ctx.send(f"You haven't started your Journey, use `/start`.")
+            return
+        
         if job is None:
             # If the job does not exist, send a message
             await ctx.send("That job does not exist.")
