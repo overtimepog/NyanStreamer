@@ -1138,7 +1138,7 @@ class Basic(commands.Cog, name="basic"):
         else:
             job_name = await db_manager.get_job_name_from_id(job_id)
             job_description = await db_manager.get_job_description_from_id(job_id)
-            embed.add_field(name="Current Job", value=f"`**{job_name}**", inline=False)
+            embed.add_field(name="Current Job", value=f"**{job_name}**", inline=False)
         embed.set_thumbnail(url=user.avatar.url)
         if isStreamer == 1:
             isStreamer = "Yes"
