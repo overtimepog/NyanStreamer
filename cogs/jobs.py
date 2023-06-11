@@ -46,8 +46,22 @@ class Jobs(commands.Cog, name="jobs"):
     description="quit your current job",
     )
     async def quitjob(self, ctx: Context):
+        # Retrieve the specific job from the database
+        #check if the user exists
+        user_exists = await db_manager.check_user(ctx.author.id)
+        if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
+            await ctx.send("You are not in the database yet, please use the `d.start or /start` command to start your adventure!")
+            return
+        #check if the user has a job
+        user = await db_manager.profile(ctx.author.id)
+        user_job = user[26]
+        user_job = str(user_job)
+        if user_job is None or user_job == 0 or user_job == "None":
+            await ctx.send("You don't have a job!")
+            return
+        #remove the job from the user
         await db_manager.remove_user_job(ctx.author.id)
-        await ctx.send("You have abandoned your current job, if you want to get a new one please check the job board")
+        await ctx.send(f"You have quit your Position as a {user_job.title()}, if you want to get a new one please check the job board")
 
     @job.command(
     name="board",
@@ -153,7 +167,7 @@ class Jobs(commands.Cog, name="jobs"):
         if user_job is None or user_job == 0 or user_job == "None":
             #give the user the job
             await db_manager.add_user_job(ctx.author.id, job)
-            await ctx.send(f"You have accepted the job {job.title}!")
+            await ctx.send(f"You have accepted the job {job.title()}!")
         else:
             await ctx.send("You already have a job!, please use `d.job quit or /job quit` command to quit your current job.")
 
