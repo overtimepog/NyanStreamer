@@ -610,4 +610,166 @@ async def trivia(self, ctx: commands.Context):
         await ctx.send(embed=embed, view=view)
 
 
+class TriviaGameView(TriviaView):
+    def __init__(self, answer, resolve_callback, *args, **kwargs):
+        super().__init__(answer, *args, **kwargs)
+        self.resolve_callback = resolve_callback
+
+    async def interaction_check(self, interaction: discord.Interaction):
+        if interaction.user.id == self.user.id:
+            return True
+        return False
+
+class TriviaGameButton(TriviaButton):
+    def __init__(self, label, trivia_view, *args, **kwargs):
+        super().__init__(label, trivia_view, *args, **kwargs)
+
+    async def callback(self, interaction: discord.Interaction):
+        selected_choice = self.label
+        if selected_choice == self.trivia_view.answer:
+            self.style = discord.ButtonStyle.success
+            await self.trivia_view.resolve_callback(True)
+        else:
+            self.style = discord.ButtonStyle.danger
+            await self.trivia_view.resolve_callback(False)
+
+        embed = interaction.message.embeds[0]
+        embed.color = discord.Color.green() if selected_choice == self.trivia_view.answer else discord.Color.red()
+        await interaction.message.edit(embed=embed, view=None)
+
+class TriviaGameView(TriviaView):
+    def add_choice(self, choice):
+        self.add_item(TriviaGameButton(label=choice, trivia_view=self, style=discord.ButtonStyle.secondary))
+
+
+async def play_trivia(ctx, game_data):
+    random_trivia = random.choice(game_data)
+    trivia_question = random_trivia['question']
+    trivia_choices = json.loads(random_trivia['options'])
+    trivia_answer = random_trivia['answer']
+
+    trivia_embed = Embed(
+        title="Trivia Time!",
+        description=f"{trivia_question}",
+        color=discord.Color.blue()
+    )
+
+    resolve_promise = ctx.bot.loop.create_future()
+
+    view = TriviaGameView(answer=trivia_answer, resolve_callback=resolve_promise.set_result)
+
+    for choice in trivia_choices:
+        view.add_choice(choice)
+
+    await ctx.send(embed=trivia_embed, view=view)
+    try:
+        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
+    except asyncio.TimeoutError:
+        await ctx.send("Time's up!")
+        result = False
+
+    return result
+
+async def play_order_game(ctx, game_data):
+    correct_order = json.loads(game_data['correctOrder'])
+
+    order_prompt = game_data['task']
+    items = json.loads(game_data['items'])
+
+    message_content = f"{order_prompt}\n{' '.join(items)}"
+    await ctx.send(message_content)
+
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+
+    try:
+        user_message = await ctx.bot.wait_for('message', check=check, timeout=60)
+        user_order = user_message.content.split(" ")
+
+        if user_order == correct_order:
+            return True
+        else:
+            return False
+    except asyncio.TimeoutError:
+        await ctx.send("Time's up!")
+        return False
+    
+async def play_matching_game(ctx, game_data):
+    correct_matches = json.loads(game_data['correctMatches'])
+
+    items = json.loads(game_data['items'])
+    match_prompts = "\n".join([f"{i+1}. {item}" for i, item in enumerate(items)])
+
+    await ctx.send(f"Match the following items:\n{match_prompts}")
+
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+
+    try:
+        user_message = await ctx.bot.wait_for('message', check=check, timeout=60)
+        user_matches = [int(match) for match in user_message.content.split(" ")]
+
+        if user_matches == correct_matches:
+            return True
+        else:
+            return False
+    except asyncio.TimeoutError:
+        await ctx.send("Time's up!")
+        return False
+
+
+class ChoiceButton(discord.ui.Button):
+    def __init__(self, label, choice_view, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label = label
+        self.choice_view = choice_view
+
+    async def callback(self, interaction: discord.Interaction):
+        self.style = discord.ButtonStyle.primary
+        self.choice_view.stop()
+
+class ChoiceView(discord.ui.View):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def add_option(self, option):
+        self.add_item(ChoiceButton(label=option, choice_view=self, style=discord.ButtonStyle.secondary))
+
+class ChoiceGameButton(ChoiceButton):
+    def __init__(self, label, choice_view, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label = label
+        self.choice_view = choice_view
+
+    async def callback(self, interaction: discord.Interaction):
+        self.style = discord.ButtonStyle.primary
+        self.choice_view.stop()
+
+class ChoiceGameView(ChoiceView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def add_option(self, option):
+        self.add_item(ChoiceGameButton(label=option, choice_view=self, style=discord.ButtonStyle.secondary))
+
+async def play_choice_game(ctx, game_data):
+    options = [option['description'] for option in game_data]
+    view = ChoiceGameView()
+
+    for option in options:
+        view.add_option(option)
+
+    await ctx.send("Choose an option:", view=view)
+
+    try:
+        await view.wait()
+        selected_option = next((button for button in view.children if button.style == discord.ButtonStyle.primary), None)
+        if selected_option:
+            return True
+        else:
+            return False
+    except asyncio.TimeoutError:
+        await ctx.send("Time's up!")
+        return False
+
 #catch the fish minigame

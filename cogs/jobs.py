@@ -12,7 +12,7 @@ from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager, hunt, mine
+from helpers import battle, checks, db_manager, hunt, mine, games
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 
@@ -144,7 +144,7 @@ class Jobs(commands.Cog, name="jobs"):
         user_job = await db_manager.get_user_job(ctx.author.id)
         if user_job is not None:
             # If the user already has a job, send a message
-            await ctx.send("You already have a job. Abandon it before accepting a new one.")
+            await ctx.send("You already have a job. Quit it before accepting a new one.")
             return
 
         # Assign the job to the user in the database
@@ -160,7 +160,45 @@ class Jobs(commands.Cog, name="jobs"):
             if argument.lower() in job[1].lower():
                 choices.append(app_commands.Choice(name=job[1], value=job[0]))
         return choices[:25]
-    
+
+
+    @commands.hybrid_command(
+    name="work",
+    description="Work your job to earn money.",
+    )
+    async def work(self, ctx: commands.Context):
+        user_id = ctx.author.id
+
+        # Get user's job
+        job_id = await db_manager.get_user_job(user_id)
+        if job_id is None:
+            await ctx.send("You don't have a job!")
+            return
+
+        # Get a random minigame for this job
+        minigame = await db_manager.get_minigame_for_job(job_id)
+        if minigame is None:
+            await ctx.send("No minigames found for this job!")
+            return
+
+        game_data = await db_manager.get_data_for_minigame(minigame)
+
+        if minigame['type'] == 'Trivia':
+            result = await games.play_trivia(ctx, game_data)
+        elif minigame['type'] == 'Order':
+            result = await games.play_order_game(ctx, game_data)
+        elif minigame['type'] == 'Matching':
+            result = await games.play_matching_game(ctx, game_data)
+        elif minigame['type'] == 'Choice':
+            result = await games.play_choice_game(ctx, game_data)
+
+        if result:
+            rewards = await db_manager.get_rewards_for_minigame(minigame['id'])
+            print(rewards)
+        else:
+            await ctx.send("You didn't win the minigame, better luck next time!")
+
+
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
     await bot.add_cog(Jobs(bot))

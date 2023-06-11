@@ -1071,6 +1071,38 @@ async def get_user_job(user_id: int) -> str:
     else:
         return None
     
+async def get_minigame_for_job(job_id):
+    db = DB()
+    minigame_ids = await db.execute("SELECT id FROM `minigames` WHERE job_id = ?", (job_id,), fetch="all")
+    if not minigame_ids:
+        return None
+    minigame_id = random.choice([item[0] for item in minigame_ids])
+    minigame = await db.execute("SELECT * FROM `minigames` WHERE id = ?", (minigame_id,), fetch="one")
+    return minigame
+
+async def get_rewards_for_minigame(minigame_id):
+    db = DB()
+    rewards = await db.execute("SELECT * FROM `rewards` WHERE minigame_id = ?", (minigame_id,), fetch="all")
+    return rewards
+
+async def get_data_for_minigame(minigame):
+    db = DB()
+    game_type = minigame['type']
+    game_data = None
+    if game_type == 'Trivia':
+        game_data = await db.execute("SELECT * FROM `trivia` WHERE minigame_id = ?", (minigame['id'],), fetch="all")
+    elif game_type == 'Order':
+        game_data = await db.execute("SELECT * FROM `order_game` WHERE minigame_id = ?", (minigame['id'],), fetch="one")
+    elif game_type == 'Matching':
+        game_data = await db.execute("SELECT * FROM `matching` WHERE minigame_id = ?", (minigame['id'],), fetch="one")
+    elif game_type == 'Choice':
+        choices = await db.execute("SELECT * FROM `choices` WHERE minigame_id = ?", (minigame['id'],), fetch="all")
+        for choice in choices:
+            outcomes = await db.execute("SELECT * FROM `outcomes` WHERE choice_id = ?", (choice['id'],), fetch="all")
+            choice['outcomes'] = outcomes
+        game_data = choices
+    return game_data
+    
 #get job description from job ID
 async def get_job_description_from_id(job_id: str) -> str:
     db = DB()
