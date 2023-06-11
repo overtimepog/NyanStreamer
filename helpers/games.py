@@ -609,6 +609,7 @@ async def trivia(self, ctx: commands.Context):
 
         await ctx.send(embed=embed, view=view)
 
+# -------------------- for WORK COMMAND --------------------
 
 class TriviaGameView(View):
     def __init__(self, answer, resolve_callback, *args, **kwargs):
