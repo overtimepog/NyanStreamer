@@ -657,7 +657,7 @@ async def play_trivia(ctx, game_data):
 
     resolve_promise = ctx.bot.loop.create_future()
 
-    view = TriviaGameView(answer=trivia_answer, resolve_callback=resolve_promise.set_result)
+    view = TriviaGameView(answer=trivia_answer)
 
     for choice in trivia_choices:
         view.add_choice(choice)
