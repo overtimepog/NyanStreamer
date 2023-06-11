@@ -778,6 +778,9 @@ async def print_items() -> None:
 
     for quest in quests:
         print("Type: Quest | ID: " + quest['quest_id'])
+
+    for job in jobs:
+        print("Type: Job | ID: " + job['job_id'])
         
 
 async def add_structures() -> None:
@@ -1041,7 +1044,7 @@ async def add_jobs_and_minigames():
                     choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)", (minigame_id, option['description']), lastrowid=True)
                     for outcome in option['outcomes']:
                         await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome.get('rewardType'), str(outcome.get('reward')), outcome.get('chance')))
-                        
+
 async def add_jobs_to_jobboard():
     db = DB()
     for job in jobs:
