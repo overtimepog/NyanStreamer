@@ -183,20 +183,16 @@ class Jobs(commands.Cog, name="jobs"):
 
         # Get a random minigame for this job
         minigame = await db_manager.get_minigame_for_job(job_id)
+        print(minigame)
         if minigame is None:
             await ctx.send("No minigames found for this job!")
             return
 
         game_data = await db_manager.get_data_for_minigame(minigame)
+        print(game_data)
 
         if minigame[0] == 'Trivia':
             await games.play_trivia(ctx, game_data)
-        elif minigame[0] == 'Order':
-            await games.play_order_game(ctx, game_data)
-        elif minigame[0] == 'Matching':
-            await games.play_matching_game(ctx, game_data)
-        elif minigame[0] == 'Choice':
-            await games.play_choice_game(ctx, game_data)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
