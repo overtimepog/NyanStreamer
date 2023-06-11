@@ -1028,14 +1028,14 @@ async def add_jobs_and_minigames():
                 for question in minigame['questions']:
                     await db.execute("INSERT INTO `trivia` (`minigame_id`, `question`, `options`, `answer`) VALUES (?, ?, ?, ?)", (minigame_id, question['question'], json.dumps(question['options']), question['answer']))
             elif minigame['type'] == 'Order':
-                await db.execute("INSERT INTO `order_game` (`minigame_id`, `task`, `items`, `correct_order`) VALUES (?, ?, ?, ?)", (minigame_id, minigame['task'], json.dumps(minigame['items']), json.dumps(minigame['correct_order'])))
+                await db.execute("INSERT INTO `order_game` (`minigame_id`, `task`, `items`, `correct_order`) VALUES (?, ?, ?, ?)", (minigame_id, minigame['task'], json.dumps(minigame['items']), json.dumps(minigame['correctOrder'])))
             elif minigame['type'] == 'Matching':
-                await db.execute("INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)", (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correct_matches'])))
+                await db.execute("INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)", (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correctMatches'])))
             elif minigame['type'] == 'Choice':
                 for option in minigame['options']:
                     choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)", (minigame_id, option['description']), lastrowid=True)
                     for outcome in option['outcomes']:
-                        await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome['reward_type'], str(outcome['reward']), outcome['chance']))
+                        await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome['rewardType'], str(outcome['reward']), outcome['chance']))
 
 async def add_jobs_to_jobboard():
     db = DB()
