@@ -149,7 +149,7 @@ class Jobs(commands.Cog, name="jobs"):
 
         # Assign the job to the user in the database
         await db_manager.add_user_job(ctx.author.id, job)
-        await ctx.send(f"You have accepted the job: {job['name']}.")
+        await ctx.send(f"You have accepted the job: {job.title()}.")
 
     @acceptjob.autocomplete("job")
     async def job_autocomplete(self, ctx: discord.Interaction, argument):
