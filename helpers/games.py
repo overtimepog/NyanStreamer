@@ -613,7 +613,8 @@ async def trivia(self, ctx: commands.Context):
 
 class TriviaGameView(View):
     def __init__(self, answer, resolve_callback, *args, **kwargs):
-        super().__init__(answer, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.answer = answer
         self.resolve_callback = resolve_callback
 
     async def interaction_check(self, interaction: discord.Interaction):
@@ -621,27 +622,27 @@ class TriviaGameView(View):
             return True
         return False
 
+    def add_choice(self, choice):
+        self.add_item(TriviaGameButton(label=choice, trivia_view=self, style=discord.ButtonStyle.secondary))
+
 class TriviaGameButton(Button):
     def __init__(self, label, trivia_view, *args, **kwargs):
-        super().__init__(label, trivia_view, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.label = label
+        self.trivia_view = trivia_view
 
     async def callback(self, interaction: discord.Interaction):
         selected_choice = self.label
         if selected_choice == self.trivia_view.answer:
             self.style = discord.ButtonStyle.success
-            await self.trivia_view.resolve_callback(True)
+            await self.trivia_view.resolve_callback.set_result(True)
         else:
             self.style = discord.ButtonStyle.danger
-            await self.trivia_view.resolve_callback(False)
+            await self.trivia_view.resolve_callback.set_result(False)
 
         embed = interaction.message.embeds[0]
         embed.color = discord.Color.green() if selected_choice == self.trivia_view.answer else discord.Color.red()
         await interaction.message.edit(embed=embed, view=None)
-
-class TriviaGameView(TriviaGameView):
-    def add_choice(self, choice):
-        self.add_item(TriviaGameButton(label=choice, trivia_view=self, style=discord.ButtonStyle.secondary))
-
 
 async def play_trivia(ctx, game_data):
     random_trivia = random.choice(game_data)
