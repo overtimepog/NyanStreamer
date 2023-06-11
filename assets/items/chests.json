@@ -59,34 +59,154 @@
         "chest_contentsID": "pet_chest",
         "chest_contents": [
             {
-                "item_id": "frog_pet",
-                "item_amount": 1,
-                "drop_chance": 0.3
-            },
-            {
-                "item_id": "baby_elephant_pet",
-                "item_amount": 1,
-                "drop_chance": 0.2
-            },
-            {
-                "item_id": "winged_cash_pet",
+                "item_id": "baby_elephant_pet_common",
                 "item_amount": 1,
                 "drop_chance": 0.05
             },
             {
-                "item_id": "tree_in_bottle_pet",
+                "item_id": "baby_elephant_pet_uncommon",
                 "item_amount": 1,
-                "drop_chance": 0.1
+                "drop_chance": 0.04
             },
             {
-                "item_id": "slime_girl_pet",
+                "item_id": "baby_elephant_pet_rare",
                 "item_amount": 1,
-                "drop_chance": 0.1
+                "drop_chance": 0.03
             },
             {
-                "item_id": "fish_pet",
+                "item_id": "baby_elephant_pet_epic",
                 "item_amount": 1,
-                "drop_chance": 0.2
+                "drop_chance": 0.02
+            },
+            {
+                "item_id": "baby_elephant_pet_legendary",
+                "item_amount": 1,
+                "drop_chance": 0.01
+            },
+            {
+                "item_id": "slime_girl_pet_common",
+                "item_amount": 1,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "slime_girl_pet_uncommon",
+                "item_amount": 1,
+                "drop_chance": 0.04
+            },
+            {
+                "item_id": "slime_girl_pet_rare",
+                "item_amount": 1,
+                "drop_chance": 0.03
+            },
+            {
+                "item_id": "slime_girl_pet_epic",
+                "item_amount": 1,
+                "drop_chance": 0.02
+            },
+            {
+                "item_id": "slime_girl_pet_legendary",
+                "item_amount": 1,
+                "drop_chance": 0.01
+            },
+            {
+                "item_id": "fish_pet_common",
+                "item_amount": 1,
+                "drop_chance": 0.07
+            },
+            {
+                "item_id": "fish_pet_uncommon",
+                "item_amount": 1,
+                "drop_chance": 0.06
+            },
+            {
+                "item_id": "fish_pet_rare",
+                "item_amount": 1,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "fish_pet_epic",
+                "item_amount": 1,
+                "drop_chance": 0.04
+            },
+            {
+                "item_id": "fish_pet_legendary",
+                "item_amount": 1,
+                "drop_chance": 0.03
+            },
+            {
+                "item_id": "frog_pet_common",
+                "item_amount": 1,
+                "drop_chance": 0.07
+            },
+            {
+                "item_id": "frog_pet_uncommon",
+                "item_amount": 1,
+                "drop_chance": 0.06
+            },
+            {
+                "item_id": "frog_pet_rare",
+                "item_amount": 1,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "frog_pet_epic",
+                "item_amount": 1,
+                "drop_chance": 0.04
+            },
+            {
+                "item_id": "frog_pet_legendary",
+                "item_amount": 1,
+                "drop_chance": 0.03
+            },
+            {
+                "item_id": "flying_brain_pet_common",
+                "item_amount": 1,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "flying_brain_pet_uncommon",
+                "item_amount": 1,
+                "drop_chance": 0.04
+            },
+            {
+                "item_id": "flying_brain_pet_rare",
+                "item_amount": 1,
+                "drop_chance": 0.03
+            },
+            {
+                "item_id": "flying_brain_pet_epic",
+                "item_amount": 1,
+                "drop_chance": 0.02
+            },
+            {
+                "item_id": "flying_brain_pet_legendary",
+                "item_amount": 1,
+                "drop_chance": 0.01
+            },
+            {
+                "item_id": "marshmellow_common",
+                "item_amount": 1,
+                "drop_chance": 0.06
+            },
+            {
+                "item_id": "marshmellow_uncommon",
+                "item_amount": 1,
+                "drop_chance": 0.05
+            },
+            {
+                "item_id": "marshmellow_rare",
+                "item_amount": 1,
+                "drop_chance": 0.04
+            },
+            {
+                "item_id": "marshmellow_epic",
+                "item_amount": 1,
+                "drop_chance": 0.03
+            },
+            {
+                "item_id": "marshmellow_legendary",
+                "item_amount": 1,
+                "drop_chance": 0.02
             }
         ]
     }    
