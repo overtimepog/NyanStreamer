@@ -1018,7 +1018,7 @@ async def add_jobs_and_minigames():
 
         # Process minigames for this job
         for minigame in job['minigames']:
-            minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True)
+            minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt')))
 
             # Process data depending on minigame type
             if minigame['type'] == 'Trivia':
