@@ -88,18 +88,21 @@ class Database:
 
         return None
 
-    async def execute(self, query: str, values: Tuple = (), *, fetch: str = None) -> Optional[Any]:
+    async def execute(self, query: str, values: Tuple = (), *, fetch: str = None, lastrowid: bool = False) -> Optional[Any]:
         db = await self._connect()
         cursor = await db.cursor()
 
         await cursor.execute(query, values)
-        data = await self._fetch(cursor, fetch)
+        if lastrowid:
+            result = cursor.lastrowid
+        else:
+            result = await self._fetch(cursor, fetch)
         await db.commit()
 
         await cursor.close()
         await db.close()
 
-        return data
+        return result
 
 
 DB = Database
@@ -1018,7 +1021,7 @@ async def add_jobs_and_minigames():
 
         # Process minigames for this job
         for minigame in job['minigames']:
-            minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt')))
+            minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True)
 
             # Process data depending on minigame type
             if minigame['type'] == 'Trivia':
@@ -1029,10 +1032,10 @@ async def add_jobs_and_minigames():
             elif minigame['type'] == 'Matching':
                 await db.execute("INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)", (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correct_matches'])))
             elif minigame['type'] == 'Choice':
-                for choice in minigame['choices']:
-                    choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)", (minigame_id, choice['description']), lastrowid=True)
-                    for outcome in choice['outcomes']:
-                        await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome['reward_type'], outcome['reward'], outcome['chance']))
+                for option in minigame['options']:
+                    choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)", (minigame_id, option['description']), lastrowid=True)
+                    for outcome in option['outcomes']:
+                        await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome['reward_type'], str(outcome['reward']), outcome['chance']))
 
 async def add_jobs_to_jobboard():
     db = DB()
