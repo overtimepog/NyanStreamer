@@ -335,6 +335,7 @@ CREATE TABLE IF NOT EXISTS minigames (
     job_id TEXT NOT NULL,
     type TEXT NOT NULL,
     prompt TEXT NOT NULL,
+    image TEXT,
     FOREIGN KEY(job_id) REFERENCES jobs(id)
 );
 
