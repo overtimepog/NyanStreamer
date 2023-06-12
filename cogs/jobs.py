@@ -250,9 +250,10 @@ class Jobs(commands.Cog, name="jobs"):
                     outcome_id, option_id, reward_type, reward_value, reward_probability = outcome
                     print("Outcome: ", outcome)
                     outcome_messages = await db_manager.get_results_for_minigame(minigame[0])
-                    print("Outcome Messages: ", outcome_messages)
+                    #print("Outcome Messages: ", outcome_messages)
                     #pick a random outcome message
                     outcome_message = random.choice(outcome_messages)
+                    print("Outcome Message: ", outcome_message)
 
                 # Adjust the reward probability with the user's luck
                 adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
