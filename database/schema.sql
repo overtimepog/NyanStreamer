@@ -323,86 +323,74 @@ CREATE TABLE IF NOT EXISTS `timed_items` (
   FOREIGN KEY (`item_id`, `user_id`) REFERENCES inventory(`item_id`, `user_id`)
 );
 
-CREATE TABLE IF NOT EXISTS jobs (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    job_icon TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS `jobs` (
+    `id` TEXT PRIMARY KEY,
+    `name` TEXT,
+    `description` TEXT,
+    `job_icon` TEXT
 );
 
-CREATE TABLE IF NOT EXISTS minigames (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    job_id TEXT NOT NULL,
-    type TEXT NOT NULL,
-    prompt TEXT NOT NULL,
-    image TEXT,
-    FOREIGN KEY(job_id) REFERENCES jobs(id)
+CREATE TABLE IF NOT EXISTS `minigames` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `job_id` TEXT,
+    `type` TEXT,
+    `prompt` TEXT,
+    `image` TEXT,
+    FOREIGN KEY (`job_id`) REFERENCES `jobs`(`id`)
 );
 
-CREATE TABLE IF NOT EXISTS rewards (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    minigame_id INTEGER NOT NULL,
-    reward_type TEXT NOT NULL,
-    reward TEXT NOT NULL,
-    chance REAL NOT NULL,
-    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+CREATE TABLE IF NOT EXISTS `rewards` (
+    `minigame_id` INTEGER,
+    `reward_type` TEXT,
+    `reward` TEXT,
+    `chance` REAL,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
-CREATE TABLE IF NOT EXISTS results (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    minigame_id INTEGER NOT NULL,
-    result_message TEXT NOT NULL,
-    result_image TEXT,
-    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+CREATE TABLE IF NOT EXISTS `results` (
+    `minigame_id` INTEGER,
+    `message` TEXT,
+    `image` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
-CREATE TABLE IF NOT EXISTS trivia (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    minigame_id INTEGER NOT NULL,
-    question TEXT NOT NULL,
-    options TEXT NOT NULL,  -- JSON string of options
-    answer TEXT NOT NULL,
-    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+CREATE TABLE IF NOT EXISTS `trivia` (
+    `minigame_id` INTEGER,
+    `question` TEXT,
+    `options` TEXT,
+    `answer` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
-CREATE TABLE IF NOT EXISTS order_game (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    minigame_id INTEGER NOT NULL,
-    task TEXT NOT NULL,
-    items TEXT NOT NULL,  -- JSON string of items
-    correct_order TEXT NOT NULL,  -- JSON string of correct order
-    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+CREATE TABLE IF NOT EXISTS `order_game` (
+    `minigame_id` INTEGER,
+    `task` TEXT,
+    `items` TEXT,
+    `correct_order` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
-CREATE TABLE IF NOT EXISTS matching (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    minigame_id INTEGER NOT NULL,
-    items TEXT NOT NULL,  -- JSON string of items
-    correct_matches TEXT NOT NULL,  -- JSON string of correct matches
-    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+CREATE TABLE IF NOT EXISTS `matching` (
+    `minigame_id` INTEGER,
+    `items` TEXT,
+    `correct_matches` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
-CREATE TABLE IF NOT EXISTS choices (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    minigame_id INTEGER NOT NULL,
-    description TEXT NOT NULL,
-    image TEXT,
-    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+CREATE TABLE IF NOT EXISTS `choices` (
+    `minigame_id` INTEGER,
+    `description` TEXT,
+    `image` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
-CREATE TABLE IF NOT EXISTS outcomes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    choice_id INTEGER NOT NULL,
-    result TEXT NOT NULL,
-    image TEXT,
-    reward_type TEXT,
-    reward TEXT,
-    chance REAL NOT NULL,
-    FOREIGN KEY(choice_id) REFERENCES choices(id)
+CREATE TABLE IF NOT EXISTS `outcomes` (
+    `choice_id` INTEGER,
+    `result` TEXT,
+    `reward_type` TEXT,
+    `reward` TEXT,
+    `chance` REAL,
+    `image` TEXT,
+    FOREIGN KEY (`choice_id`) REFERENCES `choices`(`id`)
 );
 
-CREATE TABLE IF NOT EXISTS jobboard (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    job_icon TEXT NOT NULL
-);
