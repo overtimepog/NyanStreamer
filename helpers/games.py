@@ -796,27 +796,26 @@ class ChoiceGameView(View):
     def add_choice(self, choice):
         self.add_item(ChoiceGameButton(label=choice, resolve_callback=self.resolve_callback, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
 
-async def play_choice_game(ctx, game_data, callback_processed_future):
-    game = random.choice(game_data)
-    print("Game data: ", game)
-
-    embed = discord.Embed(title="Choose the best option", description=game['description'])
+async def play_choice_game(ctx, prompt, game_data, callback_processed_future):
+    embed = discord.Embed(title="Choose your action", description=prompt)
 
     resolve_promise = ctx.bot.loop.create_future()
     view = ChoiceGameView(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
 
-    for outcome in game['outcomes']:
-        view.add_choice(outcome['result'])
+    for game_option in game_data:
+        view.add_choice(game_option['description'])
 
     message = await ctx.send(embed=embed, view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
+        game_outcomes = next((option['outcomes'] for option in game_data if option['description'] == result), None)
     except asyncio.TimeoutError:
         await ctx.send("Time's up!")
         result = False
+        game_outcomes = None
 
-    return result, message
+    return result, game_outcomes, message
 
 
 #catch the fish minigame
