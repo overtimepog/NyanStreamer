@@ -287,7 +287,15 @@ class Jobs(commands.Cog, name="jobs"):
             )
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
             await message.edit(embed=reward_embed, view=None)
-
+        else:
+            # Inform the user that their answer was incorrect and they can try again later.
+            incorrect_embed = discord.Embed(
+                title="Unsuccessful Attempt",
+                description="I'm sorry, that wasn't right. You can try again later.",
+                color=discord.Color.red()
+            )
+            await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
+            await message.edit(embed=incorrect_embed, view=None)
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

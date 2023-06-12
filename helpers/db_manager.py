@@ -1085,6 +1085,11 @@ async def get_rewards_for_minigame(minigame_id):
     rewards = await db.execute("SELECT * FROM `rewards` WHERE minigame_id = ?", (minigame_id,), fetch="all")
     return rewards
 
+async def get_rewards_for_option(minigame_id, option_id):
+    db = DB()
+    rewards = await db.execute("SELECT * FROM `outcomes` WHERE choice_id = ?", (option_id,), fetch="all")
+    return rewards
+
 async def get_data_for_minigame(minigame):
     db = DB()
     game_type = minigame[2]
