@@ -11,6 +11,13 @@
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "debugger", "chance": 0.3}
                 ],
+                "result": [
+                    "You answered correctly and now they're calling you 'The Human Stack Overflow'.",
+                    "You nailed the trivia! Your boss is considering giving you 'sudo' rights.",
+                    "Your coding trivia skills got you a nomination for the 'Golden Keyboard' award.",
+                    "You were so good, the coffee machine is considering becoming your apprentice.",
+                    "You did so well they've started wondering if you're the one who actually invented JavaScript."
+                ],
                 "questions": [
                     {
                         "question": "What does HTML stand for?",
@@ -38,6 +45,13 @@
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 60, "chance": 0.5}
                 ],
+                "result": [
+                    "Your dish became so popular, customers are taking selfies with it!",
+                    "Your culinary skills are so unmatched, Gordon Ramsay is asking for your autograph.",
+                    "Your organized workflow had the kitchen staff considering forming a fan club in your name.",
+                    "Your innovative use of ingredients made the food critic cry tears of joy.",
+                    "Your attention to detail was so great, even the head chef's hat tipped itself in respect."
+                ],
                 "task": "Sort the ingredients according to the recipe order",
                 "items": ["Flour", "Eggs", "Milk", "Butter"],
                 "correctOrder": ["Flour", "Butter", "Eggs", "Milk"]
@@ -47,6 +61,13 @@
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "chef_hat", "chance": 0.2}
+                ],
+                "result": [
+                    "Your dish became so popular, customers are taking selfies with it!",
+                    "Your culinary skills are so unmatched, Gordon Ramsay is asking for your autograph.",
+                    "Your organized workflow had the kitchen staff considering forming a fan club in your name.",
+                    "Your innovative use of ingredients made the food critic cry tears of joy.",
+                    "Your attention to detail was so great, even the head chef's hat tipped itself in respect."
                 ],
                 "questions": [
                     {
@@ -70,6 +91,13 @@
                     {"rewardType": "money", "reward": 70, "chance": 0.5},
                     {"rewardType": "experience", "reward": 40, "chance": 0.3}
                 ],
+                "result": [
+                    "Your matches were so accurate, the MRI machine is feeling insecure.",
+                    "The medical team is thinking of replacing Google with you.",
+                    "Your superior's jaw dropped at your excellent grasp of human anatomy.",
+                    "Your contributions have led to patients asking if you're part wizard.",
+                    "You identified all the organs so accurately, even the scalpel gave you a standing ovation."
+                ],
                 "items": [
                     {"name": "Heart", "description": "Pumps blood"},
                     {"name": "Lungs", "description": "Helps in breathing"},
@@ -86,6 +114,13 @@
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "stethoscope", "chance": 0.3}
+                ],
+                "result": [
+                    "Your vast medical knowledge has impressed your colleagues.",
+                    "Your accurate trivia answers have helped in a difficult case.",
+                    "You are commended for your understanding of the human body.",
+                    "Your medical knowledge is crucial to the success of your team.",
+                    "Your accurate diagnosis has led to the swift treatment of a patient."
                 ],
                 "questions": [
                     {
@@ -135,6 +170,13 @@
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "moon_rock", "chance": 0.4}
+                ],
+                "result": [
+                    "Your space knowledge has impressed your colleagues at NASA.",
+                    "Your accurate trivia answers have earned you respect among your peers.",
+                    "You've helped in a complex mission with your knowledge of the cosmos.",
+                    "Your understanding of space has been instrumental in planning future missions.",
+                    "Your astute answers have led to new exploratory ideas for space missions."
                 ],
                 "questions": [
                     {

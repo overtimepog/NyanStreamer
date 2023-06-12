@@ -347,6 +347,13 @@ CREATE TABLE IF NOT EXISTS rewards (
     FOREIGN KEY(minigame_id) REFERENCES minigames(id)
 );
 
+CREATE TABLE IF NOT EXISTS results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    minigame_id INTEGER,
+    result TEXT,
+    FOREIGN KEY(minigame_id) REFERENCES minigames(id)
+);
+
 CREATE TABLE IF NOT EXISTS trivia (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     minigame_id INTEGER,
