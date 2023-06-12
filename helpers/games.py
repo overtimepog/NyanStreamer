@@ -799,15 +799,14 @@ class ChoiceGameView(View):
 async def play_choice_game(ctx, game_data, callback_processed_future):
     game = random.choice(game_data)
     print("Game data: ", game)
-    choices = game[1] 
 
-    embed = discord.Embed(title="Choose the best option", description=game['task'])
+    embed = discord.Embed(title="Choose the best option", description=game['description'])
 
     resolve_promise = ctx.bot.loop.create_future()
     view = ChoiceGameView(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
 
-    for choice in choices:
-        view.add_choice(choice)
+    for outcome in game['outcomes']:
+        view.add_choice(outcome['result'])
 
     message = await ctx.send(embed=embed, view=view)
 
