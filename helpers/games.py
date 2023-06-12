@@ -655,10 +655,9 @@ class TriviaGameButton(Button):
 
 async def play_trivia(ctx, game_data, callback_processed_future):
     random_trivia = random.choice(game_data)
-    print(random_trivia)
-    trivia_question = random_trivia[1]
-    trivia_choices = json.loads(random_trivia[2])
-    trivia_answer = random_trivia[3]
+    trivia_question = random_trivia["question"]
+    trivia_choices = json.loads(random_trivia["options"])
+    trivia_answer = random_trivia["answer"]
 
     trivia_embed = Embed(
         title="Trivia Time!",
@@ -702,8 +701,9 @@ class OrderGameSelect(Select):
         self.callback_processed_future.set_result(True)
 
 async def play_order_game(ctx, game_data, callback_processed_future):
-    correct_order = json.loads(game_data[4])  # 'correctOrder' replaced with 4
-    items = json.loads(game_data[3])  # 'items' replaced with 3
+    game = random.choice(game_data)
+    correct_order = json.loads(game["correct_order"])
+    items = json.loads(game["items"])
     print("Correct order:\n" + "\n".join(correct_order))
     print("Items: ", items)
     resolve_promise = ctx.bot.loop.create_future()
@@ -712,7 +712,7 @@ async def play_order_game(ctx, game_data, callback_processed_future):
     view = View()
     view.add_item(select_menu)
 
-    message = await ctx.send(content=game_data[2], view=view)  # 'task' replaced with 2
+    message = await ctx.send(content=game["task"], view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
@@ -722,8 +722,6 @@ async def play_order_game(ctx, game_data, callback_processed_future):
 
     return result, message
 
-# Adjusting the MatchingGame code in similar way
-
 class MatchingGameSelect(Select):
     def __init__(self, correct_match, resolve_callback, callback_processed_future, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -732,7 +730,7 @@ class MatchingGameSelect(Select):
         self.callback_processed_future = callback_processed_future
 
     async def callback(self, interaction: discord.Interaction):
-        user_match = self.values[0]  # values should contain only one selection
+        user_match = self.values[0]
 
         if user_match == self.correct_match:
             self.resolve_callback.set_result(True)
@@ -742,16 +740,14 @@ class MatchingGameSelect(Select):
         self.callback_processed_future.set_result(True)
 
 async def play_matching_game(ctx, game_data, callback_processed_future):
-    items = json.loads(game_data[2])  # 'items' replaced with 2
-    correct_matches = json.loads(game_data[3])  # 'correctMatches' replaced with 3
+    game = random.choice(game_data)
+    items = json.loads(game["items"])
+    correct_matches = json.loads(game["correct_matches"])
 
-    # Randomly select one item as the target for matching
     target = random.choice(items)
 
-    # Get the correct description for the target
     correct_description = [item['description'] for item in correct_matches if item['name'] == target['name']][0]
 
-    # Randomly select three other descriptions
     other_descriptions = [item['description'] for item in items if item['name'] != target['name']]
     random.shuffle(other_descriptions)
     descriptions = [correct_description] + other_descriptions[:3]
@@ -774,9 +770,6 @@ async def play_matching_game(ctx, game_data, callback_processed_future):
 
     return result, message
 
-
-# Adjusting the ChoiceGame code in similar way
-
 class ChoiceGameButton(Button):
     def __init__(self, label, resolve_callback, callback_processed_future, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -787,7 +780,6 @@ class ChoiceGameButton(Button):
     async def callback(self, interaction: discord.Interaction):
         self.resolve_callback.set_result(self.label)  # Return the label of the selected option
         self.callback_processed_future.set_result(True)
-
 
 class ChoiceGameView(View):
     def __init__(self, resolve_callback, callback_processed_future, user, *args, **kwargs):
@@ -804,28 +796,27 @@ class ChoiceGameView(View):
     def add_choice(self, choice):
         self.add_item(ChoiceGameButton(label=choice, resolve_callback=self.resolve_callback, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
 
-
 async def play_choice_game(ctx, game_data, callback_processed_future):
-    options = [option['description'] for option in game_data]  # 'description' replaced with 2
+    game = random.choice(game_data)
+    choices = game["choices"]
+
+    embed = discord.Embed(title="Choose the best option", description=game['task'])
 
     resolve_promise = ctx.bot.loop.create_future()
-
     view = ChoiceGameView(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
 
-    for option in options:
-        view.add_choice(option)
+    for choice in choices:
+        view.add_choice(choice)
 
-    message = await ctx.send(content="Choose an option:", view=view)
+    message = await ctx.send(embed=embed, view=view)
 
     try:
-        selected_option = await asyncio.wait_for(resolve_promise, timeout=60.0)  # Capture the selected option
-        result = True
+        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
     except asyncio.TimeoutError:
         await ctx.send("Time's up!")
-        selected_option = None
         result = False
 
-    return selected_option, result, message
+    return result, message
 
 
 #catch the fish minigame
