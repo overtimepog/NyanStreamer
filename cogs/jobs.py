@@ -256,9 +256,7 @@ class Jobs(commands.Cog, name="jobs"):
                     #pick a random outcome message
                     outcome_message = random.choice(outcome_messages)
                     print("Outcome Message Full: ", outcome_message)
-                    id = outcome_message[0]
-                    outcome_message = outcome_message[1]
-                    outcome_image = outcome_message[2]
+                    id, outcome_message, outcome_image = outcome_message
                     print(f"Outcome Image: {outcome_image}")
 
                 # Adjust the reward probability with the user's luck
@@ -282,7 +280,7 @@ class Jobs(commands.Cog, name="jobs"):
             # Print earned reward after processing
             print("Earned Reward: ", earned_reward)
 
-            result_message, reward_type, reward_value = earned_reward
+            result_message, reward_image, reward_type, reward_value = earned_reward
             reward_message = ""
 
             reward_embed = discord.Embed(
