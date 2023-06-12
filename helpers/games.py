@@ -20,6 +20,8 @@ from helpers import db_manager, battle
 import asyncio
 import os
 import random
+from io import BytesIO
+from random import shuffle
 from typing import List, Tuple, Union
 
 import discord
@@ -702,9 +704,10 @@ class OrderGameSelect(Select):
 async def play_order_game(ctx, game_data, callback_processed_future):
     correct_order = json.loads(game_data[4])  # 'correctOrder' replaced with 4
     items = json.loads(game_data[3])  # 'items' replaced with 3
-
+    print("Correct order: ", correct_order + "\n")
+    print("Items: ", items)
     resolve_promise = ctx.bot.loop.create_future()
-    select_menu = OrderGameSelect(correct_order=correct_order, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Select the correct order", max_values=len(items), options=[discord.SelectOption(label=item['name'], value=item['name']) for item in items])
+    select_menu = OrderGameSelect(correct_order=correct_order, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Select the correct order", max_values=len(items), options=[discord.SelectOption(label=item[0], value=item[0]) for item in items])
 
     view = View()
     view.add_item(select_menu)
@@ -722,16 +725,16 @@ async def play_order_game(ctx, game_data, callback_processed_future):
 # Adjusting the MatchingGame code in similar way
 
 class MatchingGameSelect(Select):
-    def __init__(self, correct_matches, resolve_callback, callback_processed_future, *args, **kwargs):
+    def __init__(self, correct_match, resolve_callback, callback_processed_future, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.correct_matches = correct_matches
+        self.correct_match = correct_match
         self.resolve_callback = resolve_callback
         self.callback_processed_future = callback_processed_future
 
     async def callback(self, interaction: discord.Interaction):
-        user_matches = self.values
+        user_match = self.values[0]  # values should contain only one selection
 
-        if user_matches == self.correct_matches:
+        if user_match == self.correct_match:
             self.resolve_callback.set_result(True)
         else:
             self.resolve_callback.set_result(False)
@@ -739,16 +742,29 @@ class MatchingGameSelect(Select):
         self.callback_processed_future.set_result(True)
 
 async def play_matching_game(ctx, game_data, callback_processed_future):
-    correct_matches = json.loads(game_data[3])  # 'correctMatches' replaced with 3
     items = json.loads(game_data[2])  # 'items' replaced with 2
+    correct_matches = json.loads(game_data[3])  # 'correctMatches' replaced with 3
+
+    # Randomly select one item as the target for matching
+    target = random.choice(items)
+
+    # Get the correct description for the target
+    correct_description = [item['description'] for item in correct_matches if item['name'] == target['name']][0]
+
+    # Randomly select three other descriptions
+    other_descriptions = [item['description'] for item in items if item['name'] != target['name']]
+    random.shuffle(other_descriptions)
+    descriptions = [correct_description] + other_descriptions[:3]
+    random.shuffle(descriptions)
 
     resolve_promise = ctx.bot.loop.create_future()
-    select_menu = MatchingGameSelect(correct_matches=correct_matches, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Match the items", max_values=len(items), options=[discord.SelectOption(label=item) for item in items])
+    select_menu = MatchingGameSelect(correct_match=correct_description, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Match the item", options=[discord.SelectOption(label=desc, value=desc) for desc in descriptions])
 
-    view = View()
+    view = discord.ui.View()
     view.add_item(select_menu)
 
-    message = await ctx.send(content="Match the following items:", view=view)
+    embed = discord.Embed(title="Match the item", description=target['name'])
+    message = await ctx.send(embed=embed, view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
@@ -757,6 +773,7 @@ async def play_matching_game(ctx, game_data, callback_processed_future):
         result = False
 
     return result, message
+
 
 # Adjusting the ChoiceGame code in similar way
 
