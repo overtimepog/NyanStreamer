@@ -243,8 +243,8 @@ class Jobs(commands.Cog, name="jobs"):
 
             # Go through the possible outcomes
             for outcome in outcomes:
+                print("Outcome: ", outcome)
                 outcome_id, option_id, outcome_message, reward_type, reward_value, reward_probability = outcome
-
                 # Adjust the reward probability with the user's luck
                 adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
 
