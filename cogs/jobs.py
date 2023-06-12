@@ -267,10 +267,10 @@ class Jobs(commands.Cog, name="jobs"):
             # If no reward was won, default to the one with the highest probability
             if earned_reward is None:
                 if minigame[2] == 'Choice':
-                    outcome_id, option_id, outcome_message, reward_type, reward_value, reward_probability = outcomes[0]
+                    outcome_id, outcome_message, reward_type, reward_value, reward_probability = outcomes[0]
                     earned_reward = (outcome_message, reward_type, reward_value)
                 else:
-                    outcome_id, option_id, reward_type, reward_value, reward_probability = outcomes[0]
+                    outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
                     outcome_message = "Nothing lol"
                     earned_reward = (outcome_message, reward_type, reward_value)
 
