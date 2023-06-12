@@ -253,6 +253,7 @@ class Jobs(commands.Cog, name="jobs"):
                     #print("Outcome Messages: ", outcome_messages)
                     #pick a random outcome message
                     outcome_message = random.choice(outcome_messages)
+                    outcome_message = outcome_message[2]
                     print("Outcome Message: ", outcome_message)
 
                 # Adjust the reward probability with the user's luck
