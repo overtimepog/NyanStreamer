@@ -14,7 +14,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot, Context
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 from discord import Color, Embed
-from discord.ui import Button, View
+from discord.ui import Button, View, Select
 
 from helpers import db_manager, battle
 import asyncio
@@ -682,106 +682,112 @@ async def play_trivia(ctx, game_data, callback_processed_future):
 
     return result, message
 
-async def play_order_game(ctx, game_data):
+class OrderGameSelect(Select):
+    def __init__(self, correct_order, resolve_callback, callback_processed_future, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.correct_order = correct_order
+        self.resolve_callback = resolve_callback
+        self.callback_processed_future = callback_processed_future
+
+    async def callback(self, interaction: discord.Interaction):
+        user_order = self.values
+
+        if user_order == self.correct_order:
+            self.resolve_callback.set_result(True)
+        else:
+            self.resolve_callback.set_result(False)
+
+        self.callback_processed_future.set_result(True)
+
+async def play_order_game(ctx, game_data, callback_processed_future):
     correct_order = json.loads(game_data['correctOrder'])
-
-    order_prompt = game_data['task']
     items = json.loads(game_data['items'])
 
-    message_content = f"{order_prompt}\n{' '.join(items)}"
-    await ctx.send(message_content)
+    resolve_promise = ctx.bot.loop.create_future()
+    select_menu = OrderGameSelect(correct_order=correct_order, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Select the correct order", max_values=len(items), options=[discord.SelectOption(label=item) for item in items])
 
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
+    view = View()
+    view.add_item(select_menu)
+
+    message = await ctx.send(content=game_data['task'], view=view)
 
     try:
-        user_message = await ctx.bot.wait_for('message', check=check, timeout=60)
-        user_order = user_message.content.split(" ")
-
-        if user_order == correct_order:
-            return True
-        else:
-            return False
+        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
     except asyncio.TimeoutError:
         await ctx.send("Time's up!")
-        return False
-    
-async def play_matching_game(ctx, game_data):
+        result = False
+
+    return result, message
+
+# Adjusting the MatchingGame code in similar way
+
+class MatchingGameSelect(Select):
+    def __init__(self, correct_matches, resolve_callback, callback_processed_future, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.correct_matches = correct_matches
+        self.resolve_callback = resolve_callback
+        self.callback_processed_future = callback_processed_future
+
+    async def callback(self, interaction: discord.Interaction):
+        user_matches = self.values
+
+        if user_matches == self.correct_matches:
+            self.resolve_callback.set_result(True)
+        else:
+            self.resolve_callback.set_result(False)
+
+        self.callback_processed_future.set_result(True)
+
+async def play_matching_game(ctx, game_data, callback_processed_future):
     correct_matches = json.loads(game_data['correctMatches'])
-
     items = json.loads(game_data['items'])
-    match_prompts = "\n".join([f"{i+1}. {item}" for i, item in enumerate(items)])
 
-    await ctx.send(f"Match the following items:\n{match_prompts}")
+    resolve_promise = ctx.bot.loop.create_future()
+    select_menu = MatchingGameSelect(correct_matches=correct_matches, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Match the items", max_values=len(items), options=[discord.SelectOption(label=item) for item in items])
 
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
+    view = View()
+    view.add_item(select_menu)
+
+    message = await ctx.send(content="Match the following items:", view=view)
 
     try:
-        user_message = await ctx.bot.wait_for('message', check=check, timeout=60)
-        user_matches = [int(match) for match in user_message.content.split(" ")]
-
-        if user_matches == correct_matches:
-            return True
-        else:
-            return False
+        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
     except asyncio.TimeoutError:
         await ctx.send("Time's up!")
-        return False
+        result = False
 
+    return result, message
 
-class ChoiceButton(discord.ui.Button):
-    def __init__(self, label, choice_view, *args, **kwargs):
+# Adjusting the ChoiceGame code in similar way
+
+class ChoiceGameSelect(Select):
+    def __init__(self, resolve_callback, callback_processed_future, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.label = label
-        self.choice_view = choice_view
+        self.resolve_callback = resolve_callback
+        self.callback_processed_future = callback_processed_future
 
     async def callback(self, interaction: discord.Interaction):
-        self.style = discord.ButtonStyle.primary
-        self.choice_view.stop()
+        self.resolve_callback.set_result(True)
+        self.callback_processed_future.set_result(True)
 
-class ChoiceView(discord.ui.View):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def add_option(self, option):
-        self.add_item(ChoiceButton(label=option, choice_view=self, style=discord.ButtonStyle.secondary))
-
-class ChoiceGameButton(ChoiceButton):
-    def __init__(self, label, choice_view, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.label = label
-        self.choice_view = choice_view
-
-    async def callback(self, interaction: discord.Interaction):
-        self.style = discord.ButtonStyle.primary
-        self.choice_view.stop()
-
-class ChoiceGameView(ChoiceView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def add_option(self, option):
-        self.add_item(ChoiceGameButton(label=option, choice_view=self, style=discord.ButtonStyle.secondary))
-
-async def play_choice_game(ctx, game_data):
+async def play_choice_game(ctx, game_data, callback_processed_future):
     options = [option['description'] for option in game_data]
-    view = ChoiceGameView()
 
-    for option in options:
-        view.add_option(option)
+    resolve_promise = ctx.bot.loop.create_future()
+    select_menu = ChoiceGameSelect(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Choose an option", max_values=1, options=[discord.SelectOption(label=option) for option in options])
 
-    await ctx.send("Choose an option:", view=view)
+    view = View()
+    view.add_item(select_menu)
+
+    message = await ctx.send(content="Choose an option:", view=view)
 
     try:
-        await view.wait()
-        selected_option = next((button for button in view.children if button.style == discord.ButtonStyle.primary), None)
-        if selected_option:
-            return True
-        else:
-            return False
+        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
     except asyncio.TimeoutError:
         await ctx.send("Time's up!")
-        return False
+        result = False
+
+    return result, message
+
 
 #catch the fish minigame
