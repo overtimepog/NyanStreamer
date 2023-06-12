@@ -1123,14 +1123,16 @@ async def get_data_for_minigame(minigame):
     elif game_type == 'Matching':
         game_data = await db.execute("SELECT * FROM `matching` WHERE minigame_id = ?", (minigame[0],), fetch="one")
     elif game_type == 'Choice':
-        choices = await db.execute("SELECT * FROM `choices` WHERE minigame_id = ?", (minigame[0],), fetch="all")
+        choices = await db.execute("SELECT rowid, * FROM `choices` WHERE minigame_id = ?", (minigame[0],), fetch="all")
         choices_with_outcomes = []
         for choice in choices:
-            outcomes = await db.execute("SELECT * FROM `outcomes` WHERE choice_id = ?", (choice[0],), fetch="all")
+            outcomes = await db.execute("SELECT rowid, * FROM `outcomes` WHERE choice_id = ?", (choice[0],), fetch="all")
             # Transform choice tuple into a dictionary
-            choice_dict = {"id": choice[0], "minigame_id": choice[1], "description": choice[2]}
+            choice_dict = {"id": choice[0], "minigame_id": choice[1], "description": choice[2], "image": choice[3]}
+            # Transform outcome tuples into a list of dictionaries
+            outcome_dicts = [{"id": outcome[0], "choice_id": outcome[1], "result": outcome[2], "reward_type": outcome[3], "reward": outcome[4], "chance": outcome[5], "image": outcome[6]} for outcome in outcomes]
             # Add the outcomes to the choice dictionary
-            choice_dict['outcomes'] = outcomes
+            choice_dict['outcomes'] = outcome_dicts
             # Add the updated choice to the new list
             choices_with_outcomes.append(choice_dict)
         game_data = choices_with_outcomes
