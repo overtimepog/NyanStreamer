@@ -244,10 +244,10 @@ class Jobs(commands.Cog, name="jobs"):
             # Go through the possible outcomes
             for outcome in outcomes:
                 if minigame[2] == 'Choice':
-                    outcome_id, option_id, outcome_message, reward_type, reward_value, reward_probability = outcome
+                    outcome_id, outcome_message, reward_type, reward_value, reward_probability = outcome
                     print("Outcome: ", outcome)
                 else:
-                    outcome_id, option_id, reward_type, reward_value, reward_probability = outcome
+                    outcome_id, reward_type, reward_value, reward_probability = outcome
                     print("Outcome: ", outcome)
                     outcome_messages = await db_manager.get_results_for_minigame(minigame[0])
                     #print("Outcome Messages: ", outcome_messages)
