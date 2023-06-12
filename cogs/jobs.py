@@ -189,25 +189,25 @@ class Jobs(commands.Cog, name="jobs"):
     )
     async def work(self, ctx: commands.Context):
         user_id = ctx.author.id
-
+    
         # Get user's job
         job_id = await db_manager.get_user_job(user_id)
         if job_id is None:
             await ctx.send("You don't have a job!")
             return
-
+    
         # Get a random minigame for this job
         minigame = await db_manager.get_minigame_for_job(job_id)
         print(minigame)
         if minigame is None:
             await ctx.send("No minigames found for this job!")
             return
-
+    
         game_data = await db_manager.get_data_for_minigame(minigame)
         print(game_data)
-
+    
         callback_processed_future = ctx.bot.loop.create_future()
-
+    
         if minigame[2] == 'Trivia':
             result, message = await games.play_trivia(ctx, game_data, callback_processed_future)
         elif minigame[2] == 'Order':
@@ -215,74 +215,73 @@ class Jobs(commands.Cog, name="jobs"):
         elif minigame[2] == 'Matching':
             result, message = await games.play_matching_game(ctx, game_data, callback_processed_future)
         elif minigame[2] == 'Choice':
-            selected_option, message = await games.play_choice_game(ctx, game_data, callback_processed_future)
-            result = bool(selected_option)  # Result is True if an option was selected, False otherwise
+            selected_option, result, message = await games.play_choice_game(ctx, game_data, callback_processed_future)
         else:
             print("Unknown game type")
             return
-
+    
         print(result)
         if result:
             # Assume user_luck is a value between 0 and 100
             user_luck = await db_manager.get_luck(user_id)
-
+    
             # Adjust user's luck into scale of 0 to 1
             adjusted_luck = user_luck / 100
-
+    
             if minigame[2] == 'Choice':
                 # Get rewards based on the selected option
                 rewards = sorted(await db_manager.get_rewards_for_option(minigame[0], selected_option), key=lambda x: x[4], reverse=True)
             else:
                 # Get the rewards and sort them by their probabilities
                 rewards = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[4], reverse=True)
-
-            earned_rewards = defaultdict(lambda: (None, 0))
+    
             print("Rewards: ", rewards)
-
-            # Always give at least the reward with the highest probability
-            reward_id, minigame_id, reward_type, reward_value, reward_probability = rewards[0]
-            earned_rewards[reward_type] = (reward_value, 1)
-
-            # Go through the remaining possible rewards
-            for reward in rewards[1:]:
+    
+            earned_reward = None
+    
+            # Go through the possible rewards
+            for reward in rewards:
                 reward_id, minigame_id, reward_type, reward_value, reward_probability = reward
-
+    
                 # Adjust the reward probability with the user's luck
                 adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
-
+    
                 # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
-                    prev_value, prev_count = earned_rewards[reward_type]
-                    earned_rewards[reward_type] = (reward_value, prev_count+1)
-
-            # Print earned rewards after processing
-            print("Earned Rewards after processing: ", earned_rewards)
-
-            reward_messages = []
-            for reward_type, (reward_value, total_count) in earned_rewards.items():
-                if reward_type == "money" or reward_type == "experience":
-                    # Check if reward_value can be converted into integer
-                    try:
-                        int_reward_value = int(reward_value)
-                    except ValueError:
-                        print(f"Invalid value for {reward_type} reward: {reward_value}")
-                        continue
-                    
-                    # Add the money or experience to the user's account
-                    await db_manager.add_money(user_id, int_reward_value * total_count)  # If add_experience function exists, you should use it here
-                    #star emoji for experience: ⭐
-                    reward_messages.append(f"You earned {cash if reward_type == 'money' else 'XP ⭐'} {int_reward_value * total_count}!")
-                elif reward_type == "item":
-                    # Give the item to the user
-                    for _ in range(total_count):
-                        await db_manager.add_item_to_inventory(user_id, reward_value, 1)
-                    reward_icon = await db_manager.get_basic_item_emoji(reward_value)
-                    reward_messages.append(f"You earned {reward_icon} {reward_value}!")
-
+                    earned_reward = (reward_type, reward_value)
+                    break
+                
+            # If no reward was won, default to the one with the highest probability
+            if earned_reward is None:
+                reward_id, minigame_id, reward_type, reward_value, reward_probability = rewards[0]
+                earned_reward = (reward_type, reward_value)
+    
+            # Print earned reward after processing
+            print("Earned Reward: ", earned_reward)
+    
+            reward_type, reward_value = earned_reward
+            if reward_type == "money" or reward_type == "experience":
+                # Check if reward_value can be converted into integer
+                try:
+                    int_reward_value = int(reward_value)
+                except ValueError:
+                    print(f"Invalid value for {reward_type} reward: {reward_value}")
+                    return
+    
+                # Add the money or experience to the user's account
+                await db_manager.add_money(user_id, int_reward_value)  # If add_experience function exists, you should use it here
+                #star emoji for experience: ⭐
+                reward_message = f"You earned {cash if reward_type == 'money' else 'XP ⭐'} {int_reward_value}!"
+            elif reward_type == "item":
+                # Give the item to the user
+                await db_manager.add_item_to_inventory(user_id, reward_value, 1)
+                reward_icon = await db_manager.get_basic_item_emoji(reward_value)
+                reward_message = f"You earned {reward_icon} {reward_value}!"
+    
             # Create a new embed to show the rewards
             reward_embed = discord.Embed(
                 title="Rewards Earned!",
-                description="\n".join(reward_messages),
+                description=reward_message,
                 color=discord.Color.gold()
             )
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed

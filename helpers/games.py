@@ -785,8 +785,9 @@ class ChoiceGameButton(Button):
         self.callback_processed_future = callback_processed_future
 
     async def callback(self, interaction: discord.Interaction):
-        self.resolve_callback.set_result(True)
+        self.resolve_callback.set_result(self.label)  # Return the label of the selected option
         self.callback_processed_future.set_result(True)
+
 
 class ChoiceGameView(View):
     def __init__(self, resolve_callback, callback_processed_future, user, *args, **kwargs):
@@ -803,6 +804,7 @@ class ChoiceGameView(View):
     def add_choice(self, choice):
         self.add_item(ChoiceGameButton(label=choice, resolve_callback=self.resolve_callback, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
 
+
 async def play_choice_game(ctx, game_data, callback_processed_future):
     options = [option['description'] for option in game_data]  # 'description' replaced with 2
 
@@ -816,12 +818,14 @@ async def play_choice_game(ctx, game_data, callback_processed_future):
     message = await ctx.send(content="Choose an option:", view=view)
 
     try:
-        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
+        selected_option = await asyncio.wait_for(resolve_promise, timeout=60.0)  # Capture the selected option
+        result = True
     except asyncio.TimeoutError:
         await ctx.send("Time's up!")
+        selected_option = None
         result = False
 
-    return result, message
+    return selected_option, result, message
 
 
 #catch the fish minigame
