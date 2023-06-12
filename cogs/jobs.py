@@ -319,11 +319,15 @@ class Jobs(commands.Cog, name="jobs"):
                 reward_icon = await db_manager.get_basic_item_emoji(reward_value)
                 reward_message = f"You earned {reward_icon} {reward_value}!"
                 reward_embed.add_field(name=reward_type.capitalize(), value=f"{reward_icon} {reward_value}", inline=False)
+                
             else:
                 #meaning its none, so no reward but still a message so we can use the same embed, add no feilds to the embed
                 pass
-
-            reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
+            
+            if reward_type == None:
+                pass
+            else:
+                reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
             await message.edit(embed=reward_embed, view=None)
