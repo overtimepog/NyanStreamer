@@ -320,8 +320,8 @@ class Jobs(commands.Cog, name="jobs"):
                 reward_message = f"You earned {reward_icon} {reward_value}!"
                 reward_embed.add_field(name=reward_type.capitalize(), value=f"{reward_icon} {reward_value}", inline=False)
             else:
-                print(f"Invalid reward type: {reward_type}")
-                return
+                #meaning its none, so no reward but still a message so we can use the same embed, add no feilds to the embed
+                pass
 
             reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
 
