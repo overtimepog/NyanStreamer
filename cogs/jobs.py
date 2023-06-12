@@ -293,7 +293,7 @@ class Jobs(commands.Cog, name="jobs"):
             reward_message = ""
 
             reward_embed = discord.Embed(
-                title="Game Outcome",
+                title="Work Results",
                 description=result_message,
                 color=discord.Color.gold()
             )
@@ -324,13 +324,13 @@ class Jobs(commands.Cog, name="jobs"):
 
                 #star emoji for experience: ⭐
                 reward_message = f"You earned {cash if reward_type == 'money' else 'XP ⭐'} {int_reward_value}!"
-                reward_embed.add_field(name=reward_type.capitalize(), value=int_reward_value, inline=False)
+                #reward_embed.add_field(name=reward_type.capitalize(), value=int_reward_value, inline=False)
             elif reward_type == "item":
                 # Give the item to the user
                 await db_manager.add_item_to_inventory(user_id, reward_value, 1)
                 reward_icon = await db_manager.get_basic_item_emoji(reward_value)
                 reward_message = f"You earned {reward_icon} {reward_value}!"
-                reward_embed.add_field(name=reward_type.capitalize(), value=f"{reward_icon} {reward_value}", inline=False)
+                #reward_embed.add_field(name=reward_type.capitalize(), value=f"{reward_icon} {reward_value}", inline=False)
                 
             else:
                 #meaning its none, so no reward but still a message so we can use the same embed, add no feilds to the embed
@@ -340,6 +340,9 @@ class Jobs(commands.Cog, name="jobs"):
                 pass
             else:
                 reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
+
+            if result_image is not None or result_image != "None":
+                reward_embed.set_image(url=result_image)
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
             await message.edit(embed=reward_embed, view=None)
