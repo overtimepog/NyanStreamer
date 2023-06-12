@@ -232,10 +232,10 @@ class Jobs(commands.Cog, name="jobs"):
                 # Get outcomes based on the selected option
                 outcomes = [outcome for option in game_data if option['description'] == selected_option for outcome in option['outcomes']]
                 # Sort outcomes by their probabilities
-                outcomes = sorted(outcomes, key=lambda x: x[5], reverse=True)
+                outcomes = sorted(outcomes, key=lambda x: x[4], reverse=True)
             else:
                 # Get the rewards and sort them by their probabilities
-                outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[4], reverse=True)
+                outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
 
             print("Outcomes: ", outcomes)
 
