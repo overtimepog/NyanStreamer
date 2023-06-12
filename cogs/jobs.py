@@ -249,7 +249,9 @@ class Jobs(commands.Cog, name="jobs"):
                     #print all the stuff
                     print("Outcome: ", outcome)
                     print("Outcome Message: ", outcome_message[2])
-                    print('Outcome Image: ', outcome_image[6])
+                    print('Outcome Image: ', outcome_message[6])
+                    outcome_image = outcome_message[6]
+                    outcome_message = outcome_message[2]
                     reward_probability = outcome_message[5]
                 else:
                     outcome_id, reward_type, reward_value, reward_probability = outcome
