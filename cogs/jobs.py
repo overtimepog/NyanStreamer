@@ -248,9 +248,9 @@ class Jobs(commands.Cog, name="jobs"):
                     outcome_id, choice_id, outcome_message, reward_type, reward_value, reward_probability, outcome_image = outcome
                     #print all the stuff
                     print("Outcome: ", outcome)
-                    print("Outcome Message: ", outcome_message['result'])
-                    print('Outcome Image: ', outcome_image['image'])
-                    reward_probability = outcome_message['chance']
+                    print("Outcome Message: ", outcome_message[2])
+                    print('Outcome Image: ', outcome_image[6])
+                    reward_probability = outcome_message[5]
                 else:
                     outcome_id, reward_type, reward_value, reward_probability = outcome
                     print("Outcome: ", outcome)
