@@ -704,7 +704,7 @@ class OrderGameSelect(Select):
 async def play_order_game(ctx, game_data, callback_processed_future):
     correct_order = json.loads(game_data[4])  # 'correctOrder' replaced with 4
     items = json.loads(game_data[3])  # 'items' replaced with 3
-    print("Correct order: ", correct_order + "\n")
+    print("Correct order:\n" + "\n".join(correct_order))
     print("Items: ", items)
     resolve_promise = ctx.bot.loop.create_future()
     select_menu = OrderGameSelect(correct_order=correct_order, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Select the correct order", max_values=len(items), options=[discord.SelectOption(label=item[0], value=item[0]) for item in items])
