@@ -1099,7 +1099,7 @@ async def get_results_for_minigame(minigame_id):
     db = DB()
     data = await db.execute("SELECT * FROM `results` WHERE `minigame_id` = ?", (minigame_id,), fetch="all")
     if data is not None:
-        return [result['result'] for result in data]
+        return data
     return None
 
 
