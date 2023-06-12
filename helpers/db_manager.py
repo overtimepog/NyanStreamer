@@ -1032,6 +1032,7 @@ async def add_jobs_and_minigames():
 
             # Process results for this minigame
             if 'result' in minigame:
+                print(minigame['result'])
                 for result in minigame['result']:
                     await db.execute("INSERT INTO `results` (`minigame_id`, `result`) VALUES (?, ?)", (minigame_id, result))
 
@@ -1095,7 +1096,7 @@ async def get_rewards_for_option(minigame_id, option_id):
     rewards = await db.execute("SELECT * FROM `outcomes` WHERE choice_id = ?", (option_id,), fetch="all")
     return rewards
 
-async def get_results_for_minigame(minigame_id):
+async def get_results_for_minigame(minigame_id) -> list:
     db = DB()
     data = await db.execute("SELECT * FROM `results` WHERE `minigame_id` = ?", (minigame_id,), fetch="all")
     if data is not None:
