@@ -1102,10 +1102,16 @@ async def get_data_for_minigame(minigame):
         game_data = await db.execute("SELECT * FROM `matching` WHERE minigame_id = ?", (minigame[0],), fetch="one")
     elif game_type == 'Choice':
         choices = await db.execute("SELECT * FROM `choices` WHERE minigame_id = ?", (minigame[0],), fetch="all")
+        choices_with_outcomes = []
         for choice in choices:
             outcomes = await db.execute("SELECT * FROM `outcomes` WHERE choice_id = ?", (choice[0],), fetch="all")
-            choice['outcomes'] = outcomes
-        game_data = choices
+            # Transform choice tuple into a dictionary
+            choice_dict = {"id": choice[0], "minigame_id": choice[1], "description": choice[2]}
+            # Add the outcomes to the choice dictionary
+            choice_dict['outcomes'] = outcomes
+            # Add the updated choice to the new list
+            choices_with_outcomes.append(choice_dict)
+        game_data = choices_with_outcomes
     return game_data
     
 #get job description from job ID
