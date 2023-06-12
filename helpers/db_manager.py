@@ -1042,9 +1042,21 @@ async def add_jobs_and_minigames():
                 await db.execute("INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)", (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correctMatches'])))
             elif minigame['type'] == 'Choice':
                 for option in minigame['options']:
-                    choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`, `image`) VALUES (?, ?, ?)", (minigame_id, option['description'], option.get('image')), lastrowid=True)
+                    print(f"Processing option: {option}")
+                    print(f"Inserting into `choices`: minigame_id={minigame_id}, description={option['description']}, image={option.get('image')}")
+                    try:
+                        choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`, `image`) VALUES (?, ?, ?)", (minigame_id, option['description'], option.get('image')), lastrowid=True)
+                        print(f"Inserted option with choice_id: {choice_id}")
+                    except Exception as e:
+                        print(f"Error inserting into `choices`: {e}")
                     for outcome in option['outcomes']:
-                        await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`, `image`) VALUES (?, ?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome.get('rewardType'), str(outcome.get('reward')), outcome.get('chance'), outcome.get('image')))
+                        print(f"Processing outcome: {outcome}")
+                        print(f"Inserting into `outcomes`: choice_id={choice_id}, result={outcome['result']}, reward_type={outcome.get('rewardType')}, reward={str(outcome.get('reward'))}, chance={outcome.get('chance')}, image={outcome.get('image')}")
+                        try:
+                            await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`, `image`) VALUES (?, ?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome.get('rewardType'), str(outcome.get('reward')), outcome.get('chance'), outcome.get('image')))
+                            print(f"Inserted outcome for choice_id: {choice_id}")
+                        except Exception as e:
+                            print(f"Error inserting into `outcomes`: {e}")
     print("Processed all jobs and minigames")
 async def add_jobs_to_jobboard():
     db = DB()
