@@ -796,7 +796,8 @@ class ChoiceGameView(View):
     def add_choice(self, choice):
         self.add_item(ChoiceGameButton(label=choice, resolve_callback=self.resolve_callback, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
 
-async def play_choice_game(ctx, prompt, game_data, callback_processed_future):
+async def play_choice_game(ctx, game_data, callback_processed_future):
+    prompt = game_data[0]['minigame_id']
     embed = discord.Embed(title="Choose your action", description=prompt)
 
     resolve_promise = ctx.bot.loop.create_future()
@@ -816,6 +817,5 @@ async def play_choice_game(ctx, prompt, game_data, callback_processed_future):
         game_outcomes = None
 
     return result, game_outcomes, message
-
 
 #catch the fish minigame
