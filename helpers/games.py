@@ -760,9 +760,10 @@ async def play_matching_game(ctx, game_data, callback_processed_future):
 
 # Adjusting the ChoiceGame code in similar way
 
-class ChoiceGameSelect(Select):
-    def __init__(self, resolve_callback, callback_processed_future, *args, **kwargs):
+class ChoiceGameButton(Button):
+    def __init__(self, label, resolve_callback, callback_processed_future, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.label = label
         self.resolve_callback = resolve_callback
         self.callback_processed_future = callback_processed_future
 
@@ -770,14 +771,30 @@ class ChoiceGameSelect(Select):
         self.resolve_callback.set_result(True)
         self.callback_processed_future.set_result(True)
 
+class ChoiceGameView(View):
+    def __init__(self, resolve_callback, callback_processed_future, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.resolve_callback = resolve_callback
+        self.callback_processed_future = callback_processed_future
+        self.user = user
+
+    async def interaction_check(self, interaction: discord.Interaction):
+        if interaction.user.id == self.user.id:
+            return True
+        return False
+
+    def add_choice(self, choice):
+        self.add_item(ChoiceGameButton(label=choice, resolve_callback=self.resolve_callback, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
+
 async def play_choice_game(ctx, game_data, callback_processed_future):
     options = [option['description'] for option in game_data]
 
     resolve_promise = ctx.bot.loop.create_future()
-    select_menu = ChoiceGameSelect(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Choose an option", max_values=1, options=[discord.SelectOption(label=option) for option in options])
 
-    view = View()
-    view.add_item(select_menu)
+    view = ChoiceGameView(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
+
+    for option in options:
+        view.add_choice(option)
 
     message = await ctx.send(content="Choose an option:", view=view)
 
