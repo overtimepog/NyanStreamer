@@ -804,7 +804,7 @@ class ChoiceGameView(View):
         self.add_item(ChoiceGameButton(label=choice, resolve_callback=self.resolve_callback, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
 
 async def play_choice_game(ctx, game_data, callback_processed_future):
-    options = [option[2] for option in game_data]  # 'description' replaced with 2
+    options = [option['description'] for option in game_data]  # 'description' replaced with 2
 
     resolve_promise = ctx.bot.loop.create_future()
 
