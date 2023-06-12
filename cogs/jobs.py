@@ -267,7 +267,7 @@ class Jobs(commands.Cog, name="jobs"):
 
                 # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
-                    earned_reward = (outcome_message, reward_type, reward_value)
+                    earned_reward = (outcome_message, outcome_image, reward_type, reward_value)
                     break
 
             # If no reward was won, default to the one with the highest probability
@@ -283,7 +283,7 @@ class Jobs(commands.Cog, name="jobs"):
             # Print earned reward after processing
             print("Earned Reward: ", earned_reward)
 
-            result_message, reward_image, reward_type, reward_value = earned_reward
+            result_message, result_image, reward_type, reward_value = earned_reward
             reward_message = ""
 
             reward_embed = discord.Embed(
