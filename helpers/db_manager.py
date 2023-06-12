@@ -1032,9 +1032,9 @@ async def add_jobs_and_minigames():
 
             # Process results for this minigame
             if 'result' in minigame:
-                print(minigame['result'])
                 for result in minigame['result']:
                     await db.execute("INSERT INTO `results` (`minigame_id`, `result`) VALUES (?, ?)", (minigame_id, result))
+                    print(f"Processed result {result} for minigame {minigame_id}")
 
             # Process data depending on minigame type
             if minigame['type'] == 'Trivia':
