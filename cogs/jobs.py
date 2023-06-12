@@ -258,7 +258,7 @@ class Jobs(commands.Cog, name="jobs"):
                     id = outcome_message[0]
                     outcome_message = outcome_message[1]
                     outcome_image = outcome_message[2]
-                    print("Outcome Image: ", outcome_image)
+                    print(f"Outcome Image: {outcome_image}")
 
                 # Adjust the reward probability with the user's luck
                 adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
@@ -272,11 +272,11 @@ class Jobs(commands.Cog, name="jobs"):
             if earned_reward is None:
                 if minigame[2] == 'Choice':
                     outcome_id, outcome_message, reward_type, reward_value, reward_probability = outcomes[0]
-                    earned_reward = (outcome_message, reward_type, reward_value)
+                    earned_reward = (outcome_message, outcome_image, reward_type, reward_value)
                 else:
                     outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
                     print("Outcome: ", outcome)
-                    earned_reward = (outcome_message, reward_type, reward_value)
+                    earned_reward = (outcome_message, outcome_image, reward_type, reward_value)
 
             # Print earned reward after processing
             print("Earned Reward: ", earned_reward)
