@@ -798,6 +798,7 @@ class ChoiceGameView(View):
 
 async def play_choice_game(ctx, game_data, callback_processed_future):
     game = random.choice(game_data)
+    print("Game data: ", game)
     choices = game[1] 
 
     embed = discord.Embed(title="Choose the best option", description=game['task'])
