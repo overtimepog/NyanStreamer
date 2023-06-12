@@ -653,7 +653,7 @@ class TriviaGameButton(Button):
         # Set callback_processed_future result here
         self.callback_processed_future.set_result(True)
 
-async def play_trivia(ctx, game_data, minigameText, callback_processed_future):
+async def play_trivia(ctx, game_data, minigameText, minigameImage, callback_processed_future):
     random_trivia = random.choice(game_data)
     trivia_question = random_trivia[1]  # accessing the second element of tuple
     trivia_choices = json.loads(random_trivia[2])  # accessing the third element of tuple
@@ -664,6 +664,7 @@ async def play_trivia(ctx, game_data, minigameText, callback_processed_future):
         description=f"{trivia_question}",
         color=discord.Color.blue()
     )
+    trivia_embed.set_image(url=minigameImage)
 
     resolve_promise = ctx.bot.loop.create_future()
 
@@ -700,7 +701,7 @@ class OrderGameSelect(Select):
 
         self.callback_processed_future.set_result(True)
 
-async def play_order_game(ctx, game_data, minigameText, callback_processed_future):
+async def play_order_game(ctx, game_data, minigameText, minigameImage, callback_processed_future):
     game = random.choice(game_data)
     correct_order = json.loads(game[1])  # accessing the second element of tuple
     items = json.loads(game[2])
@@ -739,7 +740,7 @@ class MatchingGameSelect(Select):
 
         self.callback_processed_future.set_result(True)
 
-async def play_matching_game(ctx, game_data, minigameText, callback_processed_future):
+async def play_matching_game(ctx, game_data, minigameText, minigameImage, callback_processed_future):
     game = random.choice(game_data)
     items = json.loads(game[1])  # accessing the second element of tuple
     correct_matches = json.loads(game[2])
@@ -760,6 +761,7 @@ async def play_matching_game(ctx, game_data, minigameText, callback_processed_fu
     view.add_item(select_menu)
 
     embed = discord.Embed(title="Match the item", description=target['name'])
+    embed.set_image(url=minigameImage)
     message = await ctx.send(embed=embed, view=view)
 
     try:
@@ -796,9 +798,10 @@ class ChoiceGameView(View):
     def add_choice(self, choice):
         self.add_item(ChoiceGameButton(label=choice, resolve_callback=self.resolve_callback, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
 
-async def play_choice_game(ctx, game_data, minigameText, callback_processed_future):
+async def play_choice_game(ctx, game_data, minigameText, minigameImage, callback_processed_future):
     prompt = game_data[0]['minigame_id']
     embed = discord.Embed(title="Choose your action", description=minigameText)
+    embed.set_image(url=minigameImage)
 
     resolve_promise = ctx.bot.loop.create_future()
     view = ChoiceGameView(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)

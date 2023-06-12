@@ -204,6 +204,7 @@ class Jobs(commands.Cog, name="jobs"):
             await ctx.send("No minigames found for this job!")
             return
         minigameText = minigame[3]
+        minigameImage = minigame[4]
 
         game_data = await db_manager.get_data_for_minigame(minigame)
         print(game_data)
@@ -211,13 +212,13 @@ class Jobs(commands.Cog, name="jobs"):
         callback_processed_future = ctx.bot.loop.create_future()
 
         if minigame[2] == 'Trivia':
-            result, message = await games.play_trivia(ctx, game_data, minigameText, callback_processed_future)
+            result, message = await games.play_trivia(ctx, game_data, minigameText, minigameImage, callback_processed_future)
         elif minigame[2] == 'Order':
-            result, message = await games.play_order_game(ctx, game_data, minigameText, callback_processed_future)
+            result, message = await games.play_order_game(ctx, game_data, minigameText, minigameImage, callback_processed_future)
         elif minigame[2] == 'Matching':
-            result, message = await games.play_matching_game(ctx, game_data, minigameText, callback_processed_future)
+            result, message = await games.play_matching_game(ctx, game_data, minigameText, minigameImage, callback_processed_future)
         elif minigame[2] == 'Choice':
-            selected_option, result, message = await games.play_choice_game(ctx, game_data, minigameText, callback_processed_future)
+            selected_option, result, message = await games.play_choice_game(ctx, game_data, minigameText, minigameImage, callback_processed_future)
         else:
             print("Unknown game type")
             return
