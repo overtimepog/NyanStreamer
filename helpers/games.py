@@ -707,7 +707,7 @@ async def play_order_game(ctx, game_data, callback_processed_future):
     print("Correct order:\n" + "\n".join(correct_order))
     print("Items: ", items)
     resolve_promise = ctx.bot.loop.create_future()
-    select_menu = OrderGameSelect(correct_order=correct_order, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Select the correct order", max_values=len(items), options=[discord.SelectOption(label=item[0], value=item[0]) for item in items])
+    select_menu = OrderGameSelect(correct_order=correct_order, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Select the correct order", max_values=len(items), options=[discord.SelectOption(label=item, value=item) for item in items])
 
     view = View()
     view.add_item(select_menu)
