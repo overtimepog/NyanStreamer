@@ -189,25 +189,25 @@ class Jobs(commands.Cog, name="jobs"):
     )
     async def work(self, ctx: commands.Context):
         user_id = ctx.author.id
-    
+
         # Get user's job
         job_id = await db_manager.get_user_job(user_id)
         if job_id is None:
             await ctx.send("You don't have a job!")
             return
-    
+
         # Get a random minigame for this job
         minigame = await db_manager.get_minigame_for_job(job_id)
         print(minigame)
         if minigame is None:
             await ctx.send("No minigames found for this job!")
             return
-    
+
         game_data = await db_manager.get_data_for_minigame(minigame)
         print(game_data)
-    
+
         callback_processed_future = ctx.bot.loop.create_future()
-    
+
         if minigame[2] == 'Trivia':
             result, message = await games.play_trivia(ctx, game_data, callback_processed_future)
         elif minigame[2] == 'Order':
@@ -219,33 +219,35 @@ class Jobs(commands.Cog, name="jobs"):
         else:
             print("Unknown game type")
             return
-    
+
         print(result)
         if result:
             # Assume user_luck is a value between 0 and 100
             user_luck = await db_manager.get_luck(user_id)
-    
+
             # Adjust user's luck into scale of 0 to 1
             adjusted_luck = user_luck / 100
-    
+
             if minigame[2] == 'Choice':
-                # Get rewards based on the selected option
-                rewards = sorted(await db_manager.get_rewards_for_option(minigame[0], selected_option), key=lambda x: x[4], reverse=True)
+                # Get outcomes based on the selected option
+                outcomes = [outcome for option in game_data if option['description'] == selected_option for outcome in option['outcomes']]
+                # Sort outcomes by their probabilities
+                outcomes = sorted(outcomes, key=lambda x: x[5], reverse=True)
             else:
                 # Get the rewards and sort them by their probabilities
-                rewards = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[4], reverse=True)
-    
-            print("Rewards: ", rewards)
-    
+                outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[4], reverse=True)
+
+            print("Outcomes: ", outcomes)
+
             earned_reward = None
-    
-            # Go through the possible rewards
-            for reward in rewards:
-                reward_id, minigame_id, reward_type, reward_value, reward_probability = reward
-    
+
+            # Go through the possible outcomes
+            for outcome in outcomes:
+                outcome_id, option_id, outcome_message, reward_type, reward_value, reward_probability = outcome
+
                 # Adjust the reward probability with the user's luck
                 adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
-    
+
                 # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
                     earned_reward = (reward_type, reward_value)
@@ -253,12 +255,12 @@ class Jobs(commands.Cog, name="jobs"):
                 
             # If no reward was won, default to the one with the highest probability
             if earned_reward is None:
-                reward_id, minigame_id, reward_type, reward_value, reward_probability = rewards[0]
+                outcome_id, option_id, outcome_message, reward_type, reward_value, reward_probability = outcomes[0]
                 earned_reward = (reward_type, reward_value)
-    
+
             # Print earned reward after processing
             print("Earned Reward: ", earned_reward)
-    
+
             reward_type, reward_value = earned_reward
             if reward_type == "money" or reward_type == "experience":
                 # Check if reward_value can be converted into integer
@@ -267,9 +269,23 @@ class Jobs(commands.Cog, name="jobs"):
                 except ValueError:
                     print(f"Invalid value for {reward_type} reward: {reward_value}")
                     return
-    
+
                 # Add the money or experience to the user's account
-                await db_manager.add_money(user_id, int_reward_value)  # If add_experience function exists, you should use it here
+                if reward_type == "money":
+                    await db_manager.add_money(user_id, int_reward_value)  # If add_experience function exists, you should use it here
+                if reward_type == "experience":
+                    await db_manager.add_xp(user_id, int_reward_value)
+                    canLevlUp = await db_manager.can_level_up(user_id)
+                    if canLevlUp == True:
+                        await db_manager.add_level(user_id, 1)
+                        level = await db_manager.get_level(user_id)
+                        level = str(level)
+                        #remove the ( and ) and , from the level
+                        level = level.replace("(", "")
+                        level = level.replace(")", "")
+                        level = level.replace(",", "")
+                        await ctx.send(f"Congratulations {ctx.author.mention} you have leveled up, you are now level {level}!")
+
                 #star emoji for experience: ⭐
                 reward_message = f"You earned {cash if reward_type == 'money' else 'XP ⭐'} {int_reward_value}!"
             elif reward_type == "item":
@@ -277,7 +293,7 @@ class Jobs(commands.Cog, name="jobs"):
                 await db_manager.add_item_to_inventory(user_id, reward_value, 1)
                 reward_icon = await db_manager.get_basic_item_emoji(reward_value)
                 reward_message = f"You earned {reward_icon} {reward_value}!"
-    
+
             # Create a new embed to show the rewards
             reward_embed = discord.Embed(
                 title="Rewards Earned!",
