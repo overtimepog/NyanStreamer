@@ -276,7 +276,6 @@ class Jobs(commands.Cog, name="jobs"):
                 else:
                     outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
                     print("Outcome: ", outcome)
-                    print("Outcome2: ", outcome[0])
                     earned_reward = (outcome_message, reward_type, reward_value)
 
             # Print earned reward after processing
