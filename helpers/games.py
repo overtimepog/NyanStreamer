@@ -664,7 +664,10 @@ async def play_trivia(ctx, game_data, minigameText, minigameImage, callback_proc
         description=f"{trivia_question}",
         color=discord.Color.blue()
     )
-    trivia_embed.set_image(url=minigameImage)
+    try:
+        trivia_embed.set_image(url=minigameImage)
+    except:
+        pass
 
     resolve_promise = ctx.bot.loop.create_future()
 
@@ -761,7 +764,10 @@ async def play_matching_game(ctx, game_data, minigameText, minigameImage, callba
     view.add_item(select_menu)
 
     embed = discord.Embed(title="Match the item", description=target['name'])
-    embed.set_image(url=minigameImage)
+    try:
+        embed.set_image(url=minigameImage)
+    except:
+        pass
     message = await ctx.send(embed=embed, view=view)
 
     try:
@@ -801,7 +807,10 @@ class ChoiceGameView(View):
 async def play_choice_game(ctx, game_data, minigameText, minigameImage, callback_processed_future):
     prompt = game_data[0]['minigame_id']
     embed = discord.Embed(title="Choose your action", description=minigameText)
-    embed.set_image(url=minigameImage)
+    try:
+        embed.set_image(url=minigameImage)
+    except:
+        pass
 
     resolve_promise = ctx.bot.loop.create_future()
     view = ChoiceGameView(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
