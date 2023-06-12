@@ -394,3 +394,8 @@ CREATE TABLE IF NOT EXISTS `outcomes` (
     FOREIGN KEY (`choice_id`) REFERENCES `choices`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS jobboard (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    job_icon TEXT NOT NULL
+);
