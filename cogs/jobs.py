@@ -167,7 +167,8 @@ class Jobs(commands.Cog, name="jobs"):
         if user_job is None or user_job == 0 or user_job == "None":
             #give the user the job
             await db_manager.add_user_job(ctx.author.id, job)
-            await ctx.send(f"You have accepted the job {job.title()}!")
+            job_icon = await db_manager.get_job_icon_from_id(job)
+            await ctx.send(f"You have accepted the job {job_icon}{job.title()}!")
         else:
             await ctx.send("You already have a job!, please use `d.job quit or /job quit` command to quit your current job.")
 

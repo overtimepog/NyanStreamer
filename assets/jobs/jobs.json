@@ -44,6 +44,7 @@
             {
                 "type": "Order",
                 "prompt": "A customer has ordered a special dish. Prepare it by arranging the ingredients in the correct order.",
+                "image": "<image URL>",
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 60, "chance": 0.5}
@@ -62,6 +63,7 @@
             {
                 "type": "Trivia",
                 "prompt": "The head chef has thrown you a culinary trivia challenge. Can you ace it?",
+                "image": "<image URL>",
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "chef_hat", "chance": 0.2}
@@ -92,6 +94,7 @@
             {
                 "type": "Matching",
                 "prompt": "Match the organs with their functions to help with diagnosis.",
+                "image": "<image URL>",
                 "reward": [
                     {"rewardType": "money", "reward": 70, "chance": 0.5},
                     {"rewardType": "experience", "reward": 40, "chance": 0.3}
@@ -117,6 +120,7 @@
             {
                 "type": "Trivia",
                 "prompt": "The medical team has a trivia challenge for you. Show them your knowledge!",
+                "image": "<image URL>",
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "stethoscope", "chance": 0.3}
@@ -147,6 +151,7 @@
             {
                 "type": "Choice",
                 "prompt": "You are outside the spaceship. What do you want to do?",
+                "image": "https://cdn.discordapp.com/attachments/1040747535574237274/1117881233943310336/overtimepog_32-bit_pixel_art_rocket_in_space_cfab6758-5a0b-4dd8-bfb6-69ddc1a4c0c4.png",
                 "options": [
                     {
                         "description": "Inspect the spacecraft",
@@ -160,8 +165,8 @@
                         "description": "Look into space",
                         "image": "<space_view_image_URL>",
                         "outcomes": [
-                            {"result": "You spotted a meteor shower. Amazing!", "image": "<meteor_shower_image_URL>", "rewardType": "item", "reward": "meteor_shard", "chance": 0.3},
-                            {"result": "Just infinite darkness. Nothing special.", "image": "<space_darkness_image_URL>", "rewardType": null, "reward": null, "chance": 0.7}
+                            {"result": "You spotted a meteor shower. Amazing!", "image": "https://cdn.discordapp.com/ephemeral-attachments/1040747535574237274/1117872627386699857/overtimepog_32-bit_pixel_art_meteor_shower_a_midnight_marvel._A_d79ca7fe-d6cd-4a0f-94e9-fbc078e2b852.png", "rewardType": "item", "reward": "meteor_shard", "chance": 0.3},
+                            {"result": "Just infinite darkness. Nothing special.", "image": "https://cdn.discordapp.com/attachments/1040747535574237274/1117873501823574156/overtimepog_32-bit_pixel_art_a_blank_sky_with_twinkling_stars.__9efdf357-f0fc-48ed-bb17-35bc4fc6ba49.png", "rewardType": null, "reward": null, "chance": 0.7}
                         ]
                     },
                     {
@@ -177,6 +182,7 @@
             {
                 "type": "Trivia",
                 "prompt": "Your mission controller has a space trivia for you. Let's see how well you know the cosmos!",
+                "image": "<image URL>",
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "moon_rock", "chance": 0.4}

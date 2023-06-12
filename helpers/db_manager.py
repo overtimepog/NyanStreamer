@@ -1147,6 +1147,15 @@ async def get_job_description_from_id(job_id: str) -> str:
     else:
         return 0
 
+#get job icon from job ID
+async def get_job_icon_from_id(job_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[3]
+    else:
+        return 0
+
 #get job name
 async def get_job_name_from_id(job_id: str) -> str:
     db = DB()
