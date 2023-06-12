@@ -245,7 +245,14 @@ class Jobs(commands.Cog, name="jobs"):
             # Go through the possible outcomes
             for outcome in outcomes:
                 if minigame[2] == 'Choice':
-                    outcome_id, choice_id, outcome_message, reward_type, reward_value, reward_probability, outcome_image = outcome
+                    outcome_id = outcome['id']
+                    choice_id = outcome['choice_id']
+                    outcome_message = outcome['result']
+                    reward_type = outcome['reward_type']
+                    reward_value = outcome['reward']
+                    reward_probability = outcome['chance']
+                    outcome_image = outcome['image']
+            
                     print("Outcome: ", outcome)
                     print("Outcome Message: ", outcome_message)
                     print('Outcome Image: ', outcome_image)
