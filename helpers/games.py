@@ -655,9 +655,9 @@ class TriviaGameButton(Button):
 
 async def play_trivia(ctx, game_data, callback_processed_future):
     random_trivia = random.choice(game_data)
-    trivia_question = list(random_trivia.values())[0]  # accessing the first value of dictionary
-    trivia_choices = json.loads(list(random_trivia.values())[1])  # accessing the second value of dictionary
-    trivia_answer = list(random_trivia.values())[2]
+    trivia_question = random_trivia[1]  # accessing the second element of tuple
+    trivia_choices = json.loads(random_trivia[2])  # accessing the third element of tuple
+    trivia_answer = random_trivia[3]
 
     trivia_embed = Embed(
         title="Trivia Time!",
@@ -702,8 +702,8 @@ class OrderGameSelect(Select):
 
 async def play_order_game(ctx, game_data, callback_processed_future):
     game = random.choice(game_data)
-    correct_order = json.loads(list(game.values())[0])  # accessing the first value of dictionary
-    items = json.loads(list(game.values())[1])
+    correct_order = json.loads(game[1])  # accessing the second element of tuple
+    items = json.loads(game[2])
     print("Correct order:\n" + "\n".join(correct_order))
     print("Items: ", items)
     resolve_promise = ctx.bot.loop.create_future()
@@ -741,8 +741,8 @@ class MatchingGameSelect(Select):
 
 async def play_matching_game(ctx, game_data, callback_processed_future):
     game = random.choice(game_data)
-    items = json.loads(list(game.values())[0])  # accessing the first value of dictionary
-    correct_matches = json.loads(list(game.values())[1])
+    items = json.loads(game[1])  # accessing the second element of tuple
+    correct_matches = json.loads(game[2])
 
     target = random.choice(items)
 
@@ -798,7 +798,7 @@ class ChoiceGameView(View):
 
 async def play_choice_game(ctx, game_data, callback_processed_future):
     game = random.choice(game_data)
-    choices = list(game.values())[0]
+    choices = game[1] 
 
     embed = discord.Embed(title="Choose the best option", description=game['task'])
 
