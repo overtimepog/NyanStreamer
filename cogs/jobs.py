@@ -250,18 +250,26 @@ class Jobs(commands.Cog, name="jobs"):
 
                 # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
-                    earned_reward = (reward_type, reward_value)
+                    earned_reward = (outcome_message, reward_type, reward_value)
                     break
-                
+
             # If no reward was won, default to the one with the highest probability
             if earned_reward is None:
                 outcome_id, option_id, outcome_message, reward_type, reward_value, reward_probability = outcomes[0]
-                earned_reward = (reward_type, reward_value)
+                earned_reward = (outcome_message, reward_type, reward_value)
 
             # Print earned reward after processing
             print("Earned Reward: ", earned_reward)
 
-            reward_type, reward_value = earned_reward
+            result_message, reward_type, reward_value = earned_reward
+            reward_message = ""
+
+            reward_embed = discord.Embed(
+                title="Game Outcome",
+                description=result_message,
+                color=discord.Color.gold()
+            )
+
             if reward_type == "money" or reward_type == "experience":
                 # Check if reward_value can be converted into integer
                 try:
@@ -272,11 +280,11 @@ class Jobs(commands.Cog, name="jobs"):
 
                 # Add the money or experience to the user's account
                 if reward_type == "money":
-                    await db_manager.add_money(user_id, int_reward_value)  # If add_experience function exists, you should use it here
+                    await db_manager.add_money(user_id, int_reward_value) 
                 if reward_type == "experience":
                     await db_manager.add_xp(user_id, int_reward_value)
-                    canLevlUp = await db_manager.can_level_up(user_id)
-                    if canLevlUp == True:
+                    canLevelUp = await db_manager.can_level_up(user_id)
+                    if canLevelUp == True:
                         await db_manager.add_level(user_id, 1)
                         level = await db_manager.get_level(user_id)
                         level = str(level)
@@ -288,18 +296,19 @@ class Jobs(commands.Cog, name="jobs"):
 
                 #star emoji for experience: ⭐
                 reward_message = f"You earned {cash if reward_type == 'money' else 'XP ⭐'} {int_reward_value}!"
+                reward_embed.add_field(name=reward_type.capitalize(), value=int_reward_value, inline=False)
             elif reward_type == "item":
                 # Give the item to the user
                 await db_manager.add_item_to_inventory(user_id, reward_value, 1)
                 reward_icon = await db_manager.get_basic_item_emoji(reward_value)
                 reward_message = f"You earned {reward_icon} {reward_value}!"
+                reward_embed.add_field(name=reward_type.capitalize(), value=f"{reward_icon} {reward_value}", inline=False)
+            else:
+                print(f"Invalid reward type: {reward_type}")
+                return
 
-            # Create a new embed to show the rewards
-            reward_embed = discord.Embed(
-                title="Rewards Earned!",
-                description=reward_message,
-                color=discord.Color.gold()
-            )
+            reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
+
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
             await message.edit(embed=reward_embed, view=None)
         else:
