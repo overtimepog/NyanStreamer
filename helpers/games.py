@@ -700,8 +700,8 @@ class OrderGameSelect(Select):
         self.callback_processed_future.set_result(True)
 
 async def play_order_game(ctx, game_data, callback_processed_future):
-    correct_order = json.loads(game_data['correctOrder'])
-    items = json.loads(game_data['items'])
+    correct_order = json.loads(game_data[4])  # 'correctOrder' replaced with 4
+    items = json.loads(game_data[3])  # 'items' replaced with 3
 
     resolve_promise = ctx.bot.loop.create_future()
     select_menu = OrderGameSelect(correct_order=correct_order, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Select the correct order", max_values=len(items), options=[discord.SelectOption(label=item) for item in items])
@@ -709,7 +709,7 @@ async def play_order_game(ctx, game_data, callback_processed_future):
     view = View()
     view.add_item(select_menu)
 
-    message = await ctx.send(content=game_data['task'], view=view)
+    message = await ctx.send(content=game_data[2], view=view)  # 'task' replaced with 2
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
@@ -739,8 +739,8 @@ class MatchingGameSelect(Select):
         self.callback_processed_future.set_result(True)
 
 async def play_matching_game(ctx, game_data, callback_processed_future):
-    correct_matches = json.loads(game_data['correctMatches'])
-    items = json.loads(game_data['items'])
+    correct_matches = json.loads(game_data[3])  # 'correctMatches' replaced with 3
+    items = json.loads(game_data[2])  # 'items' replaced with 2
 
     resolve_promise = ctx.bot.loop.create_future()
     select_menu = MatchingGameSelect(correct_matches=correct_matches, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Match the items", max_values=len(items), options=[discord.SelectOption(label=item) for item in items])
@@ -787,7 +787,7 @@ class ChoiceGameView(View):
         self.add_item(ChoiceGameButton(label=choice, resolve_callback=self.resolve_callback, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
 
 async def play_choice_game(ctx, game_data, callback_processed_future):
-    options = [option['description'] for option in game_data]
+    options = [option[2] for option in game_data]  # 'description' replaced with 2
 
     resolve_promise = ctx.bot.loop.create_future()
 
