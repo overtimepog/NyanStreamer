@@ -2,8 +2,8 @@
     {
         "item_id": "dev_badge",
         "item_name": "Dev Badge",
-        "item_price": 10000000000,
-        "item_emoji": "<:clockBadge:1111512143997698169>",
+        "item_price": -1,
+        "item_emoji": "<:Clock:1118276665395654806>",
         "item_rarity": "Legendary",
         "item_type": "Badge",
         "item_damage": 0,

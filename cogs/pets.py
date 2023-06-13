@@ -426,6 +426,7 @@ class Pets(commands.Cog, name="pets"):
         self.update_pet_happiness.start()
         self.update_pet_cleanliness.start()
         self.expired_item_check.start()
+        #move this loop to the basic cog
         self.shop_reset.start()
 
     @commands.hybrid_command()
