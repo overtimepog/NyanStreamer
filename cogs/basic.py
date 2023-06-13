@@ -634,17 +634,13 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
         
 
-    @commands.hybrid_group(invoke_without_command=True)
-    async def shop(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await ctx.send('Invalid shop command passed...')
 
     #ANCHOR - shop command that shows the shop
-    @shop.command(
-        name="view",
+    @commands.hybrid_command(
+        name="shop",
         description="view the shop.",
     )
-    async def view(self, ctx: Context):
+    async def shop(self, ctx: Context):
         #get the shop items from the database
         shopitems = await db_manager.display_shop_items()
 
@@ -762,7 +758,7 @@ class Basic(commands.Cog, name="basic"):
                 
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
     
-    @shop.command(
+    @commands.hybrid_command(
         name="buy",
         description="This command will buy an item from the shop.",
     )
@@ -936,7 +932,7 @@ class Basic(commands.Cog, name="basic"):
                 choices.append(app_commands.Choice(name=item_name, value=item[0]))
         return choices[:25]
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
-    @shop.command(
+    @commands.hybrid_command(
         name="sell",
         description="This command will sell an item from your inventory.",
     )
