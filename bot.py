@@ -179,7 +179,9 @@ async def status_task() -> None:
     """
     streamers = await db_manager.view_streamers()
     streamer_count = len(streamers)
-    statuses = [f"With {streamer_count} Streamers!", "nyanstreamer.lol", "nya help", 'UwU']
+    #get the server count
+    server_count = len(bot.guilds)
+    statuses = [f"With {streamer_count} Streamers!", "nya help", 'UwU', f"to {server_count} Servers!"]
     await bot.change_presence(activity=discord.Streaming(name=random.choice(statuses), url="https://www.twitch.tv/overtimepog", twitch_name="overtimepog"))
     
 #create a task to regenerate the twitch credentials and save them to the database, every 5 days
