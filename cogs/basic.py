@@ -191,7 +191,7 @@ class Basic(commands.Cog, name="basic"):
                 end_idx = start_idx + 5
                 inventory_embed = discord.Embed(
                     title="Inventory",
-                    description=f"{ctx.author.name}'s Inventory \n Commands: \n d.equip ID: equips an item based on its ID \n d.unequip ID: will unequip an item based on its ID. \n d.shop sell ID amount: will sell that amount of an item from your inventory",
+                    description=f"{ctx.author.name}'s Inventory \n Commands: \n nya equip ID: equips an item based on its ID \n nya unequip ID: will unequip an item based on its ID. \n nya shop sell ID amount: will sell that amount of an item from your inventory",
                 )
                 inventory_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -1800,7 +1800,7 @@ class Basic(commands.Cog, name="basic"):
         #check if th user exists in the database
         user_exists = await db_manager.check_user(ctx.author.id)
         if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
-            await ctx.send("You are not in the database yet, please use the `d.start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
             return
         #create an embed to send to the user, then add a button to connect their twitch account
         embed = discord.Embed(

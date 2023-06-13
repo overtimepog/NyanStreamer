@@ -94,7 +94,7 @@ class General(commands.Cog, name="general"):
             for i in range(num_pages):
                 start_idx = i * 5
                 end_idx = start_idx + 5
-                help_embed = discord.Embed(title="Help", description="List of available commands: use d. or /", color=0x9C84EF)
+                help_embed = discord.Embed(title="Help", description="List of available commands: use nya  or /", color=0x9C84EF)
                 help_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
                 for cog in cogs_list[start_idx:end_idx]:

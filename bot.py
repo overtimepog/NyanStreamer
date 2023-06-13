@@ -177,7 +177,7 @@ async def status_task() -> None:
     """
     Setup the game status task of the bot
     """
-    statuses = ["With Streamers!", "/help", "d.help", "/start", "d.start"]
+    statuses = ["With Streamers!", "nyanstreamer.lol", "nya help", 'UwU']
     await bot.change_presence(activity=discord.Game(random.choice(statuses)))
     
 #create a task to regenerate the twitch credentials and save them to the database, every 5 days
