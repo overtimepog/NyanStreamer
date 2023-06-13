@@ -142,4 +142,4 @@ cython_debug/
 # SQLITE database
 *.db
 
-DankStreamerWEB/node_modules
+NyanStreamerWEB/node_modules

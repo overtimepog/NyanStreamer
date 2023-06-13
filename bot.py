@@ -100,7 +100,7 @@ bot.config = config # type: ignore
     
 
 #every 12 hours the shop will reset, create a task to do this
-#every 5 hours a structure will spawn in the channel named "dankstreamer-structures"
+#every 5 hours a structure will spawn in the channel named "nyanstreamer-structures"
 @tasks.loop(minutes=90)
 async def structure_spawn_task() -> None:       
     #get the structures channel
@@ -109,9 +109,9 @@ async def structure_spawn_task() -> None:
         #    print("Skipping " + bot_guild.name + " because it's the Connections server")
         #    continue
         #reset the guilds current structure
-        channel = discord.utils.get(bot_guild.text_channels, topic="dankstreamer")
+        channel = discord.utils.get(bot_guild.text_channels, topic="nyanstreamer")
         if channel is None:
-            #print("A channel with the topic dankstreamer-structures does not exist in " + bot_guild.name)
+            #print("A channel with the topic nyanstreamer-structures does not exist in " + bot_guild.name)
             continue
         
         if await db_manager.get_current_structure(bot_guild.id) is not None: # type: ignore
@@ -150,9 +150,9 @@ async def mob_spawn_task() -> None:
         #    print("Skipping " + bot_guild.name + " because it's the Connections server")
         #    continue
         #reset the guilds current structure
-        channel = discord.utils.get(bot_guild.text_channels, topic="dankstreamer")
+        channel = discord.utils.get(bot_guild.text_channels, topic="nyanstreamer")
         if channel is None:
-            #print("A channel with the topic dankstreamer-structures does not exist in " + bot_guild.name)
+            #print("A channel with the topic nyanstreamer-structures does not exist in " + bot_guild.name)
             continue
         
         if await db_manager.get_current_structure(bot_guild.id) is not None: # type: ignore

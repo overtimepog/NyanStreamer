@@ -32,7 +32,7 @@ async def thanks(request: Request):
 async def webhook(request: Request):
     discord_user_id = request.query_params.get("discord_id")
     request.session["discord_user_id"] = discord_user_id
-    return RedirectResponse(url="https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://dankstreamer.lol/callback&response_type=code&scope=user:read:email")
+    return RedirectResponse(url="https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://nyanstreamer.lol/callback&response_type=code&scope=user:read:email")
 
 @app.get("/callback")
 async def callback(request: Request):
@@ -44,7 +44,7 @@ async def callback(request: Request):
         "client_secret": client_secret,
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": "https://dankstreamer.lol/callback"
+        "redirect_uri": "https://nyanstreamer.lol/callback"
     })
 
     access_token = response.json()["access_token"]

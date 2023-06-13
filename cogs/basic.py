@@ -1809,7 +1809,7 @@ class Basic(commands.Cog, name="basic"):
             color=discord.Color.blurple()
         )
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/881056455321487390/881056516333762580/unknown.png")
-        embed.set_footer(text="DankStreamer")
+        embed.set_footer(text="NyanStreamer")
         #make a discord.py button interaction
         class MyView(discord.ui.View): # Create a class called MyView that subclasses discord.ui.View
             def __init__(self, url: str):
@@ -1819,7 +1819,7 @@ class Basic(commands.Cog, name="basic"):
         #send the embed to the user in DMs
         await ctx.send("Check your DMs :)")
         try:
-            await ctx.author.send(embed=embed, view=MyView(f"https://dankstreamer.lol/webhook?discord_id={ctx.author.id}")) # Send a message with our View class that contains the button
+            await ctx.author.send(embed=embed, view=MyView(f"https://nyanstreamer.lol/webhook?discord_id={ctx.author.id}")) # Send a message with our View class that contains the button
         except(CommandInvokeError):
             await ctx.send("I couldn't DM you! Make sure your DMs are open!")
             return

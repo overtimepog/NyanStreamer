@@ -28,7 +28,7 @@ class TwitchBot(commands.Bot):
         # We are logged in and ready to chat and use commands...
         print(f'Logged in as | {self.nick}')
         print(f'User id is | {self.user_id}')
-        join_message = f"Hello! I'm DankStreamer and I'm here to help you with your adventure! Type !help for a list of commands."
+        join_message = f"Hello! I'm NyanStreamer and I'm here to help you with your adventure! Type !help for a list of commands."
         self.join_message = join_message
         #check if new streamers have been added to the database
         while True:
