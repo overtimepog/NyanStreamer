@@ -673,7 +673,7 @@ class Basic(commands.Cog, name="basic"):
                 resetTime = resetTime[:19]
                 #format this 2023-06-14 10:27:28.321303+00:00, using strptime
                 resetTime = datetime.datetime.strptime(resetTime, '%Y-%m-%d %H:%M:%S')
-                resetTime = resetTime.strftime("%m/%d/%Y, %H:%M:%S")
+                resetTime = resetTime.strftime('%B %d, %Y, %I:%M %p')
                 shop_embed = discord.Embed(
                     title="Shop",
                     description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Shop Resets: {resetTime}"
@@ -1119,7 +1119,6 @@ class Basic(commands.Cog, name="basic"):
                 # get the item expire time
                 expire_time = item[3]
                 expiration_datetime = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
-                expiration_datetime.strftime('%m/%d/%Y, %H:%M:%S')
         
                 # Update item_info
                 item_key = f"{item_emoji}{item_name}"
