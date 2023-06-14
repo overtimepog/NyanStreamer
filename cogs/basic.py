@@ -670,6 +670,8 @@ class Basic(commands.Cog, name="basic"):
                 end_idx = start_idx + 5
                 resetTime = self.shop_reset.next_iteration
                 resetTime = str(resetTime)
+                #format this 2023-06-14 10:27:28.321303+00:00, using strptime
+                resetTime = datetime.datetime.strptime(resetTime, '%Y-%m-%d %H:%M:%S.%f%z')
                 shop_embed = discord.Embed(
                     title="Shop",
                     description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Shop Resets: {resetTime}"
