@@ -745,7 +745,11 @@ class Basic(commands.Cog, name="basic"):
 
                 filtered_embeds = await create_embeds(filtered_items)
                 new_view = ShopButton(current_page=0, embeds=filtered_embeds)
-                await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+                try:
+                    await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+                #catch IndexError
+                except(IndexError):
+                    await interaction.response.defer()
                 
         class ShopButton(discord.ui.View):
             def __init__(self, current_page, embeds, **kwargs):
