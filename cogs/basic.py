@@ -669,8 +669,8 @@ class Basic(commands.Cog, name="basic"):
                 start_idx = i * 5
                 end_idx = start_idx + 5
                 resetTime = self.shop_reset.next_iteration
-                resetTime = resetTime[:19]
                 resetTime = str(resetTime)
+                resetTime = resetTime[:19]
                 #format this 2023-06-14 10:27:28.321303+00:00, using strptime
                 resetTime = datetime.datetime.strptime(resetTime, '%m/%d/%Y %H:%M:%S')
                 shop_embed = discord.Embed(
