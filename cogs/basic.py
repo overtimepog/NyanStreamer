@@ -688,7 +688,7 @@ class Basic(commands.Cog, name="basic"):
                 resetTime = resetTime.strftime('%B %d, %Y, %I:%M %p %Z')
                 shop_embed = discord.Embed(
                     title="Shop",
-                    description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Shop Resets: `{resetTime}`"
+                    description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n \n Shop Resets: `{resetTime}`"
                 )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
