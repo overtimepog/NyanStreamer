@@ -12,6 +12,7 @@ import datetime
 import json
 import random
 import re
+import pytz
 import requests
 from discord import Webhook, SyncWebhook
 import aiohttp
@@ -668,15 +669,26 @@ class Basic(commands.Cog, name="basic"):
             for i in range(num_pages):
                 start_idx = i * 5
                 end_idx = start_idx + 5
+                # Get the reset time
                 resetTime = self.shop_reset.next_iteration
                 resetTime = str(resetTime)
                 resetTime = resetTime[:19]
-                #format this 2023-06-14 10:27:28.321303+00:00, using strptime
+                
+                # Parse the reset time string into a datetime object
                 resetTime = datetime.datetime.strptime(resetTime, '%Y-%m-%d %H:%M:%S')
-                resetTime = resetTime.strftime('%B %d, %Y, %I:%M %p')
+                
+                # Make the datetime object timezone-aware (UTC)
+                resetTime = resetTime.replace(tzinfo=pytz.UTC)
+                
+                # Convert the datetime object to Eastern Standard Time
+                est = pytz.timezone('US/Eastern')
+                resetTime = resetTime.astimezone(est)
+                
+                # Format the datetime object as a string
+                resetTime = resetTime.strftime('%B %d, %Y, %I:%M %p %Z')
                 shop_embed = discord.Embed(
                     title="Shop",
-                    description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Shop Resets: {resetTime}"
+                    description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Shop Resets: `{resetTime}`"
                 )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -1119,6 +1131,12 @@ class Basic(commands.Cog, name="basic"):
                 # get the item expire time
                 expire_time = item[3]
                 expiration_datetime = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
+                # Make the datetime object timezone-aware (UTC)
+                expiration_datetime = expiration_datetime.replace(tzinfo=pytz.UTC)
+                
+                # Convert the datetime object to Eastern Standard Time
+                est = pytz.timezone('US/Eastern')
+                expiration_datetime = expiration_datetime.astimezone(est)
         
                 # Update item_info
                 item_key = f"{item_emoji}{item_name}"
@@ -1128,7 +1146,7 @@ class Basic(commands.Cog, name="basic"):
         # Display information
         for item_key, info in item_info.items():
             # Format the datetime object into a string
-            expiration_str = info["latest_expire"].strftime('%B %d, %Y, %I:%M %p')
+            expiration_str = info["latest_expire"].strftime('%B %d, %Y, %I:%M %p %Z')
             embed.add_field(name=f"{item_key} x{info['count']}", value=f"Latest expiration: `{expiration_str}`", inline=False)
 
 
