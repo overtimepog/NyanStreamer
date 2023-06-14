@@ -669,7 +669,6 @@ class Basic(commands.Cog, name="basic"):
                 start_idx = i * 5
                 end_idx = start_idx + 5
                 resetTime = self.shop_reset.next_iteration
-                resetTime = resetTime - datetime.datetime.now()
                 resetTime = str(resetTime)
                 shop_embed = discord.Embed(
                     title="Shop",
