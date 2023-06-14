@@ -135,6 +135,17 @@ class PetSelectView(discord.ui.View):
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
         self.bot = bot
+        self.shop_reset.start()
+
+    #every 8 hours the shop will reset
+    @tasks.loop(hours=8)
+    async def shop_reset(self):
+        print("-----------------------------")
+        print("Resetting Shop...")
+        await db_manager.clear_shop()
+        await db_manager.add_shop_items()
+        print("Done Resetting Shop...")
+        print("-----------------------------")
 
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
     #registering a streamer will also add them to the database user table
@@ -657,9 +668,10 @@ class Basic(commands.Cog, name="basic"):
             for i in range(num_pages):
                 start_idx = i * 5
                 end_idx = start_idx + 5
+                resetTime = self.shop_reset.next_iteration - datetime.datetime.now()
                 shop_embed = discord.Embed(
                     title="Shop",
-                    description="This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n"
+                    description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Time of Reset: {resetTime}"
                 )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
