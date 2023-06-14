@@ -1,0 +1,17 @@
+[
+    {
+        "message": "**BOSS** Unfortunate {user}, you didn't quite meet the task's demands. Better luck next time. Here's {money} for your time."
+    },
+    {
+        "message": "**BOSS** Tough luck {user}, you failed to complete the task successfully. Keep trying. Nonetheless, here's {money} for your effort."
+    },
+    {
+        "message": "**BOSS** It seems you had a hard time, {user}. Practice will make you better. Still, you've earned {money} for your time."
+    },
+    {
+        "message": "**BOSS** You couldn't quite get it right this time, {user}. But don't give up. We're still giving you {money} for your time."
+    },
+    {
+        "message": "**BOSS** Not quite there yet, {user}. Keep working hard and you'll improve. Here's {money} for your time."
+    }
+]

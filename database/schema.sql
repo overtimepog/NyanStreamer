@@ -335,7 +335,6 @@ CREATE TABLE IF NOT EXISTS `minigames` (
     `job_id` TEXT,
     `type` TEXT,
     `prompt` TEXT,
-    `image` TEXT,
     FOREIGN KEY (`job_id`) REFERENCES `jobs`(`id`)
 );
 
@@ -344,13 +343,6 @@ CREATE TABLE IF NOT EXISTS `rewards` (
     `reward_type` TEXT,
     `reward` TEXT,
     `chance` REAL,
-    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `results` (
-    `minigame_id` INTEGER,
-    `message` TEXT,
-    `image` TEXT,
     FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
@@ -375,23 +367,6 @@ CREATE TABLE IF NOT EXISTS `matching` (
     `items` TEXT,
     `correct_matches` TEXT,
     FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `choices` (
-    `minigame_id` INTEGER,
-    `description` TEXT,
-    `image` TEXT,
-    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `outcomes` (
-    `choice_id` INTEGER,
-    `result` TEXT,
-    `reward_type` TEXT,
-    `reward` TEXT,
-    `chance` REAL,
-    `image` TEXT,
-    FOREIGN KEY (`choice_id`) REFERENCES `choices`(`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `jobboard` (

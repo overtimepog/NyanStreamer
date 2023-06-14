@@ -1022,16 +1022,11 @@ async def add_jobs_and_minigames():
         print(f"Processed job {job['name']}")
         # Process minigames for this job
         for minigame in job['minigames']:
-            minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`, `image`) VALUES (?, ?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt'), minigame.get('image')), lastrowid=True)
+            minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True)
             # Process rewards for this minigame
             if 'reward' in minigame:
                 for reward in minigame['reward']:
                     await db.execute("INSERT INTO `rewards` (`minigame_id`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?)", (minigame_id, reward['rewardType'], reward.get('reward'), reward.get('chance')))
-            # Process results for this minigame
-            if 'result' in minigame:
-                for result in minigame['result']:
-                    await db.execute("INSERT INTO `results` (`minigame_id`, `message`, `image`) VALUES (?, ?, ?)", (minigame_id, result['message'], result.get('image')))
-                    print(f"Processed result {result['message']} for minigame {minigame_id}")
             # Process data depending on minigame type
             if minigame['type'] == 'Trivia':
                 for question in minigame['questions']:
@@ -1042,19 +1037,13 @@ async def add_jobs_and_minigames():
                 await db.execute("INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)", (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correctMatches'])))
             elif minigame['type'] == 'Choice':
                 for option in minigame['options']:
-                    print(f"Processing option: {option}")
-                    print(f"Inserting into `choices`: minigame_id={minigame_id}, description={option['description']}, image={option.get('image')}")
                     try:
-                        choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`, `image`) VALUES (?, ?, ?)", (minigame_id, option['description'], option.get('image')), lastrowid=True)
-                        print(f"Inserted option with choice_id: {choice_id}")
+                        choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)", (minigame_id, option['description']), lastrowid=True)
                     except Exception as e:
                         print(f"Error inserting into `choices`: {e}")
                     for outcome in option['outcomes']:
-                        print(f"Processing outcome: {outcome}")
-                        print(f"Inserting into `outcomes`: choice_id={choice_id}, result={outcome['result']}, reward_type={outcome.get('rewardType')}, reward={str(outcome.get('reward'))}, chance={outcome.get('chance')}, image={outcome.get('image')}")
                         try:
-                            await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`, `image`) VALUES (?, ?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome.get('rewardType'), str(outcome.get('reward')), outcome.get('chance'), outcome.get('image')))
-                            print(f"Inserted outcome for choice_id: {choice_id}")
+                            await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome.get('rewardType'), str(outcome.get('reward')), outcome.get('chance')))
                         except Exception as e:
                             print(f"Error inserting into `outcomes`: {e}")
     print("Processed all jobs and minigames")

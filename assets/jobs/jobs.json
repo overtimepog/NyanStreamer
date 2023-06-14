@@ -8,17 +8,9 @@
             {
                 "type": "Trivia",
                 "prompt": "**Work for Developer** - Trivia - Please answer the following question:",
-                "image": "None",
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "debugger", "chance": 0.3}
-                ],
-                "result": [
-                    {"message": "You answered correctly and now they're calling you 'The Human Stack Overflow'.", "image": "None"},
-                    {"message": "You nailed the trivia! Your boss is considering giving you 'sudo' rights.", "image": "None"},
-                    {"message": "Your coding trivia skills got you a nomination for the 'Golden Keyboard' award.", "image": "None"},
-                    {"message": "You were so good, the coffee machine is considering becoming your apprentice.", "image": "None"},
-                    {"message": "You did so well they've started wondering if you're the one who actually invented JavaScript.", "image": "None"}
                 ],
                 "questions": [
                     {
@@ -44,17 +36,9 @@
             {
                 "type": "Order",
                 "prompt": "**Work for Chef** - Order - Please arrange the following ingredients in the correct order:",
-                "image": "None",
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 60, "chance": 0.5}
-                ],
-                "result": [
-                    {"message": "Your dish became so popular, customers are taking selfies with it!", "image": "None"},
-                    {"message": "Your culinary skills are so unmatched, Gordon Ramsay is asking for your autograph.", "image": "None"},
-                    {"message": "Your organized workflow had the kitchen staff considering forming a fan club in your name.", "image": "None"},
-                    {"message": "Your innovative use of ingredients made the food critic cry tears of joy.", "image": "None"},
-                    {"message": "Your attention to detail was so great, even the head chef's hat tipped itself in respect.", "image": "None"}
                 ],
                 "task": "Sort the ingredients according to the recipe order",
                 "items": ["Flour", "Eggs", "Milk", "Butter"],
@@ -63,17 +47,9 @@
             {
                 "type": "Trivia",
                 "prompt": "**Work for Chef** - Trivia - Please answer the following question:",
-                "image": "None",
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "chef_hat", "chance": 0.2}
-                ],
-                "result": [
-                    {"message": "Your dish became so popular, customers are taking selfies with it!", "image": "None"},
-                    {"message": "Your culinary skills are so unmatched, Gordon Ramsay is asking for your autograph.", "image": "None"},
-                    {"message": "Your organized workflow had the kitchen staff considering forming a fan club in your name.", "image": "None"},
-                    {"message": "Your innovative use of ingredients made the food critic cry tears of joy.", "image": "None"},
-                    {"message": "Your attention to detail was so great, even the head chef's hat tipped itself in respect.", "image": "None"}
                 ],
                 "questions": [
                     {
@@ -94,17 +70,9 @@
             {
                 "type": "Matching",
                 "prompt": "**Work for Doctor** - Matching - Please match the following organs with their functions:",
-                "image": "None",
                 "reward": [
                     {"rewardType": "money", "reward": 70, "chance": 0.5},
                     {"rewardType": "experience", "reward": 40, "chance": 0.3}
-                ],
-                "result": [
-                    {"message": "Your matches were so accurate, the MRI machine is feeling insecure.", "image": "None"},
-                    {"message": "The medical team is thinking of replacing Google with you.", "image": "None"},
-                    {"message": "Your superior's jaw dropped at your excellent grasp of human anatomy.", "image": "None"},
-                    {"message": "Your contributions have led to patients asking if you're part wizard.", "image": "None"},
-                    {"message": "You identified all the organs so accurately, even the scalpel gave you a standing ovation.", "image": "None"}
                 ],
                 "items": [
                     {"name": "Heart", "description": "Pumps blood"},
@@ -120,17 +88,9 @@
             {
                 "type": "Trivia",
                 "prompt": "**Work for Doctor** - Trivia - Please answer the following question:",
-                "image": "None",
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "stethoscope", "chance": 0.3}
-                ],
-                "result": [
-                    {"message": "Your vast medical knowledge has impressed your colleagues.", "image": "None"},
-                    {"message": "Your accurate trivia answers have helped in a difficult case.", "image": "None"},
-                    {"message": "You are commended for your understanding of the human body.", "image": "None"},
-                    {"message": "Your medical knowledge is crucial to the success of your team.", "image": "None"},
-                    {"message": "Your accurate diagnosis has led to the swift treatment of a patient.", "image": "None"}
                 ],
                 "questions": [
                     {
@@ -149,50 +109,11 @@
         "job_icon": "<:jobIcon:12345678910>",
         "minigames": [
             {
-                "type": "Choice",
-                "prompt": "**Work for Astronaut** - Choice - Please choose one of the following options:",
-                "image": "None",
-                "options": [
-                    {
-                        "description": "Inspect the spacecraft",
-                        "image": "<spacecraft_image_URL>",
-                        "outcomes": [
-                            {"result": "You found a minor glitch and fixed it. Good job!", "image": "None", "rewardType": "experience", "reward": 50, "chance": 0.6},
-                            {"result": "All looks good. Nothing to fix.", "image": "None", "rewardType": null, "reward": null, "chance": 0.4}
-                        ]
-                    },
-                    {
-                        "description": "Look into space",
-                        "image": "<space_view_image_URL>",
-                        "outcomes": [
-                            {"result": "You spotted a meteor shower. Amazing!", "image": "None", "rewardType": "item", "reward": "meteor_shard", "chance": 0.3},
-                            {"result": "Just infinite darkness. Nothing special.", "image": "None", "rewardType": null, "reward": null, "chance": 0.7}
-                        ]
-                    },
-                    {
-                        "description": "Return inside the spaceship",
-                        "image": "<spaceship_interior_image_URL>",
-                        "outcomes": [
-                            {"result": "You found an issue with the airlock but fixed it promptly.", "image": "None", "rewardType": "money", "reward": 100, "chance": 0.5},
-                            {"result": "You returned inside safely.", "image": "None", "rewardType": null, "reward": null, "chance": 0.5}
-                        ]
-                    }
-                ]
-            },
-            {
                 "type": "Trivia",
                 "prompt": "**Work for Astronaut** - Trivia - Please answer the following question:",
-                "image": "None",
                 "reward": [
                     {"rewardType": "money", "reward": 50, "chance": 0.5},
                     {"rewardType": "item", "reward": "moon_rock", "chance": 0.4}
-                ],
-                "result": [
-                    {"message": "Your space knowledge has impressed your colleagues.", "image": "None"},
-                    {"message": "Your answers have contributed to a crucial mission decision.", "image": "None"},
-                    {"message": "You showed great understanding of space and astrophysics.", "image": "None"},
-                    {"message": "Your knowledge is a valuable asset to the space team.", "image": "None"},
-                    {"message": "You've been chosen for the next deep space mission based on your knowledge.", "image": "None"}
                 ],
                 "questions": [
                     {
