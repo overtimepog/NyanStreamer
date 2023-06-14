@@ -669,9 +669,10 @@ class Basic(commands.Cog, name="basic"):
                 start_idx = i * 5
                 end_idx = start_idx + 5
                 resetTime = self.shop_reset.next_iteration
+                resetTime = resetTime[:19]
                 resetTime = str(resetTime)
                 #format this 2023-06-14 10:27:28.321303+00:00, using strptime
-                resetTime = datetime.datetime.strptime(resetTime, '%Y-%m-%d %H:%M:%S')
+                resetTime = datetime.datetime.strptime(resetTime, '%m/%d/%Y %H:%M:%S')
                 shop_embed = discord.Embed(
                     title="Shop",
                     description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Shop Resets: {resetTime}"
@@ -1116,7 +1117,7 @@ class Basic(commands.Cog, name="basic"):
                 item_emoji = await db_manager.get_basic_item_emoji(item[0])
                 # get the item expire time
                 expire_time = item[3]
-                expiration_datetime = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
+                expiration_datetime = datetime.datetime.strptime(expire_time, '%m/%d/%Y %H:%M:%S')
         
                 # Update item_info
                 item_key = f"{item_emoji}{item_name}"
