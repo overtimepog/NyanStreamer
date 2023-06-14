@@ -668,10 +668,11 @@ class Basic(commands.Cog, name="basic"):
             for i in range(num_pages):
                 start_idx = i * 5
                 end_idx = start_idx + 5
-                resetTime = self.shop_reset.next_iteration - datetime.datetime.now()
+                resetTime = self.shop_reset.next_iteration
+                resetTime = resetTime.strftime("%m/%d/%Y, %H:%M:%S")
                 shop_embed = discord.Embed(
                     title="Shop",
-                    description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Time of Reset: {resetTime}"
+                    description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Shop Resets: {resetTime}"
                 )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
