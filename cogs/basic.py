@@ -671,8 +671,6 @@ class Basic(commands.Cog, name="basic"):
                 resetTime = self.shop_reset.next_iteration
                 resetTime = resetTime - datetime.datetime.now()
                 resetTime = str(resetTime)
-                #format the reset time
-                resetTime = resetTime.replace(":", " hours, ", 1)
                 shop_embed = discord.Embed(
                     title="Shop",
                     description=f"This is the shop, you can buy items here with `/buy itemid #` EX. `/buy iron_sword 1`. \n Shop Resets: {resetTime}"
