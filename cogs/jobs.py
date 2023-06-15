@@ -214,8 +214,6 @@ class Jobs(commands.Cog, name="jobs"):
             result, message = await games.play_order_game(ctx, game_data, minigameText, callback_processed_future)
         elif minigame[2] == 'Matching':
             result, message = await games.play_matching_game(ctx, game_data, minigameText, callback_processed_future)
-        elif minigame[2] == 'Choice':
-            selected_option, result, message = await games.play_choice_game(ctx, game_data, minigameText, callback_processed_future)
         else:
             print("Unknown game type")
             return
@@ -227,60 +225,48 @@ class Jobs(commands.Cog, name="jobs"):
             # Adjust user's luck into scale of 0 to 1
             adjusted_luck = user_luck / 100
 
-            if minigame[2] == 'Choice':
-                # Get outcomes based on the selected option
-                outcomes = [outcome for option in game_data if option['description'] == selected_option for outcome in option['outcomes']]
-                # Sort outcomes by their probabilities
-                outcomes = sorted(outcomes, key=lambda x: x['chance'], reverse=True)
-            else:
-                # Get the rewards and sort them by their probabilities
-                outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
+            # Get the rewards and sort them by their probabilities
+            outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
 
             earned_reward = None
 
             # Go through the possible outcomes
             for outcome in outcomes:
-                if minigame[2] == 'Choice':
-                    outcome_id = outcome['id']
-                    choice_id = outcome['choice_id']
-                    outcome_message = outcome['result']
-                    reward_type = outcome['reward_type']
-                    reward_value = outcome['reward']
-                    reward_probability = outcome['chance']
-
-                else:
-                    outcome_id, reward_type, reward_value, reward_probability = outcome
-                    outcome_messages = await db_manager.get_results_for_minigame(minigame[0])
-                    #pick a random outcome message
-                    outcome_message = random.choice(outcome_messages)
-                    id, outcome_message = outcome_message
+                outcome_id, reward_type, reward_value, reward_probability = outcome
 
                 # Adjust the reward probability with the user's luck
                 adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
 
                 # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
+                    # Load success messages from json file
+                    with open('assets/jobs/job_success.json', 'r') as f:
+                        success_messages = json.load(f)
+
+                    # Choose a random message and format it
+                    outcome_message = random.choice(success_messages)['message']
+                    outcome_message = outcome_message.format(user=ctx.author.mention, money=reward_value)
+
                     earned_reward = (outcome_message, reward_type, reward_value)
                     break
 
             # If no reward was won, default to the one with the highest probability
             if earned_reward is None:
-                if minigame[2] == 'Choice':
-                    outcome_id, outcome_message, reward_type, reward_value, reward_probability = outcomes[0]
-                    earned_reward = (outcome_message, reward_type, reward_value)
-                else:
-                    outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
-                    earned_reward = (outcome_message, reward_type, reward_value)
+                outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
+
+                # Load success messages from json file
+                with open('assets/jobs/job_success.json', 'r') as f:
+                    success_messages = json.load(f)
+
+                # Choose a random message and format it
+                outcome_message = random.choice(success_messages)['message']
+                outcome_message = outcome_message.format(user=ctx.author.mention, money=reward_value)
+
+                earned_reward = (outcome_message, reward_type, reward_value)
 
             result_message, reward_type, reward_value = earned_reward
-            reward_message = ""
 
-            reward_embed = discord.Embed(
-                title="Work Results",
-                description=result_message,
-                color=discord.Color.gold()
-            )
-
+            # Process reward based on its type
             if reward_type == "money" or reward_type == "experience":
                 # Check if reward_value can be converted into integer
                 try:
@@ -291,7 +277,7 @@ class Jobs(commands.Cog, name="jobs"):
 
                 # Add the money or experience to the user's account
                 if reward_type == "money":
-                    await db_manager.add_money(user_id, int_reward_value) 
+                    await db_manager.add_money(user_id, int_reward_value)
                 if reward_type == "experience":
                     await db_manager.add_xp(user_id, int_reward_value)
                     canLevelUp = await db_manager.can_level_up(user_id)
@@ -305,25 +291,28 @@ class Jobs(commands.Cog, name="jobs"):
                         level = level.replace(",", "")
                         await ctx.send(f"Congratulations {ctx.author.mention} you have leveled up, you are now level {level}!")
 
-                reward_message = f"You earned {reward_value} {reward_type}!"
-                reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
+                reward_message = f"You earned {reward_value} {reward_type}!\n{result_message}"
+                await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
+                await message.edit(content=reward_message, view=None)
             elif reward_type == "item":
                 # Give the item to the user
                 await db_manager.add_item_to_inventory(user_id, reward_value, 1)
-                reward_message = f"You earned {reward_value}!"
-                reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
+                reward_message = f"You earned {reward_value}!\n{result_message}"
+                await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
+                await message.edit(content=reward_message, view=None)
 
-            await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
-            await message.edit(embed=reward_embed, view=None)
         else:
             # Inform the user that their answer was incorrect and they can try again later.
-            incorrect_embed = discord.Embed(
-                title="Unsuccessful Attempt",
-                description="I'm sorry, that wasn't right. You can try again later.",
-                color=discord.Color.red()
-            )
+            # Load fail messages from json file
+            with open('assets/jobs/job_fail.json', 'r') as f:
+                fail_messages = json.load(f)
+
+            # Choose a random message and format it
+            fail_message = random.choice(fail_messages)['message']
+            fail_message = fail_message.format(user=ctx.author.mention)
+
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
-            await message.edit(embed=incorrect_embed, view=None)
+            await message.edit(content=fail_message, view=None)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.

@@ -705,15 +705,15 @@ async def play_order_game(ctx, game_data, minigameText, callback_processed_futur
     game = random.choice(game_data)
     correct_order = json.loads(game[1])  # accessing the second element of tuple
     items = json.loads(game[2])
-    print("Correct order:\n" + "\n".join(correct_order))
-    print("Items: ", items)
+
     resolve_promise = ctx.bot.loop.create_future()
     select_menu = OrderGameSelect(correct_order=correct_order, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, placeholder="Select the correct order", max_values=len(items), options=[discord.SelectOption(label=item, value=item) for item in items])
 
     view = View()
     view.add_item(select_menu)
 
-    message = await ctx.send(content=game["task"], view=view)
+    sendingMessage = minigameText + "\n" + game["task"]
+    message = await ctx.send(content=sendingMessage, view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
@@ -760,8 +760,8 @@ async def play_matching_game(ctx, game_data, minigameText, callback_processed_fu
     view = discord.ui.View()
     view.add_item(select_menu)
 
-    embed = discord.Embed(title="Match the item", description=target['name'])
-    message = await ctx.send(embed=embed, view=view)
+    sendingMessage = minigameText + "\n" + "Match the item: " + target['name']
+    message = await ctx.send(content=sendingMessage, view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
@@ -799,7 +799,6 @@ class ChoiceGameView(View):
 
 async def play_choice_game(ctx, game_data, minigameText, callback_processed_future):
     prompt = game_data[0]['minigame_id']
-    embed = discord.Embed(title="Choose your action", description=minigameText)
 
     resolve_promise = ctx.bot.loop.create_future()
     view = ChoiceGameView(resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
@@ -807,7 +806,8 @@ async def play_choice_game(ctx, game_data, minigameText, callback_processed_futu
     for game_option in game_data:
         view.add_choice(game_option['description'])
 
-    message = await ctx.send(embed=embed, view=view)
+    sendingMessage = minigameText + "\n" + "Choose your action"
+    message = await ctx.send(content=sendingMessage, view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
