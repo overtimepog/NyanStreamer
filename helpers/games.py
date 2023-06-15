@@ -642,15 +642,24 @@ class TriviaGameButton(Button):
         if selected_choice == self.trivia_view.answer:
             self.style = discord.ButtonStyle.success
             self.trivia_view.resolve_callback.set_result(True)
-            await interaction.response.defer()
+            try:
+                await interaction.response.defer()
+            except(discord.errors.InteractionResponded):
+                pass
         else:
             self.style = discord.ButtonStyle.danger
             self.trivia_view.resolve_callback.set_result(False)
-            await interaction.response.defer()
+            try:
+                await interaction.response.defer()
+            except(discord.errors.InteractionResponded):
+                pass
 
         # Set callback_processed_future result here
         self.callback_processed_future.set_result(True)
-        await interaction.response.defer()
+        try:
+            await interaction.response.defer()
+        except(discord.errors.InteractionResponded):
+            pass
 
 async def play_trivia(ctx, game_data, minigameText, callback_processed_future):
     random_trivia = random.choice(game_data)
@@ -690,13 +699,22 @@ class OrderGameSelect(Select):
 
         if user_order == self.correct_order:
             self.resolve_callback.set_result(True)
-            await interaction.response.defer()
+            try:
+                await interaction.response.defer()
+            except(discord.errors.InteractionResponded):
+                pass
         else:
             self.resolve_callback.set_result(False)
-            await interaction.response.defer()
+            try:
+                await interaction.response.defer()
+            except(discord.errors.InteractionResponded):
+                pass
 
         self.callback_processed_future.set_result(True)
-        await interaction.response.defer()
+        try:
+            await interaction.response.defer()
+        except(discord.errors.InteractionResponded):
+            pass
 
 async def play_order_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
@@ -732,13 +750,22 @@ class MatchingGameSelect(Select):
 
         if user_match == self.correct_match:
             self.resolve_callback.set_result(True)
-            await interaction.response.defer()
+            try:
+                await interaction.response.defer()
+            except(discord.errors.InteractionResponded):
+                pass
         else:
             self.resolve_callback.set_result(False)
-            await interaction.response.defer()
+            try:
+                await interaction.response.defer()
+            except(discord.errors.InteractionResponded):
+                pass
 
         self.callback_processed_future.set_result(True)
-        await interaction.response.defer()
+        try:
+            await interaction.response.defer()
+        except(discord.errors.InteractionResponded):
+            pass
 
 async def play_matching_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
@@ -781,7 +808,10 @@ class ChoiceGameButton(Button):
     async def callback(self, interaction: discord.Interaction):
         self.resolve_callback.set_result(self.label)  # Return the label of the selected option
         self.callback_processed_future.set_result(True)
-        await interaction.response.defer()
+        try:
+            await interaction.response.defer()
+        except(discord.errors.InteractionResponded):
+            pass
 
 class ChoiceGameView(View):
     def __init__(self, resolve_callback, callback_processed_future, user, *args, **kwargs):
