@@ -695,6 +695,7 @@ class OrderGameSelect(Select):
             await interaction.response.defer()
 
         self.callback_processed_future.set_result(True)
+        await interaction.response.defer()
 
 async def play_order_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
@@ -736,6 +737,7 @@ class MatchingGameSelect(Select):
             await interaction.response.defer()
 
         self.callback_processed_future.set_result(True)
+        await interaction.response.defer()
 
 async def play_matching_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
