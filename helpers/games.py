@@ -641,12 +641,12 @@ class TriviaGameButton(Button):
         selected_choice = self.label
         if selected_choice == self.trivia_view.answer:
             self.style = discord.ButtonStyle.success
-            self.trivia_view.resolve_callback.set_result(True)
             interaction.response.defer()
+            self.trivia_view.resolve_callback.set_result(True)
         else:
             self.style = discord.ButtonStyle.danger
-            self.trivia_view.resolve_callback.set_result(False)
             interaction.response.defer()
+            self.trivia_view.resolve_callback.set_result(False)
 
         # Set callback_processed_future result here
         self.callback_processed_future.set_result(True)
@@ -688,11 +688,11 @@ class OrderGameSelect(Select):
         user_order = self.values
 
         if user_order == self.correct_order:
+            interaction.response.defer()
             self.resolve_callback.set_result(True)
-            interaction.response.defer()
         else:
-            self.resolve_callback.set_result(False)
             interaction.response.defer()
+            self.resolve_callback.set_result(False)
 
         self.callback_processed_future.set_result(True)
 
@@ -729,11 +729,11 @@ class MatchingGameSelect(Select):
         user_match = self.values[0]
 
         if user_match == self.correct_match:
+            interaction.response.defer()
             self.resolve_callback.set_result(True)
-            interaction.response.defer()
         else:
-            self.resolve_callback.set_result(False)
             interaction.response.defer()
+            self.resolve_callback.set_result(False)
 
         self.callback_processed_future.set_result(True)
 
@@ -777,8 +777,8 @@ class ChoiceGameButton(Button):
 
     async def callback(self, interaction: discord.Interaction):
         self.resolve_callback.set_result(self.label)  # Return the label of the selected option
-        self.callback_processed_future.set_result(True)
         interaction.response.defer()
+        self.callback_processed_future.set_result(True)
 
 class ChoiceGameView(View):
     def __init__(self, resolve_callback, callback_processed_future, user, *args, **kwargs):
