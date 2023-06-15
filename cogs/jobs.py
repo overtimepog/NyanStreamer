@@ -185,9 +185,9 @@ class Jobs(commands.Cog, name="jobs"):
 
 
     @commands.hybrid_command(
-    name="work",
-    description="Work your job to earn money.",
-    )
+        name="work",
+        description="Work your job to earn money.",
+        )
     async def work(self, ctx: commands.Context):
         user_id = ctx.author.id
 
@@ -199,31 +199,27 @@ class Jobs(commands.Cog, name="jobs"):
 
         # Get a random minigame for this job
         minigame = await db_manager.get_minigame_for_job(job_id)
-        print(minigame)
         if minigame is None:
             await ctx.send("No minigames found for this job!")
             return
         minigameText = minigame[3]
-        minigameImage = minigame[4]
 
         game_data = await db_manager.get_data_for_minigame(minigame)
-        print(game_data)
 
         callback_processed_future = ctx.bot.loop.create_future()
 
         if minigame[2] == 'Trivia':
-            result, message = await games.play_trivia(ctx, game_data, minigameText, minigameImage, callback_processed_future)
+            result, message = await games.play_trivia(ctx, game_data, minigameText, callback_processed_future)
         elif minigame[2] == 'Order':
-            result, message = await games.play_order_game(ctx, game_data, minigameText, minigameImage, callback_processed_future)
+            result, message = await games.play_order_game(ctx, game_data, minigameText, callback_processed_future)
         elif minigame[2] == 'Matching':
-            result, message = await games.play_matching_game(ctx, game_data, minigameText, minigameImage, callback_processed_future)
+            result, message = await games.play_matching_game(ctx, game_data, minigameText, callback_processed_future)
         elif minigame[2] == 'Choice':
-            selected_option, result, message = await games.play_choice_game(ctx, game_data, minigameText, minigameImage, callback_processed_future)
+            selected_option, result, message = await games.play_choice_game(ctx, game_data, minigameText, callback_processed_future)
         else:
             print("Unknown game type")
             return
 
-        print(result)
         if result:
             # Assume user_luck is a value between 0 and 100
             user_luck = await db_manager.get_luck(user_id)
@@ -240,8 +236,6 @@ class Jobs(commands.Cog, name="jobs"):
                 # Get the rewards and sort them by their probabilities
                 outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
 
-            print("Outcomes: ", outcomes)
-
             earned_reward = None
 
             # Go through the possible outcomes
@@ -253,45 +247,32 @@ class Jobs(commands.Cog, name="jobs"):
                     reward_type = outcome['reward_type']
                     reward_value = outcome['reward']
                     reward_probability = outcome['chance']
-                    outcome_image = outcome['image']
-            
-                    print("Outcome: ", outcome)
-                    print("Outcome Message: ", outcome_message)
-                    print('Outcome Image: ', outcome_image)
+
                 else:
                     outcome_id, reward_type, reward_value, reward_probability = outcome
-                    print("Outcome: ", outcome)
                     outcome_messages = await db_manager.get_results_for_minigame(minigame[0])
-                    print("Outcome Messages: ", outcome_messages)
-                    #print("Outcome Messages: ", outcome_messages)
                     #pick a random outcome message
                     outcome_message = random.choice(outcome_messages)
-                    print("Outcome Message Full: ", outcome_message)
-                    id, outcome_message, outcome_image = outcome_message
-                    print(f"Outcome Image: {outcome_image}")
+                    id, outcome_message = outcome_message
 
                 # Adjust the reward probability with the user's luck
                 adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
 
                 # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
-                    earned_reward = (outcome_message, outcome_image, reward_type, reward_value)
+                    earned_reward = (outcome_message, reward_type, reward_value)
                     break
 
             # If no reward was won, default to the one with the highest probability
             if earned_reward is None:
                 if minigame[2] == 'Choice':
                     outcome_id, outcome_message, reward_type, reward_value, reward_probability = outcomes[0]
-                    earned_reward = (outcome_message, outcome_image, reward_type, reward_value)
+                    earned_reward = (outcome_message, reward_type, reward_value)
                 else:
                     outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
-                    print("Outcome: ", outcome)
-                    earned_reward = (outcome_message, outcome_image, reward_type, reward_value)
+                    earned_reward = (outcome_message, reward_type, reward_value)
 
-            # Print earned reward after processing
-            print("Earned Reward: ", earned_reward)
-
-            result_message, result_image, reward_type, reward_value = earned_reward
+            result_message, reward_type, reward_value = earned_reward
             reward_message = ""
 
             reward_embed = discord.Embed(
@@ -324,27 +305,13 @@ class Jobs(commands.Cog, name="jobs"):
                         level = level.replace(",", "")
                         await ctx.send(f"Congratulations {ctx.author.mention} you have leveled up, you are now level {level}!")
 
-                #star emoji for experience: ⭐
-                reward_message = f"You earned {cash if reward_type == 'money' else 'XP ⭐'} {int_reward_value}!"
-                #reward_embed.add_field(name=reward_type.capitalize(), value=int_reward_value, inline=False)
+                reward_message = f"You earned {reward_value} {reward_type}!"
+                reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
             elif reward_type == "item":
                 # Give the item to the user
                 await db_manager.add_item_to_inventory(user_id, reward_value, 1)
-                reward_icon = await db_manager.get_basic_item_emoji(reward_value)
-                reward_message = f"You earned {reward_icon} {reward_value}!"
-                #reward_embed.add_field(name=reward_type.capitalize(), value=f"{reward_icon} {reward_value}", inline=False)
-                
-            else:
-                #meaning its none, so no reward but still a message so we can use the same embed, add no feilds to the embed
-                pass
-            
-            if reward_type == None:
-                pass
-            else:
+                reward_message = f"You earned {reward_value}!"
                 reward_embed.add_field(name="Rewards Earned", value=reward_message, inline=False)
-
-            if result_image is not None or result_image != "None":
-                reward_embed.set_image(url=result_image)
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
             await message.edit(embed=reward_embed, view=None)
@@ -357,6 +324,7 @@ class Jobs(commands.Cog, name="jobs"):
             )
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
             await message.edit(embed=incorrect_embed, view=None)
+
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
