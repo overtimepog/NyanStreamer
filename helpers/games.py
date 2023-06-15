@@ -646,10 +646,6 @@ class TriviaGameButton(Button):
             self.style = discord.ButtonStyle.danger
             self.trivia_view.resolve_callback.set_result(False)
 
-        embed = interaction.message.embeds[0]
-        embed.color = discord.Color.green() if selected_choice == self.trivia_view.answer else discord.Color.red()
-        await interaction.message.edit(embed=embed, view=None)
-
         # Set callback_processed_future result here
         self.callback_processed_future.set_result(True)
 
@@ -658,11 +654,6 @@ async def play_trivia(ctx, game_data, minigameText, callback_processed_future):
     trivia_question = random_trivia[1]  # accessing the second element of tuple
     trivia_choices = json.loads(random_trivia[2])  # accessing the third element of tuple
     trivia_answer = random_trivia[3]
-
-    trivia_embed = Embed(
-        title=f"{trivia_question}",
-        color=discord.Color.blue()
-    )
 
     resolve_promise = ctx.bot.loop.create_future()
 
