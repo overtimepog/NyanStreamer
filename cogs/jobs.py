@@ -339,6 +339,7 @@ class Jobs(commands.Cog, name="jobs"):
                 
             # If a money reward exists, calculate the reduced reward and add it to the user's account
             if highest_money_reward is not None:
+                highest_money_reward = int(highest_money_reward)
                 reduced_reward = int(highest_money_reward * reduced_reward_percentage)
                 await db_manager.add_money(user_id, reduced_reward)
                 fail_message = fail_message.format(user=ctx.author.mention, money=reduced_reward)
