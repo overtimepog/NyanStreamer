@@ -302,13 +302,13 @@ class Jobs(commands.Cog, name="jobs"):
 
                 reward_message = f"You earned {reward_value} {reward_type}!\n{result_message}"
                 await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
-                await message.edit(content=reward_message, view=None)
+                await ctx.send(content=reward_message, view=None)
             elif reward_type == "item":
                 # Give the item to the user
                 await db_manager.add_item_to_inventory(user_id, reward_value, 1)
                 reward_message = f"You earned {reward_value}!\n{result_message}"
                 await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
-                await message.edit(content=reward_message, view=None)
+                await ctx.send(content=reward_message, view=None)
 
         else:
             # Inform the user that their answer was incorrect but they will still earn some money.
@@ -347,7 +347,7 @@ class Jobs(commands.Cog, name="jobs"):
                 fail_message = fail_message.format(user=ctx.author.mention, money=0)
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
-            await message.edit(content=fail_message, view=None)
+            await ctx.send(content=fail_message, view=None)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
