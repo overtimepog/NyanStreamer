@@ -2,6 +2,7 @@ import asyncio
 from collections import defaultdict
 import datetime
 import json
+import os
 import random
 import re
 import requests
@@ -240,7 +241,10 @@ class Jobs(commands.Cog, name="jobs"):
                 # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
                     # Load success messages from json file
-                    with open('assets/jobs/job_success.json', 'r') as f:
+                    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                    SUCCESS_PATH = os.path.join(BASE_DIR, "..", "assets", "jobs", "job_success.json")
+    
+                    with open(SUCCESS_PATH, 'r') as f:
                         success_messages = json.load(f)
 
                     # Choose a random message and format it
@@ -255,7 +259,10 @@ class Jobs(commands.Cog, name="jobs"):
                 outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
 
                 # Load success messages from json file
-                with open('assets/jobs/job_success.json', 'r') as f:
+                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                SUCCESS_PATH = os.path.join(BASE_DIR, "..", "assets", "jobs", "job_success.json")
+
+                with open(SUCCESS_PATH, 'r') as f:
                     success_messages = json.load(f)
 
                 # Choose a random message and format it
