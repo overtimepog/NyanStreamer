@@ -311,18 +311,39 @@ class Jobs(commands.Cog, name="jobs"):
                 await message.edit(content=reward_message, view=None)
 
         else:
-            # Inform the user that their answer was incorrect and they can try again later.
+            # Inform the user that their answer was incorrect but they will still earn some money.
             # Load fail messages from json file
             CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
             BASE_DIR = os.path.dirname(CURRENT_DIR)
             FAIL_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_fail.json")
-
+        
             with open(FAIL_PATH, 'r') as f:
                 fail_messages = json.load(f)
-
+        
             # Choose a random message and format it
             fail_message = random.choice(fail_messages)['message']
-            fail_message = fail_message.format(user=ctx.author.mention)
+            
+        
+            # Define the reduced reward percentage
+            reduced_reward_percentage = 0.2  # 20%
+        
+            # Get the highest possible money reward
+            outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
+            highest_money_reward = None
+        
+            for outcome in outcomes:
+                outcome_id, reward_type, reward_value, reward_probability = outcome
+                if reward_type == "money":
+                    highest_money_reward = reward_value
+                    break
+                
+            # If a money reward exists, calculate the reduced reward and add it to the user's account
+            if highest_money_reward is not None:
+                reduced_reward = int(highest_money_reward * reduced_reward_percentage)
+                await db_manager.add_money(user_id, reduced_reward)
+                fail_message = fail_message.format(user=ctx.author.mention, money=reduced_reward)
+            else:
+                fail_message = fail_message.format(user=ctx.author.mention, money=0)
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
             await message.edit(content=fail_message, view=None)
