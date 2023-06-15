@@ -192,13 +192,11 @@ class Jobs(commands.Cog, name="jobs"):
     async def work(self, ctx: commands.Context):
         user_id = ctx.author.id
 
-        # Get user's job
         job_id = await db_manager.get_user_job(user_id)
         if job_id is None:
             await ctx.send("You don't have a job!")
             return
 
-        # Get a random minigame for this job
         minigame = await db_manager.get_minigame_for_job(job_id)
         if minigame is None:
             await ctx.send("No minigames found for this job!")
@@ -220,27 +218,17 @@ class Jobs(commands.Cog, name="jobs"):
             return
 
         if result:
-            # Assume user_luck is a value between 0 and 100
             user_luck = await db_manager.get_luck(user_id)
-
-            # Adjust user's luck into scale of 0 to 1
             adjusted_luck = user_luck / 100
 
-            # Get the rewards and sort them by their probabilities
             outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
-
             earned_reward = None
 
-            # Go through the possible outcomes
             for outcome in outcomes:
                 outcome_id, reward_type, reward_value, reward_probability = outcome
-
-                # Adjust the reward probability with the user's luck
                 adjusted_probability = reward_probability + (adjusted_luck * (1 - reward_probability))
 
-                # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
-                    # Load success messages from json file
                     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
                     BASE_DIR = os.path.dirname(CURRENT_DIR)
                     SUCCESS_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_success.json")
@@ -248,18 +236,12 @@ class Jobs(commands.Cog, name="jobs"):
                     with open(SUCCESS_PATH, 'r') as f:
                         success_messages = json.load(f)
 
-                    # Choose a random message and format it
                     outcome_message = random.choice(success_messages)['message']
-                    outcome_message = outcome_message.format(user=ctx.author.mention, money=reward_value)
-
                     earned_reward = (outcome_message, reward_type, reward_value)
                     break
 
-            # If no reward was won, default to the one with the highest probability
             if earned_reward is None:
                 outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
-
-                # Load success messages from json file
                 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
                 BASE_DIR = os.path.dirname(CURRENT_DIR)
                 SUCCESS_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_success.json")
@@ -267,24 +249,30 @@ class Jobs(commands.Cog, name="jobs"):
                 with open(SUCCESS_PATH, 'r') as f:
                     success_messages = json.load(f)
 
-                # Choose a random message and format it
                 outcome_message = random.choice(success_messages)['message']
-                outcome_message = outcome_message.format(user=ctx.author.mention, money=reward_value)
-
                 earned_reward = (outcome_message, reward_type, reward_value)
 
-            result_message, reward_type, reward_value = earned_reward
+            outcome_message, reward_type, reward_value = earned_reward
 
-            # Process reward based on its type
+            # Format the "thing" variable based on the reward type
+            if reward_type == "money":
+                thing = f"⚙{reward_value}"
+            elif reward_type == "experience":
+                thing = f"⭐{reward_value} XP"
+            elif reward_type == "item":
+                emoji = await db_manager.get_basic_item_emoji(reward_value)
+                name = await db_manager.get_basic_item_name(reward_value)
+                thing = f"{emoji} {name} (1)"
+
+            result_message = outcome_message.format(user=ctx.author.mention, thing=thing)
+
             if reward_type == "money" or reward_type == "experience":
-                # Check if reward_value can be converted into integer
                 try:
                     int_reward_value = int(reward_value)
                 except ValueError:
                     print(f"Invalid value for {reward_type} reward: {reward_value}")
                     return
 
-                # Add the money or experience to the user's account
                 if reward_type == "money":
                     await db_manager.add_money(user_id, int_reward_value)
                 if reward_type == "experience":
@@ -294,50 +282,38 @@ class Jobs(commands.Cog, name="jobs"):
                         await db_manager.add_level(user_id, 1)
                         level = await db_manager.get_level(user_id)
                         level = str(level)
-                        #remove the ( and ) and , from the level
                         level = level.replace("(", "")
                         level = level.replace(")", "")
                         level = level.replace(",", "")
                         await ctx.send(f"Congratulations {ctx.author.mention} you have leveled up, you are now level {level}!")
 
-                reward_message = f"You earned {reward_value} {reward_type}!\n{result_message}"
-                await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
-                await ctx.send(content=reward_message, view=None)
+                await asyncio.wait_for(callback_processed_future, timeout=10.0)
+                await ctx.send(content=result_message, view=None)
             elif reward_type == "item":
-                # Give the item to the user
                 await db_manager.add_item_to_inventory(user_id, reward_value, 1)
-                reward_message = f"You earned {reward_value}!\n{result_message}"
-                await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
-                await ctx.send(content=reward_message, view=None)
+                await asyncio.wait_for(callback_processed_future, timeout=10.0)
+                await ctx.send(content=result_message, view=None)
 
         else:
-            # Inform the user that their answer was incorrect but they will still earn some money.
-            # Load fail messages from json file
             CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
             BASE_DIR = os.path.dirname(CURRENT_DIR)
             FAIL_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_fail.json")
-        
+
             with open(FAIL_PATH, 'r') as f:
                 fail_messages = json.load(f)
-        
-            # Choose a random message and format it
+
             fail_message = random.choice(fail_messages)['message']
-            
-        
-            # Define the reduced reward percentage
+
             reduced_reward_percentage = 0.2  # 20%
-        
-            # Get the highest possible money reward
             outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
             highest_money_reward = None
-        
+
             for outcome in outcomes:
                 outcome_id, reward_type, reward_value, reward_probability = outcome
                 if reward_type == "money":
                     highest_money_reward = reward_value
                     break
-                
-            # If a money reward exists, calculate the reduced reward and add it to the user's account
+
             if highest_money_reward is not None:
                 highest_money_reward = int(highest_money_reward)
                 reduced_reward = int(highest_money_reward * reduced_reward_percentage)
@@ -346,7 +322,7 @@ class Jobs(commands.Cog, name="jobs"):
             else:
                 fail_message = fail_message.format(user=ctx.author.mention, money=0)
 
-            await asyncio.wait_for(callback_processed_future, timeout=10.0)  # Adjust the timeout as needed
+            await asyncio.wait_for(callback_processed_future, timeout=10.0)
             await ctx.send(content=fail_message, view=None)
 
 
