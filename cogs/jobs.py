@@ -90,7 +90,7 @@ class Jobs(commands.Cog, name="jobs"):
                 end_idx = start_idx + 5
                 job_embed = discord.Embed(
                     title="Job Board",
-                    description=f"Jobs available for {ctx.author.name}. Use /jobinfo <job_id> to get more details.",
+                    description=f"Jobs available :)",
                 )
                 job_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
