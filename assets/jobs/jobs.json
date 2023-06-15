@@ -3,7 +3,7 @@
         "id": "developer",
         "name": "Developer",
         "description": "Build and maintain software systems",
-        "job_icon": "<:jobIcon:12345678910>",
+        "job_icon": "<a:devicon:1118737223253233744>",
         "minigames": [
             {
                 "type": "Trivia",
