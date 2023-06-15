@@ -678,11 +678,11 @@ async def play_trivia(ctx, game_data, minigameText, callback_processed_future):
 
     sendingMessage = minigameText + "\n" + f"`{trivia_question}`"
 
-    message = await ctx.send(content=sendingMessage, view=view)
+    message = await ctx.reply(content=sendingMessage, view=view)
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
     except asyncio.TimeoutError:
-        await ctx.send("Time's up!")
+        await ctx.reply("Time's up!")
         result = False
 
     return result, message
@@ -728,12 +728,12 @@ async def play_order_game(ctx, game_data, minigameText, callback_processed_futur
     view.add_item(select_menu)
 
     sendingMessage = minigameText + "\n" + game["task"]
-    message = await ctx.send(content=sendingMessage, view=view)
+    message = await ctx.reply(content=sendingMessage, view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
     except asyncio.TimeoutError:
-        await ctx.send("Time's up!")
+        await ctx.reply("Time's up!")
         result = False
 
     return result, message
@@ -788,12 +788,12 @@ async def play_matching_game(ctx, game_data, minigameText, callback_processed_fu
     view.add_item(select_menu)
 
     sendingMessage = minigameText + "\n" + "Match the item: " + target['name']
-    message = await ctx.send(content=sendingMessage, view=view)
+    message = await ctx.reply(content=sendingMessage, view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
     except asyncio.TimeoutError:
-        await ctx.send("Time's up!")
+        await ctx.reply("Time's up!")
         result = False
 
     return result, message
@@ -838,13 +838,13 @@ async def play_choice_game(ctx, game_data, minigameText, callback_processed_futu
         view.add_choice(game_option['description'])
 
     sendingMessage = minigameText + "\n" + "Choose your action"
-    message = await ctx.send(content=sendingMessage, view=view)
+    message = await ctx.reply(content=sendingMessage, view=view)
 
     try:
         result = await asyncio.wait_for(resolve_promise, timeout=60.0)
         game_outcomes = next((option['outcomes'] for option in game_data if option['description'] == result), None)
     except asyncio.TimeoutError:
-        await ctx.send("Time's up!")
+        await ctx.reply("Time's up!")
         result = False
         game_outcomes = None
 
