@@ -242,8 +242,8 @@ class Jobs(commands.Cog, name="jobs"):
                 if random.random() <= adjusted_probability:
                     # Load success messages from json file
                     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-                    SUCCESS_PATH = os.path.join(BASE_DIR, "..", "assets", "jobs", "job_success.json")
-    
+                    SUCCESS_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_success.json")
+
                     with open(SUCCESS_PATH, 'r') as f:
                         success_messages = json.load(f)
 
@@ -260,7 +260,7 @@ class Jobs(commands.Cog, name="jobs"):
 
                 # Load success messages from json file
                 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-                SUCCESS_PATH = os.path.join(BASE_DIR, "..", "assets", "jobs", "job_success.json")
+                SUCCESS_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_success.json")
 
                 with open(SUCCESS_PATH, 'r') as f:
                     success_messages = json.load(f)
@@ -311,7 +311,10 @@ class Jobs(commands.Cog, name="jobs"):
         else:
             # Inform the user that their answer was incorrect and they can try again later.
             # Load fail messages from json file
-            with open('assets/jobs/job_fail.json', 'r') as f:
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+            FAIL_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_fail.json")
+
+            with open(FAIL_PATH, 'r') as f:
                 fail_messages = json.load(f)
 
             # Choose a random message and format it
