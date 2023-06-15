@@ -241,7 +241,8 @@ class Jobs(commands.Cog, name="jobs"):
                 # Roll a random number to see if the user gets this reward
                 if random.random() <= adjusted_probability:
                     # Load success messages from json file
-                    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+                    BASE_DIR = os.path.dirname(CURRENT_DIR)
                     SUCCESS_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_success.json")
 
                     with open(SUCCESS_PATH, 'r') as f:
@@ -259,7 +260,8 @@ class Jobs(commands.Cog, name="jobs"):
                 outcome_id, reward_type, reward_value, reward_probability = outcomes[0]
 
                 # Load success messages from json file
-                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+                BASE_DIR = os.path.dirname(CURRENT_DIR)
                 SUCCESS_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_success.json")
 
                 with open(SUCCESS_PATH, 'r') as f:
@@ -311,7 +313,8 @@ class Jobs(commands.Cog, name="jobs"):
         else:
             # Inform the user that their answer was incorrect and they can try again later.
             # Load fail messages from json file
-            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+            CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+            BASE_DIR = os.path.dirname(CURRENT_DIR)
             FAIL_PATH = os.path.join(BASE_DIR, "assets", "jobs", "job_fail.json")
 
             with open(FAIL_PATH, 'r') as f:
