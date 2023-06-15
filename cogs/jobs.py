@@ -307,20 +307,32 @@ class Jobs(commands.Cog, name="jobs"):
             reduced_reward_percentage = 0.2  # 20%
             outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
             highest_money_reward = None
+            highest_xp_reward = None
 
             for outcome in outcomes:
                 outcome_id, reward_type, reward_value, reward_probability = outcome
                 if reward_type == "money":
                     highest_money_reward = reward_value
+                elif reward_type == "experience":
+                    highest_xp_reward = reward_value
+                if highest_money_reward is not None and highest_xp_reward is not None:
                     break
-
+                
             if highest_money_reward is not None:
                 highest_money_reward = int(highest_money_reward)
-                reduced_reward = int(highest_money_reward * reduced_reward_percentage)
-                await db_manager.add_money(user_id, reduced_reward)
-                fail_message = fail_message.format(user=ctx.author.mention, money=reduced_reward)
+                reduced_money = int(highest_money_reward * reduced_reward_percentage)
+                await db_manager.add_money(user_id, reduced_money)
+                thing = f"⚙{reduced_money}"  # thing variable now includes the icon
+                fail_message = fail_message.format(user=ctx.author.mention, thing=thing)
+            elif highest_xp_reward is not None:
+                highest_xp_reward = int(highest_xp_reward)
+                reduced_xp = int(highest_xp_reward * reduced_reward_percentage)
+                await db_manager.add_xp(user_id, reduced_xp)
+                thing = f"⭐{reduced_xp} XP"
+                fail_message = fail_message.format(user=ctx.author.mention, thing=thing)
+
             else:
-                fail_message = fail_message.format(user=ctx.author.mention, money=0)
+                fail_message = fail_message.format(user=ctx.author.mention, thing="Nothing lol")
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)
             await ctx.send(content=fail_message, view=None)
