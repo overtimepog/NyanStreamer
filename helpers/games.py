@@ -650,6 +650,7 @@ class TriviaGameButton(Button):
 
         # Set callback_processed_future result here
         self.callback_processed_future.set_result(True)
+        await interaction.response.defer()
 
 async def play_trivia(ctx, game_data, minigameText, callback_processed_future):
     random_trivia = random.choice(game_data)
