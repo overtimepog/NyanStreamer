@@ -2295,7 +2295,7 @@ class Basic(commands.Cog, name="basic"):
         user_inventory = await db_manager.view_inventory(user_id)
         # Initialize a list to store the items that the user can craft
         possible_recipes = []
-
+    
         # Iterate through all the recipes in the database
         all_recipes = await db_manager.get_all_recipes()
         for recipe in all_recipes:
@@ -2303,7 +2303,7 @@ class Basic(commands.Cog, name="basic"):
             required_items = await db_manager.get_item_recipe(recipe)
             # Assume the user can craft the item until proven otherwise
             can_craft = True
-
+    
             # Check if the user has enough of each required item
             for item_name, amount in required_items:
                 # If the user does not have enough of the required item, they cannot craft the item
@@ -2313,13 +2313,15 @@ class Basic(commands.Cog, name="basic"):
                 
             # If the user can craft the item, add it to the list of possible recipes
             if can_craft:
-                possible_recipes.append(recipe)
-
+                recipe_components = ', '.join([f"{name} x{amount}" for name, amount in required_items])
+                item_name = await db_manager.get_basic_item_name(recipe)
+                possible_recipes.append(f"{item_name} ({recipe_components})")
+    
         # Filter the list of possible recipes based on the argument
         matching_recipes = [recipe for recipe in possible_recipes if argument.lower() in recipe.lower()]
-
+    
         # Return the list of matching recipes
-        return matching_recipes
+        return matching_recipes[:25]
 
             
             
