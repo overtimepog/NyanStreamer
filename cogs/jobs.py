@@ -121,13 +121,14 @@ class Jobs(commands.Cog, name="jobs"):
 
                     # Build the field value string with job description, requirements, and whether the user meets them
                     field_value = f"{desc}\n"
-                    field_value += f"Hours required: {hours_required}\n"
-                    if item_required is not None:
+                    if hours_required is not None or hours_required != 0 or hours_required != "None":
+                        field_value += f"Hours required: `{hours_required}`\n"
+                    if item_required is not None or item_required != 0 or item_required != "None":
                         field_value += f"Item required: {item_icon} `{item_required}`\n"
                     field_value += f"ID: `{job_id}`\n"
-                    field_value += f"Requirements met: {requirements_met_icon}"
+                    
 
-                    job_embed.add_field(name=f"{icon}**{job_name}**", value=field_value, inline=False)
+                    job_embed.add_field(name=f"{requirements_met_icon} {icon}**{job_name}**", value=field_value, inline=False)
 
                 embeds.append(job_embed)
 

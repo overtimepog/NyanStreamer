@@ -806,7 +806,15 @@ async def print_items() -> None:
         print("Type: Quest | ID: " + quest['quest_id'])
 
     for job in jobs:
-        print("Type: Job | ID: " + job['id'])    
+        #"required_item": "spacesuit",
+        #"required_level": 7,
+        #"required_hours": 1000,
+        #"base_pay": 2000,
+        #"pay_per_level": 200,
+        #"max_level": 15,
+        #"cooldown": 10800,
+        #"cooldown_reduction_per_level": 180,
+        print("Type: Job | ID: " + job['id'], " | Name: " + job['name'], " | Required Item " + job['required_item'], " | Required Level " + str(job['required_level']), " | Required Hours " + str(job['required_hours']), " | Base Pay " + str(job['base_pay']), " | Pay Per Level " + str(job['pay_per_level']), " | Cooldown (in Seconds)" + str(job['cooldown']), " | Cooldown Reduction Per Level (in Seconds)" + str(job['cooldown_reduction_per_level']))
 
 async def add_structures() -> None:
     db = DB()
