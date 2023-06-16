@@ -1208,7 +1208,7 @@ async def set_last_worked(user_id: str) -> None:
 
 async def get_cooldown_status(user_id: str, cooldown: int, cooldown_reduction_per_level: int) -> timedelta:
     db = DB()
-    data = await db.execute("SELECT `last_worked`, `level` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    data = await db.execute("SELECT `last_worked`, `player_level` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
     if data is None:
         return timedelta(0)
 
