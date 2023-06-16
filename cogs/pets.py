@@ -574,11 +574,11 @@ class Pets(commands.Cog, name="pets"):
 
     @tasks.loop(seconds=30.0)
     async def expired_item_check(self):
-        print("-----------------------------")
-        print("Checking for Expired items...")
+        #print("-----------------------------")
+        #print("Checking for Expired items...")
         await db_manager.check_and_remove_expired_items()
-        print("Done Checking for Expired items...")
-        print("-----------------------------")
+        #print("Done Checking for Expired items...")
+        #print("-----------------------------")
 
     @expired_item_check.before_loop
     async def before_expired_item_check(self):
