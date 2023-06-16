@@ -2295,16 +2295,16 @@ class Basic(commands.Cog, name="basic"):
         user_inventory = await db_manager.view_inventory(user_id)
         # Initialize a dictionary to store the items that the user can craft
         possible_recipes = {}
-
+    
         # Iterate through all the recipes in the database
         all_recipes = await db_manager.get_all_recipes()
         for recipe in all_recipes:
-            #print(recipe)
+            print(recipe)
             # Get the required items and their amounts for the current recipe
             required_items = await db_manager.get_item_recipe(recipe[0])
             # Assume the user can craft the item until proven otherwise
             can_craft = True
-
+    
             # Check if the user has enough of each required item
             for recipe_id, required_item_id, amount in required_items:
                 hasone = await db_manager.check_user_has_item(user_id, required_item_id)
@@ -2313,20 +2313,19 @@ class Basic(commands.Cog, name="basic"):
                 if not hasone or item_amount < amount:
                     can_craft = False
                     break
-
+                
             # If the user can craft the item, add it to the dictionary of possible recipes
             if can_craft:
                 if recipe[0] not in possible_recipes:  # If the recipe is not yet in the dictionary, add it
                     item_name = await db_manager.get_basic_item_name(recipe[0])
                     possible_recipes[recipe[0]] = [item_name, []]
-                # Add the current component to the recipe
                 possible_recipes[recipe[0]][1].extend([f"{await db_manager.get_basic_item_name(required_item_id)} x{amount}" for recipe_id, required_item_id, amount in required_items])
-
-        # Filter the dictionary of possible recipes based on the argument, and format it for the choice list
-        matching_recipes = [(name + ' (' + ', '.join(components) + ')', recipe) for recipe, (name, components) in possible_recipes.items() if argument.lower() in (name + ' '.join(components)).lower()]
-
+    
+        # Transform the dictionary to a list and filter it based on the argument
+        matching_recipes = [(recipe, f"{name} ({', '.join(components)})") for recipe, (name, components) in possible_recipes.items() if argument.lower() in name.lower()]
+        
         # Return the list of matching recipes
-        return [app_commands.Choice(name=name, value=recipe) for name, recipe in matching_recipes[:25]]
+        return [app_commands.Choice(name=name, value=recipe) for recipe, name in matching_recipes[:25]]
 
             
             
