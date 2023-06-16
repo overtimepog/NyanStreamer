@@ -115,13 +115,13 @@ class Jobs(commands.Cog, name="jobs"):
 
                     # If there's an item requirement, get the icon for it
                     item_icon = ""
-                    if item_required is not None:
+                    if item_required is not None and item_required != "None":
                         item_icon = await db_manager.get_basic_item_emoji(item_required)
 
                     # Check if the user meets the requirements
                     user_hours = await db_manager.get_hours_worked(user_id)
                     level = await db_manager.get_level(user_id)
-                    user_has_item = item_required is None or await db_manager.check_user_has_item(user_id, item_required) > 0
+                    user_has_item = (item_required is None or item_required == "None") or await db_manager.check_user_has_item(ctx.author.id, item_required) > 0
                     requirements_met = (int(user_hours) >= int(hours_required)) and user_has_item and (int(level) >= int(level_required))
 
                     # Depending on whether the user meets the requirements, add a check mark or an X
@@ -271,7 +271,7 @@ class Jobs(commands.Cog, name="jobs"):
                 level_required = await db_manager.get_required_level_from_id(job[0])
 
                 # Check if the user meets the requirements
-                user_has_item = item_required is None or await db_manager.check_user_has_item(ctx.user.id, item_required) > 0
+                user_has_item = (item_required is None or item_required == "None") or await db_manager.check_user_has_item(ctx.user.id, item_required) > 0
                 requirements_met = (int(user_hours) >= int(hours_required)) and user_has_item and (int(user_level) >= int(level_required))
 
                 # Only add this job to the choices if the user meets the requirements
