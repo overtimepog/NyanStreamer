@@ -2324,7 +2324,7 @@ class Basic(commands.Cog, name="basic"):
         matching_recipes = [recipe for recipe in possible_recipes if argument.lower() in recipe.lower()]
 
         # Return the list of matching recipes
-        return matching_recipes[:25]
+        return [{'name': recipe, 'value': recipe} for recipe in matching_recipes[:25]]
 
             
             
