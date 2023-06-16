@@ -2284,7 +2284,7 @@ class Basic(commands.Cog, name="basic"):
         # Remove required items from the user's inventory and give them the crafted item
         for recipe_item_name, component, component_amount in item_recipe:
             await db_manager.remove_item_from_inventory(ctx.author.id, component, component_amount)
-        await db_manager.add_item_to_inventory(ctx.author.id, item_name, 1)
+        await db_manager.add_item_to_inventory(ctx.author.id, recipe, 1)
         await ctx.send(f"{item_emote} **{item_name}** has been crafted!")
 
     @craft.autocomplete("recipe")
