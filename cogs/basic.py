@@ -17,7 +17,7 @@ import requests
 from discord import Webhook, SyncWebhook
 import aiohttp
 import discord
-from discord import Embed, app_commands,
+from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 
