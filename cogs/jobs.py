@@ -258,8 +258,8 @@ class Jobs(commands.Cog, name="jobs"):
     @acceptjob.autocomplete("job")
     async def job_autocomplete(self, ctx: discord.Interaction, argument):
         # Get the user's hours worked, level, and owned items
-        user_hours = await db_manager.get_hours_worked(ctx.author.id)
-        user_level = await db_manager.get_level(ctx.author.id)
+        user_hours = await db_manager.get_hours_worked(ctx.user.id)
+        user_level = await db_manager.get_level(ctx.user.id)
 
         user_jobs = await db_manager.get_jobs_on_board()
         choices = []
@@ -271,7 +271,7 @@ class Jobs(commands.Cog, name="jobs"):
                 level_required = await db_manager.get_required_level_from_id(job[0])
 
                 # Check if the user meets the requirements
-                user_has_item = item_required is None or await db_manager.check_user_has_item(ctx.author.id, item_required) > 0
+                user_has_item = item_required is None or await db_manager.check_user_has_item(ctx.user.id, item_required) > 0
                 requirements_met = (int(user_hours) >= int(hours_required)) and user_has_item and (int(user_level) >= int(level_required))
 
                 # Only add this job to the choices if the user meets the requirements
