@@ -77,6 +77,12 @@ class Jobs(commands.Cog, name="jobs"):
             await ctx.send("There are no jobs on the board.")
             return
 
+        #check if the user exists
+        user_exists = await db_manager.check_user(ctx.author.id)
+        if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
+
         # Calculate number of pages based on number of jobs
         num_pages = (len(jobs) // 5) + (1 if len(jobs) % 5 > 0 else 0)
 
