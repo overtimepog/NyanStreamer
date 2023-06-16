@@ -17,7 +17,7 @@ import requests
 from discord import Webhook, SyncWebhook
 import aiohttp
 import discord
-from discord import Embed, app_commands
+from discord import Embed, app_commands,
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 
@@ -2324,7 +2324,7 @@ class Basic(commands.Cog, name="basic"):
         matching_recipes = [recipe for recipe in possible_recipes if argument.lower() in recipe.lower()]
 
         # Return the list of matching recipes
-        return [{'name': recipe, 'value': recipe} for recipe in matching_recipes[:25]]
+        return [app_commands.Choice(name=await db_manager.get_basic_item_name(recipe[0]), value=recipe) for recipe in matching_recipes[:25]]
 
             
             
