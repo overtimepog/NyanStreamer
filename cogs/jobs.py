@@ -129,7 +129,7 @@ class Jobs(commands.Cog, name="jobs"):
                         field_value += f"> Hours required: `{hours_required}`\n"
                     if item_required is not None or item_required != 0 or item_required != "None":
                         field_value += f"> Item required: {item_icon} `{item_required}`\n"
-                    field_value += f"ID: `{job_id}`\n"
+                    field_value += f"> ID: `{job_id}`\n"
                     
 
                     job_embed.add_field(name=f"{requirements_met_icon} {icon}**{job_name}**", value=field_value, inline=False)
