@@ -2319,15 +2319,12 @@ class Basic(commands.Cog, name="basic"):
                 recipe_components = ', '.join([f"{await db_manager.get_basic_item_name(required_item_id)} x{amount}" for recipe_id, required_item_id, amount in required_items])
                 item_name = await db_manager.get_basic_item_name(recipe[0])
                 possible_recipes.append((recipe[0], f"{item_name} ({recipe_components})"))  # Save as a tuple with recipe and formatted name
-                print(possible_recipes)
 
-            # Filter the list of possible recipes based on the argument
-            matching_recipes = [(recipe, name) for recipe, name in possible_recipes if argument.lower() in name.lower()]
-            print(matching_recipes)
+        # Filter the list of possible recipes based on the argument
+        matching_recipes = [(recipe, name) for recipe, name in possible_recipes if argument.lower() in name.lower()]
 
-            # Return the list of matching recipes
-            return [app_commands.Choice(name=name, value=recipe) for recipe, name in matching_recipes[:25]]
-
+        # Return the list of matching recipes
+        return [app_commands.Choice(name=name, value=recipe) for recipe, name in matching_recipes[:25]]
 
             
             
