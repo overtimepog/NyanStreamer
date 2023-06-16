@@ -2314,7 +2314,7 @@ class Basic(commands.Cog, name="basic"):
 
             # If the user can craft the item, add it to the list of possible recipes
             if can_craft:
-                recipe_components = ', '.join([f"{name} x{amount}" for name, amount in required_items])
+                recipe_components = ', '.join([f"{await db_manager.get_basic_item_name(required_item_id)} x{amount}" for recipe_id, required_item_id, amount in required_items])
                 item_name = await db_manager.get_basic_item_name(recipe[0])
                 possible_recipes.append(f"{item_name} ({recipe_components})")
 
