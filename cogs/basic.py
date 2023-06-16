@@ -2318,14 +2318,14 @@ class Basic(commands.Cog, name="basic"):
             if can_craft:
                 recipe_components = ', '.join([f"{await db_manager.get_basic_item_name(required_item_id)} x{amount}" for recipe_id, required_item_id, amount in required_items])
                 item_name = await db_manager.get_basic_item_name(recipe[0])
-                possible_recipes.append(f"{item_name} ({recipe_components})")
+                possible_recipes.append((recipe[0], f"{item_name} ({recipe_components})"))  # Save as a tuple with recipe and formatted name
 
-        # Filter the list of possible recipes based on the argument
-        matching_recipes = [recipe for recipe in possible_recipes if argument.lower() in recipe.lower()]
-        print(matching_recipes)
+            # Filter the list of possible recipes based on the argument
+            matching_recipes = [(recipe, name) for recipe, name in possible_recipes if argument.lower() in name.lower()]
+            
+            # Return the list of matching recipes
+            return [app_commands.Choice(name=name, value=recipe) for recipe, name in matching_recipes[:25]]
 
-        # Return the list of matching recipes
-        return [app_commands.Choice(name=await db_manager.get_basic_item_name(recipe), value=recipe) for recipe in matching_recipes[:25]]
 
             
             
