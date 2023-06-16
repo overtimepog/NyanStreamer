@@ -1219,6 +1219,7 @@ async def get_cooldown_status(user_id: str, cooldown: int, cooldown_reduction_pe
         return timedelta(0)  # User has never worked before
 
     # Convert string to datetime
+    last_worked = last_worked.split('.')[0]
     last_worked = datetime.datetime.strptime(last_worked, "%Y-%m-%d %H:%M:%S")
 
     remaining_cooldown = (last_worked + cooldown_time) - datetime.datetime.now()
