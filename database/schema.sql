@@ -330,7 +330,15 @@ CREATE TABLE IF NOT EXISTS `jobs` (
     `id` TEXT PRIMARY KEY,
     `name` TEXT,
     `description` TEXT,
-    `job_icon` TEXT
+    `job_icon` TEXT,
+    `required_item` TEXT,
+    `required_level` INTEGER,
+    `required_hours` INTEGER,
+    `base_pay` INTEGER,
+    `pay_per_level` INTEGER,
+    `max_level` INTEGER,
+    `cooldown` INTEGER,
+    `cooldown_reduction_per_level` INTEGER,
 );
 
 CREATE TABLE IF NOT EXISTS `minigames` (
