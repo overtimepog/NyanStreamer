@@ -405,7 +405,7 @@ async def get_user(user_id: int) -> None:
   #`paralysis_resistance` int(11) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked) VALUES (?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", "None", "None", "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked) VALUES (?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", "None", "None", "None", "None", "None"))
         return None
         
         
@@ -1109,7 +1109,7 @@ async def add_jobs_and_minigames():
                         except Exception as e:
                             print(f"Error inserting into `outcomes`: {e}")
     print("Processed all jobs and minigames")
-    
+
 async def add_jobs_to_jobboard():
     db = DB()
     for job in jobs:
@@ -1192,6 +1192,27 @@ async def remove_job_xp(user_id: str, xp: int) -> None:
     current_xp = await get_job_xp(user_id)
     new_xp = max(0, current_xp - xp)
     await set_job_xp(user_id, new_xp)
+
+async def get_cooldown_status(user_id: str, cooldown: int, cooldown_reduction_per_level: int) -> timedelta:
+    db = DB()
+    data = await db.execute("SELECT `last_worked`, `level` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    if data is None:
+        return timedelta(0)
+
+    last_worked, level = data
+    cooldown -= level * cooldown_reduction_per_level
+    cooldown_time = timedelta(seconds=cooldown)
+    if last_worked is None:
+        return timedelta(0)  # User has never worked before
+
+    # Convert string to datetime
+    last_worked = datetime.datetime.strptime(last_worked, "%Y-%m-%d %H:%M:%S")
+
+    remaining_cooldown = (last_worked + cooldown_time) - datetime.datetime.now()
+    if remaining_cooldown.total_seconds() < 0:
+        return timedelta(0)  # Not on cooldown
+    else:
+        return remaining_cooldown
     
 async def get_minigame_for_job(job_id):
     db = DB()
@@ -1270,6 +1291,77 @@ async def get_job_name_from_id(job_id: str) -> str:
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
         return data[1]
+    else:
+        return 0
+    
+async def get_required_item_from_id(job_id: str) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[4]
+    else:
+        return None
+
+# get required level from job ID
+async def get_required_level_from_id(job_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[5]
+    else:
+        return 0
+
+# get required hours from job ID
+async def get_required_hours_from_id(job_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[6]
+    else:
+        return 0
+
+# get base pay from job ID
+async def get_base_pay_from_id(job_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[7]
+    else:
+        return 0
+
+# get pay per level from job ID
+async def get_pay_per_level_from_id(job_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[8]
+    else:
+        return 0
+
+# get max level from job ID
+async def get_max_level_from_id(job_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[9]
+    else:
+        return 0
+
+# get cooldown from job ID
+async def get_cooldown_from_id(job_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[10]
+    else:
+        return 0
+
+# get cooldown reduction per level from job ID
+async def get_cooldown_reduction_per_level_from_id(job_id: str) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
+    if data is not None:
+        return data[11]
     else:
         return 0
 

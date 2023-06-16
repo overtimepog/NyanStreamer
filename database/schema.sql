@@ -175,7 +175,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `job_id` TEXT,
   `job_level` INTEGER,
   `job_xp` INTEGER,
-  `hours_worked` INTEGER
+  `hours_worked` INTEGER,
+  `last_worked` DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS `stats`(

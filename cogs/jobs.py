@@ -169,6 +169,7 @@ class Jobs(commands.Cog, name="jobs"):
             #give the user the job
             await db_manager.add_user_job(ctx.author.id, job)
             job_icon = await db_manager.get_job_icon_from_id(job)
+
             await ctx.send(f"You have accepted the job {job_icon}{job.title()}!")
         else:
             await ctx.send("You already have a job!, please use `nya job quit or /job quit` command to quit your current job.")
@@ -191,11 +192,21 @@ class Jobs(commands.Cog, name="jobs"):
         )
     async def work(self, ctx: commands.Context):
         user_id = ctx.author.id
-
         job_id = await db_manager.get_user_job(user_id)
         if job_id is None:
             await ctx.send("You don't have a job!")
             return
+        
+        cooldown = await db_manager.get_cooldown_from_id(job_id)
+        cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
+        remaining_cooldown = await db_manager.get_cooldown_status(user_id, cooldown, cooldown_reduction_per_level)
+
+        if remaining_cooldown.total_seconds() > 0:
+            await ctx.send(f"You're still on cooldown! Wait for {remaining_cooldown}.")
+            return
+        
+        base_pay = await db_manager.get_base_pay_from_id(job_id)
+        penalty_percentage = 0.2
 
         minigame = await db_manager.get_minigame_for_job(job_id)
         if minigame is None:
@@ -254,17 +265,20 @@ class Jobs(commands.Cog, name="jobs"):
 
             outcome_message, reward_type, reward_value = earned_reward
 
-            # Format the "thing" variable based on the reward type
             if reward_type == "money":
+                reward_value += base_pay  # Add base pay to the reward
                 thing = f"⚙{reward_value}"
-            elif reward_type == "experience":
-                thing = f"⭐{reward_value} XP"
-            elif reward_type == "item":
-                emoji = await db_manager.get_basic_item_emoji(reward_value)
-                name = await db_manager.get_basic_item_name(reward_value)
-                thing = f"{emoji} {name} (1)"
+            elif reward_type == "experience" or reward_type == "item":
+                await db_manager.add_money(user_id, base_pay)  # Add the base pay separately
+                base_pay_message = f"You also earned your base pay of ⚙{base_pay}."
+                if reward_type == "experience":
+                    thing = f"⭐{reward_value} XP"
+                else:  # reward_type == "item"
+                    emoji = await db_manager.get_basic_item_emoji(reward_value)
+                    name = await db_manager.get_basic_item_name(reward_value)
+                    thing = f"{emoji} {name} (1)"
 
-            result_message = outcome_message.format(user=ctx.author.mention, thing=thing)
+            result_message = outcome_message.format(user=ctx.author.mention, thing=thing) + " " + base_pay_message
 
             if reward_type == "money" or reward_type == "experience":
                 try:
@@ -304,38 +318,13 @@ class Jobs(commands.Cog, name="jobs"):
 
             fail_message = random.choice(fail_messages)['message']
 
-            reduced_reward_percentage = 0.2  # 20%
-            outcomes = sorted(await db_manager.get_rewards_for_minigame(minigame[0]), key=lambda x: x[3], reverse=True)
-            highest_money_reward = None
-            highest_xp_reward = None
-
-            for outcome in outcomes:
-                outcome_id, reward_type, reward_value, reward_probability = outcome
-                if reward_type == "money":
-                    highest_money_reward = reward_value
-                elif reward_type == "experience":
-                    highest_xp_reward = reward_value
-                if highest_money_reward is not None and highest_xp_reward is not None:
-                    break
-                
-            if highest_money_reward is not None:
-                highest_money_reward = int(highest_money_reward)
-                reduced_money = int(highest_money_reward * reduced_reward_percentage)
-                await db_manager.add_money(user_id, reduced_money)
-                thing = f"⚙{reduced_money}"  # thing variable now includes the icon
-                fail_message = fail_message.format(user=ctx.author.mention, thing=thing)
-            elif highest_xp_reward is not None:
-                highest_xp_reward = int(highest_xp_reward)
-                reduced_xp = int(highest_xp_reward * reduced_reward_percentage)
-                await db_manager.add_xp(user_id, reduced_xp)
-                thing = f"⭐{reduced_xp} XP"
-                fail_message = fail_message.format(user=ctx.author.mention, thing=thing)
-
-            else:
-                fail_message = fail_message.format(user=ctx.author.mention, thing="Nothing lol")
+            reduced_base_pay = base_pay - (base_pay * penalty_percentage)
+            await db_manager.add_money(user_id, reduced_base_pay)  # Give the reduced base pay to the user
+            base_pay_message = f"But don't worry, you still get your base pay of ⚙{reduced_base_pay} after a 20% penalty."
+            fail_message = fail_message.format(user=ctx.author.mention, thing="Nothing lol")
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)
-            await ctx.send(content=fail_message, view=None)
+            await ctx.send(content=fail_message + " " + base_pay_message, view=None)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
