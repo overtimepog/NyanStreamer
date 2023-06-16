@@ -4,6 +4,14 @@
         "name": "Developer",
         "description": "Build and maintain software systems",
         "job_icon": "<a:devicon:1118737223253233744>",
+        "required_item": "laptop",
+        "required_level": 3,
+        "required_hours": 200,
+        "base_pay": 500,
+        "pay_per_level": 50,
+        "max_level": 10,
+        "cooldown": 3600,
+        "cooldown_reduction_per_level": 60,
         "minigames": [
             {
                 "type": "Trivia",
@@ -32,6 +40,14 @@
         "name": "Chef",
         "description": "Prepare and cook food",
         "job_icon": "<:jobIcon:12345678910>",
+        "required_item": "knife",
+        "required_level": 2,
+        "required_hours": 100,
+        "base_pay": 300,
+        "pay_per_level": 20,
+        "max_level": 8,
+        "cooldown": 2400,
+        "cooldown_reduction_per_level": 30,
         "minigames": [
             {
                 "type": "Order",
@@ -66,6 +82,14 @@
         "name": "Doctor",
         "description": "Diagnose and treat patients",
         "job_icon": "<:jobIcon:12345678910>",
+        "required_item": "stethoscope",
+        "required_level": 5,
+        "required_hours": 500,
+        "base_pay": 1000,
+        "pay_per_level": 100,
+        "max_level": 12,
+        "cooldown": 7200,
+        "cooldown_reduction_per_level": 120,
         "minigames": [
             {
                 "type": "Matching",
@@ -107,6 +131,14 @@
         "name": "Astronaut",
         "description": "Travel and work in space",
         "job_icon": "<:jobIcon:12345678910>",
+        "required_item": "spacesuit",
+        "required_level": 7,
+        "required_hours": 1000,
+        "base_pay": 2000,
+        "pay_per_level": 200,
+        "max_level": 15,
+        "cooldown": 10800,
+        "cooldown_reduction_per_level": 180,
         "minigames": [
             {
                 "type": "Trivia",

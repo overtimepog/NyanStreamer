@@ -345,6 +345,32 @@ async def can_level_up(user_id: int) -> bool:
     else:
         return None
     
+async def job_xp_needed(user_id: str) -> int:
+    db = DB()
+    data = await db.execute("SELECT * FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    if data is not None:
+        user_job_level = await db.execute("SELECT `job_level` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+        # Multiply the user's job level by 6 to get the amount of job XP needed to level up
+        # Convert user_job_level to int
+        user_job_level = int(user_job_level[0])
+        xp_needed = (user_job_level * 6)
+        return xp_needed
+    else:
+        return None
+
+# Check if a user can level up their job
+async def can_job_level_up(user_id: str) -> bool:
+    db = DB()
+    data = await db.execute("SELECT * FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    if data is not None:
+        user_job_xp = await db.execute("SELECT `job_xp` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+        if user_job_xp[0] >= await job_xp_needed(user_id):
+            return True
+        else:
+            return False
+    else:
+        return None
+    
 #get user, if they don't exist, create them
 async def get_user(user_id: int) -> None:
     db = DB()
@@ -379,7 +405,7 @@ async def get_user(user_id: int) -> None:
   #`paralysis_resistance` int(11) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id) VALUES (?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None"))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked) VALUES (?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", "None", "None", "None", "None"))
         return None
         
         
@@ -1018,35 +1044,72 @@ async def add_jobs_and_minigames():
         data = await db.execute("SELECT * FROM `jobs` WHERE id = ?", (job['id'],), fetch="one")
         if data is not None:
             await db.execute("DELETE FROM `jobs` WHERE id = ?", (job['id'],))
-        await db.execute("INSERT INTO `jobs` (`id`, `name`, `description`, `job_icon`) VALUES (?, ?, ?, ?)", (job['id'], job['name'], job['description'], job['job_icon']))
+        await db.execute(
+            """
+            INSERT INTO `jobs` (
+                `id`, `name`, `description`, `job_icon`,
+                `required_item`, `required_level`, `required_hours`,
+                `base_pay`, `pay_per_level`, `max_level`,
+                `cooldown`, `cooldown_reduction_per_level`
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                job['id'], job['name'], job['description'], job['job_icon'],
+                job['required_item'], job['required_level'], job['required_hours'],
+                job['base_pay'], job['pay_per_level'], job['max_level'],
+                job['cooldown'], job['cooldown_reduction_per_level']
+            )
+        )
         print(f"Processed job {job['name']}")
         # Process minigames for this job
         for minigame in job['minigames']:
-            minigame_id = await db.execute("INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)", (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True)
+            minigame_id = await db.execute(
+                "INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)",
+                (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True
+            )
             # Process rewards for this minigame
             if 'reward' in minigame:
                 for reward in minigame['reward']:
-                    await db.execute("INSERT INTO `rewards` (`minigame_id`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?)", (minigame_id, reward['rewardType'], reward.get('reward'), reward.get('chance')))
+                    await db.execute(
+                        "INSERT INTO `rewards` (`minigame_id`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?)",
+                        (minigame_id, reward['rewardType'], reward.get('reward'), reward.get('chance'))
+                    )
             # Process data depending on minigame type
             if minigame['type'] == 'Trivia':
                 for question in minigame['questions']:
-                    await db.execute("INSERT INTO `trivia` (`minigame_id`, `question`, `options`, `answer`) VALUES (?, ?, ?, ?)", (minigame_id, question['question'], json.dumps(question['options']), question['answer']))
+                    await db.execute(
+                        "INSERT INTO `trivia` (`minigame_id`, `question`, `options`, `answer`) VALUES (?, ?, ?, ?)",
+                        (minigame_id, question['question'], json.dumps(question['options']), question['answer'])
+                    )
             elif minigame['type'] == 'Order':
-                await db.execute("INSERT INTO `order_game` (`minigame_id`, `task`, `items`, `correct_order`) VALUES (?, ?, ?, ?)", (minigame_id, minigame['task'], json.dumps(minigame['items']), json.dumps(minigame['correctOrder'])))
+                await db.execute(
+                    "INSERT INTO `order_game` (`minigame_id`, `task`, `items`, `correct_order`) VALUES (?, ?, ?, ?)",
+                    (minigame_id, minigame['task'], json.dumps(minigame['items']), json.dumps(minigame['correctOrder']))
+                )
             elif minigame['type'] == 'Matching':
-                await db.execute("INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)", (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correctMatches'])))
+                await db.execute(
+                    "INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)",
+                    (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correctMatches']))
+                )
             elif minigame['type'] == 'Choice':
                 for option in minigame['options']:
                     try:
-                        choice_id = await db.execute("INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)", (minigame_id, option['description']), lastrowid=True)
+                        choice_id = await db.execute(
+                            "INSERT INTO `choices` (`minigame_id`, `description`) VALUES (?, ?)",
+                            (minigame_id, option['description']), lastrowid=True
+                        )
                     except Exception as e:
                         print(f"Error inserting into `choices`: {e}")
                     for outcome in option['outcomes']:
                         try:
-                            await db.execute("INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)", (choice_id, outcome['result'], outcome.get('rewardType'), str(outcome.get('reward')), outcome.get('chance')))
+                            await db.execute(
+                                "INSERT INTO `outcomes` (`choice_id`, `result`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?, ?)",
+                                (choice_id, outcome['result'], outcome.get('rewardType'), str(outcome.get('reward')), outcome.get('chance'))
+                            )
                         except Exception as e:
                             print(f"Error inserting into `outcomes`: {e}")
     print("Processed all jobs and minigames")
+    
 async def add_jobs_to_jobboard():
     db = DB()
     for job in jobs:
@@ -1073,6 +1136,62 @@ async def get_user_job(user_id: int) -> str:
         return data[0]
     else:
         return None
+
+async def add_hours_worked(user_id: str, hours: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET `hours_worked` = `hours_worked` + ? WHERE `user_id` = ?", (hours, user_id))
+
+async def get_hours_worked(user_id: str) -> int:
+    db = DB()
+    data = await db.execute("SELECT `hours_worked` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    if data is not None:
+        return data[0]
+    else:
+        return 0
+
+async def set_job_level(user_id: str, job_level: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET `job_level` = ? WHERE `user_id` = ?", (job_level, user_id))
+
+async def get_job_level(user_id: str) -> int:
+    db = DB()
+    data = await db.execute("SELECT `job_level` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    if data is not None:
+        return data[0]
+    else:
+        return 0
+
+async def add_job_level(user_id: str, levels: int) -> None:
+    current_level = await get_job_level(user_id)
+    new_level = current_level + levels
+    await set_job_level(user_id, new_level)
+
+async def remove_job_level(user_id: str, levels: int) -> None:
+    current_level = await get_job_level(user_id)
+    new_level = max(0, current_level - levels)
+    await set_job_level(user_id, new_level)
+
+async def set_job_xp(user_id: str, job_xp: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET `job_xp` = ? WHERE `user_id` = ?", (job_xp, user_id))
+
+async def get_job_xp(user_id: str) -> int:
+    db = DB()
+    data = await db.execute("SELECT `job_xp` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    if data is not None:
+        return data[0]
+    else:
+        return 0
+
+async def add_job_xp(user_id: str, xp: int) -> None:
+    current_xp = await get_job_xp(user_id)
+    new_xp = current_xp + xp
+    await set_job_xp(user_id, new_xp)
+
+async def remove_job_xp(user_id: str, xp: int) -> None:
+    current_xp = await get_job_xp(user_id)
+    new_xp = max(0, current_xp - xp)
+    await set_job_xp(user_id, new_xp)
     
 async def get_minigame_for_job(job_id):
     db = DB()
