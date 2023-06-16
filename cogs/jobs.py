@@ -116,7 +116,7 @@ class Jobs(commands.Cog, name="jobs"):
                     user_hours = await db_manager.get_hours_worked(user_id)
                     level = await db_manager.get_level(user_id)
                     user_has_item = item_required is None or await db_manager.check_user_has_item(user_id, item_required) > 0
-                    requirements_met = (user_hours >= hours_required) and user_has_item and (level >= level_required)
+                    requirements_met = (int(user_hours) >= int(hours_required)) and user_has_item and (int(level) >= int(level_required))
 
                     # Depending on whether the user meets the requirements, add a check mark or an X
                     requirements_met_icon = "✅" if requirements_met else "❌"
