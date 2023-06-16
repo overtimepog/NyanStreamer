@@ -338,7 +338,7 @@ CREATE TABLE IF NOT EXISTS `jobs` (
     `pay_per_level` INTEGER,
     `max_level` INTEGER,
     `cooldown` INTEGER,
-    `cooldown_reduction_per_level` INTEGER,
+    `cooldown_reduction_per_level` INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS `minigames` (
