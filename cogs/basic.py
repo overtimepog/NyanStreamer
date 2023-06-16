@@ -2318,8 +2318,8 @@ class Basic(commands.Cog, name="basic"):
             if can_craft:
                 if recipe[0] not in possible_recipes:  # If the recipe is not yet in the dictionary, add it
                     item_name = await db_manager.get_basic_item_name(recipe[0])
-                    possible_recipes[recipe[0]] = [item_name, []]
-                possible_recipes[recipe[0]][1].extend([f"{await db_manager.get_basic_item_name(required_item_id)} x{amount}" for recipe_id, required_item_id, amount in required_items])
+                    recipe_components = [f"{await db_manager.get_basic_item_name(required_item_id)} x{amount}" for recipe_id, required_item_id, amount in required_items]
+                    possible_recipes[recipe[0]] = [item_name, recipe_components]
     
         # Transform the dictionary to a list and filter it based on the argument
         matching_recipes = [(recipe, f"{name} ({', '.join(components)})") for recipe, (name, components) in possible_recipes.items() if argument.lower() in name.lower()]
