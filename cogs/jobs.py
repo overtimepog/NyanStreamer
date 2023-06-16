@@ -81,7 +81,7 @@ class Jobs(commands.Cog, name="jobs"):
         num_pages = (len(jobs) // 5) + (1 if len(jobs) % 5 > 0 else 0)
 
         # Create a function to generate embeds from a list of jobs
-        async def create_embeds(job_list):
+        async def create_embeds(job_list, user_id):
             num_pages = (len(job_list) // 5) + (1 if len(job_list) % 5 > 0 else 0)
             embeds = []
 
@@ -90,7 +90,7 @@ class Jobs(commands.Cog, name="jobs"):
                 end_idx = start_idx + 5
                 job_embed = discord.Embed(
                     title="Job Board",
-                    description=f"Jobs available :)",
+                    description="Jobs available :)",
                 )
                 job_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -98,16 +98,43 @@ class Jobs(commands.Cog, name="jobs"):
                     job_id = job[0]
                     job_name = job[1]
                     icon = job[2]
+
+                    # Get description
                     desc = await db_manager.get_job_description_from_id(job_id)
 
-                    job_embed.add_field(name=f"{icon}**{job_name}**", value=f"{desc} \n ID | `{job_id}`", inline=False)
+                    # Get requirements
+                    hours_required = await db_manager.get_required_hours_from_id(job_id)
+                    item_required = await db_manager.get_required_item_from_id(job_id)
+
+                    # If there's an item requirement, get the icon for it
+                    item_icon = ""
+                    if item_required is not None:
+                        item_icon = await db_manager.get_basic_item_emoji(item_required)
+
+                    # Check if the user meets the requirements
+                    user_hours = await db_manager.get_hours_worked(user_id)
+                    user_has_item = item_required is None or await db_manager.check_user_has_item(user_id, item_required) > 0
+                    requirements_met = (user_hours >= hours_required) and user_has_item
+
+                    # Depending on whether the user meets the requirements, add a check mark or an X
+                    requirements_met_icon = "✅" if requirements_met else "❌"
+
+                    # Build the field value string with job description, requirements, and whether the user meets them
+                    field_value = f"{desc}\n"
+                    field_value += f"Hours required: {hours_required}\n"
+                    if item_required is not None:
+                        field_value += f"Item required: {item_icon} `{item_required}`\n"
+                    field_value += f"ID: `{job_id}`\n"
+                    field_value += f"Requirements met: {requirements_met_icon}"
+
+                    job_embed.add_field(name=f"{icon}**{job_name}**", value=field_value, inline=False)
 
                 embeds.append(job_embed)
 
             return embeds
 
         # Create a list of embeds with 5 jobs per embed
-        embeds = await create_embeds(jobs)
+        embeds = await create_embeds(jobs, ctx.author.id)
 
         class JobBoardButton(discord.ui.View):
             def __init__(self, current_page, embeds, **kwargs):
@@ -167,9 +194,22 @@ class Jobs(commands.Cog, name="jobs"):
         #if the user doesnt have a job
         if user_job is None or user_job == 0 or user_job == "None":
             #give the user the job
+            #check the requirements
+            hours_required = await db_manager.get_required_hours_from_id(job)
+            if hours_required > 0:
+                user_hours = await db_manager.get_hours_worked(ctx.author.id)
+                if user_hours < hours_required:
+                    await ctx.send(f"You need to have worked {hours_required} hours to accept this job!")
+                    return
+            #check the item 
+            item_required = await db_manager.get_required_item_from_id(job)
+            if item_required is not None:
+                if await db_manager.check_user_has_item(ctx.author.id, item_required) == 0:
+                    icon = await db_manager.get_basic_item_emoji(item_required)
+                    await ctx.send(f"You need to have a {icon}`{item_required}` to accept this job!")
+                    return
             await db_manager.add_user_job(ctx.author.id, job)
             job_icon = await db_manager.get_job_icon_from_id(job)
-
             await ctx.send(f"You have accepted the job {job_icon}{job.title()}!")
         else:
             await ctx.send("You already have a job!, please use `nya job quit or /job quit` command to quit your current job.")
@@ -325,6 +365,10 @@ class Jobs(commands.Cog, name="jobs"):
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)
             await ctx.send(content=fail_message + " " + base_pay_message, view=None)
+            #add the cooldown
+
+        await db_manager.set_last_worked(user_id)
+        await db_manager.add_hours_worked(user_id, 1)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.

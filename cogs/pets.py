@@ -465,6 +465,17 @@ class Pets(commands.Cog, name="pets"):
                 await db_manager.set_pet_hunger(pet[1], pet[0], new_hunger)
                 updated = await db_manager.get_pet_attributes(pet[1], pet[0])
                 print(f'Updated hunger for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[5]}')
+                #if the hunger is less than or equal to 5, send a message to the user saying their pet is hungry
+                if updated[5] <= 5:
+                    #send a message to the user saying their pet is hungry
+                    icon = await db_manager.get_basic_item_emoji(pet[0])
+                    embed = discord.Embed(
+                        title=f"{pet[2]} is Hungry!",
+                        description=f"{pet[2]} is hungry! Feed them to make them happy again!",
+                        color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
+                    )
+                    embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
+                    await self.bot.get_user(pet[1]).send(embed=embed)
 
 
 
@@ -497,6 +508,17 @@ class Pets(commands.Cog, name="pets"):
                 await db_manager.set_pet_happiness(pet[1], pet[0], new_happiness)
                 updated = await db_manager.get_pet_attributes(pet[1], pet[0])
                 print(f'Updated happiness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[7]}')
+                #if the happiness is less than or equal to 5, send a message to the user saying their pet is unhappy
+                if updated[7] <= 5:
+                    #send a message to the user saying their pet is unhappy
+                    icon = await db_manager.get_basic_item_emoji(pet[0])
+                    embed = discord.Embed(
+                        title=f"{pet[2]} is Unhappy!",
+                        description=f"{pet[2]} is unhappy! Play with them to make them happy again!",
+                        color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
+                    )
+                    embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
+                    await self.bot.get_user(pet[1]).send(embed=embed)
 
     @update_pet_happiness.before_loop
     async def before_update_happiness(self):
@@ -534,6 +556,17 @@ class Pets(commands.Cog, name="pets"):
                 await db_manager.set_pet_cleanliness(pet[1], pet[0], new_cleanliness)
                 updated = await db_manager.get_pet_attributes(pet[1], pet[0])
                 print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
+                #if the cleanliness is less than or equal to 5, send a message to the user saying their pet is dirty
+                if updated[6] <= 5:
+                    #send a message to the user saying their pet is dirty
+                    icon = await db_manager.get_basic_item_emoji(pet[0])
+                    embed = discord.Embed(
+                        title=f"{pet[2]} is Dirty!",
+                        description=f"{pet[2]} is dirty! Clean them to make them happy again!",
+                        color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
+                    )
+                    embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
+                    await self.bot.get_user(pet[1]).send(embed=embed)
 
     @update_pet_cleanliness.before_loop
     async def before_update_cleanliness(self):

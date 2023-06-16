@@ -1193,6 +1193,11 @@ async def remove_job_xp(user_id: str, xp: int) -> None:
     new_xp = max(0, current_xp - xp)
     await set_job_xp(user_id, new_xp)
 
+#set the users last worked time to now
+async def set_last_worked(user_id: str) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET `last_worked` = ? WHERE `user_id` = ?", (datetime.datetime.now(), user_id))
+
 async def get_cooldown_status(user_id: str, cooldown: int, cooldown_reduction_per_level: int) -> timedelta:
     db = DB()
     data = await db.execute("SELECT `last_worked`, `level` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
