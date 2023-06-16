@@ -2306,9 +2306,11 @@ class Basic(commands.Cog, name="basic"):
             can_craft = True
 
             # Check if the user has enough of each required item
-            for recipe_id, item_name, amount in required_items:
+            for recipe_id, required_item_id, amount in required_items:
+                hasone = await db_manager.check_user_has_item(user_id, required_item_id)
+                item_amount = await db_manager.get_item_amount_from_inventory(user_id, required_item_id)
                 # If the user does not have enough of the required item, they cannot craft the item
-                if not user_inventory.get(item_name, 0) >= amount:
+                if not hasone or item_amount < amount:
                     can_craft = False
                     break
 
