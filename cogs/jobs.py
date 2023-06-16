@@ -123,6 +123,12 @@ class Jobs(commands.Cog, name="jobs"):
 
                     # Build the field value string with job description, requirements, and whether the user meets them
                     field_value = f"{desc}\n"
+                    base_pay = await db_manager.get_base_pay_from_id(job_id)
+                    cooldown = await db_manager.get_cooldown_from_id(job_id)
+                    cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
+                    remaining_cooldown = await db_manager.get_cooldown_status(user_id, cooldown, cooldown_reduction_per_level)
+                    field_value += f"> Pay: {cash}{base_pay}\n"
+                    field_value += f"> Cooldown Per Work: {remaining_cooldown}\n"
                     if level_required is not None or level_required != 0 or level_required != "None":
                         field_value += f"> Level required: `{level_required}`\n"
                     if hours_required is not None or hours_required != 0 or hours_required != "None":
@@ -131,12 +137,6 @@ class Jobs(commands.Cog, name="jobs"):
                         field_value += f"> Item required: {item_icon} `{item_required}`\n"
 
                     #get the pay and cooldown
-                    base_pay = await db_manager.get_base_pay_from_id(job_id)
-                    cooldown = await db_manager.get_cooldown_from_id(job_id)
-                    cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
-                    remaining_cooldown = await db_manager.get_cooldown_status(user_id, cooldown, cooldown_reduction_per_level)
-                    field_value += f"> Pay: {cash}{base_pay}\n"
-                    field_value += f"> Cooldown: {remaining_cooldown}\n"
                     field_value += f"> ID: `{job_id}`\n"
                     
 
