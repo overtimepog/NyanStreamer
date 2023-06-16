@@ -2322,9 +2322,10 @@ class Basic(commands.Cog, name="basic"):
 
         # Filter the list of possible recipes based on the argument
         matching_recipes = [recipe for recipe in possible_recipes if argument.lower() in recipe.lower()]
+        print(matching_recipes)
 
         # Return the list of matching recipes
-        return [app_commands.Choice(name=await db_manager.get_basic_item_name(recipe[0]), value=recipe) for recipe in matching_recipes[:25]]
+        return [app_commands.Choice(name=await db_manager.get_basic_item_name(recipe), value=recipe) for recipe in matching_recipes[:25]]
 
             
             
