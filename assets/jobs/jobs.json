@@ -10,8 +10,8 @@
         "base_pay": 500,
         "pay_per_level": 50,
         "max_level": 10,
-        "cooldown": 3600,
-        "cooldown_reduction_per_level": 60,
+        "cooldown": 1800,
+        "cooldown_reduction_per_level": 30,
         "minigames": [
             {
                 "type": "Trivia",
@@ -46,8 +46,8 @@
         "base_pay": 300,
         "pay_per_level": 20,
         "max_level": 8,
-        "cooldown": 2400,
-        "cooldown_reduction_per_level": 30,
+        "cooldown": 1200,
+        "cooldown_reduction_per_level": 15,
         "minigames": [
             {
                 "type": "Order",
@@ -88,8 +88,8 @@
         "base_pay": 1000,
         "pay_per_level": 100,
         "max_level": 12,
-        "cooldown": 7200,
-        "cooldown_reduction_per_level": 120,
+        "cooldown": 3600,
+        "cooldown_reduction_per_level": 60,
         "minigames": [
             {
                 "type": "Matching",
@@ -137,8 +137,8 @@
         "base_pay": 2000,
         "pay_per_level": 200,
         "max_level": 15,
-        "cooldown": 10800,
-        "cooldown_reduction_per_level": 180,
+        "cooldown": 5400,
+        "cooldown_reduction_per_level": 90,
         "minigames": [
             {
                 "type": "Trivia",
