@@ -2299,6 +2299,7 @@ class Basic(commands.Cog, name="basic"):
         # Iterate through all the recipes in the database
         all_recipes = await db_manager.get_all_recipes()
         for recipe in all_recipes:
+            print(recipe)
             # Get the required items and their amounts for the current recipe
             required_items = await db_manager.get_item_recipe(recipe)
             # Assume the user can craft the item until proven otherwise
