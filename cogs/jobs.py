@@ -105,6 +105,7 @@ class Jobs(commands.Cog, name="jobs"):
                     # Get requirements
                     hours_required = await db_manager.get_required_hours_from_id(job_id)
                     item_required = await db_manager.get_required_item_from_id(job_id)
+                    level_required = await db_manager.get_required_level_from_id(job_id)
 
                     # If there's an item requirement, get the icon for it
                     item_icon = ""
@@ -113,14 +114,17 @@ class Jobs(commands.Cog, name="jobs"):
 
                     # Check if the user meets the requirements
                     user_hours = await db_manager.get_hours_worked(user_id)
+                    level = await db_manager.get_level(user_id)
                     user_has_item = item_required is None or await db_manager.check_user_has_item(user_id, item_required) > 0
-                    requirements_met = (user_hours >= hours_required) and user_has_item
+                    requirements_met = (user_hours >= hours_required) and user_has_item and (level >= level_required)
 
                     # Depending on whether the user meets the requirements, add a check mark or an X
                     requirements_met_icon = "✅" if requirements_met else "❌"
 
                     # Build the field value string with job description, requirements, and whether the user meets them
                     field_value = f"{desc}\n"
+                    if level_required is not None or level_required != 0 or level_required != "None":
+                        field_value += f"Level required: `{level_required}`\n"
                     if hours_required is not None or hours_required != 0 or hours_required != "None":
                         field_value += f"Hours required: `{hours_required}`\n"
                     if item_required is not None or item_required != 0 or item_required != "None":
@@ -208,6 +212,14 @@ class Jobs(commands.Cog, name="jobs"):
                 if await db_manager.check_user_has_item(ctx.author.id, item_required) == 0:
                     icon = await db_manager.get_basic_item_emoji(item_required)
                     await ctx.send(f"You need to have a {icon}`{item_required}` to accept this job!")
+                    return
+                
+            #check the level
+            level_required = await db_manager.get_required_level_from_id(job)
+            if level_required is not None:
+                level = await db_manager.get_level(ctx.author.id)
+                if level < level_required:
+                    await ctx.send(f"You need to be level {level_required} to accept this job!")
                     return
             await db_manager.add_user_job(ctx.author.id, job)
             job_icon = await db_manager.get_job_icon_from_id(job)
