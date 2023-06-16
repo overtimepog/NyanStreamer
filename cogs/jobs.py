@@ -124,11 +124,11 @@ class Jobs(commands.Cog, name="jobs"):
                     # Build the field value string with job description, requirements, and whether the user meets them
                     field_value = f"{desc}\n"
                     if level_required is not None or level_required != 0 or level_required != "None":
-                        field_value += f"Level required: `{level_required}`\n"
+                        field_value += f">>> Level required: `{level_required}`\n"
                     if hours_required is not None or hours_required != 0 or hours_required != "None":
-                        field_value += f"Hours required: `{hours_required}`\n"
+                        field_value += f">>> Hours required: `{hours_required}`\n"
                     if item_required is not None or item_required != 0 or item_required != "None":
-                        field_value += f"Item required: {item_icon} `{item_required}`\n"
+                        field_value += f">>> Item required: {item_icon} `{item_required}`\n"
                     field_value += f"ID: `{job_id}`\n"
                     
 
