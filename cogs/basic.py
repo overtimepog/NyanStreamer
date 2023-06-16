@@ -2301,7 +2301,7 @@ class Basic(commands.Cog, name="basic"):
         for recipe in all_recipes:
             print(recipe)
             # Get the required items and their amounts for the current recipe
-            required_items = await db_manager.get_item_recipe(recipe)
+            required_items = await db_manager.get_item_recipe(recipe[0])
             # Assume the user can craft the item until proven otherwise
             can_craft = True
 
