@@ -2287,6 +2287,40 @@ class Basic(commands.Cog, name="basic"):
         await db_manager.add_item_to_inventory(ctx.author.id, item_name, item_emote)
         await ctx.send(f"{item_emote} **{item_name}** has been crafted!")
 
+    @craft.autocomplete("recipe")
+    async def craft_autocomplete(self, ctx: discord.Interaction, argument):
+        # Get the user's ID
+        user_id = ctx.user.id
+        # Get the user's inventory
+        user_inventory = await db_manager.view_inventory(user_id)
+        # Initialize a list to store the items that the user can craft
+        possible_recipes = []
+
+        # Iterate through all the recipes in the database
+        all_recipes = await db_manager.get_all_recipes()
+        for recipe in all_recipes:
+            # Get the required items and their amounts for the current recipe
+            required_items = await db_manager.get_item_recipe(recipe)
+            # Assume the user can craft the item until proven otherwise
+            can_craft = True
+
+            # Check if the user has enough of each required item
+            for item_name, amount in required_items:
+                # If the user does not have enough of the required item, they cannot craft the item
+                if not user_inventory.get(item_name, 0) >= amount:
+                    can_craft = False
+                    break
+                
+            # If the user can craft the item, add it to the list of possible recipes
+            if can_craft:
+                possible_recipes.append(recipe)
+
+        # Filter the list of possible recipes based on the argument
+        matching_recipes = [recipe for recipe in possible_recipes if argument.lower() in recipe.lower()]
+
+        # Return the list of matching recipes
+        return matching_recipes
+
             
             
 #attack command
