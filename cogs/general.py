@@ -42,39 +42,41 @@ class General(commands.Cog, name="general"):
     @checks.not_blacklisted()
     async def help(self, context: Context, command_or_cog: str = None) -> None:
         prefix = self.bot.config["prefix"]
-
-        # If a command or cog name was provided, look it up and provide specific information about it
+    
         if command_or_cog:
             command_or_group = self.bot.get_command(command_or_cog.lower())
-            if command_or_group:
+            if command_or_group and command_or_group.cog_name != 'Owner':
                 from discord.ext import commands
                 if isinstance(command_or_group, commands.HybridGroup):
-                    # If a group was found, print information about its commands
-                    group_commands = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in command_or_group.commands])
+                    group_commands = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'Owner'])
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
                     await context.send(embed=embed)
                 else:
-                    # If a command was found, print information about it
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=command_or_group.description, color=0x9C84EF)
                     embed.add_field(name="Usage", value=f'`{prefix}{command_or_group.name}`', inline=False)
                     await context.send(embed=embed)
                 return
-
+    
             cog = self.bot.get_cog(command_or_cog.title())
             if cog:
-                # If a cog was found, print information about its commands
                 commands = cog.get_commands()
                 if commands:
-                    command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands])
+                    command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'Owner'])
                     embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
                     await context.send(embed=embed)
                 else:
                     await context.send(f'The {cog.qualified_name} category has no commands.')
                 return
-
-            # If no command or cog was found, inform the user
+    
             await context.send(f'No command or category named "{command_or_cog}" was found.')
             return
+    
+        else:
+            # If no command or cog was provided, list all commands
+            all_commands = {command for command in self.bot.commands if command.cog_name != 'Owner'}
+            command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in all_commands])
+            embed = discord.Embed(title='**All commands**', description=command_list, color=0x9C84EF)
+            await context.send(embed=embed)
 
         # Get all cogs and their commands
         cogs_data = []
@@ -82,8 +84,9 @@ class General(commands.Cog, name="general"):
             cog = self.bot.get_cog(i.lower())
             commands = cog.get_commands()
             for command in commands:
-                description = command.description.partition('\n')[0]
-                cogs_data.append((i, f"{command.name}", description))
+                if command.cog_name != 'Owner':
+                    description = command.description.partition('\n')[0]
+                    cogs_data.append((i, f"{command.name}", description))
 
         # Calculate number of pages based on number of cogs
         num_pages = (len(cogs_data) // 5) + (1 if len(cogs_data) % 5 > 0 else 0)
