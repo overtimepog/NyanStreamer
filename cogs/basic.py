@@ -671,25 +671,32 @@ class Basic(commands.Cog, name="basic"):
                 end_idx = start_idx + 5
                 # Get the reset time
                 resetTime = self.shop_reset.next_iteration
-                resetTime = str(resetTime)
-                resetTime = resetTime[:19]
-                
-                # Parse the reset time string into a datetime object
-                resetTime = datetime.datetime.strptime(resetTime, '%Y-%m-%d %H:%M:%S')
-                
-                # Make the datetime object timezone-aware (UTC)
-                resetTime = resetTime.replace(tzinfo=pytz.UTC)
-                
-                # Convert the datetime object to Eastern Standard Time
-                est = pytz.timezone('US/Eastern')
-                resetTime = resetTime.astimezone(est)
-                
-                # Format the datetime object as a string
-                resetTime = resetTime.strftime('%B %d, %Y, %I:%M %p %Z')
-                shop_embed = discord.Embed(
+                if resetTime is None:
+                    print("Error: next_iteration returned None")
+                    shop_embed = discord.Embed(
+                    title="Shop",
+                    description=f"Commands: \n **Buy**: `/buy iron_sword 1`. \n \n **Shop Restock Time**: `8hr` \n \n"
+                    )
+                else:
+                    resetTime = str(resetTime)
+                    resetTime = resetTime[:19]
+
+                    # Parse the reset time string into a datetime object
+                    resetTime = datetime.datetime.strptime(resetTime, '%Y-%m-%d %H:%M:%S')
+
+                    # Make the datetime object timezone-aware (UTC)
+                    resetTime = resetTime.replace(tzinfo=pytz.UTC)
+
+                    # Convert the datetime object to Eastern Standard Time
+                    est = pytz.timezone('US/Eastern')
+                    resetTime = resetTime.astimezone(est)
+
+                    # Format the datetime object as a string
+                    resetTime = resetTime.strftime('%B %d, %Y, %I:%M %p %Z')
+                    shop_embed = discord.Embed(
                     title="Shop",
                     description=f"Commands: \n **Buy**: `/buy iron_sword 1`. \n \n **Shop Restock Time**: `{resetTime}` \n \n"
-                )
+                    )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
                 for item in item_list[start_idx:end_idx]:
