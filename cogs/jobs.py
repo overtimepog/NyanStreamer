@@ -298,7 +298,7 @@ class Jobs(commands.Cog, name="jobs"):
             return
         
         job_id = await db_manager.get_user_job(user_id)
-        if job_id is None:
+        if job_id is None or job_id == 0 or job_id == "None":
             await ctx.send("You don't have a job!")
             return
         
