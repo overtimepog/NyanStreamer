@@ -45,10 +45,10 @@ class General(commands.Cog, name="general"):
     
         if command_or_cog:
             command_or_group = self.bot.get_command(command_or_cog.lower())
-            if command_or_group and command_or_group.cog_name != 'Owner':
+            if command_or_group and command_or_group.cog_name != 'owner':
                 from discord.ext import commands
                 if isinstance(command_or_group, commands.HybridGroup):
-                    group_commands = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'Owner'])
+                    group_commands = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner'])
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
                     await context.send(embed=embed)
                 else:
@@ -61,7 +61,7 @@ class General(commands.Cog, name="general"):
             if cog:
                 commands = cog.get_commands()
                 if commands:
-                    command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'Owner'])
+                    command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'owner'])
                     embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
                     await context.send(embed=embed)
                 else:
@@ -73,7 +73,7 @@ class General(commands.Cog, name="general"):
     
         else:
             # If no command or cog was provided, list all commands
-            all_commands = {command for command in self.bot.commands if command.cog_name != 'Owner'}
+            all_commands = {command for command in self.bot.commands if command.cog_name != 'owner'}
             command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in all_commands])
             embed = discord.Embed(title='**All commands**', description=command_list, color=0x9C84EF)
             await context.send(embed=embed)
@@ -84,7 +84,7 @@ class General(commands.Cog, name="general"):
             cog = self.bot.get_cog(i.lower())
             commands = cog.get_commands()
             for command in commands:
-                if command.cog_name != 'Owner':
+                if command.cog_name != 'owner':
                     description = command.description.partition('\n')[0]
                     cogs_data.append((i, f"{command.name}", description))
 
