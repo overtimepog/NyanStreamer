@@ -74,6 +74,24 @@
                         "answer": "100°C"
                     }
                 ]
+            },
+            {
+                "type": "Retype",
+                "prompt": "**Work for Chef** - Retype - Please retype the following phrase:",
+                "phrase": "Cooking is love made visible.",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.3}
+                ]
+            },
+            {
+                "type": "Backwards",
+                "prompt": "**Work for Chef** - Backwards - Please type the following word in reverse order:",
+                "word": "Ingredients",
+                "reward": [
+                    {"rewardType": "money", "reward": 40, "chance": 0.3},
+                    {"rewardType": "item", "reward": "apron", "chance": 0.2}
+                ]
             }
         ]
     },

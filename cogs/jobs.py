@@ -333,6 +333,10 @@ class Jobs(commands.Cog, name="jobs"):
             result, message = await games.play_order_game(ctx, game_data, minigameText, callback_processed_future)
         elif minigame[2] == 'Matching':
             result, message = await games.play_matching_game(ctx, game_data, minigameText, callback_processed_future)
+        elif minigame[2] == 'Retype':
+            result, message = await games.play_retype_game(ctx, game_data, minigameText, callback_processed_future)
+        elif minigame[2] == 'Backwards':
+            result, message = await games.play_backwards_game(ctx, game_data, minigameText, callback_processed_future)
         else:
             print("Unknown game type")
             return

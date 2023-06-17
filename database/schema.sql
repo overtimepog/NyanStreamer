@@ -381,6 +381,18 @@ CREATE TABLE IF NOT EXISTS `matching` (
     FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `retype` (
+    `minigame_id` INTEGER,
+    `phrase` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `backwards` (
+    `minigame_id` INTEGER,
+    `word` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
+);
+
 CREATE TABLE IF NOT EXISTS `jobboard` (
     `id` TEXT PRIMARY KEY,
     `name` TEXT NOT NULL,

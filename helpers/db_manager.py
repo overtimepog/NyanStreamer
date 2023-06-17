@@ -1119,6 +1119,19 @@ async def add_jobs_and_minigames():
                             )
                         except Exception as e:
                             print(f"Error inserting into `outcomes`: {e}")
+                            
+            elif minigame['type'] == 'Retype':
+                await db.execute(
+                    "INSERT INTO `retype` (`minigame_id`, `phrase`) VALUES (?, ?)",
+                    (minigame_id, minigame['phrase'])
+                )
+                
+            elif minigame['type'] == 'Backwards':
+                await db.execute(
+                    "INSERT INTO `backwards` (`minigame_id`, `word`) VALUES (?, ?)",
+                    (minigame_id, minigame['word'])
+                )
+
     print("Processed all jobs and minigames")
 
 async def add_jobs_to_jobboard():
