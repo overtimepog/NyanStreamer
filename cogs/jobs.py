@@ -145,7 +145,10 @@ class Jobs(commands.Cog, name="jobs"):
                     minutes = remainder // 60
 
                     if hours > 0:
-                        cooldown_str = f"{int(hours)}hr {int(minutes)}min"
+                        if minutes > 0:
+                            cooldown_str = f"{int(hours)}hr {int(minutes)}min"
+                        else:
+                            cooldown_str = f"{int(hours)}hr"
                     else:
                         cooldown_str = f"{int(minutes)}min"
                     field_value += f"> Cooldown: {cooldown_str}\n"
