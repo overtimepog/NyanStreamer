@@ -1206,7 +1206,7 @@ async def set_last_worked(user_id: str) -> None:
     db = DB()
     await db.execute("UPDATE `users` SET `last_worked` = ? WHERE `user_id` = ?", (datetime.datetime.now(), user_id))
 
-async def get_cooldown_status(user_id: str, cooldown: int, cooldown_reduction_per_level: int) -> timedelta:
+async def get_cooldown_status(user_id: str, cooldown: timedelta, cooldown_reduction_per_level: timedelta) -> timedelta:
     db = DB()
     data = await db.execute("SELECT `last_worked`, `player_level` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
     if data is None:
@@ -1215,7 +1215,7 @@ async def get_cooldown_status(user_id: str, cooldown: int, cooldown_reduction_pe
     last_worked, level = data
     level = level - 1
     cooldown -= level * cooldown_reduction_per_level
-    cooldown_time = timedelta(seconds=cooldown)
+    cooldown_time = cooldown
     if last_worked is None:
         return timedelta(0)  # User has never worked before
 
