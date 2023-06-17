@@ -310,7 +310,11 @@ class Jobs(commands.Cog, name="jobs"):
             await ctx.send(f"You're still on cooldown! Wait for {remaining_cooldown}.")
             return
         
-        base_pay = await db_manager.get_base_pay_from_id(job_id)
+        base_pay_stuff = await db_manager.get_base_pay_from_id(job_id)
+        level_up_pay = await db_manager.get_pay_per_level_from_id(job_id)
+        level = await db_manager.get_level(user_id)
+        level = level - 1
+        base_pay = base_pay_stuff + (level_up_pay * level)
         penalty_percentage = 0.2
 
         minigame = await db_manager.get_minigame_for_job(job_id)
