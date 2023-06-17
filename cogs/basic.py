@@ -672,7 +672,7 @@ class Basic(commands.Cog, name="basic"):
                 # Get the reset time
                 resetTime = self.shop_reset.next_iteration
                 if resetTime is None:
-                    print("Error: next_iteration returned None")
+                    #print("Error: next_iteration returned None")
                     shop_embed = discord.Embed(
                     title="Shop",
                     description=f"Commands: \n **Buy**: `/buy iron_sword 1`. \n \n **Shop Restock Time**: `8hr` \n \n"
