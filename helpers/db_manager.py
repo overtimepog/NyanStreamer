@@ -907,7 +907,10 @@ async def add_shop_items() -> None:
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
     #add the items to the shop table
     #pick 25 rndom items from the list
-    data = random.sample(data, 25)
+    try:
+        data = random.sample(data, 25)
+    except(ValueError):
+        data = random.sample(data, len(data))
     for item in data:
         item_id = item[0]
         item_amount = 1
