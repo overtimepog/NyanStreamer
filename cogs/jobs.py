@@ -132,7 +132,7 @@ class Jobs(commands.Cog, name="jobs"):
                     base_pay = await db_manager.get_base_pay_from_id(job_id)
                     cooldown = await db_manager.get_cooldown_from_id(job_id)
                     cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
-        
+                    level = level - 1
                     adjusted_cooldown = cooldown - (cooldown_reduction_per_level * level)
 
                     # Ensure that the adjusted cooldown is not negative
