@@ -1213,6 +1213,7 @@ async def get_cooldown_status(user_id: str, cooldown: int, cooldown_reduction_pe
         return timedelta(0)
 
     last_worked, level = data
+    level = level - 1
     cooldown -= level * cooldown_reduction_per_level
     cooldown_time = timedelta(seconds=cooldown)
     if last_worked is None:
