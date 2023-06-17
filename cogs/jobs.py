@@ -291,6 +291,12 @@ class Jobs(commands.Cog, name="jobs"):
         )
     async def work(self, ctx: commands.Context):
         user_id = ctx.author.id
+        #check if the user exists
+        user_exists = await db_manager.check_user(ctx.author.id)
+        if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
+        
         job_id = await db_manager.get_user_job(user_id)
         if job_id is None:
             await ctx.send("You don't have a job!")
