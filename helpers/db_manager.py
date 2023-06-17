@@ -1362,22 +1362,21 @@ async def get_max_level_from_id(job_id: str) -> int:
         return 0
 
 # get cooldown from job ID
-async def get_cooldown_from_id(job_id: str) -> int:
+async def get_cooldown_from_id(job_id: str) -> timedelta:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
-        return data[10]
+        return timedelta(seconds=data[10])
     else:
-        return 0
-
-# get cooldown reduction per level from job ID
-async def get_cooldown_reduction_per_level_from_id(job_id: str) -> int:
+        return timedelta(seconds=0)
+    
+async def get_cooldown_reduction_per_level_from_id(job_id: str) -> timedelta:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
-        return data[11]
+        return timedelta(seconds=data[11])
     else:
-        return 0
+        return timedelta(seconds=0)
 
 async def get_jobs_on_board() -> list:
     db = DB()

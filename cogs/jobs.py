@@ -132,21 +132,23 @@ class Jobs(commands.Cog, name="jobs"):
                     base_pay = await db_manager.get_base_pay_from_id(job_id)
                     cooldown = await db_manager.get_cooldown_from_id(job_id)
                     cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
-                    remaining_cooldown = await db_manager.get_cooldown_status(user_id, cooldown, cooldown_reduction_per_level)
-                    total_seconds = remaining_cooldown.total_seconds()
+        
+                    adjusted_cooldown = cooldown - (cooldown_reduction_per_level * level)
 
-                    # Get hours and remaining seconds
+                    # Ensure that the adjusted cooldown is not negative
+                    if adjusted_cooldown.total_seconds() < 0:
+                        adjusted_cooldown = datetime.timedelta(seconds=0)
+
+                    # Calculate adjusted cooldown time
+                    total_seconds = adjusted_cooldown.total_seconds()
                     hours, remainder = divmod(total_seconds, 3600)
-
-                    # Get minutes from the remaining seconds
                     minutes = remainder // 60
 
                     if hours > 0:
-                        remaining_cooldown_str = f"{int(hours)}hr {int(minutes)}min"
+                        cooldown_str = f"{int(hours)}hr {int(minutes)}min"
                     else:
-                        remaining_cooldown_str = f"{int(minutes)}min"
-
-                    field_value += f"> Cooldown: {remaining_cooldown_str}\n"
+                        cooldown_str = f"{int(minutes)}min"
+                    field_value += f"> Cooldown: {cooldown_str}\n"
                     field_value += f"> Pay: {cash}{base_pay}\n"
                     if level_required is not None or level_required != 0 or level_required != "None":
                         field_value += f"> Level required: `{level_required}`\n"
