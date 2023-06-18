@@ -1,0 +1,277 @@
+I am going to give you a bunch of templates of items in my game
+
+this is what armor looks like
+    {
+        "item_id": "gold_chestplate",
+        "item_name": "Gold Chestplate",
+        "item_price": 300,
+        "item_emoji": "<:Gold_chestplate:1095706801372151888>",
+        "item_rarity": "Rare",
+        "item_type": "Armor",
+        "item_damage": 12,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": true,
+        "item_description": "A shiny gold chestplate, offering moderate protection.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "gold_chestplate",
+        "item_recipe": [{
+            "ingredient_id": "gold",
+            "ingredient_amount": 5
+        }],
+        "item_effect": "None",
+        "item_sub_type": "Chestplate"
+    },
+
+this is what chests look like
+    {
+        "chest_id": "chest",
+        "chest_name": "Chest",
+        "chest_price": 100,
+        "chest_emoji": "<a:WoodChest:1078758729706643506>",
+        "chest_rarity": "Common",
+        "chest_type": "Chest",
+        "chest_description": "A basic chest, found in plenty of places and contains materials to be used for other stuff",
+        "key_id": "None",
+        "chest_contentsID": "chest",
+        "chest_contents": [
+            {
+                "item_id": "bait",
+                "item_amount": 5,
+                "drop_chance": 0.15
+            },
+            {
+                "item_id": "iron",
+                "item_amount": 3,
+                "drop_chance": 0.15
+            },
+            {
+                "item_id": "stick",
+                "item_amount": 5,
+                "drop_chance": 0.15
+            },
+            {
+                "item_id": "string",
+                "item_amount": 5,
+                "drop_chance": 0.15
+            },
+            {
+                "item_id": "gold",
+                "item_amount": 2,
+                "drop_chance": 0.08
+            },
+            {
+                "item_id": "gold_chain",
+                "item_amount": 1,
+                "drop_chance": 0.08
+            },
+            {
+                "item_id": "gold_ring",
+                "item_amount": 1,
+                "drop_chance": 0.08
+            }
+        ]
+    },
+
+this is what a Consumable item looks like
+    {
+        "item_id": "glue",
+        "item_name": "Glue",
+        "item_price": 300000,
+        "item_emoji": "<:glue:1114319335637393438>",
+        "item_rarity": "Rare",
+        "item_type": "Consumable",
+        "item_damage": 0,
+        "isUsable": true,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "Sniff it to Gain 200 health for 2 hours",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "health + 200 2hr",
+        "item_sub_type": "Potion"
+    },
+
+this is what a material looks like
+        {
+            "item_id": "gold_ring",
+            "item_name": "Gold Ring",
+            "item_price": 300,
+            "item_emoji": "<:gold_ring:1114312194847428629>",
+            "item_rarity": "Common",
+            "item_type": "Material",
+            "item_damage": 0,
+            "isUsable": false,
+            "inShop": true,
+            "isEquippable": false,
+            "item_description": "ooh this is shiny but on my finger",
+            "item_element": "None",
+            "item_crit_chance": "0",
+            "item_projectile": "None",
+            "recipe_id": "gold_ring",
+            "item_recipe": [
+                {
+                    "ingredient_id": "gold",
+                    "ingredient_amount": 2
+                }
+            ],
+            "isHuntable": false,
+            "item_hunt_chance": 0,
+            "item_effect": "None",
+            "isMineable": false,
+            "item_mine_chance": 0,
+            "quote_id": "None",
+            "item_quotes": [{
+                "quote": "None"
+            }],
+            "item_sub_type": "None"
+        }
+
+this is what a misc item looks like
+    {
+        "item_id": "treasure_map",
+        "item_name": "Treasure Map",
+        "item_price": 30000,
+        "item_emoji": "<:Map_Treasure:1113653590913982515>",
+        "item_rarity": "Rare",
+        "item_type": "Misc",
+        "item_damage": 0,
+        "isUsable": true,
+        "inShop": false,
+        "isEquippable": false,
+        "item_description": "Woah! A treasure map! I wonder what it leads to...",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "item_sub_type": "None"
+    }
+
+this is what a pet looks like
+    {
+        "item_id": "marshmellow_uncommon",
+        "item_name": "Marshmellow",
+        "item_price": 600,
+        "item_emoji": "<a:marshmellow:1114564934425116672>",
+        "item_rarity": "Uncommon",
+        "item_type": "Pet",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "Very very squishy, don't eat him",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "item_sub_type": "None"
+    },
+
+    this is what a weapon looks like
+        {
+        "item_id": "iron_sword",
+        "item_name": "Iron Sword",
+        "item_price": 75,
+        "item_emoji": "<:Iron_Sword:1077583210659205130>",
+        "item_rarity": "Common",
+        "item_type": "Weapon",
+        "item_damage": "3-5",
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "Who has a Sword nowadays?, who cares it's a Sword!",
+        "item_element": "None",
+        "item_crit_chance": "5%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "iron_sword",
+        "item_quotes": [
+            {
+                "quote": "{user} swings their Sword at {target} and deals {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    }
+
+this is what a job looks like
+    {
+        "id": "chef",
+        "name": "Chef",
+        "description": "Prepare and cook food",
+        "job_icon": "<:jobIcon:12345678910>",
+        "required_item": "knife",
+        "required_level": 2,
+        "required_hours": 100,
+        "base_pay": 300,
+        "pay_per_level": 20,
+        "max_level": 8,
+        "cooldown": 1200,
+        "cooldown_reduction_per_level": 15,
+        "minigames": [
+            {
+                "type": "Order",
+                "prompt": "**Work for Chef** - Order - Please arrange the following ingredients in the correct order:",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5}
+                ],
+                "task": "Sort the ingredients according to the recipe order",
+                "items": ["Flour", "Eggs", "Milk", "Butter"],
+                "correctOrder": ["Flour", "Butter", "Eggs", "Milk"]
+            },
+            {
+                "type": "Trivia",
+                "prompt": "**Work for Chef** - Trivia - Please answer the following question:",
+                "reward": [
+                    {"rewardType": "money", "reward": 50, "chance": 0.5},
+                    {"rewardType": "item", "reward": "chef_hat", "chance": 0.2}
+                ],
+                "questions": [
+                    {
+                        "question": "What temperature does water boil at sea level?",
+                        "options": ["100°C", "50°C", "150°C"],
+                        "answer": "100°C"
+                    }
+                ]
+            },
+            {
+                "type": "Retype",
+                "prompt": "**Work for Chef** - Retype - Please retype the following phrase:",
+                "phrase": "Cooking is love made visible.",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.3}
+                ]
+            },
+            {
+                "type": "Backwards",
+                "prompt": "**Work for Chef** - Backwards - Please type the following word in reverse order:",
+                "word": "Ingredients",
+                "reward": [
+                    {"rewardType": "money", "reward": 40, "chance": 0.3},
+                    {"rewardType": "item", "reward": "apron", "chance": 0.2}
+                ]
+            }
+        ]
+    }
