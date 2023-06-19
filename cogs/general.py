@@ -47,7 +47,7 @@ class General(commands.Cog, name="general"):
             command_or_group = self.bot.get_command(command_or_cog.lower())
             if command_or_group and command_or_group.cog_name != 'owner':
                 from discord.ext import commands
-                if isinstance(command_or_group, commands.HybridGroup):
+                if isinstance(command_or_group, commands.Group):
                     group_commands = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner'])
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
                     await context.send(embed=embed)
@@ -72,79 +72,15 @@ class General(commands.Cog, name="general"):
             return
     
         else:
-            # If no command or cog was provided, list all commands
-            all_commands = {command for command in self.bot.commands if command.cog_name != 'owner'}
-            command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in all_commands])
-            embed = discord.Embed(title='**All commands**', description=command_list, color=0x9C84EF)
-            await context.send(embed=embed)
-
-        # Get all cogs and their commands
-        cogs_data = []
-        for i in self.bot.cogs:
-            cog = self.bot.get_cog(i.lower())
-            commands = cog.get_commands()
-            for command in commands:
-                if command.cog_name != 'owner':
-                    description = command.description.partition('\n')[0]
-                    cogs_data.append((i, f"{command.name}", description))
-
-        # Calculate number of pages based on number of cogs
-        num_pages = (len(cogs_data) // 5) + (1 if len(cogs_data) % 5 > 0 else 0)
-
-        # Create a function to generate embeds from a list of cogs
-        async def create_embeds(cogs_list):
-            embeds = []
-            for i in range(num_pages):
-                start_idx = i * 5
-                end_idx = start_idx + 5
-                help_embed = discord.Embed(title="Help", description="List of available commands: use nya  or /", color=0x9C84EF)
-                help_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-
-                for cog in cogs_list[start_idx:end_idx]:
-                    cog_name, command_name, command_description = cog
-                    help_embed.add_field(name=f'{command_name}', value=f'```{command_description}```', inline=False)
-
-                embeds.append(help_embed)
-
-            return embeds
-
-        # Create a list of embeds with 5 cogs per embed
-        embeds = await create_embeds(cogs_data)
-
-        class HelpButton(discord.ui.View):
-            def __init__(self, current_page, embeds, **kwargs):
-                super().__init__(**kwargs)
-                self.current_page = current_page
-                self.embeds = embeds
-
-            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
-            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = 0
-                await interaction.response.defer()
-                await interaction.message.edit(embed=self.embeds[self.current_page])
-
-            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
-            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                if self.current_page > 0:
-                    self.current_page -= 1
-                    await interaction.response.defer()
-                    await interaction.message.edit(embed=self.embeds[self.current_page])
-
-            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
-            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                if self.current_page < len(self.embeds) - 1:
-                    self.current_page += 1
-                    await interaction.response.defer()
-                    await interaction.message.edit(embed=self.embeds[self.current_page])
-
-            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
-            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = len(self.embeds) - 1
-                await interaction.response.defer()
-                await interaction.message.edit(embed=self.embeds[self.current_page])
-
-        view = HelpButton(current_page=0, embeds=embeds)
-        await context.send(embed=embeds[0], view=view)
+            # If no command or cog was provided, list all commands grouped by cogs
+            cogs = self.bot.cogs
+            for cog_name in cogs:
+                cog = self.bot.get_cog(cog_name)
+                commands = cog.get_commands()
+                if commands:
+                    command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'owner'])
+                    embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
+                    await context.send(embed=embed)
 
     @commands.hybrid_command(
         name="botinfo",
