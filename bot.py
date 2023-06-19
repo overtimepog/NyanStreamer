@@ -316,6 +316,9 @@ async def load_cogs() -> None:
 async def setup() -> None:
     await init_db()
     await load_cogs()
+    #delete the joined_channels.json file
+    if os.path.isfile('joined_channels.json'):
+        os.remove('joined_channels.json')
     #print("\n" + "---------Enemies----------")
     #await db_manager.add_enemies()
     #print("\n" + "---------Quests----------")
