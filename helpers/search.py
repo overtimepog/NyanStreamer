@@ -38,7 +38,7 @@ class SearchLocationButton(discord.ui.View):
 async def search(ctx: Context):
 # Path: helpers\search.py
     userGain = 5000
-    with open('assets\search.json') as f:
+    with open('assets/search.json') as f:
         data = json.load(f)
         locations = data['searches']
 
