@@ -1098,9 +1098,9 @@ class Basic(commands.Cog, name="basic"):
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
         if locked == True:
-            embed.add_field(name="Money", value=f"<:Padlock_Locked:1116772808110911498> {cash}{user_money}", inline=True)
+            embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{user_money}", inline=True)
         else:
-            embed.add_field(name="Money", value=f"<:Padlock_Unlocked:1116772713952981103> {cash}{user_money}", inline=True)
+            embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{user_money}", inline=True)
         #get the badges from the database
         badges = await db_manager.get_equipped_badges(user_id)
         #make a feild for the badges and set the title to badges and the value to the badges
