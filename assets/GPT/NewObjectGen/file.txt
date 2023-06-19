@@ -1,4 +1,4 @@
-I am going to give you a bunch of templates of stuff in my game, I want you to procces and understand them as Im going to ask you to generate more stuff based on them
+I am going to give you a bunch of templates of stuff in my game, I want you to procces and understand them as Im going to ask you to generate more stuff based on them, once you understand all of them, say so followed by a ✅
 
 this is what armor looks like
     {
