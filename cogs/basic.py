@@ -21,7 +21,7 @@ from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager, hunt, mine
+from helpers import battle, checks, db_manager, hunt, mine, search
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 
@@ -1937,7 +1937,7 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.search.reset_cooldown(ctx)
             return
-        pass
+        search.search(ctx)
     
     #ANCHOR use command
     #a cooldown of 2 minutes
