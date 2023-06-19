@@ -51,7 +51,7 @@
         "minigames": [
             {
                 "type": "Order",
-                "prompt": "**Work for Chef** - Order - Please arrange the following ingredients in the correct order:",
+                "prompt": "**Work for Chef** - Order - Please arrange the following ingredients in the correct order: (Hint: Start with the dry ingredient, add fats, then go for the wet ingredients.)",
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 60, "chance": 0.5}
