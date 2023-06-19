@@ -1,5 +1,12 @@
 I am going to give you a bunch of templates of stuff in my game, I want you to procces and understand them as Im going to ask you to generate more stuff based on them, once you understand all of them, say so followed by a ✅
 
+Here are some rules to be followed when making new stuff
+* All items need item_damage even if its 0
+* For Armor, item_damage is the amount of damage it reduces but it is still called item_damage for consistency
+* Armors have subtypes, Helmet, Chestplate, Leggings and Boots that must be present when making a piece of armor
+* Jobs dont need a required item, it can be set to None 
+* Jobs also dont need a required hours, it can be set to 0
+
 this is what armor looks like
     {
         "item_id": "gold_chestplate",
