@@ -18,7 +18,7 @@ from typing import List, Tuple
 
 class SearchButton(discord.ui.Button['SearchButton']):
     def __init__(self, label: str, location: dict):
-        super().__init__(style=discord.ui.ButtonStyle.primary, label=label)
+        super().__init__(style=discord.ButtonStyle.primary, label=label)
         self.location = location
 
     async def callback(self, interaction: discord.Interaction):
