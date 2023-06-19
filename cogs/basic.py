@@ -1913,7 +1913,7 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("You are dead! wait to respawn! or use an item to revive!")
             return
         #check if the user is dead
-        user_is_alive = await db_manager.is_alive(target.id)
+        user_is_alive = await    db_manager.is_alive(target.id)
         if user_is_alive == False:
             await ctx.send("This user is dead! wait till they respawn! or they use an item to revive!")
             return
@@ -1993,6 +1993,7 @@ class Basic(commands.Cog, name="basic"):
             if isTimed == True:
                 #get the effect 
                 item_effect = await db_manager.get_basic_item_effect(item)
+                await db_manager.add_timed_item(user_id, item, item_effect)
                 item_name = await db_manager.get_basic_item_name(item)
                 #split the item effect by space
                 item_effect = item_effect.split(" ")
@@ -2007,7 +2008,6 @@ class Basic(commands.Cog, name="basic"):
                     item_effect_time = 0
                 print(item_effect)
                 #add it to the user
-                await db_manager.add_timed_item(user_id, item, item_effect)
                 #send a message
                 await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
                 return
