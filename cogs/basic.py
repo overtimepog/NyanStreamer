@@ -1176,11 +1176,12 @@ class Basic(commands.Cog, name="basic"):
         #create a section for the users current quest
 
         if job_id is None or job_id == 0 or job_id == "None":
-            embed.add_field(name="Current Job", value="`You currently have no job. Use the job command to get one.`", inline=False)
+            embed.add_field(name="Current Job", value="`You currently have no job. see the board to get one.`", inline=False)
         else:
             job_name = await db_manager.get_job_name_from_id(job_id)
             job_description = await db_manager.get_job_description_from_id(job_id)
-            embed.add_field(name="Current Job", value=f"**{job_name}**", inline=False)
+            job_icon = await db_manager.get_job_icon_from_id(job_id)
+            embed.add_field(name="Job", value=f"{job_icon}**{job_name}**", inline=False)
         embed.set_thumbnail(url=user.avatar.url)
         if isStreamer == 1:
             isStreamer = "Yes"
@@ -1231,7 +1232,11 @@ class Basic(commands.Cog, name="basic"):
                         item_projectile = item[12]
                         item_description = await db_manager.get_basic_item_description(item_id)
 
-                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+                        isEquippable = await db_manager.is_basic_item_equipable(item_id)
+                        if isEquippable == True:
+                            inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+                        else:
+                            inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
 
                     embeds.append(inventory_embed)
 
