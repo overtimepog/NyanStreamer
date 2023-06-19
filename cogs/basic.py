@@ -2013,6 +2013,16 @@ class Basic(commands.Cog, name="basic"):
                 #send a message
                 if item_effect_type == "lock":
                     await ctx.send(f"You used {item_emoji}`{item_name}` You now cant be robbed for {item_effect_time}!")
+                    return
+                elif item_effect_type == "halt_cleanliness":
+                    await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now cant lose cleanliness for {item_effect_time}!")
+                    return
+                elif item_effect_type == "halt_hunger":
+                    await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now cant lose hunger for {item_effect_time}!")
+                    return
+                elif item_effect_type == "halt_happiness":
+                    await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now cant lose happiness for {item_effect_time}!")
+                    return
                 await ctx.send(f"You used {item_emoji}`{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
                 return
             #if the item's name is "Potion", add 10 health to the user
