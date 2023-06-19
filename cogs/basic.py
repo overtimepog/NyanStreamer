@@ -1077,7 +1077,7 @@ class Basic(commands.Cog, name="basic"):
         #convert the xp needed to a string
         xp_needed = str(xp_needed)
         print(f"User ID: {user_id}")
-        print(f"User Money: {user_money}")
+        print(f"Users Wallet: {user_money}")
         print(f"User Health: {user_health}")
         print(f"Is Streamer: {isStreamer}")
         print(f"User XP: {user_xp}")
@@ -2011,7 +2011,9 @@ class Basic(commands.Cog, name="basic"):
                 print(item_effect)
                 #add it to the user
                 #send a message
-                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
+                if item_effect_type == "lock":
+                    await ctx.send(f"You used {item_emoji}`{item_name}` You now cant be robbed for {item_effect_time}!")
+                await ctx.send(f"You used {item_emoji}`{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
                 return
             #if the item's name is "Potion", add 10 health to the user
             #get the items effect
