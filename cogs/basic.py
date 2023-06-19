@@ -1135,7 +1135,9 @@ class Basic(commands.Cog, name="basic"):
 
         timed_items = await db_manager.view_timed_items(user.id)
         
-        item_info = defaultdict(lambda: {"count": 0, "latest_expire": datetime.datetime.min})
+        est_min_datetime = datetime.datetime.min.replace(tzinfo=pytz.UTC).astimezone(pytz.timezone('US/Eastern'))
+        item_info = defaultdict(lambda: {"count": 0, "latest_expire": est_min_datetime})
+
         
         if timed_items:
             for item in timed_items:
