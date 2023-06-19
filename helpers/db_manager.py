@@ -405,7 +405,7 @@ async def get_user(user_id: int) -> None:
   #`paralysis_resistance` int(11) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime.now()))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime.now(), None, None, False))
         return None
         
         
@@ -2047,6 +2047,16 @@ async def add_paralysis_resistance(user_id: int, amount: int) -> None:
 async def remove_paralysis_resistance(user_id: int, amount: int) -> None:
     db = DB()
     await db.execute("UPDATE `users` SET paralysis_resistance = paralysis_resistance - ? WHERE user_id = ?", (amount, user_id))
+
+#set the users locked status to True
+async def lock_user(user_id: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET rob_locked = ? WHERE user_id = ?", (True, user_id))
+
+#set the users locked status to False
+async def unlock_user(user_id: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET rob_locked = ? WHERE user_id = ?", (False, user_id))
     
 #check if an item has a recipe
 async def check_item_recipe(item_id: str) -> bool:
@@ -3643,6 +3653,10 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
                             elif effect_add_or_minus == "-":
                                 await add_frost_resistance(user_id, effect_amount)
 
+                        elif effect == "lock":
+                            await lock_user(user_id)
+
+
                 # if the item_amount is 0, remove the item from the inventory table
                 async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
                     result = await cursor.fetchone()
@@ -4765,6 +4779,8 @@ async def remove_timed_item(user_id: int, item_id: str, effect: str):
         elif effect_add_or_minus == "-":
             await add_dodge_chance(user_id, effect_amount)
     # other effect types...
+    elif effect_name == "lock":
+        await unlock_user(user_id)
 
     # Delete the item
     await db.execute(

@@ -1070,6 +1070,7 @@ class Basic(commands.Cog, name="basic"):
         user_twitch_name = user_profile[15]
         player_title = user_profile[25]
         job_id = user_profile[26]
+        locked = user_profile[33]
         #print all this info
         #get the xp needed for the next level
         xp_needed = await db_manager.xp_needed(user_id)
@@ -1096,7 +1097,10 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name="Health", value=f"{user_health} (Dead)", inline=True)
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
-        embed.add_field(name="Money", value=f"{cash}{user_money}", inline=True)
+        if locked == True:
+            embed.add_field(name="Money", value=f"<:Padlock_Locked:1116772808110911498> {cash}{user_money}", inline=True)
+        else:
+            embed.add_field(name="Money", value=f"<:Padlock_Unlocked:1116772713952981103> {cash}{user_money}", inline=True)
         #get the badges from the database
         badges = await db_manager.get_equipped_badges(user_id)
         #make a feild for the badges and set the title to badges and the value to the badges
@@ -1989,6 +1993,18 @@ class Basic(commands.Cog, name="basic"):
             if isTimed == True:
                 #get the effect 
                 item_effect = await db_manager.get_basic_item_effect(item)
+                item_name = await db_manager.get_basic_item_name(item)
+                #split the item effect by space
+                item_effect = item_effect.split(" ")
+                #get the item effect type
+                item_effect_type = item_effect[0]
+                item_effect_amount = item_effect[2]
+                plus_or_minus = item_effect[1]
+                #get the item effect amount
+                try:
+                    item_effect_time = item_effect[3]
+                except IndexError:
+                    item_effect_time = 0
                 print(item_effect)
                 #add it to the user
                 await db_manager.add_timed_item(user_id, item, item_effect)

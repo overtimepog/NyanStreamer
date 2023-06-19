@@ -176,7 +176,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `job_level` INTEGER,
   `job_xp` INTEGER,
   `hours_worked` INTEGER,
-  `last_worked` DATETIME
+  `last_worked` DATETIME,
+  `last_daily` DATETIME,
+  `last_weekly` DATETIME,
+  `rob_locked` boolean NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS `stats`(
