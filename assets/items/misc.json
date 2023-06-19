@@ -59,7 +59,7 @@
         "item_rarity": "Rare",
         "item_type": "Misc",
         "item_damage": 0,
-        "isUsable": false,
+        "isUsable": true,
         "inShop": true,
         "isEquippable": false,
         "item_description": "When Used prevents people from robbing you for 12 hours.",
