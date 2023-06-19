@@ -71,18 +71,52 @@ class General(commands.Cog, name="general"):
             return
 
         else:
-            # If no command or cog was provided, list all commands grouped by cogs in a single embed
+            # If no command or cog was provided, create a page for each cog
             cogs = self.bot.cogs
-            embed = discord.Embed(title='**All commands**', color=0x9C84EF)
+            cog_embeds = []
 
             for cog_name in cogs:
                 cog = self.bot.get_cog(cog_name)
                 commands = cog.get_commands()
                 if commands:
                     command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'owner'])
-                    embed.add_field(name=f'**{cog.qualified_name}** commands', value=command_list, inline=False)
+                    embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
+                    cog_embeds.append(embed)
 
-            await context.send(embed=embed)
+            class HelpButton(discord.ui.View):
+                def __init__(self, current_page, embeds, **kwargs):
+                    super().__init__(**kwargs)
+                    self.current_page = current_page
+                    self.embeds = embeds
+
+                @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+                async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = 0
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+                async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page > 0:
+                        self.current_page -= 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+                async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page < len(self.embeds) - 1:
+                        self.current_page += 1
+                        await interaction.response.defer()
+                        await interaction.message.edit(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+                async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = len(self.embeds) - 1
+                    await interaction.response.defer()
+                    await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            view = HelpButton(current_page=0, embeds=cog_embeds)
+            await context.send(embed=cog_embeds[0], view=view)
 
     @commands.hybrid_command(
         name="botinfo",

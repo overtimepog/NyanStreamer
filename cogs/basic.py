@@ -1043,12 +1043,15 @@ class Basic(commands.Cog, name="basic"):
         name="profile",
         description="This command will view your profile.",
     )
-    async def profile(self, ctx: Context, user: discord.User):
+    async def profile(self, ctx: Context, user: discord.User = None):
         """
         This command will view your profile.
 
         :param ctx: The context in which the command was called.
         """
+        if user is None:
+            user = ctx.author
+            
         user_id = user.id
         user_profile = await db_manager.profile(user_id)
         if user_profile == None:
@@ -1056,7 +1059,6 @@ class Basic(commands.Cog, name="basic"):
                 await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
             else:
                 await ctx.send(f"{user.name} isnt in the database yet, please tell them to use the `nya start or /start` command to start their adventure!")
-
         #print(user_profile)
         user_id = user_profile[0]
         user_money = user_profile[1]
