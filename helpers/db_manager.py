@@ -306,6 +306,8 @@ async def add_level(user_id: int, amount: int) -> None:
         await db.execute(f"UPDATE `users` SET `player_level` = `player_level` + ? WHERE `user_id` = ?", (amount, user_id))
         #reset the players xp to 0
         await db.execute(f"UPDATE `users` SET `player_xp` = 0 WHERE `user_id` = ?", (user_id,))
+        #give the user a bonus coin
+        await add_item_to_inventory(user_id, "bonus_coin", 1)
     else:
         return None
         
@@ -405,7 +407,7 @@ async def get_user(user_id: int) -> None:
   #`paralysis_resistance` int(11) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime.now(), None, None, False))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime.now(), None, None, False, 0))
         return None
         
         
@@ -1977,6 +1979,24 @@ async def add_dodge_chance(user_id: int, amount: int) -> None:
 async def remove_dodge_chance(user_id: int, amount: int) -> None:
     db = DB()
     await db.execute("UPDATE `users` SET dodge_chance = dodge_chance - ? WHERE user_id = ?", (amount, user_id))
+
+#add percent_bonus
+async def add_percent_bonus(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET percent_bonus = percent_bonus + ? WHERE user_id = ?", (amount, user_id))
+
+#remove percent_bonus
+async def remove_percent_bonus(user_id: int, amount: int) -> None:
+    db = DB()
+    await db.execute("UPDATE `users` SET percent_bonus = percent_bonus - ? WHERE user_id = ?", (amount, user_id))
+
+#get a users percent bonus
+async def get_percent_bonus(user_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT `percent_bonus` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        return data[0]
+    return None
     
 #add crit chance
 async def add_crit_chance(user_id: int, amount: int) -> None:
@@ -3595,6 +3615,12 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
                             elif effect_add_or_minus == "-":
                                 await remove_frost_resistance(user_id, effect_amount)
 
+                        elif effect == "bonus":
+                            if effect_add_or_minus == "+":
+                                await add_percent_bonus(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_percent_bonus(user_id, effect_amount)
+
                     else:   
                         # handle all possible effects
                         if effect == "health":
@@ -4778,6 +4804,13 @@ async def remove_timed_item(user_id: int, item_id: str, effect: str):
             await remove_dodge_chance(user_id, effect_amount)
         elif effect_add_or_minus == "-":
             await add_dodge_chance(user_id, effect_amount)
+
+    elif effect_name == "bonus":
+        if effect_add_or_minus == "+":
+            await remove_percent_bonus(user_id, effect_amount)
+        elif effect_add_or_minus == "-":
+            await add_percent_bonus(user_id, effect_amount)
+
     # other effect types...
     elif effect_name == "lock":
         await unlock_user(user_id)

@@ -1051,7 +1051,7 @@ class Basic(commands.Cog, name="basic"):
         """
         if user is None:
             user = ctx.author
-            
+
         user_id = user.id
         user_profile = await db_manager.profile(user_id)
         if user_profile == None:
@@ -1937,12 +1937,7 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.search.reset_cooldown(ctx)
             return
-        #50 / 50 chance of it being hunt or mine
-        chance = random.randint(1, 2)
-        if chance == 1:
-            await hunt.hunt(ctx)
-        else:
-            await mine.mine(ctx)
+        pass
     
     #ANCHOR use command
     #a cooldown of 2 minutes
