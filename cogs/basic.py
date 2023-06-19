@@ -1937,7 +1937,7 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.search.reset_cooldown(ctx)
             return
-        search.search(ctx)
+        await search.search(ctx)
     
     #ANCHOR use command
     #a cooldown of 2 minutes
