@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `last_worked` DATETIME,
   `last_daily` DATETIME,
   `last_weekly` DATETIME,
-  `rob_locked` boolean NOT NULL,
+  `rob_locked` boolean NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `stats`(
