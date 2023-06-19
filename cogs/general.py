@@ -42,6 +42,7 @@ class General(commands.Cog, name="general"):
     @checks.not_blacklisted()
     async def help(self, context: Context, command_or_cog: str = None) -> None:
         prefix = self.bot.config["prefix"]
+
         if command_or_cog:
             command_or_group = self.bot.get_command(command_or_cog.lower())
             if command_or_group and command_or_group.cog_name != 'owner':
@@ -71,11 +72,15 @@ class General(commands.Cog, name="general"):
             return
 
         else:
-            # If no command or cog was provided, create a page for each cog
+            # If no command or cog was provided, create a page for each cog except the 'owner' cog
             cogs = self.bot.cogs
             cog_embeds = []
 
             for cog_name in cogs:
+                # Skip the 'owner' cog
+                if cog_name.lower() == 'owner':
+                    continue
+
                 cog = self.bot.get_cog(cog_name)
                 commands = cog.get_commands()
                 if commands:
@@ -88,6 +93,8 @@ class General(commands.Cog, name="general"):
                     super().__init__(**kwargs)
                     self.current_page = current_page
                     self.embeds = embeds
+                    for i, embed in enumerate(self.embeds):
+                        embed.set_footer(text=f"Page {i+1}/{len(self.embeds)}")
 
                 @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
                 async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -114,7 +121,6 @@ class General(commands.Cog, name="general"):
                     self.current_page = len(self.embeds) - 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
-
             view = HelpButton(current_page=0, embeds=cog_embeds)
             await context.send(embed=cog_embeds[0], view=view)
 
