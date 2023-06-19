@@ -42,7 +42,6 @@ class General(commands.Cog, name="general"):
     @checks.not_blacklisted()
     async def help(self, context: Context, command_or_cog: str = None) -> None:
         prefix = self.bot.config["prefix"]
-    
         if command_or_cog:
             command_or_group = self.bot.get_command(command_or_cog.lower())
             if command_or_group and command_or_group.cog_name != 'owner':
@@ -56,7 +55,7 @@ class General(commands.Cog, name="general"):
                     embed.add_field(name="Usage", value=f'`{prefix}{command_or_group.name}`', inline=False)
                     await context.send(embed=embed)
                 return
-    
+
             cog = self.bot.get_cog(command_or_cog.title())
             if cog:
                 commands = cog.get_commands()
@@ -67,20 +66,23 @@ class General(commands.Cog, name="general"):
                 else:
                     await context.send(f'The {cog.qualified_name} category has no commands.')
                 return
-    
+
             await context.send(f'No command or category named "{command_or_cog}" was found.')
             return
-    
+
         else:
-            # If no command or cog was provided, list all commands grouped by cogs
+            # If no command or cog was provided, list all commands grouped by cogs in a single embed
             cogs = self.bot.cogs
+            embed = discord.Embed(title='**All commands**', color=0x9C84EF)
+
             for cog_name in cogs:
                 cog = self.bot.get_cog(cog_name)
                 commands = cog.get_commands()
                 if commands:
                     command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'owner'])
-                    embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
-                    await context.send(embed=embed)
+                    embed.add_field(name=f'**{cog.qualified_name}** commands', value=command_list, inline=False)
+
+            await context.send(embed=embed)
 
     @commands.hybrid_command(
         name="botinfo",
