@@ -310,6 +310,8 @@ CREATE TABLE IF NOT EXISTS `pet_attributes` (
   `hunger_percent` decimal(3,2) NOT NULL, -- hunger level of the pet in percentage
   `cleanliness_percent` decimal(3,2) NOT NULL, -- cleanliness level of the pet in percentage
   `happiness_percent` decimal(3,2) NOT NULL, -- happiness level of the pet in percentage
+  `death_time` DATETIME, -- death time of the pet
+  `revival_time` DATETIME, -- revival time of the pet
   PRIMARY KEY (`item_id`, `user_id`),
   FOREIGN KEY (`item_id`, `user_id`) REFERENCES inventory(`item_id`, `user_id`)
 );

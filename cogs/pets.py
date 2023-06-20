@@ -426,6 +426,7 @@ class Pets(commands.Cog, name="pets"):
         self.update_pet_happiness.start()
         self.update_pet_cleanliness.start()
         self.expired_item_check.start()
+        self.check_pet_death.start()
 
     @commands.hybrid_command()
     async def pet(self, ctx: Context):
@@ -571,6 +572,50 @@ class Pets(commands.Cog, name="pets"):
     @update_pet_cleanliness.before_loop
     async def before_update_cleanliness(self):
         await self.bot.wait_until_ready()
+
+    @tasks.loop(minutes=5)  # check every 5 minutes, or adjust the interval as needed
+    async def check_pet_death(self):
+        """Check if any pets should die or can't be revived anymore."""
+        all_pets = await db_manager.get_all_users_pets()
+        for pet in all_pets:
+            pet_attributes = await db_manager.get_pet_attributes(pet[1], pet[0])
+            if pet_attributes[5] == 0 and pet_attributes[6] == 0 and pet_attributes[7] == 0:  # all stats are 0
+                death_time = await db_manager.get_pet_death_time(pet[1], pet[0])
+                if death_time is not None:  # the pet is already dying
+                    death_time = datetime.datetime.fromisoformat(death_time)
+                    if datetime.datetime.utcnow() - death_time > datetime.timedelta(hours=24):  # it has been 24 hours
+                        await db_manager.set_pet_death_time(pet[1], pet[0], datetime.datetime.utcnow().isoformat())
+                        await db_manager.set_pet_revival_time(pet[1], pet[0], (datetime.datetime.utcnow() + datetime.timedelta(hours=48)).isoformat())
+                        # send an embed to the user saying their pet has died and can be revived within the next 48 hours
+                        embed = discord.Embed(
+                            title=f"{pet[2]} has passed away",
+                            description=f"Your pet {pet[2]} has died. You have the next 48 hours to revive them.",
+                            color=0xFF0000  # Red
+                        )
+                        await self.bot.get_user(pet[1]).send(embed=embed)
+                else:  # the pet is not dying yet, start the death timer
+                    await db_manager.set_pet_death_time(pet[1], pet[0], datetime.utcnow().isoformat())
+            else:  # the pet is not dead yet
+                revival_time = await db_manager.get_pet_revival_time(pet[1], pet[0])
+                if revival_time is not None:  # the pet can be revived
+                    revival_time = datetime.datetime.fromisoformat(revival_time)
+                    if datetime.datetime.utcnow() - revival_time > datetime.timedelta(hours=48):  # the revival window has passed
+                        await db_manager.set_pet_revival_time(pet[1], pet[0], None)  # the pet can't be revived anymore
+                        # Remove the pet from the inventory
+                        await db_manager.remove_item_from_inventory(pet[1], pet[0], 1)
+                        print(f'Removed {pet[2]} from {pet[1]}\'s inventory because the revival window was missed.')
+                        # send an embed to the user saying their pet can't be revived anymore
+                        embed = discord.Embed(
+                            title=f"{pet[2]} can't be revived",
+                            description=f"Your pet {pet[2]} can no longer be revived and has been removed from your inventory.",
+                            color=0xFF0000  # Red
+                        )
+                        await self.bot.get_user(pet[1]).send(embed=embed)
+
+    @check_pet_death.before_loop
+    async def before_check_pet_death(self):
+        await self.bot.wait_until_ready()
+    
 
     @tasks.loop(seconds=30.0)
     async def expired_item_check(self):

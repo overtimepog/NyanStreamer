@@ -3318,15 +3318,21 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                                     if pet_exists is not None:
                                         return 0  # User already owns a pet of this type.
                                     
-                                # Define the default values for a new pet.
                                 pet_name = item_name
                                 default_level = 1
                                 default_xp = 0
                                 default_hunger_percent = 100.0
                                 default_cleanliness_percent = 100.0
                                 default_happiness_percent = 100.0
-                                await db.execute("INSERT INTO `pet_attributes` (`item_id`, `user_id`, `pet_name`, `level`, `xp`, `hunger_percent`, `cleanliness_percent`, `happiness_percent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                                (item_id, user_id, pet_name, default_level, default_xp, default_hunger_percent, default_cleanliness_percent, default_happiness_percent))
+                                default_death_time = None
+                                default_revival_time = None
+                                
+                                await db.execute("""
+                                    INSERT INTO `pet_attributes` 
+                                    (`item_id`, `user_id`, `pet_name`, `level`, `xp`, `hunger_percent`, `cleanliness_percent`, `happiness_percent`, `death_time`, `revival_time`) 
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                """,
+                                (item_id, user_id, pet_name, default_level, default_xp, default_hunger_percent, default_cleanliness_percent, default_happiness_percent, default_death_time, default_revival_time))
                                 await db.commit()
                                 
                                 item_effect = await get_basic_item_effect(item_id)
@@ -3714,6 +3720,58 @@ async def get_pet_attributes(user_id: int, item_id: str) -> list:
         async with db.execute("SELECT * FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
             result = await cursor.fetchone()
             return result if result is not None else []
+
+
+async def get_pet_death_time(user_id: int, item_id: str) -> datetime:
+    """
+    This function will get the death time of a pet from the pet_attributes table.
+
+    :param user_id: The ID of the user that the pet should be gotten from.
+    :param item_id: The ID of the pet that should be gotten.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT death_time FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else None
+
+
+async def set_pet_death_time(user_id: int, item_id: str, death_time: datetime):
+    """
+    This function will set the death time of a pet in the pet_attributes table.
+
+    :param user_id: The ID of the user that the pet belongs to.
+    :param item_id: The ID of the pet.
+    :param death_time: The time the pet died.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE pet_attributes SET death_time=? WHERE user_id=? AND item_id=?", (death_time, user_id, item_id))
+        await db.commit()
+
+
+async def get_pet_revival_time(user_id: int, item_id: str) -> datetime:
+    """
+    This function will get the revival time of a pet from the pet_attributes table.
+
+    :param user_id: The ID of the user that the pet should be gotten from.
+    :param item_id: The ID of the pet that should be gotten.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT revival_time FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else None
+
+
+async def set_pet_revival_time(user_id: int, item_id: str, revival_time: datetime):
+    """
+    This function will set the revival time of a pet in the pet_attributes table.
+
+    :param user_id: The ID of the user that the pet belongs to.
+    :param item_id: The ID of the pet.
+    :param revival_time: The time the pet can be revived.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE pet_attributes SET revival_time=? WHERE user_id=? AND item_id=?", (revival_time, user_id, item_id))
+        await db.commit()
         
 #get the name of a pet from the pet_attributes table based on its id
 async def get_pet_name(user_id: int, item_id: str) -> str:

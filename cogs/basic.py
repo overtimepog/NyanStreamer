@@ -833,6 +833,13 @@ class Basic(commands.Cog, name="basic"):
                 if user_money >= total_price:
                     #if the item type is a weapon, check if the user has already has this weapon
                     item_type = await db_manager.get_basic_item_type(item)
+                    if item_type == "Pet":
+                        #check if the the item_id is already in the users inventory
+                        user_inventory = await db_manager.view_inventory(user_id)
+                        for i in user_inventory:
+                            if item in i:
+                                await ctx.send(f"You already have this Pet!")
+                                return
                     if item_type == "Weapon":
                         #check if the user has this weapon
                         user_inventory = await db_manager.view_inventory(user_id)
