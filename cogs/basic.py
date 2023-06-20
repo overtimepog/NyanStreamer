@@ -407,8 +407,8 @@ class Basic(commands.Cog, name="basic"):
         streamer_items = await db_manager.view_user_streamer_made_items(ctx.user.id)
         choices = []
         for item in streamer_items:
-            if argument.lower() in item[1].lower():  # Assuming item[1] is the item's name
-                choices.append(app_commands.Choice(name=item[1], value=item[0]))  # Assuming item[0] is the item's ID
+            if argument.lower() in item[3].lower():  # Assuming item[1] is the item's name
+                choices.append(app_commands.Choice(name=item[3], value=item[2]))  # Assuming item[0] is the item's ID
         return choices[:25]
 
 
