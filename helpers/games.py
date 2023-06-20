@@ -718,6 +718,7 @@ class OrderGameSelect(Select):
 
 async def play_order_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
+    print(game)
     correct_order = json.loads(game[1])  # accessing the second element of tuple
     items = json.loads(game[2])
 
@@ -769,6 +770,7 @@ class MatchingGameSelect(Select):
 
 async def play_matching_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
+    print(game)
     items = json.loads(game[1])  # accessing the second element of tuple
     correct_matches = json.loads(game[2])
 
@@ -871,6 +873,7 @@ class RetypeGameView(View):
 async def play_retype_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
     phrase = game[0]  # accessing the first element of tuple
+    print(game)
 
     resolve_promise = ctx.bot.loop.create_future()
 
@@ -909,6 +912,7 @@ class BackwardsGameView(View):
 async def play_backwards_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
     word = game[0]  # accessing the first element of tuple
+    print(game)
 
     resolve_promise = ctx.bot.loop.create_future()
 
@@ -963,6 +967,7 @@ class HangmanGameView(discord.ui.View):
 
 async def play_hangman_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
+    print(game)
     word = game[1]  # accessing the second element of tuple
 
     view = HangmanGameView(word=word)
