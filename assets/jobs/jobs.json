@@ -297,11 +297,11 @@
                 ],
                 "task": "Unscramble the cooking-related word",
                 "words": [
-                    {"scrambled": "OTAPTO", "solution": "POTATO"},
-                    {"scrambled": "TREUBT", "solution": "BUTTER"},
-                    {"scrambled": "GNISASENO", "solution": "SEASONING"},
-                    {"scrambled": "HCTIKE", "solution": "KITCHEN"},
-                    {"scrambled": "ESCHAE", "solution": "CHEESE"}
+                    {"scrambled": "otapto", "solution": "potato"},
+                    {"scrambled": "treubt", "solution": "butter"},
+                    {"scrambled": "gnisaseno", "solution": "seasoning"},
+                    {"scrambled": "hctike", "solution": "kitchen"},
+                    {"scrambled": "eschea", "solution": "cheese"}
                 ]
             }
         ]
