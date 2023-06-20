@@ -916,12 +916,13 @@ async def play_backwards_game(ctx, game_data, minigameText, callback_processed_f
     return result, message
 
 class HangmanGame:
-    def __init__(self, ctx, word, attempts=7):
+    def __init__(self, ctx, word, sentence, attempts=7):
         self.ctx = ctx
         self.word = word
+        self.sentence = sentence
         self.attempts = attempts
         self.guessed_letters = []
-        self.blanks = ['_' for _ in word]
+        self.blanks = ['_' if letter.isalpha() else letter for letter in word]
 
     async def play(self):
         while self.attempts > 0 and '_' in self.blanks:
@@ -953,7 +954,7 @@ class HangmanGame:
             await self.ctx.send('Game over. You have not guessed the word.')
 
     def get_message(self):
-        return f"Word: {' '.join(self.blanks)}\nAttempts: {self.attempts}"
+        return f"{self.sentence.replace('{word}', ''.join(self.blanks))}\nAttempts left: {self.attempts}"
 
     def check_message(self, message):
         return message.author == self.ctx.author and len(message.content) == 1 and message.content.isalpha()
@@ -962,9 +963,10 @@ class HangmanGame:
 # Somewhere in your command
 async def play_hangman_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
+    sentence = game[1]  # accessing the second element of tuple
     word = game[2]  # accessing the third element of tuple
 
-    hangman = HangmanGame(ctx, word)
+    hangman = HangmanGame(ctx, word, sentence)
     await hangman.play()
 
 #catch the fish minigame
