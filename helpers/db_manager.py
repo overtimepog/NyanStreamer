@@ -1144,10 +1144,10 @@ async def add_jobs_and_minigames():
                     )
 
             elif minigame['type'] == 'Anagram':
-                for anagram in minigame['anagrams']:
+                for anagram in minigame['words']:
                     await db.execute(
                         "INSERT INTO `anagram` (`minigame_id`, `scrambled_word`, `solution`) VALUES (?, ?, ?)",
-                        (minigame_id, anagram['scrambled_word'], anagram['solution'])
+                        (minigame_id, anagram['scrambled'], anagram['solution'])
                     )
 
     print("Processed all jobs and minigames")
