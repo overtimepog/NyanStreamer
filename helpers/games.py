@@ -911,7 +911,7 @@ async def play_backwards_game(ctx, game_data, minigameText, callback_processed_f
 
     view = BackwardsGameView(word=word, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
 
-    sendingMessage = minigameText + "\n" + "Type this word backwards: " + word
+    sendingMessage = minigameText + "\n" + "Type this word backwards: `" + word + "`"
     message = await ctx.send(content=sendingMessage, view=view)
 
     try:
