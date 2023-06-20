@@ -391,6 +391,13 @@ class Jobs(commands.Cog, name="jobs"):
 
             outcome_message, reward_type, reward_value = earned_reward
             base_pay_message = ""
+            bonus = await db_manager.get_percent_bonus(user_id)
+            #the bonus is a % so we need to convert it to a decimal
+            bonus = bonus / 100
+            #add the bonus to the base pay
+            base_pay = base_pay + (base_pay * bonus)
+            #turn the base pay into an int
+            base_pay = int(base_pay)
 
             if reward_type == "money":
                 reward_value = int(reward_value) + base_pay  # Add base pay to the reward
@@ -446,6 +453,12 @@ class Jobs(commands.Cog, name="jobs"):
             fail_message = random.choice(fail_messages)['message']
 
             reduced_base_pay = base_pay - (base_pay * penalty_percentage)
+            #get the users bonus percentage
+            bonus = await db_manager.get_percent_bonus(user_id)
+            #the bonus is a % so we need to convert it to a decimal
+            bonus = bonus / 100
+            #add the bonus to the reduced base pay
+            reduced_base_pay = reduced_base_pay + (reduced_base_pay * bonus)
             #turn the reduced base pay into an int
             reduced_base_pay = int(reduced_base_pay)
             await db_manager.add_money(user_id, reduced_base_pay)  # Give the reduced base pay to the user
