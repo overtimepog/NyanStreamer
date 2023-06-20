@@ -6,8 +6,8 @@ Here are some rules to be followed when making new stuff
 * Armors have subtypes, Helmet, Chestplate, Leggings and Boots that must be present when making a piece of armor
 * Jobs dont need a required item, it can be set to None 
 * Jobs also dont need a required hours, it can be set to 0
-* When Generating Jobs, they must have Mnigames and they must have at least 5 minigames
-* for Retype, Backwards, and Hangman, they must have 10 options
+* When Generating Jobs, they must have Mnigames and they must have at least 8 minigames
+* for Retype, Backwards, Anagram, and Hangman, they must have at least 10 different options
 * when Generating jobs, please give each minigame at least 5 rewards of differing money and xp amounts
 * only one job minigame per job should have a chance for an item reward
 
@@ -374,11 +374,11 @@ this is an example of each minigame in one job
                 ],
                 "task": "Unscramble the cooking-related word",
                 "words": [
-                    {"scrambled": "OTAPTO", "solution": "POTATO"},
-                    {"scrambled": "TREUBT", "solution": "BUTTER"},
-                    {"scrambled": "GNISASENO", "solution": "SEASONING"},
-                    {"scrambled": "HCTIKE", "solution": "KITCHEN"},
-                    {"scrambled": "ESCHAE", "solution": "CHEESE"}
+                    {"scrambled": "otapto", "solution": "potato"},
+                    {"scrambled": "treubt", "solution": "butter"},
+                    {"scrambled": "gnisaseno", "solution": "seasoning"},
+                    {"scrambled": "hctike", "solution": "kitchen"},
+                    {"scrambled": "eschea", "solution": "cheese"}
                 ]
             }
         ]
