@@ -856,7 +856,7 @@ async def play_retype_game(ctx, game_data, minigameText, callback_processed_futu
     game = game_data
     phrase = game[1]  # accessing the first element of tuple
 
-    sendingMessage = minigameText + "\n" + "Retype this phrase: " + phrase
+    sendingMessage = minigameText + "\n" + "Retype this phrase: `" + phrase + "`"
     await ctx.send(content=sendingMessage)
 
     def check(m):
