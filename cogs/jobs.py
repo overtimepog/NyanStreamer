@@ -410,7 +410,7 @@ class Jobs(commands.Cog, name="jobs"):
                 else:  # reward_type == "item"
                     emoji = await db_manager.get_basic_item_emoji(reward_value)
                     name = await db_manager.get_basic_item_name(reward_value)
-                    thing = f"**{emoji} {name} (1)**"
+                    thing = f"**{emoji} {name} x1**"
 
             result_message = outcome_message.format(user=ctx.author.mention, thing=thing) + " " + base_pay_message
 
