@@ -949,7 +949,7 @@ class HangmanGame:
                 await self.ctx.send('Incorrect guess.')
 
             self.guessed_letters.append(letter)
-            
+
             # Update game state
             await self.ctx.send(content=self.get_message())
 
@@ -959,7 +959,7 @@ class HangmanGame:
             await self.ctx.send('Game over. You have not guessed the word.')
 
     def get_message(self):
-        blanks_string = ''.join(self.blanks)
+        blanks_string = ' '.join(self.blanks)
         return f"{self.sentence.replace('{word}', blanks_string)}\nAttempts left: {self.attempts}"
 
     def check_message(self, message):
