@@ -860,10 +860,14 @@ async def play_retype_game(ctx, game_data, minigameText, callback_processed_futu
     await ctx.send(content=sendingMessage)
 
     def check(m):
-        return m.author == ctx.author and m.content == phrase
+        return m.author == ctx.author
+
     try:
         message = await ctx.bot.wait_for('message', timeout=60.0, check=check)
-        result = True
+        if message.content == phrase:
+            result = True
+        else:
+            result = False
     except asyncio.TimeoutError:
         await ctx.reply("Time's up!")
         result = False
