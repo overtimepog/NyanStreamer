@@ -22,10 +22,18 @@ class SearchButton(discord.ui.Button['SearchButton']):
         self.location = location
 
     async def callback(self, interaction: discord.Interaction):
+        # Disable all the buttons once one has been clicked
+        for item in self.view.children:
+            item.disabled = True
+
+        # Update the original message to reflect the disabled buttons
+        await interaction.message.edit(view=self.view)
+
         comment_type = random.choice(["positive_comments", "negative_comments", "death_comments"])
         comment = random.choice(self.location[comment_type])
+        print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
         embed = discord.Embed(title=self.label, description=comment, color=discord.Color.blue())
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.response.send_message(embed=embed)
 
 
 class SearchLocationButton(discord.ui.View):
@@ -36,7 +44,6 @@ class SearchLocationButton(discord.ui.View):
 
 
 async def search(ctx: Context):
-# Path: helpers\search.py
     userGain = 5000
     with open('assets/search.json') as f:
         data = json.load(f)
