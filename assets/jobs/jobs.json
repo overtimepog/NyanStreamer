@@ -40,9 +40,9 @@
         "name": "Chef",
         "description": "Prepare and cook food",
         "job_icon": "<:jobIcon:12345678910>",
-        "required_item": "knife",
-        "required_level": 2,
-        "required_hours": 100,
+        "required_item": "None",
+        "required_level": 0,
+        "required_hours": 0,
         "base_pay": 300,
         "pay_per_level": 20,
         "max_level": 8,
@@ -91,6 +91,40 @@
                 "reward": [
                     {"rewardType": "money", "reward": 40, "chance": 0.3},
                     {"rewardType": "item", "reward": "apron", "chance": 0.2}
+                ]
+            },
+            {
+                "type": "Hangman",
+                "prompt": "**Work for Chef** - Hangman - Complete the sentence by guessing the missing word. You only have 7 attempts. The sentence is related to cooking:",
+                "reward": [
+                    {"rewardType": "money", "reward": 70, "chance": 0.5},
+                    {"rewardType": "item", "reward": "spatula", "chance": 0.3}
+                ],
+                "sentences": [
+                    {
+                        "sentence": "When you cook with {word}, the pan is slippery.",
+                        "answer": "butter"
+                    },
+                    {
+                        "sentence": "{word} is the process of cooking food in hot sand, ashes, etc.",
+                        "answer": "roasting"
+                    },
+                    {
+                        "sentence": "{word} is a cooking technique used in a hot pan with a small amount of fat.",
+                        "answer": "frying"
+                    },
+                    {
+                        "sentence": "{word} is a moist-heat cooking technique that is used for delicate food.",
+                        "answer": "poaching"
+                    },
+                    {
+                        "sentence": "To retain nutrients in vegetables, {word} is a good cooking method.",
+                        "answer": "steaming"
+                    },
+                    {
+                        "sentence": "{word} is a cooking technique that involves the use of liquid and low heat.",
+                        "answer": "braising"
+                    }
                 ]
             }
         ]

@@ -850,4 +850,124 @@ async def play_choice_game(ctx, game_data, minigameText, callback_processed_futu
 
     return result, game_outcomes, message
 
+class RetypeGameView(View):
+    def __init__(self, phrase, resolve_callback, callback_processed_future, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.phrase = phrase
+        self.resolve_callback = resolve_callback
+        self.callback_processed_future = callback_processed_future
+        self.user = user
+
+    async def interaction_check(self, interaction: discord.Interaction):
+        if interaction.user.id == self.user.id:
+            if interaction.data['message']['content'] == self.phrase:
+                self.resolve_callback.set_result(True)
+            else:
+                self.resolve_callback.set_result(False)
+            self.callback_processed_future.set_result(True)
+        return False
+
+
+async def play_retype_game(ctx, game_data, minigameText, callback_processed_future):
+    game = random.choice(game_data)
+    phrase = game[0]  # accessing the first element of tuple
+
+    resolve_promise = ctx.bot.loop.create_future()
+
+    view = RetypeGameView(phrase=phrase, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
+
+    sendingMessage = minigameText + "\n" + "Retype this phrase: " + phrase
+    message = await ctx.send(content=sendingMessage, view=view)
+
+    try:
+        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
+    except asyncio.TimeoutError:
+        await ctx.reply("Time's up!")
+        result = False
+
+    return result, message
+
+
+class BackwardsGameView(View):
+    def __init__(self, word, resolve_callback, callback_processed_future, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.word = word
+        self.resolve_callback = resolve_callback
+        self.callback_processed_future = callback_processed_future
+        self.user = user
+
+    async def interaction_check(self, interaction: discord.Interaction):
+        if interaction.user.id == self.user.id:
+            if interaction.data['message']['content'] == self.word[::-1]:  # Reverse the word for check
+                self.resolve_callback.set_result(True)
+            else:
+                self.resolve_callback.set_result(False)
+            self.callback_processed_future.set_result(True)
+        return False
+
+
+async def play_backwards_game(ctx, game_data, minigameText, callback_processed_future):
+    game = random.choice(game_data)
+    word = game[0]  # accessing the first element of tuple
+
+    resolve_promise = ctx.bot.loop.create_future()
+
+    view = BackwardsGameView(word=word, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
+
+    sendingMessage = minigameText + "\n" + "Type this word backwards: " + word
+    message = await ctx.send(content=sendingMessage, view=view)
+
+    try:
+        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
+    except asyncio.TimeoutError:
+        await ctx.reply("Time's up!")
+        result = False
+
+    return result, message
+
+class HangmanGameButton(discord.ui.Button):
+    def __init__(self, letter, hangman_view, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.letter = letter
+        self.hangman_view = hangman_view
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.letter in self.hangman_view.word:
+            for i, letter in enumerate(self.hangman_view.word):
+                if letter == self.letter:
+                    self.hangman_view.blanks[i] = self.letter
+        else:
+            self.hangman_view.attempts += 1
+
+        self.disabled = True
+        self.style = discord.ButtonStyle.danger if self.hangman_view.attempts > 0 else discord.ButtonStyle.success
+
+        await interaction.response.edit_message(content=self.hangman_view.get_message(), view=self.hangman_view)
+
+        if "_" not in self.hangman_view.blanks:
+            self.hangman_view.stop()
+
+
+class HangmanGameView(discord.ui.View):
+    def __init__(self, word, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.word = word
+        self.blanks = ['_' for _ in word]
+        self.attempts = 0
+
+        for letter in 'abcdefghijklmnopqrstuvwxyz':
+            self.add_item(HangmanGameButton(letter=letter, hangman_view=self, label=letter, style=discord.ButtonStyle.secondary))
+
+    def get_message(self):
+        return f"Word: {' '.join(self.blanks)}\nAttempts: {self.attempts}"
+
+async def play_hangman_game(ctx, game_data, minigameText, callback_processed_future):
+    game = random.choice(game_data)
+    word = game[1]  # accessing the second element of tuple
+
+    view = HangmanGameView(word=word)
+
+    sendingMessage = minigameText + "\n" + "Guess the word!"
+    message = await ctx.send(content=sendingMessage, view=view)
+
 #catch the fish minigame

@@ -34,8 +34,10 @@ class SearchButton(discord.ui.Button['SearchButton']):
         # Update the original message to reflect the disabled buttons
         await interaction.message.edit(view=self.view)
 
-        comment_type = random.choice(["positive_comments", "negative_comments", "death_comments"])
+        comment_types = ["positive_comments", "negative_comments"] * 5 + ["death_comments"]
+        comment_type = random.choice(comment_types)
         comment = random.choice(self.location[comment_type])
+
         print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
         embed = discord.Embed(title=self.label, description=comment)
         embed.set_footer(text=f'Searched by {self.user.display_name}', icon_url=self.user.avatar_url)

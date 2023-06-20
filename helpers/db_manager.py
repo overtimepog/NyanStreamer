@@ -1134,6 +1134,12 @@ async def add_jobs_and_minigames():
                     (minigame_id, minigame['word'])
                 )
 
+            elif minigame['type'] == 'Hangman':
+                await db.execute(
+                    "INSERT INTO `hangman` (`minigame_id`, `word`) VALUES (?, ?)",
+                    (minigame_id, minigame['word'])
+                )
+
     print("Processed all jobs and minigames")
 
 async def add_jobs_to_jobboard():

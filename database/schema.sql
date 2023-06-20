@@ -399,6 +399,12 @@ CREATE TABLE IF NOT EXISTS `backwards` (
     FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `hangman` (
+    `minigame_id` INTEGER,
+    `word` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
+);
+
 CREATE TABLE IF NOT EXISTS `jobboard` (
     `id` TEXT PRIMARY KEY,
     `name` TEXT NOT NULL,

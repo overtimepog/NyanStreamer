@@ -6,6 +6,7 @@ Here are some rules to be followed when making new stuff
 * Armors have subtypes, Helmet, Chestplate, Leggings and Boots that must be present when making a piece of armor
 * Jobs dont need a required item, it can be set to None 
 * Jobs also dont need a required hours, it can be set to 0
+* When Generating Jobs, they must have Mnigames and they must have at least 2 minigames
 
 this is what armor looks like
     {
