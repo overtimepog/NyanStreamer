@@ -900,8 +900,7 @@ async def play_backwards_game(ctx, game_data, minigameText, callback_processed_f
     try:
         game = random.choice(game_data)
         print(game)
-        words = game["words"]
-        word = random.choice(words)
+        word = game[1]  # accessing the second element of tuple
     except IndexError:
         await ctx.reply("There are no words to play this game!")
         return False
