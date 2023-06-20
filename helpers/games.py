@@ -861,13 +861,14 @@ async def play_retype_game(ctx, game_data, minigameText, callback_processed_futu
 
     def check(m):
         return m.author == ctx.author and m.content == phrase
-
     try:
         message = await ctx.bot.wait_for('message', timeout=60.0, check=check)
         result = True
     except asyncio.TimeoutError:
         await ctx.reply("Time's up!")
         result = False
+    finally:
+        callback_processed_future.set_result(result)  # set the future's result to the game result
 
     return result, message
 
