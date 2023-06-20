@@ -924,6 +924,7 @@ class HangmanGame:
         embed = Embed(title="Hangman", color=discord.Color.dark_purple())
         embed.add_field(name="State", value=self.get_message(), inline=False)
         embed.add_field(name="Last Attempt", value="Please guess a letter.", inline=False)
+        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
         message = await self.ctx.send(embed=embed)
         result = False
 
