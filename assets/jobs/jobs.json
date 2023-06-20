@@ -344,7 +344,7 @@
         "minigames": [
             {
                 "type": "Hangman",
-                "prompt": "**Work for Chef** - Hangman - Complete the sentence by guessing the missing word. You only have 7 attempts. The sentence is related to cooking:",
+                "prompt": "**Work for Chef** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to cooking:",
                 "reward": [
                     {"rewardType": "money", "reward": 70, "chance": 0.5},
                     {"rewardType": "item", "reward": "spatula", "chance": 0.3}
