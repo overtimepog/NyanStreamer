@@ -921,14 +921,18 @@ class HangmanGame:
 
     async def play(self):
         # Display initial state
-        message = await self.ctx.send(content=self.get_message() + "\nPlease guess one letter at a time.")
+        embed = Embed(title="Hangman Game", color=discord.Color.dark_purple())
+        embed.add_field(name="State", value=self.get_message(), inline=False)
+        embed.add_field(name="Instructions", value="Please guess one letter at a time.", inline=False)
+        message = await self.ctx.send(embed=embed)
         result = False
 
         while self.attempts > 0 and '_' in self.blanks:
             try:
                 guess = await self.ctx.bot.wait_for('message', check=self.check_message, timeout=60.0)
             except asyncio.TimeoutError:
-                await message.edit(content='Time out! Game over.')
+                embed.set_field_at(0, name="State", value='Time out! Game over.', inline=False)
+                await message.edit(embed=embed)
                 break
 
             letter = guess.content.lower()
@@ -947,13 +951,20 @@ class HangmanGame:
             self.guessed_letters.append(letter)
 
             # Update game state
-            await message.edit(content=self.get_message() + '\n' + update + "\nPlease guess another letter.")
+            embed.set_field_at(0, name="State", value=self.get_message(), inline=False)
+            embed.set_field_at(1, name="Last Attempt", value=f"{update} Please guess another letter.", inline=False)
+            await message.edit(embed=embed)
+
+            # Delete user's guess message
+            await guess.delete()
 
         if '_' not in self.blanks:
-            await message.edit(content='Congratulations! You have guessed the word.')
+            embed.set_field_at(0, name="State", value='Congratulations! You have guessed the word.', inline=False)
+            await message.edit(embed=embed)
             result = True
         else:
-            await message.edit(content='Game over. You have not guessed the word.')
+            embed.set_field_at(0, name="State", value='Game over. You have not guessed the word.', inline=False)
+            await message.edit(embed=embed)
             result = False
 
         # Set callback_processed_future result here
@@ -976,5 +987,3 @@ async def play_hangman_game(ctx, game_data, minigameText, callback_processed_fut
     hangman = HangmanGame(ctx, word, sentence, callback_processed_future)
     await hangman.play()
     return callback_processed_future.result(), ctx.message
-
-#catch the fish minigame
