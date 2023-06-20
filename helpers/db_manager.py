@@ -3087,7 +3087,7 @@ async def create_streamer_item(streamerPrefix: str, channel: str, itemName: str,
     
         
 #remove an item from the streamer_items table using the streamersID from the streamer table and the item name
-async def remove_item(streamerPrefix: str, itemName: str) -> int:
+async def remove_item(item_id: str) -> int:
     """
     This function will remove an item from the streamer_items table.
 
@@ -3095,9 +3095,6 @@ async def remove_item(streamerPrefix: str, itemName: str) -> int:
     :param itemName: The name of the item that should be removed.
     """
     #create an item_id for the item that is being removed by combining the streamerPrefix and the itemName
-    item_id = str(streamerPrefix) + " " + itemName
-    #convert all spaces in the item name to underscores
-    item_id = item_id.replace(" ", "_")
     async with aiosqlite.connect("database/database.db") as db:
         #remove the item from the database
         await db.execute("DELETE FROM streamer_items WHERE item_id = ?", (item_id,))
