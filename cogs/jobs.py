@@ -379,7 +379,7 @@ class Jobs(commands.Cog, name="jobs"):
             outcome_message, reward_type, reward_value = earned_reward
 
             if reward_type == "money":
-                reward_value += base_pay  # Add base pay to the reward
+                reward_value = int(reward_value) + base_pay  # Add base pay to the reward
                 thing = f"⚙{reward_value}"
             elif reward_type == "experience" or reward_type == "item":
                 await db_manager.add_money(user_id, base_pay)  # Add the base pay separately
