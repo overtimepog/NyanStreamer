@@ -406,6 +406,13 @@ CREATE TABLE IF NOT EXISTS `hangman` (
     FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `anagram` (
+    `minigame_id` INTEGER,
+    `scrambled_word` TEXT,
+    `solution` TEXT,
+    FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
+);
+
 CREATE TABLE IF NOT EXISTS `jobboard` (
     `id` TEXT PRIMARY KEY,
     `name` TEXT NOT NULL,

@@ -989,3 +989,29 @@ async def play_hangman_game(ctx, game_data, minigameText, callback_processed_fut
     hangman = HangmanGame(ctx, word, sentence, minigameText, callback_processed_future)
     await hangman.play()
     return callback_processed_future.result(), ctx.message
+
+
+async def play_anagram_game(ctx, game_data, minigameText, callback_processed_future):
+    game = random.choice(game_data)
+    scrambled_word = game[1]  # accessing the second element of tuple
+    solution = game[2]  # accessing the third element of tuple
+
+    sendingMessage = minigameText + "\n" + "Unscramble this word: `" + scrambled_word + "`"
+    await ctx.send(content=sendingMessage)
+
+    def check(m):
+        return m.author == ctx.author
+
+    try:
+        message = await ctx.bot.wait_for('message', timeout=60.0, check=check)
+        if message.content.lower() == solution.lower():  # Comparing ignoring case
+            result = True
+        else:
+            result = False
+    except asyncio.TimeoutError:
+        await ctx.reply("Time's up!")
+        result = False
+    finally:
+        callback_processed_future.set_result(result)  # set the future's result to the game result
+
+    return result, message

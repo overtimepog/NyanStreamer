@@ -190,7 +190,7 @@
             {
                 "type": "Retype",
                 "prompt": "**Work for Chef** - Retype - Please retype the following phrase:",
-                "phrases": ["cooking is love made visible.", "The secret ingredient is always love.", "good food is good mood.", "life is short, lick the bowl."],
+                "phrases": ["cooking is love made visible", "the secret ingredient is always love", "good food is good mood", "life is short, lick the bowl"],
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 60, "chance": 0.3}
@@ -272,5 +272,39 @@
                 ]
             }
         ]
+    },
+    {
+        "id": "chef_anagram_minigames",
+        "name": "Anagram Chef",
+        "description": "A Chef job that includes the anagram challenge",
+        "job_icon": "<:jobIcon:12345678910>",
+        "required_item": "None",
+        "required_level": 0,
+        "required_hours": 0,
+        "base_pay": 300,
+        "pay_per_level": 20,
+        "max_level": 8,
+        "cooldown": 1200,
+        "cooldown_reduction_per_level": 15,
+        "minigames": [
+            {
+                "type": "Anagram",
+                "prompt": "**Work as Anagram Chef** - Please unscramble the following ingredient or cooking-related word:",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
+                    {"rewardType": "item", "reward": "chef_hat", "chance": 0.1}
+                ],
+                "task": "Unscramble the cooking-related word",
+                "words": [
+                    {"scrambled": "OTAPTO", "solution": "POTATO"},
+                    {"scrambled": "TREUBT", "solution": "BUTTER"},
+                    {"scrambled": "GNISASENO", "solution": "SEASONING"},
+                    {"scrambled": "HCTIKE", "solution": "KITCHEN"},
+                    {"scrambled": "ESCHAE", "solution": "CHEESE"}
+                ]
+            }
+        ]
     }
+    
 ]

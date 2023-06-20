@@ -6,7 +6,10 @@ Here are some rules to be followed when making new stuff
 * Armors have subtypes, Helmet, Chestplate, Leggings and Boots that must be present when making a piece of armor
 * Jobs dont need a required item, it can be set to None 
 * Jobs also dont need a required hours, it can be set to 0
-* When Generating Jobs, they must have Mnigames and they must have at least 2 minigames
+* When Generating Jobs, they must have Mnigames and they must have at least 5 minigames
+* for Retype, Backwards, and Hangman, they must have 10 options
+* when Generating jobs, please give each minigame at least 5 rewards of differing money and xp amounts
+* only one job minigame per job should have a chance for an item reward
 
 this is what armor looks like
     {
@@ -222,15 +225,42 @@ this is what a pet looks like
         "item_sub_type": "None"
     }
 
-this is what a job looks like
+this is an example of a search location
     {
-        "id": "chef",
-        "name": "Chef",
-        "description": "Prepare and cook food",
+        "location": "McDonalds",
+        "positive_comments": [
+            "You found a limited edition toy in a Happy Meal. After selling it, you got {thing}.",
+            "You helped a customer with their large order and they tipped you. You got {thing}.",
+            "You found a vintage 'McDonald's Land' poster. A collector bought it from you and you got {thing}.",
+            "A forgotten bag full of burgers was left on a table. You sold the burgers and got {thing}.",
+            "You won the Monopoly game grand prize! You got {thing}."
+        ],
+        "negative_comments": [
+            "You slipped on a spilled McFlurry. That's going to leave a mark.",
+            "You tried to make your own Big Mac but ended up with a Little Mac.",
+            "The self-service machine crashed while you were ordering. Now you're both 'Out of Order'.",
+            "You tried to negotiate the price of a McChicken. It didn't work.",
+            "You got lost in the PlayPlace. Yes, it's possible."
+        ],
+        "death_comments": [
+            "You tried to sneak into the kitchen and slipped on a greasy floor. Oops.",
+            "You challenged Ronald McDonald to a food fight. The clown was not amused. Yikes.",
+            "You thought the deep fryer was a hot tub. It was not. Oops.",
+            "You tried to eat every item on the menu in one sitting. The McStomachache was fatal. Oops.",
+            "You attempted to steal the secret recipe. The Hamburglar took his job very seriously. Yikes."
+        ]
+    },
+
+this is an example of each minigame in one job
+[
+    {
+        "id": "chef_multi_minigames",
+        "name": "Chef with Multiple Minigames",
+        "description": "A Chef job that includes multiple minigames",
         "job_icon": "<:jobIcon:12345678910>",
-        "required_item": "knife",
-        "required_level": 2,
-        "required_hours": 100,
+        "required_item": "None",
+        "required_level": 0,
+        "required_hours": 0,
         "base_pay": 300,
         "pay_per_level": 20,
         "max_level": 8,
@@ -266,7 +296,7 @@ this is what a job looks like
             {
                 "type": "Retype",
                 "prompt": "**Work for Chef** - Retype - Please retype the following phrase:",
-                "phrase": "Cooking is love made visible.",
+                "phrases": ["cooking is love made visible", "The secret ingredient is always love", "good food is good mood", "life is short, lick the bowl"],
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 60, "chance": 0.3}
@@ -275,11 +305,83 @@ this is what a job looks like
             {
                 "type": "Backwards",
                 "prompt": "**Work for Chef** - Backwards - Please type the following word in reverse order:",
-                "word": "Ingredients",
+                "words": ["ingredients", "potato", "carrot", "beef"],
                 "reward": [
                     {"rewardType": "money", "reward": 40, "chance": 0.3},
                     {"rewardType": "item", "reward": "apron", "chance": 0.2}
                 ]
+            },
+            {
+                "type": "Hangman",
+                "prompt": "**Work for Chef** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to cooking:",
+                "reward": [
+                    {"rewardType": "money", "reward": 70, "chance": 0.5},
+                    {"rewardType": "item", "reward": "spatula", "chance": 0.3}
+                ],
+                "sentences": [
+                    {
+                        "sentence": "When you cook with {word}, the pan is slippery.",
+                        "answer": "butter"
+                    },
+                    {
+                        "sentence": "{word} is the process of cooking food in hot sand, ashes, etc.",
+                        "answer": "roasting"
+                    },
+                    {
+                        "sentence": "{word} is a cooking technique used in a hot pan with a small amount of fat.",
+                        "answer": "frying"
+                    },
+                    {
+                        "sentence": "{word} is a moist-heat cooking technique that is used for delicate food.",
+                        "answer": "poaching"
+                    },
+                    {
+                        "sentence": "To retain nutrients in vegetables, {word} is a good cooking method.",
+                        "answer": "steaming"
+                    },
+                    {
+                        "sentence": "{word} is a cooking technique that involves the use of liquid and low heat.",
+                        "answer": "braising"
+                    }
+                ]
+            },
+            {
+                "type": "Matching",
+                "prompt": "**Work for Chef** - Matching - Please match the following plants with their benefits:",
+                "reward": [
+                    {"rewardType": "money", "reward": 80, "chance": 0.6},
+                    {"rewardType": "experience", "reward": 50, "chance": 0.4},
+                    {"rewardType": "item", "reward": "herb_bundle", "chance": 0.1}
+                ],
+                "items": [
+                    {"name": "Aloe Vera", "description": "Helps in skin healing"},
+                    {"name": "Mint", "description": "Aids digestion"},
+                    {"name": "Lavender", "description": "Relieves stress"}
+                ],
+                "correctMatches": [
+                    {"name": "Aloe Vera", "description": "Helps in skin healing"},
+                    {"name": "Mint", "description": "Aids digestion"},
+                    {"name": "Lavender", "description": "Relieves stress"}
+                ]
+            },
+            {
+                "type": "Anagram",
+                "prompt": "**Work as Anagram Chef** - Please unscramble the following ingredient or cooking-related word:",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
+                    {"rewardType": "item", "reward": "chef_hat", "chance": 0.1}
+                ],
+                "task": "Unscramble the cooking-related word",
+                "words": [
+                    {"scrambled": "OTAPTO", "solution": "POTATO"},
+                    {"scrambled": "TREUBT", "solution": "BUTTER"},
+                    {"scrambled": "GNISASENO", "solution": "SEASONING"},
+                    {"scrambled": "HCTIKE", "solution": "KITCHEN"},
+                    {"scrambled": "ESCHAE", "solution": "CHEESE"}
+                ]
             }
         ]
     }
+]
+

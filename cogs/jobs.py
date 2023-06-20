@@ -255,7 +255,8 @@ class Jobs(commands.Cog, name="jobs"):
                     return
             await db_manager.add_user_job(ctx.author.id, job)
             job_icon = await db_manager.get_job_icon_from_id(job)
-            await ctx.send(f"You have accepted the job {job_icon}{job.title()}!")
+            jobName = await db_manager.get_job_name_from_id(job)
+            await ctx.send(f"You have accepted the job {job_icon}{jobName}!")
         else:
             await ctx.send("You already have a job!, please use `nya job quit or /job quit` command to quit your current job.")
 
@@ -350,6 +351,8 @@ class Jobs(commands.Cog, name="jobs"):
             result, message = await games.play_backwards_game(ctx, game_data, minigameText, callback_processed_future)
         elif minigame[2] == 'Hangman':
             result, message = await games.play_hangman_game(ctx, game_data, minigameText, callback_processed_future)
+        elif minigame[2] == 'Anagram':
+            result, message = await games.play_anagram_game(ctx, game_data, minigameText, callback_processed_future)
         else:
             print("Unknown game type")
             return

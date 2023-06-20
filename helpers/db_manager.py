@@ -1143,6 +1143,13 @@ async def add_jobs_and_minigames():
                         (minigame_id, hangman['sentence'], hangman['answer'])
                     )
 
+            elif minigame['type'] == 'Anagram':
+                for anagram in minigame['anagrams']:
+                    await db.execute(
+                        "INSERT INTO `anagram` (`minigame_id`, `scrambled_word`, `solution`) VALUES (?, ?, ?)",
+                        (minigame_id, anagram['scrambled_word'], anagram['solution'])
+                    )
+
     print("Processed all jobs and minigames")
 
 async def add_jobs_to_jobboard():
@@ -1315,6 +1322,8 @@ async def get_data_for_minigame(minigame):
         game_data = await db.execute("SELECT * FROM `backwards` WHERE minigame_id = ?", (minigame[0],), fetch="all")
     elif game_type == 'Hangman':
         game_data = await db.execute("SELECT * FROM `hangman` WHERE minigame_id = ?", (minigame[0],), fetch="all")
+    elif game_type == 'Anagram':
+        game_data = await db.execute("SELECT * FROM `anagram` WHERE minigame_id = ?", (minigame[0],), fetch="all")
     return game_data
     
 #get job description from job ID
