@@ -407,7 +407,7 @@ async def get_user(user_id: int) -> None:
   #`paralysis_resistance` int(11) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime.now(), None, None, False, 0))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, None, None, None, False, 0))
         return None
         
         
@@ -1157,6 +1157,8 @@ async def add_jobs_to_jobboard():
 async def add_user_job(user_id: int, job_id: str) -> None:
     db = DB()
     await db.execute("UPDATE `users` SET `job_id` = ? WHERE `user_id` = ?", (job_id, user_id))
+    #reset the last worked time
+
 
 async def remove_user_job(user_id: int) -> None:
     db = DB()
