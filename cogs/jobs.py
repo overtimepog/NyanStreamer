@@ -301,7 +301,7 @@ class Jobs(commands.Cog, name="jobs"):
         if job_id is None or job_id == 0 or job_id == "None":
             await ctx.send("You don't have a job!")
             return
-        
+                
         cooldown = await db_manager.get_cooldown_from_id(job_id)
         cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
         remaining_cooldown = await db_manager.get_cooldown_status(user_id, cooldown, cooldown_reduction_per_level)
@@ -316,6 +316,8 @@ class Jobs(commands.Cog, name="jobs"):
         if remaining_cooldown.total_seconds() > 0:
             await ctx.send(f"You're still on cooldown! Wait for `{formatted_cooldown}`")
             return
+        
+        await db_manager.set_last_worked(user_id)
         
         base_pay_stuff = await db_manager.get_base_pay_from_id(job_id)
         level_up_pay = await db_manager.get_pay_per_level_from_id(job_id)
@@ -444,6 +446,8 @@ class Jobs(commands.Cog, name="jobs"):
             fail_message = random.choice(fail_messages)['message']
 
             reduced_base_pay = base_pay - (base_pay * penalty_percentage)
+            #turn the reduced base pay into an int
+            reduced_base_pay = int(reduced_base_pay)
             await db_manager.add_money(user_id, reduced_base_pay)  # Give the reduced base pay to the user
             base_pay_message = f"But don't worry, you still get your base pay of ⚙{reduced_base_pay} after a 20% penalty."
             fail_message = fail_message.format(user=ctx.author.mention, thing="Nothing lol")
@@ -452,7 +456,6 @@ class Jobs(commands.Cog, name="jobs"):
             await ctx.send(content=fail_message + " " + base_pay_message, view=None)
             #add the cooldown
 
-        await db_manager.set_last_worked(user_id)
         await db_manager.add_hours_worked(user_id, 1)
 
 
