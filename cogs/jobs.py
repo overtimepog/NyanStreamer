@@ -240,7 +240,7 @@ class Jobs(commands.Cog, name="jobs"):
                     return
             #check the item 
             item_required = await db_manager.get_required_item_from_id(job)
-            if item_required is not None:
+            if item_required is not None and item_required != "None":
                 if await db_manager.check_user_has_item(ctx.author.id, item_required) == 0:
                     icon = await db_manager.get_basic_item_emoji(item_required)
                     await ctx.send(f"You need to have a {icon}`{item_required}` to accept this job!")
