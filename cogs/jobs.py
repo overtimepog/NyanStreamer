@@ -394,16 +394,16 @@ class Jobs(commands.Cog, name="jobs"):
 
             if reward_type == "money":
                 reward_value = int(reward_value) + base_pay  # Add base pay to the reward
-                thing = f"⚙{reward_value}"
+                thing = f"**⚙{reward_value}**"
             elif reward_type == "experience" or reward_type == "item":
                 await db_manager.add_money(user_id, base_pay)  # Add the base pay separately
-                base_pay_message = f"You also earned your base pay of ⚙{base_pay}."
+                base_pay_message = f"You also earned your base pay of **⚙{base_pay}**."
                 if reward_type == "experience":
                     thing = f"⭐{reward_value} XP"
                 else:  # reward_type == "item"
                     emoji = await db_manager.get_basic_item_emoji(reward_value)
                     name = await db_manager.get_basic_item_name(reward_value)
-                    thing = f"{emoji} {name} (1)"
+                    thing = f"**{emoji} {name} (1)**"
 
             result_message = outcome_message.format(user=ctx.author.mention, thing=thing) + " " + base_pay_message
 
@@ -449,11 +449,10 @@ class Jobs(commands.Cog, name="jobs"):
             #turn the reduced base pay into an int
             reduced_base_pay = int(reduced_base_pay)
             await db_manager.add_money(user_id, reduced_base_pay)  # Give the reduced base pay to the user
-            base_pay_message = f"But don't worry, you still get your base pay of ⚙{reduced_base_pay} after a 20% penalty."
-            fail_message = fail_message.format(user=ctx.author.mention, thing="Nothing lol")
+            fail_message = fail_message.format(user=ctx.author.mention, thing=f"your base pay of **⚙{reduced_base_pay}** after a 20% penalty.")
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)
-            await ctx.send(content=fail_message + " " + base_pay_message, view=None)
+            await ctx.send(content=fail_message)
             #add the cooldown
 
         await db_manager.add_hours_worked(user_id, 1)

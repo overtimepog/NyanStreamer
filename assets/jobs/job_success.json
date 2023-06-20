@@ -1,17 +1,17 @@
 [
     {
-        "message": "**BOSS** Excellent work {user}! You've handled the task expertly. You earned {thing} for your work."
+        "message": "**BOSS** Excellent work {user}! You've handled the task expertly. You earned **{thing}** for your work."
     },
     {
-        "message": "**BOSS** Great job {user}! Your skills were clearly shown in this task. You earned {thing} for your work."
+        "message": "**BOSS** Great job {user}! Your skills were clearly shown in this task. You earned **{thing}** for your work."
     },
     {
-        "message": "**BOSS** Outstanding {user}! Your efforts have led to impressive results. You earned {thing} for your work."
+        "message": "**BOSS** Outstanding {user}! Your efforts have led to impressive results. You earned **{thing}** for your work."
     },
     {
-        "message": "**BOSS** Good job {user}! Your proficiency is commendable. You earned {thing} for your work."
+        "message": "**BOSS** Good job {user}! Your proficiency is commendable. You earned **{thing}** for your work."
     },
     {
-        "message": "**BOSS** Well done {user}! Your hard work has paid off. You earned {thing} for your work."
+        "message": "**BOSS** Well done {user}! Your hard work has paid off. You earned **{thing}** for your work."
     }
 ]
