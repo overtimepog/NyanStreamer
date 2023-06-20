@@ -401,7 +401,8 @@ CREATE TABLE IF NOT EXISTS `backwards` (
 
 CREATE TABLE IF NOT EXISTS `hangman` (
     `minigame_id` INTEGER,
-    `word` TEXT,
+    `sentence` TEXT,
+    `answer` TEXT,
     FOREIGN KEY (`minigame_id`) REFERENCES `minigames`(`id`)
 );
 
