@@ -921,9 +921,8 @@ class HangmanGame:
 
     async def play(self):
         # Display initial state
-        embed = Embed(title="Hangman Game", color=discord.Color.dark_purple())
+        embed = Embed(title="Hangman (Please guess one letter at a time)", color=discord.Color.dark_purple())
         embed.add_field(name="State", value=self.get_message(), inline=False)
-        embed.add_field(name="Instructions", value="Please guess one letter at a time.", inline=False)
         message = await self.ctx.send(embed=embed)
         result = False
 
