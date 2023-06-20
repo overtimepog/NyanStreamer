@@ -334,6 +334,8 @@ class Jobs(commands.Cog, name="jobs"):
 
         callback_processed_future = ctx.bot.loop.create_future()
 
+        print(f"Playing {minigame[2]} game")
+        print(f"Game data: {game_data}")
         if minigame[2] == 'Trivia':
             result, message = await games.play_trivia(ctx, game_data, minigameText, callback_processed_future)
         elif minigame[2] == 'Order':
