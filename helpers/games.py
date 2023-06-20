@@ -959,7 +959,9 @@ class HangmanGame:
             await self.ctx.send('Game over. You have not guessed the word.')
 
     def get_message(self):
-        return f"{self.sentence.replace('{word}', ''.join(self.blanks))}\nAttempts left: {self.attempts}"
+        blanks_string = ' '.join(self.blanks)
+        return f"{self.sentence.replace('{word}', self.word)}\nGuess: {blanks_string}\nAttempts left: {self.attempts}"
+
 
     def check_message(self, message):
         return message.author == self.ctx.author and len(message.content) == 1 and message.content.isalpha()
