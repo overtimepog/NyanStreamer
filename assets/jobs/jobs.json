@@ -61,6 +61,17 @@
                 "correctOrder": ["Flour", "Butter", "Eggs", "Milk"]
             },
             {
+                "type": "Order",
+                "prompt": "**Work for Chef** - Order - Please arrange the following ingredients in the correct order: (Hint: Start with the bottom bun and build upwards. Consider the traditional layering of ingredients in a burger..)",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5}
+                ],
+                "task": "Sort the ingredients according to the burger build order",
+                "items": ["Bottom Bun", "Lettuce", "Beef Patty", "Tomato", "Cheese", "Onion", "Pickles", "Ketchup", "Mustard", "Top Bun"],
+                "correctOrder": ["Bottom Bun", "Lettuce", "Beef Patty", "Tomato", "Cheese", "Onion", "Pickles", "Ketchup", "Mustard", "Top Bun"]
+            },
+            {
                 "type": "Trivia",
                 "prompt": "**Work for Chef** - Trivia - Please answer the following question:",
                 "reward": [

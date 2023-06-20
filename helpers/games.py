@@ -717,9 +717,9 @@ class OrderGameSelect(Select):
             pass
 
 async def play_order_game(ctx, game_data, minigameText, callback_processed_future):
-    game = random.choice(game_data)
+    game = game_data
     print(game)
-    correct_order = json.loads(game[1])  # accessing the second element of tuple
+    correct_order = json.loads(game[3])  # accessing the second element of tuple
     items = json.loads(game[2])
 
     resolve_promise = ctx.bot.loop.create_future()
