@@ -728,7 +728,7 @@ async def play_order_game(ctx, game_data, minigameText, callback_processed_futur
     view = View()
     view.add_item(select_menu)
 
-    sendingMessage = minigameText + "\n" + game["task"]
+    sendingMessage = minigameText + "\n" + game[1]
     message = await ctx.reply(content=sendingMessage, view=view)
 
     try:
