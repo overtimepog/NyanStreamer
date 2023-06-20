@@ -925,8 +925,10 @@ class HangmanGame:
         self.blanks = ['_' if letter.isalpha() else letter for letter in word]
 
     async def play(self):
+        # Display initial state
+        await self.ctx.send(content=self.get_message())
+
         while self.attempts > 0 and '_' in self.blanks:
-            await self.ctx.send(content=self.get_message())
 
             try:
                 message = await self.ctx.bot.wait_for('message', check=self.check_message, timeout=60.0)
@@ -947,6 +949,9 @@ class HangmanGame:
                 await self.ctx.send('Incorrect guess.')
 
             self.guessed_letters.append(letter)
+            
+            # Update game state
+            await self.ctx.send(content=self.get_message())
 
         if '_' not in self.blanks:
             await self.ctx.send('Congratulations! You have guessed the word.')
