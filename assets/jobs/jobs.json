@@ -295,14 +295,14 @@
             {
                 "type": "Retype",
                 "prompt": "**Work for Chef** - Retype - Please retype the following phrase:",
-                "phrase": "Cooking is love made visible.",
+                "phrases": ["Cooking is love made visible.", "The secret ingredient is always love.", "Good food is good mood.", "Life is short, lick the bowl."],
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 60, "chance": 0.3}
                 ]
             }
         ]
-    },
+    },    
     {
         "id": "backwards_chef",
         "name": "Backwards Chef",
@@ -320,7 +320,7 @@
             {
                 "type": "Backwards",
                 "prompt": "**Work for Chef** - Backwards - Please type the following word in reverse order:",
-                "word": "Ingredients",
+                "words": ["Ingredients", "Potato", "Carrot", "Beef"],
                 "reward": [
                     {"rewardType": "money", "reward": 40, "chance": 0.3},
                     {"rewardType": "item", "reward": "apron", "chance": 0.2}

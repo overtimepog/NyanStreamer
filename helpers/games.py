@@ -854,7 +854,8 @@ async def play_choice_game(ctx, game_data, minigameText, callback_processed_futu
 
 async def play_retype_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
-    phrase = game[1]  # accessing the first element of tuple
+    phrases = game["phrases"]
+    phrase = random.choice(phrases)
 
     sendingMessage = minigameText + "\n" + "Retype this phrase: `" + phrase + "`"
     await ctx.send(content=sendingMessage)
@@ -896,9 +897,15 @@ class BackwardsGameView(View):
 
 
 async def play_backwards_game(ctx, game_data, minigameText, callback_processed_future):
-    game = random.choice(game_data)
-    word = game[1]  # accessing the first element of tuple
-    print(game)
+    try:
+        game = random.choice(game_data)
+        words = game["words"]
+        word = random.choice(words)
+    except IndexError:
+        await ctx.reply("There are no words to play this game!")
+        return False
+    
+    print(word)
 
     resolve_promise = ctx.bot.loop.create_future()
 
