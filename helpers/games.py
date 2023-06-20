@@ -932,8 +932,7 @@ class HangmanGame:
         embed.add_field(name="State", value=self.get_message(), inline=False)
         embed.add_field(name="Info", value="Please guess a letter.", inline=False)
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
-        await self.ctx.send(self.minigameText)
-        message = await self.ctx.send(embed=embed)
+        message = await self.ctx.send(content=self.minigameText, embed=embed)
         result = False
 
         while self.attempts > 0 and '_' in self.blanks:
