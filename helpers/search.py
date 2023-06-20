@@ -32,7 +32,7 @@ class SearchButton(discord.ui.Button['SearchButton']):
         comment_type = random.choice(["positive_comments", "negative_comments", "death_comments"])
         comment = random.choice(self.location[comment_type])
         print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
-        embed = discord.Embed(title=self.label, description=comment, color=discord.Color.blue())
+        embed = discord.Embed(title=self.label, description=comment)
         await interaction.response.send_message(embed=embed)
 
 

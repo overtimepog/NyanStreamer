@@ -381,7 +381,8 @@ async def create_pet_embed(pet, user):
     )
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
     embed.add_field(name="Level", value=pet[3], inline=True)
-    embed.add_field(name="XP", value=pet[4], inline=True)
+    xp_needed = await db_manager.pet_xp_needed(pet[0], pet[1])
+    embed.add_field(name="XP", value=f"{pet[4]} / {xp_needed}", inline=True)
     effect = await db_manager.get_basic_item_effect(pet[0])
     if effect == "None":
         pass
