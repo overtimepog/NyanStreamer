@@ -359,6 +359,9 @@ class Owner(commands.Cog, name="owner"):
         :param user: The user you want to give an item to.
         :param item: The item you want to give to the user.
         """
+        check_user = await db_manager.check_user(user.id)
+        if check_user is None:
+            await db_manager.get_user(user.id)
         await db_manager.add_item_to_inventory(user.id, item, 1)
         item_name = await db_manager.get_basic_item_name(item)
         embed = discord.Embed(
