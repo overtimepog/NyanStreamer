@@ -854,8 +854,7 @@ async def play_choice_game(ctx, game_data, minigameText, callback_processed_futu
 
 async def play_retype_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
-    phrases = game["phrases"]
-    phrase = random.choice(phrases)
+    phrase = game[1]  # accessing the second element of tuple
 
     sendingMessage = minigameText + "\n" + "Retype this phrase: `" + phrase + "`"
     await ctx.send(content=sendingMessage)
