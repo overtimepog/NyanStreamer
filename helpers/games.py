@@ -852,38 +852,19 @@ async def play_choice_game(ctx, game_data, minigameText, callback_processed_futu
 
     return result, game_outcomes, message
 
-class RetypeGameView(View):
-    def __init__(self, phrase, resolve_callback, callback_processed_future, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.phrase = phrase
-        self.resolve_callback = resolve_callback
-        self.callback_processed_future = callback_processed_future
-        self.user = user
-
-    async def interaction_check(self, interaction: discord.Interaction):
-        if interaction.user.id == self.user.id:
-            if interaction.data['message']['content'] == self.phrase:
-                self.resolve_callback.set_result(True)
-            else:
-                self.resolve_callback.set_result(False)
-            self.callback_processed_future.set_result(True)
-        return False
-
-
 async def play_retype_game(ctx, game_data, minigameText, callback_processed_future):
-    game = random.choice(game_data)
-    phrase = game[0]  # accessing the first element of tuple
-    print(game)
-
-    resolve_promise = ctx.bot.loop.create_future()
-
-    view = RetypeGameView(phrase=phrase, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
+    game = game_data
+    phrase = game[1]  # accessing the first element of tuple
 
     sendingMessage = minigameText + "\n" + "Retype this phrase: " + phrase
-    message = await ctx.send(content=sendingMessage, view=view)
+    await ctx.send(content=sendingMessage)
+
+    def check(m):
+        return m.author == ctx.author and m.content == phrase
 
     try:
-        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
+        message = await ctx.bot.wait_for('message', timeout=60.0, check=check)
+        result = True
     except asyncio.TimeoutError:
         await ctx.reply("Time's up!")
         result = False
