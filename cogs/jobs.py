@@ -305,9 +305,16 @@ class Jobs(commands.Cog, name="jobs"):
         cooldown = await db_manager.get_cooldown_from_id(job_id)
         cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
         remaining_cooldown = await db_manager.get_cooldown_status(user_id, cooldown, cooldown_reduction_per_level)
+        #format the cooldown
+        total_seconds = remaining_cooldown.total_seconds()
+        hours, remainder = divmod(total_seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
+        formatted_cooldown = "{:02d}:{:02d}:{:02d}".format(int(hours), int(minutes), int(seconds))
+
 
         if remaining_cooldown.total_seconds() > 0:
-            await ctx.send(f"You're still on cooldown! Wait for {remaining_cooldown}.")
+            await ctx.send(f"You're still on cooldown! Wait for {formatted_cooldown}.")
             return
         
         base_pay_stuff = await db_manager.get_base_pay_from_id(job_id)
