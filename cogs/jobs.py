@@ -314,7 +314,7 @@ class Jobs(commands.Cog, name="jobs"):
 
 
         if remaining_cooldown.total_seconds() > 0:
-            await ctx.send(f"You're still on cooldown! Wait for {formatted_cooldown}.")
+            await ctx.send(f"You're still on cooldown! Wait for `{formatted_cooldown}`")
             return
         
         base_pay_stuff = await db_manager.get_base_pay_from_id(job_id)
