@@ -397,14 +397,14 @@ class Basic(commands.Cog, name="basic"):
 
     #autocommplete for the removeitem command
     @removeitem.autocomplete("item")
-    async def remove_item_autocomplete(self, ctx: Context, argument):
+    async def remove_item_autocomplete(self, ctx: discord.Interaction, argument):
         """
         This function provides autocomplete choices for the remove_item command.
 
         :param ctx: The context in which the command was called.
         :param argument: The user's current input for the item name.
         """
-        streamer_items = await db_manager.view_user_streamer_made_items(ctx.author.id)
+        streamer_items = await db_manager.view_user_streamer_made_items(ctx.user.id)
         choices = []
         for item in streamer_items:
             if argument.lower() in item[1].lower():  # Assuming item[1] is the item's name
