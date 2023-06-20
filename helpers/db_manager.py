@@ -3106,6 +3106,30 @@ async def remove_item(streamerPrefix: str, itemName: str) -> int:
         async with rows as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
+
+#get streamer from user_id
+
+async def view_user_streamer_made_items(user_id: int) -> list:
+    """
+    This function will view all streamer items in the database based on user_id.
+
+    :param user_id: The ID of the user that the streamer items should be gotten from.
+    :return: A list of all streamer items in the database for the specified user.
+    """
+    # Get the streamer channel from the user_id
+    streamer_channel = await get_streamer_channel_from_user_id(user_id)
+    if not streamer_channel:
+        return []
+
+    #get the streamerPrefix from the streamer table using the streamers channel
+    streamerChannel = str(streamer_channel)
+    streamerPrefix = await get_streamerPrefix_with_channel(streamerChannel)
+    
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer_items WHERE streamer_prefix=?", (streamerPrefix,)) as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+
         
 #view all the items with a specific streamer_channel
 async def view_streamer_items(streamer_channel: str) -> list:

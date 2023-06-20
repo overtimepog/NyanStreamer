@@ -386,13 +386,31 @@ class Basic(commands.Cog, name="basic"):
         """
         user_id = ctx.message.author.id
         #check if the item exists in the database
-        items = await db_manager.view_streamer_items(user_id)
+        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
+        items = await db_manager.view_streamer_items(channel)
         for i in items:
             if item in i:
                 await db_manager.remove_item(item)
                 await ctx.send(f"Removed item with the ID `{item}` from your items.")
                 return
         await ctx.send(f"Item with the ID `{item}` does not exist in the database or you are not the streamer that owns this item.")
+
+    #autocommplete for the removeitem command
+    @remove_item.autocomplete("item")
+    async def remove_item_autocomplete(self, ctx: Context, argument):
+        """
+        This function provides autocomplete choices for the remove_item command.
+
+        :param ctx: The context in which the command was called.
+        :param argument: The user's current input for the item name.
+        """
+        streamer_items = await db_manager.view_user_streamer_made_items(ctx.author.id)
+        choices = []
+        for item in streamer_items:
+            if argument.lower() in item[1].lower():  # Assuming item[1] is the item's name
+                choices.append(app_commands.Choice(name=item[1], value=item[0]))  # Assuming item[0] is the item's ID
+        return choices[:25]
+
 
 #command to view all the streamer items owned by the user from a specific streamer, if they dont have the item, display ??? for the emoji
     @commands.hybrid_command(
