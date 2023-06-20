@@ -878,24 +878,6 @@ async def play_retype_game(ctx, game_data, minigameText, callback_processed_futu
     return result, message
 
 
-class BackwardsGameView(View):
-    def __init__(self, word, resolve_callback, callback_processed_future, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.word = word
-        self.resolve_callback = resolve_callback
-        self.callback_processed_future = callback_processed_future
-        self.user = user
-
-    async def interaction_check(self, interaction: discord.Interaction):
-        if interaction.user.id == self.user.id:
-            if interaction.data['message']['content'] == self.word[::-1]:  # Reverse the word for check
-                self.resolve_callback.set_result(True)
-            else:
-                self.resolve_callback.set_result(False)
-            self.callback_processed_future.set_result(True)
-        return False
-
-
 async def play_backwards_game(ctx, game_data, minigameText, callback_processed_future):
     try:
         game = random.choice(game_data)
@@ -904,21 +886,27 @@ async def play_backwards_game(ctx, game_data, minigameText, callback_processed_f
     except IndexError:
         await ctx.reply("There are no words to play this game!")
         return False
-    
+
     print(word)
-
-    resolve_promise = ctx.bot.loop.create_future()
-
-    view = BackwardsGameView(word=word, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
+    reversed_word = ' '.join(w[::-1] for w in word.split())  # Reverse each word separately
 
     sendingMessage = minigameText + "\n" + "Type this word backwards: `" + word + "`"
-    message = await ctx.send(content=sendingMessage, view=view)
+    await ctx.send(content=sendingMessage)
+
+    def check(m):
+        return m.author == ctx.author
 
     try:
-        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
+        message = await ctx.bot.wait_for('message', timeout=60.0, check=check)
+        if message.content == reversed_word:
+            result = True
+        else:
+            result = False
     except asyncio.TimeoutError:
         await ctx.reply("Time's up!")
         result = False
+    finally:
+        callback_processed_future.set_result(result)  # set the future's result to the game result
 
     return result, message
 
