@@ -1307,6 +1307,12 @@ async def get_data_for_minigame(minigame):
             # Add the updated choice to the new list
             choices_with_outcomes.append(choice_dict)
         game_data = choices_with_outcomes
+    elif game_type == 'Retype':
+        game_data = await db.execute("SELECT * FROM `retype` WHERE minigame_id = ?", (minigame[0],), fetch="one")
+    elif game_type == 'Backwards':
+        game_data = await db.execute("SELECT * FROM `backwards` WHERE minigame_id = ?", (minigame[0],), fetch="one")
+    elif game_type == 'Hangman':
+        game_data = await db.execute("SELECT * FROM `hangman` WHERE minigame_id = ?", (minigame[0],), fetch="all")
     return game_data
     
 #get job description from job ID
