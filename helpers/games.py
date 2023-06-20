@@ -899,6 +899,7 @@ class BackwardsGameView(View):
 async def play_backwards_game(ctx, game_data, minigameText, callback_processed_future):
     try:
         game = random.choice(game_data)
+        print(game)
         words = game["words"]
         word = random.choice(words)
     except IndexError:
