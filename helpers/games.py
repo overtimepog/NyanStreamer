@@ -959,7 +959,7 @@ class HangmanGame:
             await self.ctx.send('Game over. You have not guessed the word.')
 
     def get_message(self):
-        blanks_string = ' '.join(self.blanks)
+        blanks_string = ''.join(self.blanks)
         return f"{self.sentence.replace('{word}', blanks_string)}\nAttempts left: {self.attempts}"
 
     def check_message(self, message):
@@ -974,5 +974,5 @@ async def play_hangman_game(ctx, game_data, minigameText, callback_processed_fut
 
     hangman = HangmanGame(ctx, word, sentence)
     await hangman.play()
-    
+
 #catch the fish minigame
