@@ -2138,147 +2138,151 @@ class Basic(commands.Cog, name="basic"):
         for item in user_inventory:
             if argument.lower() in item[2].lower():
                 isUsable = await db_manager.is_basic_item_usable(item[1])
-                if isUsable == 1 or isUsable == True:
+                isChest = await db_manager.check_chest(item[1])
+                if isUsable == 1 or isUsable == True or isChest == 1 or isChest == True:
                     choices.append(app_commands.Choice(name=item[2], value=item[1]))
         return choices[:25]
 
     #explore command
-    @commands.hybrid_command(
-            name="explore",
-            description="Explore a structure in the current channel.",
-            usage="explore",
-    )
-    #command cooldown of 2 minutes
-    @commands.cooldown(1, 120, commands.BucketType.user)
-    async def explore(self, ctx: commands.Context):
-        async def handle_outcomes(ctx, random_outcomes, db_manager, embed):
-            def choose_outcome_based_on_chance(outcomes_with_chances):
-                total = sum(chance for _, chance in outcomes_with_chances)
-                r = random.uniform(0, total)
-                upto = 0
-                for outcome, chance in outcomes_with_chances:
-                    if upto + chance >= r:
-                        return outcome
-                    upto += chance
-                assert False, "Shouldn't get here"
-
-            user_luck = await db_manager.get_luck(ctx.author.id)
-
-            random_outcomes = [
-                (item, item["outcome_chance"] + user_luck / 100) for item in random_outcomes
-            ]
-
-            total_chance = sum(chance for _, chance in random_outcomes)
-            random_outcomes = [
-                (item, chance / total_chance) for item, chance in random_outcomes
-            ]
-
-            # Adjust the selection process to ensure different outcomes
-            chosen_outcomes = []
-            for _ in range(3):
-                if len(random_outcomes) == 0:
-                    break  # no more outcomes to choose from
-                chosen_outcome = choose_outcome_based_on_chance(random_outcomes)
-                chosen_outcomes.append(chosen_outcome)
-                random_outcomes.remove((chosen_outcome, chosen_outcome["outcome_chance"] / total_chance))  # remove the chosen outcome from the list
-
-            # Process each chosen outcome
-            for chosen_outcome in chosen_outcomes:
-                outcome_dispatcher = {
-                    "item_gain": handle_item_gain,
-                    "health_gain": handle_health_gain,
-                    "money_gain": handle_money_gain,
-                    "xp_gain": handle_xp_gain,
-                }
-                # Call the corresponding function
-                await outcome_dispatcher[chosen_outcome["outcome_type"]](chosen_outcome, ctx, db_manager, embed)
-
-        async def handle_item_gain(chosen_outcome, ctx, db_manager, embed):
-            item_id = chosen_outcome["outcome_output"]
-            print(item_id)
-            await db_manager.add_item_to_inventory(ctx.author.id, item_id, chosen_outcome["outcome_amount"])
-            isChest = await db_manager.check_chest(item_id)
-            if isChest == 1:
-                item_name = await db_manager.get_chest_name(item_id)
-                item_emoji = await db_manager.get_chest_icon(item_id)
-            else:
-                item_name = await db_manager.get_basic_item_name(item_id)
-                item_emoji = await db_manager.get_basic_item_emoji(item_id)
-            embed.add_field(name=":package: Item Gain", value=f"You have gained {chosen_outcome['outcome_amount']} of {item_emoji} {item_name}!", inline=False)
-
-        async def handle_health_gain(chosen_outcome, ctx, db_manager, embed):
-            await db_manager.add_health(ctx.author.id, chosen_outcome["outcome_amount"])
-            embed.add_field(name=":green_heart: Health Gain", value=f"You have gained {chosen_outcome['outcome_amount']} health!", inline=False)
-
-        async def handle_money_gain(chosen_outcome, ctx, db_manager, embed):
-            await db_manager.add_money(ctx.author.id, chosen_outcome["outcome_amount"])
-            embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {cash}{chosen_outcome['outcome_amount']}!", inline=False)
-
-        async def handle_xp_gain(chosen_outcome, ctx, db_manager, embed):
-            await db_manager.add_xp(ctx.author.id, chosen_outcome["outcome_amount"])
-            embed.add_field(name=":sparkles: XP Gain", value=f"You have gained {chosen_outcome['outcome_amount']} XP!", inline=False)
-            # Check if the user can level up
-            if await db_manager.can_level_up(ctx.author.id):
-                #if the user can level up, level them up
-                await db_manager.add_level(ctx.author.id, 1)
-                #set the users xp to 0
-                await db_manager.set_xp(ctx.author.id, 0)
-                #send a message to the channel saying the user has leveled up
-                #get the users new level
-                new_level = await db_manager.get_level(ctx.author.id)
-            await ctx.send(ctx.author.name + " has leveled up! They are now level " + str(new_level) + "!")
-
-        userExist = await db_manager.check_user(ctx.author.id)
-        if userExist == None or userExist == []:
-            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
-            await self.explore.reset_cooldown(ctx)
-            return
-
-        msg = ctx.message
-
-        await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
-        all_structures = await db_manager.get_all_structures()
-        structure = random.choice(all_structures)
-        print(structure[0])
-        outcomes = await db_manager.get_structure_outcomes(structure[0])
-        structure_outcomes = []
-        for outcome in outcomes:
-            structure_outcomes.append({
-                "structure_quote": outcome[1],
-                "structure_state": outcome[2],
-                "outcome_chance": outcome[3],
-                "outcome_type": outcome[4],
-                "outcome_output": outcome[5],
-                "outcome_amount": outcome[6],
-                "outcome_money": outcome[7],
-                "outcome_xp": outcome[8]
-            })
-        luck = await db_manager.get_luck(ctx.author.id)
-
-        outcomes = [outcome for outcome in structure_outcomes]
-        outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
-
-        # Using set() to ensure unique outcomes
-        # Get unique outcomes
-        outcome_strs = {json.dumps(outcome) for outcome in structure_outcomes}
-        unique_outcomes = [json.loads(outcome_str) for outcome_str in outcome_strs]
-
-        # Selecting 3 unique random outcomes
-        if len(unique_outcomes) < 3:
-            random_outcomes = unique_outcomes
-        else:
-            random_outcomes = random.sample(unique_outcomes, 3)
-
-        embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
-        embed.set_image(url=structure[2])
-        embed.set_footer(text="You can Explore again in 2 minutes.")
-
-        await handle_outcomes(ctx, random_outcomes, db_manager, embed)
-        await ctx.send(embed=embed)
+    #@commands.hybrid_command(
+    #        name="explore",
+    #        description="Explore a structure in the current channel.",
+    #        usage="explore",
+    #)
+    ##command cooldown of 2 minutes
+    #@commands.cooldown(1, 120, commands.BucketType.user)
+    #async def explore(self, ctx: commands.Context):
+    #    async def handle_outcomes(ctx, random_outcomes, db_manager, embed):
+    #        def choose_outcome_based_on_chance(outcomes_with_chances):
+    #            total = sum(chance for _, chance in outcomes_with_chances)
+    #            r = random.uniform(0, total)
+    #            upto = 0
+    #            for outcome, chance in outcomes_with_chances:
+    #                if upto + chance >= r:
+    #                    return outcome
+    #                upto += chance
+    #            assert False, "Shouldn't get here"
+#
+    #        user_luck = await db_manager.get_luck(ctx.author.id)
+#
+    #        random_outcomes = [
+    #            (item, item["outcome_chance"] + user_luck / 100) for item in random_outcomes
+    #        ]
+#
+    #        total_chance = sum(chance for _, chance in random_outcomes)
+    #        random_outcomes = [
+    #            (item, chance / total_chance) for item, chance in random_outcomes
+    #        ]
+#
+    #        # Adjust the selection process to ensure different outcomes
+    #        chosen_outcomes = []
+    #        for _ in range(3):
+    #            if len(random_outcomes) == 0:
+    #                break  # no more outcomes to choose from
+    #            chosen_outcome = choose_outcome_based_on_chance(random_outcomes)
+    #            chosen_outcomes.append(chosen_outcome)
+    #            random_outcomes.remove((chosen_outcome, chosen_outcome["outcome_chance"] / total_chance))  # remove the chosen outcome from the list
+#
+    #        # Process each chosen outcome
+    #        for chosen_outcome in chosen_outcomes:
+    #            outcome_dispatcher = {
+    #                "item_gain": handle_item_gain,
+    #                "health_gain": handle_health_gain,
+    #                "money_gain": handle_money_gain,
+    #                "xp_gain": handle_xp_gain,
+    #            }
+    #            # Call the corresponding function
+    #            await outcome_dispatcher[chosen_outcome["outcome_type"]](chosen_outcome, ctx, db_manager, embed)
+#
+    #    async def handle_item_gain(chosen_outcome, ctx, db_manager, embed):
+    #        item_id = chosen_outcome["outcome_output"]
+    #        print(item_id)
+    #        await db_manager.add_item_to_inventory(ctx.author.id, item_id, chosen_outcome["outcome_amount"])
+    #        isChest = await db_manager.check_chest(item_id)
+    #        if isChest == 1:
+    #            item_name = await db_manager.get_chest_name(item_id)
+    #            item_emoji = await db_manager.get_chest_icon(item_id)
+    #        else:
+    #            item_name = await db_manager.get_basic_item_name(item_id)
+    #            item_emoji = await db_manager.get_basic_item_emoji(item_id)
+    #        embed.add_field(name=":package: Item Gain", value=f"You have gained {chosen_outcome['outcome_amount']} of {item_emoji} {item_name}!", inline=False)
+#
+    #    async def handle_health_gain(chosen_outcome, ctx, db_manager, embed):
+    #        await db_manager.add_health(ctx.author.id, chosen_outcome["outcome_amount"])
+    #        embed.add_field(name=":green_heart: Health Gain", value=f"You have gained {chosen_outcome['outcome_amount']} health!", inline=False)
+#
+    #    async def handle_money_gain(chosen_outcome, ctx, db_manager, embed):
+    #        await db_manager.add_money(ctx.author.id, chosen_outcome["outcome_amount"])
+    #        embed.add_field(name=":moneybag: Money Gain", value=f"You have gained {cash}{chosen_outcome['outcome_amount']}!", inline=False)
+#
+    #    async def handle_xp_gain(chosen_outcome, ctx, db_manager, embed):
+    #        await db_manager.add_xp(ctx.author.id, chosen_outcome["outcome_amount"])
+    #        embed.add_field(name=":sparkles: XP Gain", value=f"You have gained {chosen_outcome['outcome_amount']} XP!", inline=False)
+    #        # Check if the user can level up
+    #        if await db_manager.can_level_up(ctx.author.id):
+    #            #if the user can level up, level them up
+    #            await db_manager.add_level(ctx.author.id, 1)
+    #            #set the users xp to 0
+    #            await db_manager.set_xp(ctx.author.id, 0)
+    #            #send a message to the channel saying the user has leveled up
+    #            #get the users new level
+    #            new_level = await db_manager.get_level(ctx.author.id)
+    #        await ctx.send(ctx.author.name + " has leveled up! They are now level " + str(new_level) + "!")
+#
+    #    userExist = await db_manager.check_user(ctx.author.id)
+    #    if userExist == None or userExist == []:
+    #        await ctx.send("You don't have an account! Use `/start` to start your adventure!")
+    #        await self.explore.reset_cooldown(ctx)
+    #        return
+#
+    #    msg = ctx.message
+#
+    #    await db_manager.add_explorer_log(ctx.guild.id, ctx.author.id)
+    #    all_structures = await db_manager.get_all_structures()
+    #    structure = random.choice(all_structures)
+    #    print(structure[0])
+    #    outcomes = await db_manager.get_structure_outcomes(structure[0])
+    #    structure_outcomes = []
+    #    for outcome in outcomes:
+    #        structure_outcomes.append({
+    #            "structure_quote": outcome[1],
+    #            "structure_state": outcome[2],
+    #            "outcome_chance": outcome[3],
+    #            "outcome_type": outcome[4],
+    #            "outcome_output": outcome[5],
+    #            "outcome_amount": outcome[6],
+    #            "outcome_money": outcome[7],
+    #            "outcome_xp": outcome[8]
+    #        })
+    #    luck = await db_manager.get_luck(ctx.author.id)
+#
+    #    outcomes = [outcome for outcome in structure_outcomes]
+    #    outcomes.sort(key=lambda x: x["outcome_chance"], reverse=True)
+#
+    #    # Using set() to ensure unique outcomes
+    #    # Get unique outcomes
+    #    outcome_strs = {json.dumps(outcome) for outcome in structure_outcomes}
+    #    unique_outcomes = [json.loads(outcome_str) for outcome_str in outcome_strs]
+#
+    #    # Selecting 3 unique random outcomes
+    #    if len(unique_outcomes) < 3:
+    #        random_outcomes = unique_outcomes
+    #    else:
+    #        random_outcomes = random.sample(unique_outcomes, 3)
+#
+    #    embed = discord.Embed(title=":compass: Exploration Results", description=f"> Explorer: **{ctx.author.name}**", color=discord.Color.blue())
+    #    embed.set_image(url=structure[2])
+    #    embed.set_footer(text="You can Explore again in 2 minutes.")
+#
+    #    await handle_outcomes(ctx, random_outcomes, db_manager, embed)
+    #    await ctx.send(embed=embed)
 
             
     #craft command
-    @commands.hybrid_command()
+    @commands.hybrid_command(
+        name="craft",
+        description="Craft an item",
+    )
     async def craft(self, ctx: Context, recipe: str):
         """Craft an item"""
         # Get the user's inventory
@@ -2369,7 +2373,11 @@ class Basic(commands.Cog, name="basic"):
             
             
 #attack command
-    @commands.hybrid_command()
+    @commands.hybrid_command(
+        name="attack",
+        description="Attack an enemy",
+        aliases=["atk"]
+    )
     async def attack(self, ctx: Context, enemy: str):
         """Attack an enemy"""
         userID = ctx.author.id
@@ -2396,29 +2404,22 @@ class Basic(commands.Cog, name="basic"):
     
     
 #spawn command
-    @commands.hybrid_command()
-    @checks.is_owner()
-    async def spawn(self, ctx: Context, enemy: str):
-        """Spawn an enemy"""
-        #start the battle
-        await battle.spawn_monster(ctx, enemy)
-        
-#mob command to view the current mob spawned
-    @commands.hybrid_command()
-    async def mob(self, ctx: Context):
-        """View the current mob spawned"""
-        #get the current mob spawned
-        currentSpawn = await db_manager.get_current_spawn(ctx.guild.id)
-        #if there is no mob spawned
-        if currentSpawn == None or [] or [ ]:
-            #send a message saying there is no mob spawned
-            await ctx.send("There is no mob spawned!")
-            return
-        #if there is a mob spawned
-        else:
-            await battle.send_spawned_embed(ctx)
-            #get the mob emote
-            return
+##mob command to view the current mob spawned
+#    @commands.hybrid_command()
+#    async def mob(self, ctx: Context):
+#        """View the current mob spawned"""
+#        #get the current mob spawned
+#        currentSpawn = await db_manager.get_current_spawn(ctx.guild.id)
+#        #if there is no mob spawned
+#        if currentSpawn == None or [] or [ ]:
+#            #send a message saying there is no mob spawned
+#            await ctx.send("There is no mob spawned!")
+#            return
+#        #if there is a mob spawned
+#        else:
+#            await battle.send_spawned_embed(ctx)
+#            #get the mob emote
+#            return
         
 #recipe book command, to view all the recipes
     @commands.hybrid_command(
@@ -2543,108 +2544,108 @@ class Basic(commands.Cog, name="basic"):
         view = RecipebookButton(current_page=0, embeds=embeds)
         await ctx.send(embed=embeds[0], view=view)
 
-    @commands.hybrid_command(
-            name="beastiary",
-            description="This command will view all the enemies.",
-        )
-    async def beastiary(self, ctx: Context):
-            # Get all the enemies from the database
-            enemies = await db_manager.get_all_enemies()
-
-            # Get all the drops from the database
-            drops = await db_manager.get_all_enemy_drops()
-
-            # If there are no enemies, send a message saying there are no enemies
-            if not enemies:
-                await ctx.send("There are no enemies!")
-                return
-
-            # Transform data into dictionaries
-            enemies_dict = {enemy[0]: enemy for enemy in enemies}
-            drops_dict = {}
-            for drop in drops:
-                enemy_id = drop[0]
-                if enemy_id not in drops_dict:
-                    drops_dict[enemy_id] = []
-                drops_dict[enemy_id].append(drop)
-
-            # Create a function to generate embeds from a list of enemies
-            async def create_embeds(enemy_dict, drop_dict):
-                num_pages = (len(enemy_dict) // 5) + (1 if len(enemy_dict) % 5 > 0 else 0)
-                embeds = []
-                enemy_ids = list(enemy_dict.keys())
-
-                for i in range(num_pages):
-                    start_idx = i * 5
-                    end_idx = start_idx + 5
-
-                    beastiary_embed = discord.Embed(
-                        title="Beastiary",
-                        description="All the enemies in the game!",
-                        color=0x000000,
-                    )
-                    beastiary_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-
-                    for enemy_id in enemy_ids[start_idx:end_idx]:
-                        enemy_data = enemy_dict[enemy_id]
-                        enemy_emote = enemy_data[4]  # Assuming enemy emote is at index 4
-                        enemy_name = enemy_data[1]  # Assuming enemy name is at index 1
-
-                        # Generate drops info
-                        drop_infos = drop_dict.get(enemy_id, [])
-                        if drop_infos:
-                            unique_drops = set([drop[1] for drop in drop_infos])
-                            drop_info_list = []
-                            for unique_drop in unique_drops:
-                                item_emote = await db_manager.get_basic_item_emoji(unique_drop)
-                                item_name = await db_manager.get_basic_item_name(unique_drop)
-                                drop_info_list.append(f"\t{item_emote} {item_name}")
-                            drop_info = "\n".join(drop_info_list)
-                        else:
-                            drop_info = "No Drops"
-
-                        beastiary_embed.add_field(name=f"\n{enemy_name}{enemy_emote}(`{enemy_id}`)", value=f"\n{drop_info}\n", inline=False)
-
-                    embeds.append(beastiary_embed)
-
-                return embeds
-
-            embeds = await create_embeds(enemies_dict, drops_dict)
-
-            class BeastiaryButton(discord.ui.View):
-                def __init__(self, current_page, embeds, **kwargs):
-                    super().__init__(**kwargs)
-                    self.current_page = current_page
-                    self.embeds = embeds
-
-                @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
-                async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                    self.current_page = 0
-                    await interaction.response.defer()
-                    await interaction.message.edit(embed=self.embeds[self.current_page])
-
-                @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
-                async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                    if self.current_page > 0:
-                        self.current_page -= 1
-                        await interaction.response.defer()
-                        await interaction.message.edit(embed=self.embeds[self.current_page])
-
-                @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
-                async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                    if self.current_page < len(self.embeds) - 1:
-                        self.current_page += 1
-                        await interaction.response.defer()
-                        await interaction.message.edit(embed=self.embeds[self.current_page])
-
-                @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
-                async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                    self.current_page = len(self.embeds) - 1
-                    await interaction.response.defer()
-                    await interaction.message.edit(embed=self.embeds[self.current_page])
-
-            view = BeastiaryButton(current_page=0, embeds=embeds)
-            await ctx.send(embed=embeds[0], view=view)
+    #@commands.hybrid_command(
+    #        name="beastiary",
+    #        description="This command will view all the enemies.",
+    #    )
+    #async def beastiary(self, ctx: Context):
+    #        # Get all the enemies from the database
+    #        enemies = await db_manager.get_all_enemies()
+#
+    #        # Get all the drops from the database
+    #        drops = await db_manager.get_all_enemy_drops()
+#
+    #        # If there are no enemies, send a message saying there are no enemies
+    #        if not enemies:
+    #            await ctx.send("There are no enemies!")
+    #            return
+#
+    #        # Transform data into dictionaries
+    #        enemies_dict = {enemy[0]: enemy for enemy in enemies}
+    #        drops_dict = {}
+    #        for drop in drops:
+    #            enemy_id = drop[0]
+    #            if enemy_id not in drops_dict:
+    #                drops_dict[enemy_id] = []
+    #            drops_dict[enemy_id].append(drop)
+#
+    #        # Create a function to generate embeds from a list of enemies
+    #        async def create_embeds(enemy_dict, drop_dict):
+    #            num_pages = (len(enemy_dict) // 5) + (1 if len(enemy_dict) % 5 > 0 else 0)
+    #            embeds = []
+    #            enemy_ids = list(enemy_dict.keys())
+#
+    #            for i in range(num_pages):
+    #                start_idx = i * 5
+    #                end_idx = start_idx + 5
+#
+    #                beastiary_embed = discord.Embed(
+    #                    title="Beastiary",
+    #                    description="All the enemies in the game!",
+    #                    color=0x000000,
+    #                )
+    #                beastiary_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+#
+    #                for enemy_id in enemy_ids[start_idx:end_idx]:
+    #                    enemy_data = enemy_dict[enemy_id]
+    #                    enemy_emote = enemy_data[4]  # Assuming enemy emote is at index 4
+    #                    enemy_name = enemy_data[1]  # Assuming enemy name is at index 1
+#
+    #                    # Generate drops info
+    #                    drop_infos = drop_dict.get(enemy_id, [])
+    #                    if drop_infos:
+    #                        unique_drops = set([drop[1] for drop in drop_infos])
+    #                        drop_info_list = []
+    #                        for unique_drop in unique_drops:
+    #                            item_emote = await db_manager.get_basic_item_emoji(unique_drop)
+    #                            item_name = await db_manager.get_basic_item_name(unique_drop)
+    #                            drop_info_list.append(f"\t{item_emote} {item_name}")
+    #                        drop_info = "\n".join(drop_info_list)
+    #                    else:
+    #                        drop_info = "No Drops"
+#
+    #                    beastiary_embed.add_field(name=f"\n{enemy_name}{enemy_emote}(`{enemy_id}`)", value=f"\n{drop_info}\n", inline=False)
+#
+    #                embeds.append(beastiary_embed)
+#
+    #            return embeds
+#
+    #        embeds = await create_embeds(enemies_dict, drops_dict)
+#
+    #        class BeastiaryButton(discord.ui.View):
+    #            def __init__(self, current_page, embeds, **kwargs):
+    #                super().__init__(**kwargs)
+    #                self.current_page = current_page
+    #                self.embeds = embeds
+#
+    #            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+    #            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #                self.current_page = 0
+    #                await interaction.response.defer()
+    #                await interaction.message.edit(embed=self.embeds[self.current_page])
+#
+    #            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+    #            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #                if self.current_page > 0:
+    #                    self.current_page -= 1
+    #                    await interaction.response.defer()
+    #                    await interaction.message.edit(embed=self.embeds[self.current_page])
+#
+    #            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+    #            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #                if self.current_page < len(self.embeds) - 1:
+    #                    self.current_page += 1
+    #                    await interaction.response.defer()
+    #                    await interaction.message.edit(embed=self.embeds[self.current_page])
+#
+    #            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+    #            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #                self.current_page = len(self.embeds) - 1
+    #                await interaction.response.defer()
+    #                await interaction.message.edit(embed=self.embeds[self.current_page])
+#
+    #        view = BeastiaryButton(current_page=0, embeds=embeds)
+    #        await ctx.send(embed=embeds[0], view=view)
 
     #trade command
     @commands.hybrid_command(
