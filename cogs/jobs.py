@@ -388,6 +388,7 @@ class Jobs(commands.Cog, name="jobs"):
                 earned_reward = (outcome_message, reward_type, reward_value)
 
             outcome_message, reward_type, reward_value = earned_reward
+            base_pay_message = ""
 
             if reward_type == "money":
                 reward_value = int(reward_value) + base_pay  # Add base pay to the reward
