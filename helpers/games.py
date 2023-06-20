@@ -922,7 +922,7 @@ class HangmanGame:
         self.sentence = sentence
         self.attempts = attempts
         self.guessed_letters = []
-        self.blanks = ['_' if letter.isalpha() else letter for letter in word]
+        self.blanks = ['_']*len(self.word)  # Simplify blank creation
 
     async def play(self):
         # Display initial state
@@ -974,5 +974,5 @@ async def play_hangman_game(ctx, game_data, minigameText, callback_processed_fut
 
     hangman = HangmanGame(ctx, word, sentence)
     await hangman.play()
-
+    
 #catch the fish minigame
