@@ -377,7 +377,7 @@ class Basic(commands.Cog, name="basic"):
         description="This command will remove an item from the database.",
     )
     @checks.is_streamer()
-    async def remove_item(self, ctx: Context, item: str):
+    async def removeitem(self, ctx: Context, item: str):
         """
         This command will remove an item from the database.
 
@@ -396,7 +396,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(f"Item with the ID `{item}` does not exist in the database or you are not the streamer that owns this item.")
 
     #autocommplete for the removeitem command
-    @remove_item.autocomplete("item")
+    @removeitem.autocomplete("item")
     async def remove_item_autocomplete(self, ctx: Context, argument):
         """
         This function provides autocomplete choices for the remove_item command.
