@@ -613,79 +613,73 @@ async def trivia(self, ctx: commands.Context):
 
 # -------------------- for WORK COMMAND --------------------
 
-class TriviaGameView(View):
-    def __init__(self, answer, resolve_callback, callback_processed_future, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.answer = answer
-        self.resolve_callback = resolve_callback
-        self.callback_processed_future = callback_processed_future
-        self.user = user
-
-    async def interaction_check(self, interaction: discord.Interaction):
-        if interaction.user.id == self.user.id:
-            return True
-        return False
-
-    def add_choice(self, choice):
-        self.add_item(TriviaGameButton(label=choice, trivia_view=self, callback_processed_future=self.callback_processed_future, style=discord.ButtonStyle.secondary))
-
-class TriviaGameButton(Button):
-    def __init__(self, label, trivia_view, callback_processed_future, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.label = label
-        self.trivia_view = trivia_view
+class HangmanGame:
+    def __init__(self, ctx, word, sentence, callback_processed_future, attempts=7):
+        self.ctx = ctx
+        self.word = word
+        self.sentence = sentence
+        self.attempts = attempts
+        self.guessed_letters = []
+        self.blanks = ['_']*len(self.word)  # Simplify blank creation
         self.callback_processed_future = callback_processed_future
 
-    async def callback(self, interaction: discord.Interaction):
-        self.disabled = True
-        selected_choice = self.label
-        if selected_choice == self.trivia_view.answer:
-            self.style = discord.ButtonStyle.success
-            self.trivia_view.resolve_callback.set_result(True)
-            try:
-                await interaction.response.defer()
-            except(discord.errors.InteractionResponded):
-                pass
-        else:
-            self.style = discord.ButtonStyle.danger
-            self.trivia_view.resolve_callback.set_result(False)
-            try:
-                await interaction.response.defer()
-            except(discord.errors.InteractionResponded):
-                pass
-
-        # Set callback_processed_future result here
-        self.callback_processed_future.set_result(True)
-        try:
-            await interaction.response.defer()
-        except(discord.errors.InteractionResponded):
-            pass
-
-async def play_trivia(ctx, game_data, minigameText, callback_processed_future):
-    random_trivia = random.choice(game_data)
-    trivia_question = random_trivia[1]  # accessing the second element of tuple
-    trivia_choices = json.loads(random_trivia[2])  # accessing the third element of tuple
-    trivia_answer = random_trivia[3]
-
-    resolve_promise = ctx.bot.loop.create_future()
-
-    view = TriviaGameView(answer=trivia_answer, resolve_callback=resolve_promise, callback_processed_future=callback_processed_future, user=ctx.author)
-
-    random.shuffle(trivia_choices)  # Shuffle the choices
-
-    for choice in trivia_choices:
-        view.add_choice(choice)
-
-    sendingMessage = minigameText + "\n" + f"`{trivia_question}`"
-
-    message = await ctx.reply(content=sendingMessage, view=view)
-    try:
-        result = await asyncio.wait_for(resolve_promise, timeout=60.0)
-    except asyncio.TimeoutError:
-        await ctx.reply("Time's up!")
+    async def play(self):
+        # Display initial state
+        message = await self.ctx.send(content=self.get_message() + "\nPlease guess one letter at a time.")
         result = False
 
-    return result, message
+        while self.attempts > 0 and '_' in self.blanks:
+            try:
+                guess = await self.ctx.bot.wait_for('message', check=self.check_message, timeout=60.0)
+            except asyncio.TimeoutError:
+                await message.edit(content='Time out! Game over.')
+                break
+
+            letter = guess.content.lower()
+
+            if letter in self.guessed_letters:
+                update = 'You have already guessed this letter.'
+            elif letter in self.word:
+                for i, l in enumerate(self.word):
+                    if l == letter:
+                        self.blanks[i] = letter
+                update = 'Correct guess.'
+            else:
+                self.attempts -= 1
+                update = 'Incorrect guess.'
+
+            self.guessed_letters.append(letter)
+
+            # Update game state
+            await message.edit(content=self.get_message() + '\n' + update + "\nPlease guess another letter.")
+
+        if '_' not in self.blanks:
+            await message.edit(content='Congratulations! You have guessed the word.')
+            result = True
+        else:
+            await message.edit(content='Game over. You have not guessed the word.')
+            result = False
+
+        # Set callback_processed_future result here
+        self.callback_processed_future.set_result(result)
+
+    def get_message(self):
+        blanks_string = ''.join(self.blanks)
+        return f"{self.sentence.replace('{word}', f'`{blanks_string}`')}\nAttempts left: {self.attempts}"
+
+    def check_message(self, message):
+        return message.author == self.ctx.author and len(message.content) == 1 and message.content.isalpha()
+
+
+# Somewhere in your command
+async def play_hangman_game(ctx, game_data, minigameText, callback_processed_future):
+    game = random.choice(game_data)
+    sentence = game[1]  # accessing the second element of tuple
+    word = game[2]  # accessing the third element of tuple
+
+    hangman = HangmanGame(ctx, word, sentence, callback_processed_future)
+    await hangman.play()
+    return callback_processed_future.result(), ctx.message
 
 class OrderGameSelect(Select):
     def __init__(self, correct_order, resolve_callback, callback_processed_future, *args, **kwargs):
@@ -916,47 +910,54 @@ async def play_backwards_game(ctx, game_data, minigameText, callback_processed_f
     return result, message
 
 class HangmanGame:
-    def __init__(self, ctx, word, sentence, attempts=7):
+    def __init__(self, ctx, word, sentence, callback_processed_future, attempts=7):
         self.ctx = ctx
         self.word = word
         self.sentence = sentence
         self.attempts = attempts
         self.guessed_letters = []
         self.blanks = ['_']*len(self.word)  # Simplify blank creation
+        self.callback_processed_future = callback_processed_future
 
     async def play(self):
         # Display initial state
-        await self.ctx.send(content=self.get_message())
+        message = await self.ctx.send(content=self.get_message() + "\nPlease guess one letter at a time.")
+        result = False
 
         while self.attempts > 0 and '_' in self.blanks:
-
             try:
-                message = await self.ctx.bot.wait_for('message', check=self.check_message, timeout=60.0)
+                guess = await self.ctx.bot.wait_for('message', check=self.check_message, timeout=60.0)
             except asyncio.TimeoutError:
-                await self.ctx.send('Time out! Game over.')
-                return
+                await message.edit(content='Time out! Game over.')
+                break
 
-            letter = message.content.lower()
+            letter = guess.content.lower()
 
             if letter in self.guessed_letters:
-                await self.ctx.send('You have already guessed this letter.')
+                update = 'You have already guessed this letter.'
             elif letter in self.word:
                 for i, l in enumerate(self.word):
                     if l == letter:
                         self.blanks[i] = letter
+                update = 'Correct guess.'
             else:
                 self.attempts -= 1
-                await self.ctx.send('Incorrect guess.')
+                update = 'Incorrect guess.'
 
             self.guessed_letters.append(letter)
 
             # Update game state
-            await self.ctx.send(content=self.get_message())
+            await message.edit(content=self.get_message() + '\n' + update + "\nPlease guess another letter.")
 
         if '_' not in self.blanks:
-            await self.ctx.send('Congratulations! You have guessed the word.')
+            await message.edit(content='Congratulations! You have guessed the word.')
+            result = True
         else:
-            await self.ctx.send('Game over. You have not guessed the word.')
+            await message.edit(content='Game over. You have not guessed the word.')
+            result = False
+
+        # Set callback_processed_future result here
+        self.callback_processed_future.set_result(result)
 
     def get_message(self):
         blanks_string = ''.join(self.blanks)
@@ -972,7 +973,8 @@ async def play_hangman_game(ctx, game_data, minigameText, callback_processed_fut
     sentence = game[1]  # accessing the second element of tuple
     word = game[2]  # accessing the third element of tuple
 
-    hangman = HangmanGame(ctx, word, sentence)
+    hangman = HangmanGame(ctx, word, sentence, callback_processed_future)
     await hangman.play()
+    return callback_processed_future.result(), ctx.message
 
 #catch the fish minigame
