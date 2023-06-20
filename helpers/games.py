@@ -915,50 +915,56 @@ async def play_backwards_game(ctx, game_data, minigameText, callback_processed_f
 
     return result, message
 
-class HangmanGameButton(discord.ui.Button):
-    def __init__(self, letter, hangman_view, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.letter = letter
-        self.hangman_view = hangman_view
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.letter in self.hangman_view.word:
-            for i, letter in enumerate(self.hangman_view.word):
-                if letter == self.letter:
-                    self.hangman_view.blanks[i] = self.letter
-        else:
-            self.hangman_view.attempts += 1
-
-        self.disabled = True
-        self.style = discord.ButtonStyle.danger if self.hangman_view.attempts > 0 else discord.ButtonStyle.success
-
-        await interaction.response.edit_message(content=self.hangman_view.get_message(), view=self.hangman_view)
-
-        if "_" not in self.hangman_view.blanks:
-            self.hangman_view.stop()
-
-
-class HangmanGameView(discord.ui.View):
-    def __init__(self, word, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class HangmanGame:
+    def __init__(self, ctx, word, attempts=7):
+        self.ctx = ctx
         self.word = word
+        self.attempts = attempts
+        self.guessed_letters = []
         self.blanks = ['_' for _ in word]
-        self.attempts = 0
 
-        for letter in 'abcdefghijklmnopqrstuvwxyz':
-            self.add_item(HangmanGameButton(letter=letter, hangman_view=self, label=letter, style=discord.ButtonStyle.secondary))
+    async def play(self):
+        while self.attempts > 0 and '_' in self.blanks:
+            await self.ctx.send(content=self.get_message())
+
+            try:
+                message = await self.ctx.bot.wait_for('message', check=self.check_message, timeout=60.0)
+            except asyncio.TimeoutError:
+                await self.ctx.send('Time out! Game over.')
+                return
+
+            letter = message.content.lower()
+
+            if letter in self.guessed_letters:
+                await self.ctx.send('You have already guessed this letter.')
+            elif letter in self.word:
+                for i, l in enumerate(self.word):
+                    if l == letter:
+                        self.blanks[i] = letter
+            else:
+                self.attempts -= 1
+                await self.ctx.send('Incorrect guess.')
+
+            self.guessed_letters.append(letter)
+
+        if '_' not in self.blanks:
+            await self.ctx.send('Congratulations! You have guessed the word.')
+        else:
+            await self.ctx.send('Game over. You have not guessed the word.')
 
     def get_message(self):
         return f"Word: {' '.join(self.blanks)}\nAttempts: {self.attempts}"
 
+    def check_message(self, message):
+        return message.author == self.ctx.author and len(message.content) == 1 and message.content.isalpha()
+
+
+# Somewhere in your command
 async def play_hangman_game(ctx, game_data, minigameText, callback_processed_future):
     game = random.choice(game_data)
-    print(game)
-    word = game[1]  # accessing the second element of tuple
+    word = game[2]  # accessing the third element of tuple
 
-    view = HangmanGameView(word=word)
-
-    sendingMessage = minigameText + "\n" + "Guess the word!"
-    message = await ctx.send(content=sendingMessage, view=view)
+    hangman = HangmanGame(ctx, word)
+    await hangman.play()
 
 #catch the fish minigame
