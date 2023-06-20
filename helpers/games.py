@@ -910,20 +910,21 @@ async def play_backwards_game(ctx, game_data, minigameText, callback_processed_f
     return result, message
 
 class HangmanGame:
-    def __init__(self, ctx, word, sentence, callback_processed_future, attempts=7):
+    def __init__(self, ctx, word, sentence, minigameText, callback_processed_future, attempts=7):
         self.ctx = ctx
         self.word = word
         self.sentence = sentence
         self.attempts = attempts
+        self.minigameText = minigameText
         self.guessed_letters = []
         self.blanks = ['_']*len(self.word)  # Simplify blank creation
         self.callback_processed_future = callback_processed_future
 
     async def play(self):
         # Display initial state
-        embed = Embed(title="Hangman", color=discord.Color.dark_purple())
+        embed = Embed(title=f"{self.minigameText}", color=discord.Color.dark_purple())
         embed.add_field(name="State", value=self.get_message(), inline=False)
-        embed.add_field(name="Last Attempt", value="Please guess a letter.", inline=False)
+        embed.add_field(name="Info", value="Please guess a letter.", inline=False)
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
         message = await self.ctx.send(embed=embed)
         result = False
@@ -953,7 +954,7 @@ class HangmanGame:
 
             # Update game state
             embed.set_field_at(0, name="State", value=self.get_message(), inline=False)
-            embed.set_field_at(1, name="Last Attempt", value=f"{update} Please guess another letter.", inline=False)
+            embed.set_field_at(1, name="Info", value=f"{update} Please guess another letter.", inline=False)
             await message.edit(embed=embed)
 
             # Delete user's guess message
@@ -985,6 +986,6 @@ async def play_hangman_game(ctx, game_data, minigameText, callback_processed_fut
     sentence = game[1]  # accessing the second element of tuple
     word = game[2]  # accessing the third element of tuple
 
-    hangman = HangmanGame(ctx, word, sentence, callback_processed_future)
+    hangman = HangmanGame(ctx, word, sentence, minigameText, callback_processed_future)
     await hangman.play()
     return callback_processed_future.result(), ctx.message
