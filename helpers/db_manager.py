@@ -3099,6 +3099,9 @@ async def remove_item(item_id: str) -> int:
         #remove the item from the database
         await db.execute("DELETE FROM streamer_items WHERE item_id = ?", (item_id,))
         await db.commit()
+        #now remove it from the streamer_item_inventory table of all users
+        await db.execute("DELETE FROM streamer_item_inventory WHERE streamer_item_id = ?", (item_id,))
+        await db.commit()
         rows = await db.execute("SELECT COUNT(*) FROM streamer_items")
         async with rows as cursor:
             result = await cursor.fetchone()
