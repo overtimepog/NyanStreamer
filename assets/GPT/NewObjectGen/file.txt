@@ -384,4 +384,3 @@ this is an example of each minigame in one job
         ]
     }
 ]
-
