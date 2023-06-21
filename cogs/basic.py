@@ -168,6 +168,10 @@ class Basic(commands.Cog, name="basic"):
     )
     @checks.is_owner()
     async def view_streamers(self, ctx: Context):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
         """
         This command will view all streamers in the database.
 
@@ -193,6 +197,10 @@ class Basic(commands.Cog, name="basic"):
         aliases=["inv"],
     )
     async def inventory(self, ctx: Context):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
         # Get user inventory items from the database
         inventory_items = await db_manager.view_inventory(ctx.author.id)
         if inventory_items == []:
@@ -336,6 +344,10 @@ class Basic(commands.Cog, name="basic"):
     )
     @checks.is_streamer()
     async def create_item(self, ctx: Context, item_name: str, item_emoji: str):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
         """
         This command will create a new streamer item in the database.
 
@@ -389,6 +401,10 @@ class Basic(commands.Cog, name="basic"):
     )
     @checks.is_streamer()
     async def removeitem(self, ctx: Context, item: str):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
         """
         This command will remove an item from the database.
 
@@ -429,6 +445,10 @@ class Basic(commands.Cog, name="basic"):
         description="This command will view all of the items owned by the user from a specific streamer.",
     )
     async def streamercase(self, ctx: Context, streamer: str):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
         """
         This command will view all of the items owned by the user from a specific streamer.
 
@@ -682,6 +702,10 @@ class Basic(commands.Cog, name="basic"):
         description="view the shop.",
     )
     async def shop(self, ctx: Context):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
         #get the shop items from the database
         shopitems = await db_manager.display_shop_items()
 
@@ -842,6 +866,10 @@ class Basic(commands.Cog, name="basic"):
         :param item_id: The ID of the item that should be bought.
         :param amount: The amount of the item that should be bought.
         """
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
         user_id = ctx.message.author.id
         user_profile = await db_manager.profile(user_id)
         user_money = user_profile[1]
@@ -1013,6 +1041,11 @@ class Basic(commands.Cog, name="basic"):
         description="This command will sell an item from your inventory.",
     )
     async def sell(self, ctx: Context, item: str, amount: int):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
+        
         """
         This command will sell an item from your inventory.
 

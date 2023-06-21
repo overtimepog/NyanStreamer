@@ -41,6 +41,10 @@ class General(commands.Cog, name="general"):
     )
     @checks.not_blacklisted()
     async def help(self, context: Context, command_or_cog: str = None) -> None:
+        checkUser = await db_manager.check_user(context.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await context.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
         prefix = self.bot.config["prefix"]
 
         if command_or_cog:
