@@ -280,7 +280,8 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `isEquipped` boolean NOT NULL,
   `item_element` varchar(255) NOT NULL,
   `item_crit_chance` int(11) NOT NULL,
-  `item_projectile` varchar(255)
+  `item_projectile` varchar(255),
+  `item_sub_type` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `streamer_item_inventory` (

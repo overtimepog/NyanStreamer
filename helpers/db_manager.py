@@ -3358,9 +3358,10 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             item_element = result[11]
                             item_crit_chance = result[12]
                             item_projectile = result[13]
+                            item_sub_type = result[21]
                             isEquipped = 0
                             #add the item to the inventory table
-                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile))
+                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type))
                             await db.commit()
                             # If the item is a pet, add an entry to the pet_attributes table.
                             if item_type == 'Pet':
@@ -3470,7 +3471,7 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             key_id = result[7]
                             chest_contentsID = result[8]
                             #add the chest to the inventory table, setting the values that are not in the chest table to 0
-                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, chest_id, chest_name, chest_price, chest_emoji, chest_rarity, item_amount, chest_type, 0, 0, "None", 0, "None"))
+                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, chest_id, chest_name, chest_price, chest_emoji, chest_rarity, item_amount, chest_type, 0, 0, "None", 0, "None", "None"))
                             await db.commit()
                             return 1
                         else:
