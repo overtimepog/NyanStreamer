@@ -1766,6 +1766,18 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(message)
         else:
             await ctx.send(f"that is not equippable.")
+
+    @equip.autocomplete("item")
+    async def equip_autocomplete(self, ctx: discord.Interaction, argument):
+        user_id = ctx.user.id
+        user_inventory = await db_manager.view_inventory(user_id)
+        choices = []
+        for item in user_inventory:
+            if argument.lower() in item[2].lower():
+                isEquippable = await db_manager.is_basic_item_equipable(item[1])
+                if isEquippable == 1 or isEquippable == True:
+                    choices.append(app_commands.Choice(name=item[2], value=item[1]))
+        return choices[:25]  
             
     #a command to unequip an item using the unequip_item function from helpers\db_manager.py, check if the item is equipped, if it is, unequip it, if it isn't, say that it isn't equipped
     @commands.hybrid_command(
@@ -1916,6 +1928,18 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(message)
         else:
             await ctx.send(f"`{item_name}` is not equipped.")
+
+    @unequip.autocomplete("item")
+    async def unequip_autocomplete(self, ctx: discord.Interaction, argument):
+        user_id = ctx.user.id
+        user_items = await db_manager.view_inventory(user_id)
+        choices = []
+        for item in user_items:
+            if argument.lower() in item[2].lower():
+                isEquipped = await db_manager.is_item_equipped(user_id, item[1])
+                if isEquipped == 1 or isEquipped == True:
+                    choices.append(app_commands.Choice(name=item[2], value=item[1]))
+        return choices[:25]
     #hybrid command to battle a monster
 
     @commands.hybrid_command(

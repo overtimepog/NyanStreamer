@@ -4335,6 +4335,20 @@ async def is_pet_equipped(user_id: int) -> int:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
         
+#just check if an item is equiped
+async def is_item_equipped(user_id: int, item_id: str) -> int:
+    """
+    This function will check if an item is equipped.
+
+    :param user_id: The ID of the user that should be checked.
+    :param item_id: The ID of the item that should be checked.
+    :return: True if the item is equipped, False if not.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=? AND isEquipped=?", (user_id, item_id, 1)) as cursor:
+            result = await cursor.fetchone()
+            return result[1] if result is not None else 0
+        
 #check the inventory of a user for any items with the item_type Accessory and if they are equiped with the item_type Accessory
 async def is_accessory_equipped(user_id: int) -> int:
     """

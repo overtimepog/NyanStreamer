@@ -1,5 +1,180 @@
 [
     {
+        "id": "paper_delivery",
+        "name": "Paper Delivery",
+        "description": "Deliver newspapers to the neighborhood. No special skills required.",
+        "job_icon": "<:jobIcon:12345678910>",
+        "required_item": "None",
+        "required_level": 0,
+        "required_hours": 0,
+        "base_pay": 100,
+        "pay_per_level": 10,
+        "max_level": 5,
+        "cooldown": 600,
+        "cooldown_reduction_per_level": 10,
+        "minigames": [
+            {
+                "type": "Order",
+                "prompt": "**Work for Paper Delivery** - Order - Please arrange the following houses in the correct delivery order:",
+                "reward": [
+                    {"rewardType": "money", "reward": 20, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 40, "chance": 0.5}
+                ],
+                "task": "Sort the houses according to the delivery order",
+                "items": ["House A", "House B", "House C", "House D"],
+                "correctOrder": ["House A", "House B", "House C", "House D"]
+            },
+            {
+                "type": "Trivia",
+                "prompt": "**Work for Paper Delivery** - Trivia - Please answer the following question:",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.5},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5}
+                ],
+                "questions": [
+                    {
+                        "question": "What is the name of the famous newspaper in Harry Potter?",
+                        "options": ["The Daily Prophet", "The Daily Bugle", "The Daily News"],
+                        "answer": "The Daily Prophet"
+                    }
+                ]
+            },
+            {
+                "type": "Retype",
+                "prompt": "**Work for Paper Delivery** - Retype - Please retype the following phrase:",
+                "phrases": [
+                    "delivering news one paper at a time", 
+                    "the early bird catches the worm", 
+                    "rain or shine, the news must go on",
+                    "extra extra read all about it",
+                    "news doesn't wait for anyone",
+                    "the pen is mightier than the sword",
+                    "a newspaper is a world in your hands",
+                    "today's news is tomorrow's history",
+                    "all the news that's fit to print",
+                    "news travels fast"
+                ],
+                "reward": [
+                    {"rewardType": "money", "reward": 20, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 40, "chance": 0.5}
+                ]
+            },
+            {
+                "type": "Hangman",
+                "prompt": "**Work for Paper Delivery** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to paper delivery:",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
+                    {"rewardType": "item", "reward": "newspaper", "chance": 0.1}
+                ],
+                "sentences": [
+                    {
+                        "sentence": "The {word} is the first one to read the news.",
+                        "answer": "paperboy"
+                    },
+                    {
+                        "sentence": "A {word} is a bundle of newspapers ready for delivery.",
+                        "answer": "stack"
+                    },
+                    {
+                        "sentence": "The {word} is the main part of a newspaper.",
+                        "answer": "headline"
+                    },
+                    {
+                        "sentence": "{word} is the process of delivering newspapers to houses or retail outlets.",
+                        "answer": "distribution"
+                    },
+                    {
+                        "sentence": "A {word} is a person who sells newspapers directly to the public.",
+                        "answer": "newsagent"
+                    }
+                ]
+            }
+            
+        ]
+    },
+    {
+        "id": "beekeeper",
+        "name": "Beekeeper",
+        "description": "Maintain beehives and collect honey. Requires careful handling and knowledge about bees.",
+        "job_icon": "<:Bee_Drone:1121203445077127180>",
+        "required_item": "bee_suit",
+        "required_level": 1,
+        "required_hours": 1,
+        "base_pay": 150,
+        "pay_per_level": 15,
+        "max_level": 10,
+        "cooldown": 1800,
+        "cooldown_reduction_per_level": 30,
+        "minigames": [
+            {
+                "type": "Order",
+                "prompt": "**Work for Beekeeper** - Order - Please arrange the following tasks in the correct order:",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5}
+                ],
+                "task": "Sort the tasks according to the beekeeping order",
+                "items": ["Put on bee suit", "Smoke the hive", "Remove honeycombs", "Extract honey"],
+                "correctOrder": ["Put on bee suit", "Smoke the hive", "Remove honeycombs", "Extract honey"]
+            },
+            {
+                "type": "Trivia",
+                "prompt": "**Work for Beekeeper** - Trivia - Please answer the following question:",
+                "reward": [
+                    {"rewardType": "money", "reward": 50, "chance": 0.5},
+                    {"rewardType": "item", "reward": "honey", "chance": 0.2}
+                ],
+                "questions": [
+                    {
+                        "question": "What is the queen bee's main job?",
+                        "options": ["Making honey", "Laying eggs", "Pollinating flowers"],
+                        "answer": "Laying eggs"
+                    }
+                ]
+            },
+            {
+                "type": "Retype",
+                "prompt": "**Work for Beekeeper** - Retype - Please retype the following phrase:",
+                "phrases": ["bees are nature's little workers", "sweet as honey", "busy as a bee", "the bee's knees"],
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.5}
+                ]
+            },
+            {
+                "type": "Hangman",
+                "prompt": "**Work for Beekeeper** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to beekeeping:",
+                "reward": [
+                    {"rewardType": "money", "reward": 70, "chance": 0.5},
+                    {"rewardType": "item", "reward": "honey", "chance": 0.3}
+                ],
+                "sentences": [
+                    {
+                        "sentence": "The {word} is the most important bee in the hive.",
+                        "answer": "queen"
+                    },
+                    {
+                        "sentence": "{word} is used to calm bees before opening the hive.",
+                        "answer": "smoke"
+                    },
+                    {
+                        "sentence": "A {word} is a place where bees are kept.",
+                        "answer": "apiary"
+                    },
+                    {
+                        "sentence": "{word} is a substance produced by bees to feed their larvae.",
+                        "answer": "royaljelly"
+                    },
+                    {
+                        "sentence": "Bees collect {word} to make honey.",
+                        "answer": "nectar"
+                    }
+                ]
+            }
+        ]
+    },       
+    {
         "id": "developer",
         "name": "Developer",
         "description": "Build and maintain software systems",
