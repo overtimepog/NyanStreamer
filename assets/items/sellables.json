@@ -1,0 +1,26 @@
+[
+    {
+        "item_id": "honey",
+        "item_name": "Honey",
+        "item_price": 500,
+        "item_emoji": "<:Honey:1121203447107162152>",
+        "item_rarity": "Uncommon",
+        "item_type": "Sellable",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": false,
+        "isEquippable": false,
+        "item_description": "Sweet and sticky, just like you. Found from the BeeKeeper Job.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "isHuntable": false,
+        "item_hunt_chance": 0,
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "item_sub_type": "None"
+    }  
+]

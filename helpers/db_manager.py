@@ -43,9 +43,11 @@ with open("assets/items/misc.json", "r", encoding="utf8") as f:
     misc = json.load(f)
 with open ("assets/items/badges.json", "r", encoding="utf8") as f:
     badges = json.load(f)
+with open ("assets/items/sellables.json", "r", encoding="utf8") as f:
+    sellables = json.load(f)
 with open ("assets/items/pets.json", "r", encoding="utf8") as f:
     pets = json.load(f)
-basic_items = weapons + materials + tools + armor + consumables + misc + badges + pets
+basic_items = sellables + weapons + materials + tools + armor + consumables + misc + badges + pets
     
 #Enemies
 with open("assets/enemies/enemies.json", "r", encoding="utf8") as f:

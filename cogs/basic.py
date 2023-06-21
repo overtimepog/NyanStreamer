@@ -267,6 +267,7 @@ class Basic(commands.Cog, name="basic"):
                 def __init__(self):
                     options=[
                         discord.SelectOption(label="All"),
+                        discord.SelectOption(label="Sellable"),
                         discord.SelectOption(label="Weapon"),
                         discord.SelectOption(label="Tool"),
                         discord.SelectOption(label="Armor"),
@@ -274,6 +275,7 @@ class Basic(commands.Cog, name="basic"):
                         discord.SelectOption(label="Material"),
                         discord.SelectOption(label="Badge"),
                         discord.SelectOption(label="Pet"),
+                        discord.SelectOption(label="Misc"),
                     ]
                     super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
 
