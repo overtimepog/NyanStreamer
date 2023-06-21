@@ -68,6 +68,7 @@ class PetSelect(discord.ui.Select):
             pet_name = selected_pet[2]
             item_effect = await db_manager.get_basic_item_effect(self.item)
             item_name = await db_manager.get_basic_item_name(self.item)
+            item_emoji = await db_manager.get_basic_item_emoji(self.item)
             #if the item effect is "None":
             if item_effect == "None":
                 print("Shouldn't get here")
@@ -92,8 +93,18 @@ class PetSelect(discord.ui.Select):
                 if effecttype == "pet_xp":
                     #add the effect amount to the pet's xp
                     await db_manager.add_pet_xp(pet_id, item_effect_amount)
-                    await interaction.response.send_message(f"You used `{item_name}` on `{pet_name}` and gave them {item_effect_amount} xp!")
-                    return
+                    #check if pet can level up
+                    canLevelup = await db_manager.pet_can_level_up(pet_id)
+                    if canLevelup == True:
+                        #level up the pet
+                        await db_manager.add_pet_level(pet_id, interaction.user.id, 1)
+                        #get the pet's new level
+                        pet_level = await db_manager.get_pet_level(pet_id)
+                        await interaction.response.send_message(f"You used **{item_emoji}{item_name}** on **{pet_name}** and gave them **{item_effect_amount} XP** They Leveled up :), **{pet_name}** is now level **{pet_level}**!")
+                        return
+                    else:
+                        await interaction.response.send_message(f"You used **{item_emoji}{item_name}** on **{pet_name}** and gave them **{item_effect_amount} XP**!")
+                        return
             
             #if the time is not 0, it is a temporary effect
             #get the effect

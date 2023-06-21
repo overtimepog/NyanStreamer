@@ -5094,6 +5094,14 @@ async def set_pet_level(item_id: str, user_id: int, level: int):
     await db.execute("UPDATE `pet_attributes` SET `level` = ? WHERE `item_id` = ? AND `user_id` = ?", (level, item_id, user_id))
     db.close()
 
+#get the pets level
+async def get_pet_level(item_id: str, user_id: int) -> int:
+    data = await get_pet_attributes(user_id, item_id)
+    if data is not None:
+        return data[4]
+    else:
+        return None
+
 async def add_pet_level(item_id: str, user_id: int, level: int):
     data = await get_pet_attributes(user_id, item_id)
     if data is not None:

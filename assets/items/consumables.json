@@ -162,7 +162,7 @@
     {
         "item_id": "bonus_coin",
         "item_name": "Bonus Coin",
-        "item_price": 10000,
+        "item_price": 1000,
         "item_emoji": "<:Thunderous_Coin:1120497178289373265>",
         "item_rarity": "Legendary",
         "item_type": "Consumable",
@@ -178,6 +178,26 @@
         "item_recipe": [],
         "item_effect": "bonus + 5",
         "item_sub_type": "None"
+    },
+    {
+        "item_id": "pet_treat",
+        "item_name": "Pet Treat",
+        "item_price": 500,
+        "item_emoji": "<:petTreat:1121029896035119154>",
+        "item_rarity": "Common",
+        "item_type": "Consumable",
+        "item_damage": 0,
+        "isUsable": true,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A delicious treat for your pet. It seems to make them happier and more experienced!",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "pet_xp + 15",
+        "item_sub_type": "Pet Item"
     }
     
 ]
