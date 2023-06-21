@@ -3,7 +3,7 @@
         "id": "paper_delivery",
         "name": "Paper Delivery",
         "description": "Deliver newspapers to the neighborhood. No special skills required.",
-        "job_icon": "<:jobIcon:12345678910>",
+        "job_icon": "<:Newspapers:1121197632870678640>",
         "required_item": "None",
         "required_level": 0,
         "required_hours": 0,
