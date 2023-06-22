@@ -541,9 +541,9 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' cleanliness periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
-            icon = await db_manager.get_basic_item_emoji(updated[0])
+            icon = await db_manager.get_basic_item_emoji(pet[0])
             icon = str(icon)
-            rarity = await db_manager.get_basic_item_rarity(updated[0])
+            rarity = await db_manager.get_basic_item_rarity(pet[0])
             timed_items = await db_manager.view_timed_items(pet[1])
             pet_items = await db_manager.get_pet_items(pet[0], pet[1])
             halt_cleanliness = False
