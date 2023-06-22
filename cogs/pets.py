@@ -477,7 +477,8 @@ class Pets(commands.Cog, name="pets"):
                         color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
                     )
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
-                    await self.bot.get_user(pet[1]).send(embed=embed)
+                    user = await self.bot.get_user(pet[1])
+                    await user.send(embed=embed)
 
 
 
@@ -520,7 +521,8 @@ class Pets(commands.Cog, name="pets"):
                         color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
                     )
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
-                    await self.bot.get_user(pet[1]).send(embed=embed)
+                    user = await self.bot.get_user(pet[1])
+                    await user.send(embed=embed)
 
     @update_pet_happiness.before_loop
     async def before_update_happiness(self):
@@ -568,7 +570,8 @@ class Pets(commands.Cog, name="pets"):
                         color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
                     )
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
-                    await self.bot.get_user(pet[1]).send(embed=embed)
+                    user = await self.bot.get_user(pet[1])
+                    user.send(embed=embed)
 
     @update_pet_cleanliness.before_loop
     async def before_update_cleanliness(self):
@@ -593,7 +596,8 @@ class Pets(commands.Cog, name="pets"):
                             description=f"Your pet {pet[2]} has died. You have the next 48 hours to revive them.",
                             color=0xFF0000  # Red
                         )
-                        await self.bot.get_user(pet[1]).send(embed=embed)
+                        user = await self.bot.get_user(pet[1])
+                        await user.send(embed=embed)
                 else:  # the pet is not dying yet, start the death timer
                     await db_manager.set_pet_death_time(pet[1], pet[0], datetime.utcnow().isoformat())
             else:  # the pet is not dead yet
@@ -611,7 +615,9 @@ class Pets(commands.Cog, name="pets"):
                             description=f"Your pet {pet[2]} can no longer be revived and has been removed from your inventory.",
                             color=0xFF0000  # Red
                         )
-                        await self.bot.get_user(pet[1]).send(embed=embed)
+                        user = await self.bot.get_user(pet[1])
+                        await user.send(embed=embed)
+
 
     @check_pet_death.before_loop
     async def before_check_pet_death(self):
