@@ -447,6 +447,9 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' hunger periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
+            icon = await db_manager.get_basic_item_emoji(pet[0])
+            icon = str(icon)
+            rarity = await db_manager.get_basic_item_rarity(pet[0])
             timed_items = await db_manager.view_timed_items(pet[1])
             pet_items = await db_manager.get_pet_items(pet[0], pet[1])
             halt_hunger = False
@@ -471,9 +474,6 @@ class Pets(commands.Cog, name="pets"):
                 if updated[5] <= 5:
                     print(pet)
                     #send a message to the user saying their pet is hungry
-                    icon = await db_manager.get_basic_item_emoji(pet[0])
-                    icon = str(icon)
-                    rarity = await db_manager.get_basic_item_rarity(pet[0])
                     print(rarity)
                     embed = discord.Embed(
                         title=f"{pet[2]} is Hungry!",
@@ -496,6 +496,9 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' happiness periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
+            icon = await db_manager.get_basic_item_emoji(pet[0])
+            icon = str(icon)
+            rarity = await db_manager.get_basic_item_rarity(pet[0])
             timed_items = await db_manager.view_timed_items(pet[1])
             pet_items = await db_manager.get_pet_items(pet[0], pet[1])
             halt_happiness = False
@@ -519,9 +522,6 @@ class Pets(commands.Cog, name="pets"):
                 #if the happiness is less than or equal to 5, send a message to the user saying their pet is unhappy
                 if updated[7] <= 5:
                     #send a message to the user saying their pet is unhappy
-                    icon = await db_manager.get_basic_item_emoji(pet[0])
-                    icon = str(icon)
-                    rarity = await db_manager.get_basic_item_rarity(pet[0])
                     embed = discord.Embed(
                         title=f"{pet[2]} is Unhappy!",
                         description=f"{pet[2]} is unhappy! Play with them to make them happy again!",
@@ -541,6 +541,9 @@ class Pets(commands.Cog, name="pets"):
         """Update pets' cleanliness periodically."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
+            icon = await db_manager.get_basic_item_emoji(updated[0])
+            icon = str(icon)
+            rarity = await db_manager.get_basic_item_rarity(updated[0])
             timed_items = await db_manager.view_timed_items(pet[1])
             pet_items = await db_manager.get_pet_items(pet[0], pet[1])
             halt_cleanliness = False
@@ -568,13 +571,9 @@ class Pets(commands.Cog, name="pets"):
                 await db_manager.set_pet_cleanliness(pet[1], pet[0], new_cleanliness)
                 updated = await db_manager.get_pet_attributes(pet[1], pet[0])
                 print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
-                cleanliness = updated[6]
                 #if the cleanliness is less than or equal to 5, send a message to the user saying their pet is dirty
-                if cleanliness <= 5:
+                if updated[6] <= 5:
                     #send a message to the user saying their pet is dirty
-                    icon = await db_manager.get_basic_item_emoji(updated[0])
-                    icon = str(icon)
-                    rarity = await db_manager.get_basic_item_rarity(updated[0])
                     embed = discord.Embed(
                         title=f"{pet[2]} is Dirty!",
                         description=f"{pet[2]} is dirty! Clean them to make them happy again!",
@@ -594,6 +593,7 @@ class Pets(commands.Cog, name="pets"):
         """Check if any pets should die or can't be revived anymore."""
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
+            icon = await db_manager.get_basic_item_emoji(pet[0])
             pet_attributes = await db_manager.get_pet_attributes(pet[1], pet[0])
             if pet_attributes[5] == 0 and pet_attributes[6] == 0 and pet_attributes[7] == 0:  # all stats are 0
                 death_time = await db_manager.get_pet_death_time(pet[1], pet[0])
@@ -610,6 +610,7 @@ class Pets(commands.Cog, name="pets"):
                             description=f"Your pet {pet[2]} has died. You have the next 48 hours to revive them.",
                             color=0xFF0000  # Red
                         )
+                        embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
                         user = await self.bot.get_user(pet[1])
                         await user.send(embed=embed)
                         print(f"Sent a message to {pet[1]} saying their pet {pet[2]} has died.")
@@ -630,6 +631,7 @@ class Pets(commands.Cog, name="pets"):
                             description=f"Your pet {pet[2]} can no longer be revived and has been removed from your inventory.",
                             color=0xFF0000  # Red
                         )
+                        embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
                         user = await self.bot.get_user(pet[1])
                         await user.send(embed=embed)
                         print(f"Sent a message to {pet[1]} saying their pet {pet[2]} can't be revived anymore.")
