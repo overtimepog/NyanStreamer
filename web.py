@@ -95,16 +95,20 @@ async def callback(request: Request):
             "prefix": "None"
         })
 
-@app.get("/api/data", response_model=Dict[str, Any])
-async def get_all_data():
+@app.get("/api/data/items", response_model=Dict[str, Any])
+async def get_all_items():
     items = await db_manager.get_items()
+    return {"items": items}
+
+@app.get("/api/data/jobs", response_model=Dict[str, Any])
+async def get_all_jobs():
     jobs = await db_manager.get_jobs()
+    return {"jobs": jobs}
+
+@app.get("/api/data/chests", response_model=Dict[str, Any])
+async def get_all_chests():
     chests = await db_manager.get_chests()
-    return {
-        "items": items,
-        "jobs": jobs,
-        "chests": chests
-    }
+    return {"chests": chests}
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
