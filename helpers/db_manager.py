@@ -846,7 +846,14 @@ async def print_items_discord(ctx) -> None:
     for job in jobs:
         message += f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Item: {job['required_item']} | Required Level: {job['required_level']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}\n"
 
-    await ctx.send(message)
+    # Check if the message is too long for a single send
+    if len(message) > 2000:
+        # Split the message into chunks
+        messages = [message[i:i+2000] for i in range(0, len(message), 2000)]
+        for msg in messages:
+            await ctx.send(msg)
+    else:
+        await ctx.send(message)
 
 async def add_structures() -> None:
     db = DB()
