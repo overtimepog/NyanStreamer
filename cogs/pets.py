@@ -472,6 +472,7 @@ class Pets(commands.Cog, name="pets"):
                     #send a message to the user saying their pet is hungry
                     icon = await db_manager.get_basic_item_emoji(pet[0])
                     rarity = await db_manager.get_basic_item_rarity(pet[0])
+                    print(rarity)
                     embed = discord.Embed(
                         title=f"{pet[2]} is Hungry!",
                         description=f"{pet[2]} is hungry! Feed them to make them happy again!",
