@@ -820,6 +820,41 @@ async def print_items() -> None:
         #"cooldown_reduction_per_level": 180,
         print(f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Item: {job['required_item']} | Required Level: {job['required_level']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}")
 
+
+async def print_items_discord(ctx) -> None:
+    message = ""
+
+    # get the items
+    for item in basic_items:
+        if item['item_sub_type'] == 'None':
+            message += "Type: " + item['item_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'] + " | Damage: " + str(item['item_damage'])  + " | Price: " + str(item['item_price']) + " | Effect: " + item['item_effect'] + "\n"
+        else:
+            message += "Type: " + item['item_type'] + " SubType: " + item['item_sub_type'] + " | ID: " + item['item_id'] + " | Rarity: " + item['item_rarity'] + " | Damage: " + str(item['item_damage']) + " | Price: " + str(item['item_price']) + " | Effect: " + item['item_effect'] + "\n"
+    
+    for chest in chests:
+        message += "Type: Chest | ID: " + chest['chest_id'] + " | Rarity:" + chest['chest_rarity'] + "\n"
+
+    #for enemy in enemies:
+    #    message += "Type: Enemy | ID: " + enemy['enemy_id'] + " | Rarity:" + enemy['enemy_rarity'] + " | Health: " + str(enemy['enemy_health']) + " | Damage: " + str(enemy['enemy_damage']) + "\n"
+
+    #for structure in structures['structures']:
+    #    message += "Type: Structure | ID: " + structure['structure_id'] + "\n"
+
+    #for quest in quests:
+    #    message += "Type: Quest | ID: " + quest['quest_id'] + "\n"
+
+    for job in jobs:
+        message += f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Item: {job['required_item']} | Required Level: {job['required_level']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}\n"
+
+    # Check if the message is too long for a single send
+    if len(message) > 2000:
+        # Split the message into chunks
+        messages = [message[i:i+2000] for i in range(0, len(message), 2000)]
+        for msg in messages:
+            await ctx.send(msg)
+    else:
+        await ctx.send(message)
+
 async def add_structures() -> None:
     db = DB()
     # Insert data into structures table

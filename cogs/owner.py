@@ -388,6 +388,20 @@ class Owner(commands.Cog, name="owner"):
         """
         await db_manager.add_money(user.id, amount)
         await ctx.send(f"You gave {user.mention} `{amount}` bucks.")
+
+    #printItems command
+    @commands.hybrid_command(
+        name="printitems",
+        description="This command will print all items in the database.",
+    )
+    @checks.is_owner()
+    async def printitems(self, ctx: Context):
+        """
+        This command will print all items in the database.
+
+        :param ctx: The context in which the command was called.
+        """
+        await db_manager.print_items_discord(ctx)
         
 
 
