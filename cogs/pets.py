@@ -471,10 +471,11 @@ class Pets(commands.Cog, name="pets"):
                 if updated[5] <= 5:
                     #send a message to the user saying their pet is hungry
                     icon = await db_manager.get_basic_item_emoji(pet[0])
+                    rarity = await db_manager.get_basic_item_rarity(pet[0])
                     embed = discord.Embed(
                         title=f"{pet[2]} is Hungry!",
                         description=f"{pet[2]} is hungry! Feed them to make them happy again!",
-                        color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
+                        color=rarity_colors[rarity]
                     )
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
                     user = await self.bot.get_user(pet[1])
@@ -515,10 +516,11 @@ class Pets(commands.Cog, name="pets"):
                 if updated[7] <= 5:
                     #send a message to the user saying their pet is unhappy
                     icon = await db_manager.get_basic_item_emoji(pet[0])
+                    rarity = await db_manager.get_basic_item_rarity(pet[0])
                     embed = discord.Embed(
                         title=f"{pet[2]} is Unhappy!",
                         description=f"{pet[2]} is unhappy! Play with them to make them happy again!",
-                        color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
+                        color=rarity_colors[rarity]
                     )
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
                     user = await self.bot.get_user(pet[1])
@@ -564,10 +566,11 @@ class Pets(commands.Cog, name="pets"):
                 if updated[6] <= 5:
                     #send a message to the user saying their pet is dirty
                     icon = await db_manager.get_basic_item_emoji(pet[0])
+                    rarity = await db_manager.get_basic_item_rarity(pet[0])
                     embed = discord.Embed(
                         title=f"{pet[2]} is Dirty!",
                         description=f"{pet[2]} is dirty! Clean them to make them happy again!",
-                        color=rarity_colors[await db_manager.get_basic_item_rarity(pet[0])]
+                        color=rarity_colors[rarity]
                     )
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
                     user = await self.bot.get_user(pet[1])
@@ -591,6 +594,8 @@ class Pets(commands.Cog, name="pets"):
                         await db_manager.set_pet_death_time(pet[1], pet[0], datetime.datetime.utcnow().isoformat())
                         await db_manager.set_pet_revival_time(pet[1], pet[0], (datetime.datetime.utcnow() + datetime.timedelta(hours=48)).isoformat())
                         # send an embed to the user saying their pet has died and can be revived within the next 48 hours
+                        #print in the console that the pet has died
+                        print(f'{pet[2]} has died for {pet[1]}')
                         embed = discord.Embed(
                             title=f"{pet[2]} has passed away",
                             description=f"Your pet {pet[2]} has died. You have the next 48 hours to revive them.",
