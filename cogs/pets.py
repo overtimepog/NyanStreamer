@@ -568,8 +568,9 @@ class Pets(commands.Cog, name="pets"):
                 await db_manager.set_pet_cleanliness(pet[1], pet[0], new_cleanliness)
                 updated = await db_manager.get_pet_attributes(pet[1], pet[0])
                 print(f'Updated cleanliness for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[6]}')
+                cleanliness = updated[6]
                 #if the cleanliness is less than or equal to 5, send a message to the user saying their pet is dirty
-                if updated[6] <= 5:
+                if cleanliness <= 5:
                     #send a message to the user saying their pet is dirty
                     icon = await db_manager.get_basic_item_emoji(updated[0])
                     icon = str(icon)
@@ -613,7 +614,7 @@ class Pets(commands.Cog, name="pets"):
                         await user.send(embed=embed)
                         print(f"Sent a message to {pet[1]} saying their pet {pet[2]} has died.")
                 else:  # the pet is not dying yet, start the death timer
-                    await db_manager.set_pet_death_time(pet[1], pet[0], datetime.utcnow().isoformat())
+                    await db_manager.set_pet_death_time(pet[1], pet[0], datetime.datetime.utcnow().isoformat())
             else:  # the pet is not dead yet
                 revival_time = await db_manager.get_pet_revival_time(pet[1], pet[0])
                 if revival_time is not None:  # the pet can be revived
