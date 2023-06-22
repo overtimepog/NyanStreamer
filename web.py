@@ -110,13 +110,14 @@ async def get_all_chests():
     chests = await db_manager.get_chests()
     return {"chests": chests}
 
-@app.get("/api/data/search", response_model=Dict[str, Any])
-async def get_search():
-    #get the searches from assets\search.json
-    with open("assets/search.json", "r") as f:
-        searches = json.load(f)
-    #get the searchs
-    return {"locations": searches}
+@app.get("/api/data/searches", response_model=Dict[str, Any])
+async def get_search():    
+    with open('assets/search.json') as f:
+        data = json.load(f)
+        locations = data['searches']
+        #get the searches from assets\search.json
+    return {"searches": locations}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
