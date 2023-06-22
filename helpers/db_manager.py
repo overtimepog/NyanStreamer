@@ -109,6 +109,17 @@ class Database:
 
 DB = Database
 
+#return the items
+async def get_items() -> list:
+    return basic_items
+
+async def get_chests() -> list:
+    return chests
+
+async def get_jobs() -> list:
+    return jobs
+
+
 async def get_money(user_id: int) -> int:
         db = DB()
         data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
