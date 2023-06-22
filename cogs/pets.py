@@ -472,9 +472,9 @@ class Pets(commands.Cog, name="pets"):
                 print(f'Updated hunger for {pet[1]}' + f'\'s pet {pet[2]}, It is now {updated[5]}')
                 #if the hunger is less than or equal to 5, send a message to the user saying their pet is hungry
                 if updated[5] <= 5:
-                    print(pet)
+                    #print(pet)
                     #send a message to the user saying their pet is hungry
-                    print(rarity)
+                    #print(rarity)
                     embed = discord.Embed(
                         title=f"{pet[2]} is Hungry!",
                         description=f"{pet[2]} is hungry! Feed them to make them happy again!",
@@ -579,7 +579,7 @@ class Pets(commands.Cog, name="pets"):
                         color=rarity_colors[rarity]
                     )
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
-                    user.send(embed=embed)
+                    await user.send(embed=embed)
                     print(f"Sent a message to {pet[1]} saying their pet {pet[2]} is dirty!")
 
     @update_pet_cleanliness.before_loop
