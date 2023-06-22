@@ -448,7 +448,6 @@ class Pets(commands.Cog, name="pets"):
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
             icon = await db_manager.get_basic_item_emoji(pet[0])
-            icon = str(icon)
             rarity = await db_manager.get_basic_item_rarity(pet[0])
             user = await self.bot.fetch_user(pet[1])
             timed_items = await db_manager.view_timed_items(pet[1])
@@ -497,7 +496,6 @@ class Pets(commands.Cog, name="pets"):
         all_pets = await db_manager.get_all_users_pets()
         for pet in all_pets:
             icon = await db_manager.get_basic_item_emoji(pet[0])
-            icon = str(icon)
             rarity = await db_manager.get_basic_item_rarity(pet[0])
             user = await self.bot.fetch_user(pet[1])
             timed_items = await db_manager.view_timed_items(pet[1])

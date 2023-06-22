@@ -315,7 +315,6 @@ async def load_cogs() -> None:
 
 async def setup() -> None:
     await init_db()
-    await load_cogs()
     #delete the joined_channels.json file
     if os.path.isfile('joined_channels.json'):
         os.remove('joined_channels.json')
@@ -343,6 +342,8 @@ async def setup() -> None:
     await db_manager.print_items()
     print("\n" + "---------Inventory Check----------")
     await db_manager.clean_inventory()
+    print("\n" + "---------Loading Cogs----------")
+    await load_cogs()
     print("\n" + "-----------------------------")
     print("Setup Complete")
     print("-----------------------------")

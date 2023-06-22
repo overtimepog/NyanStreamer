@@ -4161,7 +4161,7 @@ async def get_basic_item_rarity(item_id: str) -> str:
     async with aiosqlite.connect("database/database.db") as db:
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
-            return result[4] if result is not None else "Common"
+            return result[4] if result is not None else 0
 
 #get items basic items type via its id
 async def get_basic_item_type(item_id: str) -> str:
