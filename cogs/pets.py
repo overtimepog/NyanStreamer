@@ -472,6 +472,7 @@ class Pets(commands.Cog, name="pets"):
                     print(pet)
                     #send a message to the user saying their pet is hungry
                     icon = await db_manager.get_basic_item_emoji(pet[0])
+                    icon = str(icon)
                     rarity = await db_manager.get_basic_item_rarity(pet[0])
                     print(rarity)
                     embed = discord.Embed(
@@ -519,6 +520,7 @@ class Pets(commands.Cog, name="pets"):
                 if updated[7] <= 5:
                     #send a message to the user saying their pet is unhappy
                     icon = await db_manager.get_basic_item_emoji(pet[0])
+                    icon = str(icon)
                     rarity = await db_manager.get_basic_item_rarity(pet[0])
                     embed = discord.Embed(
                         title=f"{pet[2]} is Unhappy!",
@@ -570,6 +572,7 @@ class Pets(commands.Cog, name="pets"):
                 if updated[6] <= 5:
                     #send a message to the user saying their pet is dirty
                     icon = await db_manager.get_basic_item_emoji(pet[0])
+                    icon = str(icon)
                     rarity = await db_manager.get_basic_item_rarity(pet[0])
                     embed = discord.Embed(
                         title=f"{pet[2]} is Dirty!",
