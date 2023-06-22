@@ -10,7 +10,7 @@
         "base_pay": 100,
         "pay_per_level": 10,
         "max_level": 5,
-        "cooldown": 600,
+        "cooldown": 1200,
         "cooldown_reduction_per_level": 10,
         "minigames": [
             {
@@ -101,7 +101,7 @@
         "required_item": "bee_suit",
         "required_level": 2,
         "required_hours": 10,
-        "base_pay": 150,
+        "base_pay": 200,
         "pay_per_level": 15,
         "max_level": 10,
         "cooldown": 1800,
@@ -169,42 +169,6 @@
                     {
                         "sentence": "Bees collect {word} to make honey.",
                         "answer": "nectar"
-                    }
-                ]
-            }
-        ]
-    },       
-    {
-        "id": "developer",
-        "name": "Developer",
-        "description": "Build and maintain software systems",
-        "job_icon": "<a:devicon:1118737223253233744>",
-        "required_item": "laptop",
-        "required_level": 3,
-        "required_hours": 200,
-        "base_pay": 500,
-        "pay_per_level": 50,
-        "max_level": 10,
-        "cooldown": 1800,
-        "cooldown_reduction_per_level": 30,
-        "minigames": [
-            {
-                "type": "Trivia",
-                "prompt": "**Work for Developer** - Trivia - Please answer the following question:",
-                "reward": [
-                    {"rewardType": "money", "reward": 50, "chance": 0.5},
-                    {"rewardType": "item", "reward": "debugger", "chance": 0.3}
-                ],
-                "questions": [
-                    {
-                        "question": "What does HTML stand for?",
-                        "options": ["Hyper Text Markup Language", "Hyperlinks Text Mark Language", "Hyperlinking Text Marking Language"],
-                        "answer": "Hyper Text Markup Language"
-                    },
-                    {
-                        "question": "In web design, what does CSS stand for?",
-                        "options": ["Cascading Style Sheet", "Creative Style System", "Cascading System Sheet"],
-                        "answer": "Cascading Style Sheet"
                     }
                 ]
             }
