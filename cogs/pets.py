@@ -480,6 +480,7 @@ class Pets(commands.Cog, name="pets"):
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
                     user = await self.bot.get_user(pet[1])
                     await user.send(embed=embed)
+                    print(f"Sent a message to {pet[1]} saying their pet {pet[2]} is hungry!")
 
 
 
@@ -525,6 +526,7 @@ class Pets(commands.Cog, name="pets"):
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
                     user = await self.bot.get_user(pet[1])
                     await user.send(embed=embed)
+                    print(f"Sent a message to {pet[1]} saying their pet {pet[2]} is unhappy!")
 
     @update_pet_happiness.before_loop
     async def before_update_happiness(self):
@@ -575,6 +577,7 @@ class Pets(commands.Cog, name="pets"):
                     embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{icon.split(':')[2].replace('>', '')}.gif?size=240&quality=lossless")
                     user = await self.bot.get_user(pet[1])
                     user.send(embed=embed)
+                    print(f"Sent a message to {pet[1]} saying their pet {pet[2]} is dirty!")
 
     @update_pet_cleanliness.before_loop
     async def before_update_cleanliness(self):
@@ -603,6 +606,7 @@ class Pets(commands.Cog, name="pets"):
                         )
                         user = await self.bot.get_user(pet[1])
                         await user.send(embed=embed)
+                        print(f"Sent a message to {pet[1]} saying their pet {pet[2]} has died.")
                 else:  # the pet is not dying yet, start the death timer
                     await db_manager.set_pet_death_time(pet[1], pet[0], datetime.utcnow().isoformat())
             else:  # the pet is not dead yet
@@ -622,6 +626,7 @@ class Pets(commands.Cog, name="pets"):
                         )
                         user = await self.bot.get_user(pet[1])
                         await user.send(embed=embed)
+                        print(f"Sent a message to {pet[1]} saying their pet {pet[2]} can't be revived anymore.")
 
 
     @check_pet_death.before_loop
