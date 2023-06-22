@@ -395,3 +395,10 @@ this is an example of each minigame in one job
         ]
     }
 ]
+
+this is all the json data from my game that you will use as a refrence when creating new stuff, mainly in order to keep the game balanced, understand it and then print out a few things from each to prove its the correct data, I will tell you if it is
+
+https://nyanstreamer.lol/api/data/items
+https://nyanstreamer.lol/api/data/jobs
+https://nyanstreamer.lol/api/data/chests
+https://nyanstreamer.lol/api/data/searches
