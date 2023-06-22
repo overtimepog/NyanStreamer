@@ -571,9 +571,9 @@ class Pets(commands.Cog, name="pets"):
                 #if the cleanliness is less than or equal to 5, send a message to the user saying their pet is dirty
                 if updated[6] <= 5:
                     #send a message to the user saying their pet is dirty
-                    icon = await db_manager.get_basic_item_emoji(pet[0])
+                    icon = await db_manager.get_basic_item_emoji(updated[0])
                     icon = str(icon)
-                    rarity = await db_manager.get_basic_item_rarity(pet[0])
+                    rarity = await db_manager.get_basic_item_rarity(updated[0])
                     embed = discord.Embed(
                         title=f"{pet[2]} is Dirty!",
                         description=f"{pet[2]} is dirty! Clean them to make them happy again!",
