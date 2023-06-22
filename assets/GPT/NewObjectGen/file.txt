@@ -13,7 +13,7 @@ Here are some rules to be followed when making new stuff
 * only one job minigame per job should have a chance for an item reward
 * the xp needed for a user to level up is 6 times their level and does not overflow after a user levels up, keep this in mind when giving out xp rewards
 * keep in mind when giving jobs hours required that the /work command gives 1 hour of work per use
-* all generated stuff must be given in json format
+* all generated stuff must be given back in json format
 * FOLLOW EVERY RULE AT ALL TIMES WHEN CREATING STUFF WITH THE TEMPLATES, which are below
 
 this is what armor looks like
