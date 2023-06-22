@@ -151,7 +151,7 @@ class Jobs(commands.Cog, name="jobs"):
                             cooldown_str = f"{int(hours)}hr"
                     else:
                         cooldown_str = f"{int(minutes)}min"
-                    field_value += f"> Cooldown: {cooldown_str}\n"
+                    field_value += f"> Cooldown: **{cooldown_str}**\n"
                     field_value += f"> Pay: **{cash}{base_pay}**\n"
                     #turn level required into a int
                     level_required = int(level_required)
