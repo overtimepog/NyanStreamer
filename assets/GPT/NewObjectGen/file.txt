@@ -294,7 +294,14 @@ this is an example of each minigame in one job
                         "question": "What temperature does water boil at sea level?",
                         "options": ["100°C", "50°C", "150°C"],
                         "answer": "100°C"
-                    }
+                    },
+                    {
+                        "question": "What temperature should you cook a steak?",
+                        "options": ["100°C", "50°C", "150°C"],
+                        "answer": "100°C"
+                    },
+                    
+
                 ]
             },
             {
@@ -370,7 +377,7 @@ this is an example of each minigame in one job
             },
             {
                 "type": "Anagram",
-                "prompt": "**Work as Anagram Chef** - Please unscramble the following ingredient or cooking-related word:",
+                "prompt": "**Work for Chef** - Anagram - Please unscramble the following ingredient or cooking-related word:",
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 60, "chance": 0.5},
