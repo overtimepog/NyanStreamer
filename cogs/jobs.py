@@ -152,29 +152,18 @@ class Jobs(commands.Cog, name="jobs"):
                     else:
                         cooldown_str = f"{int(minutes)}min"
                     field_value += f"> Cooldown: {cooldown_str}\n"
-                    field_value += f"> Pay: {cash}{base_pay}\n"
+                    field_value += f"> Pay: **{cash}{base_pay}**\n"
                     #turn level required into a int
                     level_required = int(level_required)
                     #turn hours required into a int
                     hours_required = int(hours_required)
-
-                    if level_required != 0:
-                        field_value += f"> Level required: `{level_required}`\n"
-                    else:
-                        #dont show the level required if its 0
-                        field_value += f""
-
-                    if hours_required != 0:
-                        field_value += f"> Hours required: `{hours_required}`\n"
-                    else:
-                        #dont show the hours required if its 0
-                        field_value += f""
-
+                    field_value += f"> Level required: **{level_required}**\n"
+                    field_value += f"> Hours required: **{hours_required}**\n"    
                     if item_required != "None":
                         item_name = await db_manager.get_basic_item_name(item_required)
-                        field_value += f"> Item required: {item_icon} `{item_name}`\n"
+                        field_value += f"> Item required: **{item_icon}{item_name}**\n"
                     else:
-                        field_value += f"> Item required: None\n"
+                        field_value += f"> Item required: **None**\n"
 
                     #get the pay and cooldown
                     field_value += f"> ID: `{job_id}`\n"
