@@ -258,9 +258,9 @@ this is an example of a search location
 this is an example of each minigame in one job
 [
     {
-        "id": "chef_multi_minigames",
-        "name": "Chef with Multiple Minigames",
-        "description": "A Chef job that includes multiple minigames",
+        "id": "chef",
+        "name": "Chef",
+        "description": "be a chef",
         "job_icon": "<:jobIcon:12345678910>",
         "required_item": "None",
         "required_level": 0,
