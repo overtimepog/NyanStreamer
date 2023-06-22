@@ -470,6 +470,7 @@ class Pets(commands.Cog, name="pets"):
                 #if the hunger is less than or equal to 5, send a message to the user saying their pet is hungry
                 if updated[5] <= 5:
                     print(updated)
+                    print(updated[0][0])
                     #send a message to the user saying their pet is hungry
                     icon = await db_manager.get_basic_item_emoji(updated[0])
                     rarity = await db_manager.get_basic_item_rarity(updated[0])
