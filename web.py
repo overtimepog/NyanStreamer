@@ -13,6 +13,7 @@ import json
 from discord.ext.commands import Bot, Context
 from discord import Intents
 from discord.ext import commands, tasks
+from typing import Any, Dict, List
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key='your secret key')  # replace with your secret key
@@ -93,6 +94,17 @@ async def callback(request: Request):
             "twitch_name": user['login'],
             "prefix": "None"
         })
+
+@app.get("/api/data", response_model=Dict[str, Any])
+async def get_all_data():
+    items = await db_manager.get_items()
+    jobs = await db_manager.get_jobs()
+    chests = await db_manager.get_chests()
+    return {
+        "items": items,
+        "jobs": jobs,
+        "chests": chests
+    }
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
