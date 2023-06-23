@@ -898,7 +898,12 @@ async def add_structures() -> None:
             await db.execute("INSERT INTO structure_outcomes (structure_id, structure_quote, structure_state, outcome_chance, outcome_type, outcome, outcome_amount, outcome_money, outcome_xp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (structure_id, structure_quote, structure_state, outcome_chance, outcome_type, outcome_output, outcome_amount, outcome_money, outcome_xp))
             print(f"Added |{structure_state}, {outcome_type}, {outcome_output}/{outcome_amount}| to the |{structure_name}| structure")
     
-
+#clear the chets table
+async def clear_chests() -> None:
+    db = DB()
+    await db.execute(f"DELETE FROM `chests`")
+    #clear the chest_contents table
+    await db.execute(f"DELETE FROM `chest_contents`")
 #add the chests to the chest table
 async def add_chests() -> None:
     db = DB()
@@ -1096,6 +1101,12 @@ async def add_quests() -> None:
         else:
             await db.execute("INSERT INTO `quests` (`quest_id`, `quest_name`, `quest_description`, `quest_xp_reward`, `quest_reward_type`, `quest_reward`, `quest_reward_amount`, `quest_level_required`, `quest_type`, `quest`, `OnBoard`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (quest['quest_id'], quest['quest_name'], quest['quest_description'], quest['quest_xp_reward'], quest['quest_reward_type'], quest['quest_reward'], quest['quest_reward_amount'], quest['quest_level_required'], quest['quest_type'], quest['quest'], quest['OnBoard']))
             print(f"Added |{quest['quest_name']}| to the database")
+
+#clear the jobs table
+async def clear_jobs() -> None:
+    db = DB()
+    await db.execute(f"DELETE FROM `jobs`")
+    print("Cleared the jobs table")
 
 # Async function to add jobs and minigames
 async def add_jobs_and_minigames():
