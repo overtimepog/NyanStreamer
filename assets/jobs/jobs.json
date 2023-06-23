@@ -62,6 +62,26 @@
                         "question": "What is the main purpose of a newspaper?",
                         "options": ["Entertainment", "Information", "Decoration"],
                         "answer": "Information"
+                    },
+                    {
+                        "question": "Which invention made large scale newspaper printing possible?",
+                        "options": ["Printing press", "Internet", "Television"],
+                        "answer": "Printing press"
+                    },
+                    {
+                        "question": "In what format are most newspapers printed?",
+                        "options": ["Tabloid", "Broadband", "A4"],
+                        "answer": "Tabloid"
+                    },
+                    {
+                        "question": "What do newspapers use to create a catchy headline?",
+                        "options": ["Rhymes", "Alliteration", "Onomatopoeia"],
+                        "answer": "Alliteration"
+                    },
+                    {
+                        "question": "What is the term for a printed paper distributed daily or weekly with news, articles, and advertisements?",
+                        "options": ["Magazine", "Newspaper", "Journal"],
+                        "answer": "Newspaper"
                     }
                 ]
             },
@@ -180,6 +200,21 @@
                         "question": "What do beekeepers use to calm the bees?",
                         "options": ["Water", "Smoke", "Light"],
                         "answer": "Smoke"
+                    },
+                    {
+                        "question": "What is the name for a baby bee?",
+                        "options": ["Cub", "Pup", "Larva"],
+                        "answer": "Larva"
+                    },
+                    {
+                        "question": "What is the term for the movement bees use to communicate?",
+                        "options": ["Waggle Dance", "Buzz Shuffle", "Hive Hop"],
+                        "answer": "Waggle Dance"
+                    },
+                    {
+                        "question": "Approximately, how many bees does a typical hive contain?",
+                        "options": ["50,000", "5,000", "500"],
+                        "answer": "50,000"
                     }
                 ]
             },
