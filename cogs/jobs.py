@@ -422,7 +422,7 @@ class Jobs(commands.Cog, name="jobs"):
             base_pay_message = ""
             bonus = await db_manager.get_percent_bonus(user_id)
             #the bonus is a % so we need to convert it to a decimal
-            bonus = bonus / 100
+            bonus = int(bonus) / 100
             #add the bonus to the base pay
             base_pay = base_pay + (base_pay * bonus)
             #turn the base pay into an int
