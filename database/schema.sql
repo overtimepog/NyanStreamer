@@ -175,12 +175,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   `job_id` TEXT,
   `job_level` INTEGER,
   `job_xp` INTEGER,
-  `hours_worked` INTEGER,
+  `hours_worked` varchar(255),
   `last_worked` DATETIME,
   `last_daily` DATETIME,
   `last_weekly` DATETIME,
   `rob_locked` boolean NOT NULL,
-  `percent_bonus` INTEGER
+  `percent_bonus` varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS `stats`(

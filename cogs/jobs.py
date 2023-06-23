@@ -135,16 +135,21 @@ class Jobs(commands.Cog, name="jobs"):
                     cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
                     level = level - 1
                     adjusted_cooldown = cooldown - (cooldown_reduction_per_level * level)
-
+                    
                     # Ensure that the adjusted cooldown is not negative
                     if adjusted_cooldown.total_seconds() < 0:
                         adjusted_cooldown = datetime.timedelta(seconds=0)
-
+                    
                     # Calculate adjusted cooldown time
                     total_seconds = adjusted_cooldown.total_seconds()
                     hours, remainder = divmod(total_seconds, 3600)
                     minutes = remainder // 60
-
+                    
+                    # format the cooldown reduction per level
+                    total_seconds_reduction = (cooldown_reduction_per_level * level).total_seconds()
+                    hours_reduction, remainder_reduction = divmod(total_seconds_reduction, 3600)
+                    minutes_reduction, seconds_reduction = divmod(remainder_reduction, 60)
+                    
                     if hours > 0:
                         if minutes > 0:
                             cooldown_str = f"{int(hours)}hr {int(minutes)}min"
@@ -152,24 +157,34 @@ class Jobs(commands.Cog, name="jobs"):
                             cooldown_str = f"{int(hours)}hr"
                     else:
                         cooldown_str = f"{int(minutes)}min"
+                    
+                    # Format the reduction per level string
+                    cooldown_reduction_str = f"{int(hours_reduction)}hr {int(minutes_reduction)}min" if hours_reduction > 0 else f"{int(minutes_reduction)}min"
+                    if level == 0:
+                        # If the user is level 0, don't show the cooldown reduction
+                        pass
+                    else:
+                        cooldown_str += f" (reduced by {cooldown_reduction_str} because you are level {level + 1})"
+                    
                     field_value += f"> Cooldown: **{cooldown_str}**\n"
                     field_value += f"> Pay: **{cash}{base_pay}**\n"
+                    
                     #turn level required into a int
                     level_required = int(level_required)
                     #turn hours required into a int
                     hours_required = int(hours_required)
                     field_value += f"> Level required: **{level_required}**\n"
                     field_value += f"> Hours required: **{hours_required}**\n"    
+                    
                     if item_required != "None":
                         item_name = await db_manager.get_basic_item_name(item_required)
                         field_value += f"> Item required: **{item_icon}{item_name}**\n"
                     else:
                         field_value += f"> Item required: **None**\n"
-
+                    
                     #get the pay and cooldown
                     field_value += f"> ID: `{job_id}`\n"
                     
-
                     job_embed.add_field(name=f"{requirements_met_icon} {icon}**{job_name}**", value=field_value, inline=False)
 
                 embeds.append(job_embed)
@@ -482,7 +497,13 @@ class Jobs(commands.Cog, name="jobs"):
             await ctx.send(content=fail_message)
             #add the cooldown
 
-        await db_manager.add_hours_worked(user_id, 1)
+        #get the cooldown for the job
+        cooldown = await db_manager.get_cooldown_from_id(job_id)
+        #convert the timedelta to a float
+        cooldown = cooldown.total_seconds()
+        #convert the cooldown to hours
+        cooldown = cooldown / 3600
+        await db_manager.add_hours_worked(user_id, cooldown)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.

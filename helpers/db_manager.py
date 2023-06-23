@@ -1251,7 +1251,7 @@ async def get_user_job(user_id: int) -> str:
     else:
         return None
 
-async def add_hours_worked(user_id: str, hours: int) -> None:
+async def add_hours_worked(user_id: str, hours) -> None:
     db = DB()
     await db.execute("UPDATE `users` SET `hours_worked` = `hours_worked` + ? WHERE `user_id` = ?", (hours, user_id))
 
