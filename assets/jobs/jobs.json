@@ -2,7 +2,7 @@
     {
         "id": "paper_delivery",
         "name": "Paper Delivery",
-        "description": "Deliver newspapers to the neighborhood. No special skills required.",
+        "description": "Deliver newspapers to houses in your neighborhood. no experience required, but you need to be able to ride a bike.",
         "job_icon": "<:Newspapers:1121197632870678640>",
         "required_item": "None",
         "required_level": 0,
@@ -10,44 +10,44 @@
         "base_pay": 100,
         "pay_per_level": 10,
         "max_level": 5,
-        "cooldown": 1200,
-        "cooldown_reduction_per_level": 10,
+        "cooldown": 900,
+        "cooldown_reduction_per_level": 20,
         "minigames": [
             {
                 "type": "Order",
-                "prompt": "**Work for Paper Delivery** - Order - Please arrange the following houses in the correct delivery order:",
+                "prompt": "**Work for Paper Delivery** - Order - Please arrange the following tasks in the correct order:",
                 "reward": [
                     {"rewardType": "money", "reward": 20, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 40, "chance": 0.5},
+                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
                     {"rewardType": "money", "reward": 25, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 50, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
                     {"rewardType": "money", "reward": 30, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
                     {"rewardType": "money", "reward": 35, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 70, "chance": 0.2}
+                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
-                "task": "Sort the houses according to the delivery order",
-                "items": ["House A", "House B", "House C", "House D"],
-                "correctOrder": ["House A", "House B", "House C", "House D"]
+                "task": "Sort the tasks according to the paper delivery order",
+                "items": ["Get newspapers", "Load newspapers on bike", "Ride bike", "Throw newspaper"],
+                "correctOrder": ["Get newspapers", "Load newspapers on bike", "Ride bike", "Throw newspaper"]
             },
             {
                 "type": "Trivia",
                 "prompt": "**Work for Paper Delivery** - Trivia - Please answer the following question:",
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.5},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
+                    {"rewardType": "item", "reward": "newspaper", "chance": 0.2},
                     {"rewardType": "money", "reward": 35, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 70, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.3},
                     {"rewardType": "money", "reward": 40, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 80, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.4},
                     {"rewardType": "money", "reward": 45, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 90, "chance": 0.2}
+                    {"rewardType": "experience", "reward": 5, "chance": 0.3}
                 ],
                 "questions": [
                     {
-                        "question": "What is the name of the famous newspaper in Harry Potter?",
-                        "options": ["The Daily Prophet", "The Daily Bugle", "The Daily News"],
-                        "answer": "The Daily Prophet"
+                        "question": "What is the main purpose of a newspaper?",
+                        "options": ["Entertainment", "Information", "Decoration"],
+                        "answer": "Information"
                     }
                 ]
             },
@@ -57,49 +57,49 @@
                 "phrases": ["delivering news one paper at a time", "the early bird catches the worm", "rain or shine, the news must go on", "extra extra read all about it", "news doesn't wait for anyone", "the pen is mightier than the sword", "a newspaper is a world in your hands", "today's news is tomorrow's history", "all the news that's fit to print", "news travels fast"],
                 "reward": [
                     {"rewardType": "money", "reward": 20, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 40, "chance": 0.5},
+                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
                     {"rewardType": "money", "reward": 25, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 50, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
                     {"rewardType": "money", "reward": 30, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
                     {"rewardType": "money", "reward": 35, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 70, "chance": 0.2}
+                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ]
             },
             {
                 "type": "Hangman",
                 "prompt": "**Work for Paper Delivery** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to paper delivery:",
                 "reward": [
-                    {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
+                    {"rewardType": "money", "reward": 20, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
                     {"rewardType": "item", "reward": "newspaper", "chance": 0.1},
-                    {"rewardType": "money", "reward": 35, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 70, "chance": 0.4},
-                    {"rewardType": "money", "reward": 40, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 80, "chance": 0.3},
-                    {"rewardType": "money", "reward": 45, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 90, "chance": 0.2}
+                    {"rewardType": "money", "reward": 25, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
+                    {"rewardType": "money", "reward": 30, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
+                    {"rewardType": "money", "reward": 35, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
                 "sentences": [
                     {
-                        "sentence": "The {word} is the first one to read the news.",
+                        "sentence": "The {word} is the vehicle used for paper delivery.",
+                        "answer": "bicycle"
+                    },
+                    {
+                        "sentence": "The {word} is the person who delivers the newspaper.",
                         "answer": "paperboy"
                     },
                     {
-                        "sentence": "A {word} is a bundle of newspapers ready for delivery.",
-                        "answer": "stack"
+                        "sentence": "The {word} is the item being delivered.",
+                        "answer": "newspaper"
                     },
                     {
-                        "sentence": "The {word} is the main part of a newspaper.",
-                        "answer": "headline"
+                        "sentence": "{word} is the action of throwing the newspaper.",
+                        "answer": "tossing"
                     },
                     {
-                        "sentence": "{word} is the process of delivering newspapers to houses or retail outlets.",
-                        "answer": "distribution"
-                    },
-                    {
-                        "sentence": "A {word} is a person who sells newspapers directly to the public.",
-                        "answer": "newsagent"
+                        "sentence": "{word} is the time when newspapers are usually delivered.",
+                        "answer": "morning"
                     }
                 ]
             }
@@ -108,14 +108,14 @@
     {
         "id": "beekeeper",
         "name": "Beekeeper",
-        "description": "Maintain beehives and collect honey. Requires careful handling and knowledge about bees.",
-        "job_icon": "<:Bee_Drone:1121203445077127180>",
+        "description": "Take care of bees and collect honey. Requires a bee suit and a love for small, buzzing creatures.",
+        "job_icon": "<:Beekeeper:1121203445077127180>",
         "required_item": "bee_suit",
         "required_level": 2,
         "required_hours": 10,
         "base_pay": 200,
         "pay_per_level": 15,
-        "max_level": 10,
+        "max_level": 5,
         "cooldown": 1800,
         "cooldown_reduction_per_level": 30,
         "minigames": [
@@ -123,89 +123,85 @@
                 "type": "Order",
                 "prompt": "**Work for Beekeeper** - Order - Please arrange the following tasks in the correct order:",
                 "reward": [
-                    {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
-                    {"rewardType": "money", "reward": 35, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 70, "chance": 0.4},
-                    {"rewardType": "money", "reward": 40, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 80, "chance": 0.3},
-                    {"rewardType": "money", "reward": 45, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 90, "chance": 0.2}
+                    {"rewardType": "money", "reward": 20, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
+                    {"rewardType": "money", "reward": 25, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
+                    {"rewardType": "money", "reward": 30, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
+                    {"rewardType": "money", "reward": 35, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
                 "task": "Sort the tasks according to the beekeeping order",
-                "items": ["Put on bee suit", "Smoke the hive", "Remove honeycombs", "Extract honey"],
-                "correctOrder": ["Put on bee suit", "Smoke the hive", "Remove honeycombs", "Extract honey"]
+                "items": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"],
+                "correctOrder": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"]
             },
             {
                 "type": "Trivia",
                 "prompt": "**Work for Beekeeper** - Trivia - Please answer the following question:",
                 "reward": [
-                    {"rewardType": "money", "reward": 50, "chance": 0.5},
+                    {"rewardType": "money", "reward": 30, "chance": 0.5},
                     {"rewardType": "item", "reward": "honey", "chance": 0.2},
-                    {"rewardType": "money", "reward": 55, "chance": 0.4},
-                    {"rewardType": "item", "reward": "honey", "chance": 0.3},
-                    {"rewardType": "money", "reward": 60, "chance": 0.3},
-                    {"rewardType": "item", "reward": "honey", "chance": 0.4},
-                    {"rewardType": "money", "reward": 65, "chance": 0.2},
-                    {"rewardType": "item", "reward": "honey", "chance": 0.3}
+                    {"rewardType": "money", "reward": 35, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.3},
+                    {"rewardType": "money", "reward": 40, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.4},
+                    {"rewardType": "money", "reward": 45, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.3}
                 ],
                 "questions": [
                     {
-                        "question": "What is the queen bee's main job?",
-                        "options": ["Making honey", "Laying eggs", "Pollinating flowers"],
-                        "answer": "Laying eggs"
+                        "question": "What is the main product produced by bees?",
+                        "options": ["Honey", "Milk", "Eggs"],
+                        "answer": "Honey"
                     }
                 ]
             },
             {
                 "type": "Retype",
                 "prompt": "**Work for Beekeeper** - Retype - Please retype the following phrase:",
-                "phrases": ["bees are nature's little workers", "sweet as honey", "busy as a bee", "the bee's knees"],
+                "phrases": ["bees are the key to pollination", "sweet as honey", "busy as a bee", "hive mind"],
                 "reward": [
-                    {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
-                    {"rewardType": "money", "reward": 35, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 70, "chance": 0.4},
-                    {"rewardType": "money", "reward": 40, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 80, "chance": 0.3},
-                    {"rewardType": "money", "reward": 45, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 90, "chance": 0.2}
+                    {"rewardType": "money", "reward": 20, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
+                    {"rewardType": "money", "reward": 25, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
+                    {"rewardType": "money", "reward": 30, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
+                    {"rewardType": "money", "reward": 35, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ]
             },
             {
                 "type": "Hangman",
                 "prompt": "**Work for Beekeeper** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to beekeeping:",
                 "reward": [
-                    {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
+                    {"rewardType": "money", "reward": 20, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
                     {"rewardType": "item", "reward": "honey", "chance": 0.1},
-                    {"rewardType": "money", "reward": 35, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 70, "chance": 0.4},
-                    {"rewardType": "money", "reward": 40, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 80, "chance": 0.3},
-                    {"rewardType": "money", "reward": 45, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 90, "chance": 0.2}
+                    {"rewardType": "money", "reward": 25, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
+                    {"rewardType": "money", "reward": 30, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
+                    {"rewardType": "money", "reward": 35, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
                 "sentences": [
                     {
-                        "sentence": "The {word} is the most important bee in the hive.",
-                        "answer": "queen"
-                    },
-                    {
-                        "sentence": "{word} is a substance used to calm bees.",
-                        "answer": "smoke"
-                    },
-                    {
-                        "sentence": "The {word} is the protective gear worn by beekeepers.",
-                        "answer": "suit"
-                    },
-                    {
-                        "sentence": "{word} is the sweet product made by bees.",
+                        "sentence": "The {word} is the sweet product made by bees.",
                         "answer": "honey"
                     },
                     {
-                        "sentence": "A {word} is a structure for housing a colony of bees.",
+                        "sentence": "The {word} is the structure where bees live.",
                         "answer": "hive"
+                    },
+                    {
+                        "sentence": "{word} is the process of calming bees with smoke.",
+                        "answer": "smoking"
+                    },
+                    {
+                        "sentence": "{word} are the insects that beekeepers care for.",
+                        "answer": "bees"
                     }
                 ]
             }
