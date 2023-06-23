@@ -170,13 +170,13 @@
         "isUsable": true,
         "inShop": true,
         "isEquippable": false,
-        "item_description": "Use this cool coin to increase your bonus percent by 5%",
+        "item_description": "Use this cool coin to increase your bonus percent by 1%",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
         "recipe_id": "None",
         "item_recipe": [],
-        "item_effect": "bonus + 5",
+        "item_effect": "bonus + 1",
         "item_sub_type": "None"
     },
     {
