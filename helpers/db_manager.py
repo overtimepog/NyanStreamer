@@ -2827,8 +2827,6 @@ async def check_user(user_id: int) -> int:
             return 1
         else:
             return None
-    
-
         
         
 #get a streamers name from an item ID

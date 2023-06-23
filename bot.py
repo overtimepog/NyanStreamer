@@ -347,6 +347,15 @@ async def setup() -> None:
     print("\n" + "---------Loading Cogs----------")
     await load_cogs()
     print("\n" + "-----------------------------")
+    #look through all the guilds the bot is in, and add all the members to the database if they are not already in it
+    for bot_guild in bot.guilds:
+        for member in bot_guild.members:
+            if member.bot:
+                continue
+            checkUser = await db_manager.check_user(member.id)
+            if checkUser == None:
+                await db_manager.get_user(member.id)
+
     print("Setup Complete")
     print("-----------------------------")
 
@@ -373,5 +382,14 @@ async def on_ready() -> None:
     # Run setup function
     # Run twitch bot file
     subprocess.Popen([sys.executable, r'twitch.py'])
+
+#when the bot joins a server, add all the members to the database
+@bot.event
+async def on_guild_join(guild: discord.Guild) -> None:
+    print("Joined " + guild.name + "ID: " + str(guild.id))
+    for member in guild.members:
+        if member.bot:
+            continue
+        await db_manager.get_user(member.id)
 
 bot.run(config["token"])
