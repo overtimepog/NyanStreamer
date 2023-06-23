@@ -13,5 +13,35 @@
     },
     {
         "message": "**BOSS** Well done {user}! Your hard work has paid off. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Excellent, {user}! You've performed like a caffeinated squirrel. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Stupendous, {user}! You've worked like a wizard on espresso. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Nice one, {user}! You cracked this task like an egg on a Sunday morning. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Great job, {user}! You attacked the task like a hungry panda on a bamboo stick. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Spectacular, {user}! You've worked so well, even the office plant is clapping. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Fantastic work, {user}! You were on this task like white on rice. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Excellent work, {user}! You've been more focused than a cat watching a laser pointer. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Splendid, {user}! You tackled that task like a pigeon on a french fry. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Marvelous job, {user}! You've been buzzing around this task like a bee on a flower field. You earned **{thing}** for your work."
+    },
+    {
+        "message": "**BOSS** Incredible, {user}! You've handled the task better than a ninja handles throwing stars. You earned **{thing}** for your work."
     }
 ]

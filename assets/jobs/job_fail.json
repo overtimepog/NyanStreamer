@@ -13,5 +13,35 @@
     },
     {
         "message": "**BOSS** Not quite there yet, {user}. Keep working hard and you'll improve. Here's **{thing}** for your time."
+    },
+    {
+        "message": "**BOSS** Unlucky break {user}, the task proved more challenging than expected. Stay determined! Here's **{thing}** for your effort."
+    },
+    {
+        "message": "**BOSS** Sorry to see you struggle, {user}. Remember, each attempt brings improvement. Here's **{thing}** for your effort."
+    },
+    {
+        "message": "**BOSS** Don't be disheartened, {user}. You missed the mark this time but keep pushing. Here's **{thing}** for your effort."
+    },
+    {
+        "message": "**BOSS** It's a hiccup, {user}. You weren't successful this time, but don't let that stop you. Here's **{thing}** for your time."
+    },
+    {
+        "message": "**BOSS** Not your best moment, {user}, but failure is a stepping stone to success. Here's **{thing}** for your time."
+    },
+    {
+        "message": "**BOSS** Tough day, {user}. The task got the best of you this time, but keep going. Here's **{thing}** for your effort."
+    },
+    {
+        "message": "**BOSS** Close but no cigar, {user}. You'll get there with practice. Here's **{thing}** for your time."
+    },
+    {
+        "message": "**BOSS** A valiant attempt, {user}, but not quite successful. Stay positive! Here's **{thing}** for your effort."
+    },
+    {
+        "message": "**BOSS** Keep your chin up, {user}. It didn't work out this time, but there's always a next. Here's **{thing}** for your time."
+    },
+    {
+        "message": "**BOSS** Better luck next time, {user}. Remember, success is often built on lessons learned from failure. Here's **{thing}** for your effort."
     }
 ]
