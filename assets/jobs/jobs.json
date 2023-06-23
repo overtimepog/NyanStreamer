@@ -26,10 +26,24 @@
                     {"rewardType": "money", "reward": 35, "chance": 0.1},
                     {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
-                "task": "Sort the tasks according to the paper delivery order",
-                "items": ["Get newspapers", "Load newspapers on bike", "Ride bike", "Throw newspaper"],
-                "correctOrder": ["Get newspapers", "Load newspapers on bike", "Ride bike", "Throw newspaper"]
-            },
+                "sequences": [
+                    {
+                        "task": "Sort the tasks according to the paper delivery order",
+                        "items": ["Get newspapers", "Load newspapers on bike", "Ride bike", "Throw newspaper"],
+                        "correctOrder": ["Get newspapers", "Load newspapers on bike", "Ride bike", "Throw newspaper"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the route preparation process",
+                        "items": ["Check weather", "Plan route", "Prepare bike", "Get dressed"],
+                        "correctOrder": ["Check weather", "Get dressed", "Prepare bike", "Plan route"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the end of the day routine",
+                        "items": ["Deliver last paper", "Return to base", "Check bike", "Report completed deliveries"],
+                        "correctOrder": ["Deliver last paper", "Return to base", "Check bike", "Report completed deliveries"]
+                    }
+                ]
+            },            
             {
                 "type": "Trivia",
                 "prompt": "**Work for Paper Delivery** - Trivia - Please answer the following question:",
@@ -81,26 +95,14 @@
                     {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
                 "sentences": [
-                    {
-                        "sentence": "The {word} is the vehicle used for paper delivery.",
-                        "answer": "bicycle"
-                    },
-                    {
-                        "sentence": "The {word} is the person who delivers the newspaper.",
-                        "answer": "paperboy"
-                    },
-                    {
-                        "sentence": "The {word} is the item being delivered.",
-                        "answer": "newspaper"
-                    },
-                    {
-                        "sentence": "{word} is the action of throwing the newspaper.",
-                        "answer": "tossing"
-                    },
-                    {
-                        "sentence": "{word} is the time when newspapers are usually delivered.",
-                        "answer": "morning"
-                    }
+                    {"sentence": "The {word} is the vehicle used for paper delivery.", "answer": "bicycle"},
+                    {"sentence": "The {word} is the person who delivers the newspaper.", "answer": "paperboy"},
+                    {"sentence": "The {word} is the item being delivered.", "answer": "newspaper"},
+                    {"sentence": "{word} is the action of throwing the newspaper.", "answer": "tossing"},
+                    {"sentence": "{word} is the time when newspapers are usually delivered.", "answer": "morning"},
+                    {"sentence": "Newspapers often contain {word} about current events.", "answer": "news"},
+                    {"sentence": "A {word} is a large bundle of newspapers ready for delivery.", "answer": "stack"},
+                    {"sentence": "Delivering newspapers is often a {word} job.", "answer": "morning"}
                 ]
             }
         ]
@@ -132,9 +134,23 @@
                     {"rewardType": "money", "reward": 35, "chance": 0.1},
                     {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
-                "task": "Sort the tasks according to the beekeeping order",
-                "items": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"],
-                "correctOrder": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"]
+                "sequences": [
+                    {
+                        "task": "Sort the tasks according to the beekeeper's daily routine",
+                        "items": ["Inspect hive", "Refill feeder", "Check for pests", "Record findings"],
+                        "correctOrder": ["Put on bee suit", "Inspect hive", "Refill feeder", "Check for pests", "Record findings"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the honey harvesting process",
+                        "items": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"],
+                        "correctOrder": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the honey processing steps",
+                        "items": ["Uncap honeycombs", "Spin in extractor", "Filter honey", "Jar honey"],
+                        "correctOrder": ["Uncap honeycombs", "Spin in extractor", "Filter honey", "Jar honey"]
+                    }
+                ]
             },
             {
                 "type": "Trivia",
@@ -154,13 +170,23 @@
                         "question": "What is the main product produced by bees?",
                         "options": ["Honey", "Milk", "Eggs"],
                         "answer": "Honey"
+                    },
+                    {
+                        "question": "What is the queen bee's primary role?",
+                        "options": ["To make honey", "To pollinate flowers", "To lay eggs"],
+                        "answer": "To lay eggs"
+                    },
+                    {
+                        "question": "What do beekeepers use to calm the bees?",
+                        "options": ["Water", "Smoke", "Light"],
+                        "answer": "Smoke"
                     }
                 ]
             },
             {
                 "type": "Retype",
                 "prompt": "**Work for Beekeeper** - Retype - Please retype the following phrase:",
-                "phrases": ["bees are the key to pollination", "sweet as honey", "busy as a bee", "hive mind"],
+                "phrases": ["bees are the key to pollination", "sweet as honey", "busy as a bee", "hive mind", "the bee's knees", "queen of the hive", "buzzing with activity", "sweetness of life"],
                 "reward": [
                     {"rewardType": "money", "reward": 20, "chance": 0.4},
                     {"rewardType": "experience", "reward": 2, "chance": 0.5},
@@ -187,22 +213,16 @@
                     {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
                 "sentences": [
-                    {
-                        "sentence": "The {word} is the sweet product made by bees.",
-                        "answer": "honey"
-                    },
-                    {
-                        "sentence": "The {word} is the structure where bees live.",
-                        "answer": "hive"
-                    },
-                    {
-                        "sentence": "{word} is the process of calming bees with smoke.",
-                        "answer": "smoking"
-                    },
-                    {
-                        "sentence": "{word} are the insects that beekeepers care for.",
-                        "answer": "bees"
-                    }
+                    {"sentence": "The {word} is the place where bees live.", "answer": "hive"},
+                    {"sentence": "The {word} is the person who takes care of the bees.", "answer": "beekeeper"},
+                    {"sentence": "{word} is the sweet product produced by bees.", "answer": "honey"},
+                    {"sentence": "A {word} is a group of bees.", "answer": "colony"},
+                    {"sentence": "The {word} is the leader of the hive.", "answer": "queen"},
+                    {"sentence": "{word} is the action of collecting honey.", "answer": "harvesting"},
+                    {"sentence": "A {word} is used to calm the bees.", "answer": "smoker"},
+                    {"sentence": "Beekeepers wear a {word} to protect themselves.", "answer": "suit"},
+                    {"sentence": "Bees collect {word} to make honey.", "answer": "nectar"},
+                    {"sentence": "Bees perform a {word} dance to communicate.", "answer": "waggle"}
                 ]
             }
         ]

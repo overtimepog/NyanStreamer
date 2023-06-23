@@ -1165,10 +1165,11 @@ async def add_jobs_and_minigames():
                         (minigame_id, question['question'], json.dumps(question['options']), question['answer'])
                     )
             elif minigame['type'] == 'Order':
-                await db.execute(
-                    "INSERT INTO `order_game` (`minigame_id`, `task`, `items`, `correct_order`) VALUES (?, ?, ?, ?)",
-                    (minigame_id, minigame['task'], json.dumps(minigame['items']), json.dumps(minigame['correctOrder']))
-                )
+                for sequence in minigame['sequences']:
+                    await db.execute(
+                        "INSERT INTO `order_game` (`minigame_id`, `task`, `items`, `correct_order`) VALUES (?, ?, ?, ?)",
+                        (minigame_id, sequence['task'], json.dumps(sequence['items']), json.dumps(sequence['correctOrder']))
+                    )
             elif minigame['type'] == 'Matching':
                 await db.execute(
                     "INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)",
@@ -1369,9 +1370,9 @@ async def get_data_for_minigame(minigame):
     if game_type == 'Trivia':
         game_data = await db.execute("SELECT * FROM `trivia` WHERE minigame_id = ?", (minigame[0],), fetch="all")
     elif game_type == 'Order':
-        game_data = await db.execute("SELECT * FROM `order_game` WHERE minigame_id = ?", (minigame[0],), fetch="one")
+        game_data = await db.execute("SELECT * FROM `order_game` WHERE minigame_id = ?", (minigame[0],), fetch="all")
     elif game_type == 'Matching':
-        game_data = await db.execute("SELECT * FROM `matching` WHERE minigame_id = ?", (minigame[0],), fetch="one")
+        game_data = await db.execute("SELECT * FROM `matching` WHERE minigame_id = ?", (minigame[0],), fetch="all")
     elif game_type == 'Choice':
         choices = await db.execute("SELECT rowid, * FROM `choices` WHERE minigame_id = ?", (minigame[0],), fetch="all")
         choices_with_outcomes = []
