@@ -454,22 +454,24 @@ class Jobs(commands.Cog, name="jobs"):
                     await db_manager.add_money(user_id, int_reward_value)
                 if reward_type == "experience":
                     await db_manager.add_xp(user_id, int_reward_value)
-                    canLevelUp = await db_manager.can_level_up(user_id)
-                    if canLevelUp == True:
-                        await db_manager.add_level(user_id, 1)
-                        level = await db_manager.get_level(user_id)
-                        level = str(level)
-                        level = level.replace("(", "")
-                        level = level.replace(")", "")
-                        level = level.replace(",", "")
-                        await ctx.send(f"Congratulations {ctx.author.mention} you have leveled up, you are now level {level}!")
 
                 await asyncio.wait_for(callback_processed_future, timeout=10.0)
                 await ctx.send(content=result_message, view=None)
+                
             elif reward_type == "item":
                 await db_manager.add_item_to_inventory(user_id, reward_value, 1)
                 await asyncio.wait_for(callback_processed_future, timeout=10.0)
                 await ctx.send(content=result_message, view=None)
+
+            canLevelUp = await db_manager.can_level_up(user_id)
+            if canLevelUp == True:
+                await db_manager.add_level(user_id, 1)
+                level = await db_manager.get_level(user_id)
+                level = str(level)
+                level = level.replace("(", "")
+                level = level.replace(")", "")
+                level = level.replace(",", "")
+                await ctx.send(f"Congratulations {ctx.author.mention} you have leveled up, you are now level {level}!")
 
         else:
             CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
