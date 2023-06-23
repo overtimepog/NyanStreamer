@@ -1112,8 +1112,6 @@ async def clear_jobs() -> None:
     await db.execute(f"DELETE FROM `trivia`")
     await db.execute(f"DELETE FROM `order_game`")
     await db.execute(f"DELETE FROM `matching`")
-    await db.execute(f"DELETE FROM `choices`")
-    await db.execute(f"DELETE FROM `outcomes`")
     await db.execute(f"DELETE FROM `backwards`")
     await db.execute(f"DELETE FROM `retype`")
     await db.execute(f"DELETE FROM `hangman`")
