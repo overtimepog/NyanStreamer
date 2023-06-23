@@ -134,7 +134,7 @@
         "job_icon": "<:Beekeeper:1121203445077127180>",
         "required_item": "bee_suit",
         "required_level": 2,
-        "required_hours": 10,
+        "required_hours": 3,
         "base_pay": 200,
         "pay_per_level": 15,
         "max_level": 5,
