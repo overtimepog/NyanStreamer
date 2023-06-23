@@ -305,24 +305,48 @@ this is an example of each minigame in one job
             },
             {
                 "type": "Trivia",
-                "prompt": "**Work for Chef** - Trivia - Please answer the following question:",
+                "prompt": "**Work for Beekeeper** - Trivia - Please answer the following question:",
                 "reward": [
-                    {"rewardType": "money", "reward": 50, "chance": 0.5},
-                    {"rewardType": "item", "reward": "chef_hat", "chance": 0.2}
+                    {"rewardType": "money", "reward": 30, "chance": 0.5},
+                    {"rewardType": "item", "reward": "honey", "chance": 0.2},
+                    {"rewardType": "money", "reward": 35, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.3},
+                    {"rewardType": "money", "reward": 40, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.4},
+                    {"rewardType": "money", "reward": 45, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.3}
                 ],
                 "questions": [
                     {
-                        "question": "What temperature does water boil at sea level?",
-                        "options": ["100°C", "50°C", "150°C"],
-                        "answer": "100°C"
+                        "question": "What is the main product produced by bees?",
+                        "options": ["Honey", "Milk", "Eggs"],
+                        "answer": "Honey"
                     },
                     {
-                        "question": "What temperature should you cook a steak?",
-                        "options": ["100°C", "50°C", "150°C"],
-                        "answer": "100°C"
+                        "question": "What is the queen bee's primary role?",
+                        "options": ["To make honey", "To pollinate flowers", "To lay eggs"],
+                        "answer": "To lay eggs"
                     },
-                    
-
+                    {
+                        "question": "What do beekeepers use to calm the bees?",
+                        "options": ["Water", "Smoke", "Light"],
+                        "answer": "Smoke"
+                    },
+                    {
+                        "question": "What is the name for a baby bee?",
+                        "options": ["Cub", "Pup", "Larva"],
+                        "answer": "Larva"
+                    },
+                    {
+                        "question": "What is the term for the movement bees use to communicate?",
+                        "options": ["Waggle Dance", "Buzz Shuffle", "Hive Hop"],
+                        "answer": "Waggle Dance"
+                    },
+                    {
+                        "question": "Approximately, how many bees does a typical hive contain?",
+                        "options": ["50,000", "5,000", "500"],
+                        "answer": "50,000"
+                    }
                 ]
             },
             {
