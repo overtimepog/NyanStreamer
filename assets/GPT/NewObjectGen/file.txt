@@ -12,7 +12,6 @@ Here are some rules to be followed when making new stuff
 * when Generating jobs, please give each minigame at least 5 rewards of differing money and xp amounts
 * only one job minigame per job should have a chance for an item reward
 * the xp needed for a user to level up is 6 times their level and does not overflow after a user levels up, keep this in mind when giving out xp rewards
-* keep in mind when giving jobs hours required that the /work command gives 1 hour of work per use
 * jobs must have multiple rewards with different amounts for each minigame
 * all generated stuff must be given back in json format
 * FOLLOW EVERY RULE AT ALL TIMES WHEN CREATING STUFF WITH THE TEMPLATES, which are below
@@ -278,7 +277,7 @@ this is an example of each minigame in one job
                 "prompt": "**Work for Chef** - Order - Please arrange the following ingredients in the correct order: (Hint: Start with the dry ingredient, add fats, then go for the wet ingredients.)",
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.5}
+                    {"rewardType": "experience", "reward": 1, "chance": 0.5}
                 ],
                 "task": "Sort the ingredients according to the recipe order",
                 "items": ["Flour", "Eggs", "Milk", "Butter"],
@@ -312,7 +311,7 @@ this is an example of each minigame in one job
                 "phrases": ["cooking is love made visible", "The secret ingredient is always love", "good food is good mood", "life is short, lick the bowl"],
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.3}
+                    {"rewardType": "experience", "reward": 2, "chance": 0.3}
                 ]
             },
             {
@@ -363,7 +362,7 @@ this is an example of each minigame in one job
                 "prompt": "**Work for Chef** - Matching - Please match the following plants with their benefits:",
                 "reward": [
                     {"rewardType": "money", "reward": 80, "chance": 0.6},
-                    {"rewardType": "experience", "reward": 50, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.4},
                     {"rewardType": "item", "reward": "herb_bundle", "chance": 0.1}
                 ],
                 "items": [
@@ -382,7 +381,7 @@ this is an example of each minigame in one job
                 "prompt": "**Work for Chef** - Anagram - Please unscramble the following ingredient or cooking-related word:",
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.5},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.5},
                     {"rewardType": "item", "reward": "chef_hat", "chance": 0.1}
                 ],
                 "task": "Unscramble the cooking-related word",
