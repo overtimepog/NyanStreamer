@@ -274,14 +274,34 @@ this is an example of each minigame in one job
         "minigames": [
             {
                 "type": "Order",
-                "prompt": "**Work for Chef** - Order - Please arrange the following ingredients in the correct order: (Hint: Start with the dry ingredient, add fats, then go for the wet ingredients.)",
+                "prompt": "**Work for Beekeeper** - Order - Please arrange the following tasks in the correct order:",
                 "reward": [
-                    {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 1, "chance": 0.5}
+                    {"rewardType": "money", "reward": 20, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
+                    {"rewardType": "money", "reward": 25, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
+                    {"rewardType": "money", "reward": 30, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
+                    {"rewardType": "money", "reward": 35, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
                 ],
-                "task": "Sort the ingredients according to the recipe order",
-                "items": ["Flour", "Eggs", "Milk", "Butter"],
-                "correctOrder": ["Flour", "Butter", "Eggs", "Milk"]
+                "sequences": [
+                    {
+                        "task": "Sort the tasks according to the beekeeper's daily routine",
+                        "items": ["Inspect hive", "Refill feeder", "Check for pests", "Record findings"],
+                        "correctOrder": ["Put on bee suit", "Inspect hive", "Refill feeder", "Check for pests", "Record findings"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the honey harvesting process",
+                        "items": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"],
+                        "correctOrder": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the honey processing steps",
+                        "items": ["Uncap honeycombs", "Spin in extractor", "Filter honey", "Jar honey"],
+                        "correctOrder": ["Uncap honeycombs", "Spin in extractor", "Filter honey", "Jar honey"]
+                    }
+                ]
             },
             {
                 "type": "Trivia",
