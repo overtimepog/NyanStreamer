@@ -1107,6 +1107,19 @@ async def clear_jobs() -> None:
     db = DB()
     await db.execute(f"DELETE FROM `jobs`")
     print("Cleared the jobs table")
+    #clear the minigames tables
+    await db.execute(f"DELETE FROM `minigames`")
+    await db.execute(f"DELETE FROM `trivia`")
+    await db.execute(f"DELETE FROM `order_game`")
+    await db.execute(f"DELETE FROM `matching`")
+    await db.execute(f"DELETE FROM `choices`")
+    await db.execute(f"DELETE FROM `outcomes`")
+    await db.execute(f"DELETE FROM `backwards`")
+    await db.execute(f"DELETE FROM `retype`")
+    await db.execute(f"DELETE FROM `hangman`")
+    await db.execute(f"DELETE FROM `anagram`")
+    #clear the rewards table
+    await db.execute(f"DELETE FROM `rewards`")
 
 # Async function to add jobs and minigames
 async def add_jobs_and_minigames():

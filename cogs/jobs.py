@@ -12,6 +12,7 @@ import discord
 from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
+from discord.ext.commands.errors import MissingPermissions, HybridCommandError
 
 from helpers import battle, checks, db_manager, hunt, mine, games
 from typing import List, Tuple
@@ -344,23 +345,28 @@ class Jobs(commands.Cog, name="jobs"):
 
         print(f"Playing {minigame[2]} game")
         print(f"Game data: {game_data}")
-        if minigame[2] == 'Trivia':
-            result, message = await games.play_trivia(ctx, game_data, minigameText, callback_processed_future)
-        elif minigame[2] == 'Order':
-            result, message = await games.play_order_game(ctx, game_data, minigameText, callback_processed_future)
-        elif minigame[2] == 'Matching':
-            result, message = await games.play_matching_game(ctx, game_data, minigameText, callback_processed_future)
-        elif minigame[2] == 'Retype':
-            result, message = await games.play_retype_game(ctx, game_data, minigameText, callback_processed_future)
-        elif minigame[2] == 'Backwards':
-            result, message = await games.play_backwards_game(ctx, game_data, minigameText, callback_processed_future)
-        elif minigame[2] == 'Hangman':
-            result, message = await games.play_hangman_game(ctx, game_data, minigameText, callback_processed_future)
-        elif minigame[2] == 'Anagram':
-            result, message = await games.play_anagram_game(ctx, game_data, minigameText, callback_processed_future)
-        else:
-            print("Unknown game type")
-            return
+        try:
+            if minigame[2] == 'Trivia':
+                result, message = await games.play_trivia(ctx, game_data, minigameText, callback_processed_future)
+            elif minigame[2] == 'Order':
+                result, message = await games.play_order_game(ctx, game_data, minigameText, callback_processed_future)
+            elif minigame[2] == 'Matching':
+                result, message = await games.play_matching_game(ctx, game_data, minigameText, callback_processed_future)
+            elif minigame[2] == 'Retype':
+                result, message = await games.play_retype_game(ctx, game_data, minigameText, callback_processed_future)
+            elif minigame[2] == 'Backwards':
+                result, message = await games.play_backwards_game(ctx, game_data, minigameText, callback_processed_future)
+            elif minigame[2] == 'Hangman':
+                result, message = await games.play_hangman_game(ctx, game_data, minigameText, callback_processed_future)
+            elif minigame[2] == 'Anagram':
+                result, message = await games.play_anagram_game(ctx, game_data, minigameText, callback_processed_future)
+            else:
+                print("Unknown game type")
+                return
+        except HybridCommandError:
+            #tell the user there was an error, some jobs dont work in dms
+            await ctx.send("There was an error, please the work command again in a server!")
+            ctx.command.reset_cooldown(ctx)
 
         if result:
             user_luck = await db_manager.get_luck(user_id)
