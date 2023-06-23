@@ -84,16 +84,16 @@ class Jobs(commands.Cog, name="jobs"):
             return
 
         # Calculate number of pages based on number of jobs
-        num_pages = (len(jobs) // 3) + (1 if len(jobs) % 3 > 0 else 0)
+        num_pages = (len(jobs) // 2) + (1 if len(jobs) % 2 > 0 else 0)
 
         # Create a function to generate embeds from a list of jobs
         async def create_embeds(job_list, user_id):
-            num_pages = (len(job_list) // 3) + (1 if len(job_list) % 3 > 0 else 0)
+            num_pages = (len(job_list) // 2) + (1 if len(job_list) % 2 > 0 else 0)
             embeds = []
 
             for i in range(num_pages):
-                start_idx = i * 3
-                end_idx = start_idx + 3
+                start_idx = i * 2
+                end_idx = start_idx + 2
                 job_embed = discord.Embed(
                     title="Job Board",
                     description="Jobs available :)",
