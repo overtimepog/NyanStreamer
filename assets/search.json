@@ -43,6 +43,51 @@
                 {"penaltyType": "death", "chance": 0.04},
                 {"penaltyType": "death", "chance": 0.05}
             ]
+        },
+        {
+            "location": "Car",
+            "positive_comments": [
+                "You found some spare change under the seat, adding {thing} to your wallet.",
+                "You found a valuable object someone left behind, selling it gave you {thing}.",
+                "You found a wallet in the glove box. Sweet! You got {thing}.",
+                "You found a rare car part. You sold it for {thing}.",
+                "You found a diamond ring in the ashtray. After selling it, you got {thing}."
+            ],
+            "positive_outcomes": [
+                {"rewardType": "money", "reward": 10, "chance": 0.5},
+                {"rewardType": "money", "reward": 30, "chance": 0.3},
+                {"rewardType": "money", "reward": 50, "chance": 0.1},
+                {"rewardType": "money", "reward": 100, "chance": 0.05},
+                {"rewardType": "money", "reward": 200, "chance": 0.05}
+            ],
+            "negative_comments": [
+                "The car alarm went off and you had to run away, dropping {thing} in the process.",
+                "You cut yourself on broken glass, resulting in a trip to the hospital and a loss of {thing}.",
+                "You accidentally triggered the airbag while searching. The resulting chaos cost you {thing}.",
+                "You attracted the attention of a police officer and had to pay a fine of {thing}.",
+                "The car was a complete junker, and you got nothing but a tetanus shot that cost {thing}."
+            ],
+            "negative_outcomes": [
+                {"penaltyType": "money", "penalty": 20, "chance": 0.5},
+                {"penaltyType": "money", "penalty": 50, "chance": 0.3},
+                {"penaltyType": "money", "penalty": 100, "chance": 0.1},
+                {"penaltyType": "money", "penalty": 200, "chance": 0.1}
+            ],
+            "death_comments": [
+                "You accidentally locked yourself in the trunk and couldn't get out. You didn't survive. Oops.",
+                "You tried hot-wiring the car and electrocuted yourself. You didn't make it.",
+                "You didn't notice the car was perched on the edge of a cliff. It rolled over with you inside. Yikes.",
+                "While looking under the car, it collapsed on you. You didn't survive. Oops.",
+                "You were mistaken for a car thief and shot. Better luck next time."
+            ],
+            "death_outcomes": [
+                {"penaltyType": "death", "chance": 0.01},
+                {"penaltyType": "death", "chance": 0.02},
+                {"penaltyType": "death", "chance": 0.03},
+                {"penaltyType": "death", "chance": 0.04},
+                {"penaltyType": "death", "chance": 0.05}
+            ]
         }
+        
     ]
 }

@@ -42,14 +42,16 @@ class SearchButton(discord.ui.Button['SearchButton']):
         # Reward and Penalty Mechanism
         total = 0
         if comment_type == "positive_comments":
+            luck = await db_manager.get_luck(interaction.user.id)
             positive_outcomes = self.location['positive_outcomes']
-            positive_outcome = choose_outcome_based_on_chance(positive_outcomes)
+            positive_outcome = choose_outcome_based_on_chance(positive_outcomes, luck)  # Pass luck as a parameter
             if positive_outcome is not None:
                 total = positive_outcome['reward']
 
         elif comment_type == "negative_comments":
+            luck = await db_manager.get_luck(interaction.user.id)
             negative_outcomes = self.location['negative_outcomes']
-            negative_outcome = choose_outcome_based_on_chance(negative_outcomes)
+            negative_outcome = choose_outcome_based_on_chance(negative_outcomes, luck)
             if negative_outcome is not None:
                 total = -negative_outcome['penalty']  # Negative because it's a penalty
 
@@ -126,7 +128,17 @@ def choose_item_based_on_hunt_chance(items_with_chances: List[Tuple]):
         upto += w
     assert False, "Shouldn't get here"
 
-def choose_outcome_based_on_chance(outcomes: List[dict]):
+def choose_outcome_based_on_chance(outcomes: List[dict], luck: int, positive: bool = True):
+    # Adjust the chances based on luck
+    if positive:
+        outcomes = [{"rewardType": outcome["rewardType"], 
+                     "reward": outcome["reward"], 
+                     "chance": outcome["chance"] + (luck / 100)} for outcome in outcomes]
+    else:
+        outcomes = [{"penaltyType": outcome["penaltyType"], 
+                     "penalty": outcome["penalty"], 
+                     "chance": outcome["chance"] - (luck / 100)} for outcome in outcomes]
+
     total = sum(outcome['chance'] for outcome in outcomes)
     r = random.uniform(0, total)
     upto = 0
