@@ -1768,6 +1768,15 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's frost resistance
                     await db_manager.remove_frost_resistance(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` frost resistance."
+
+            elif effect == "bonus":
+                if effect_add_or_minus == "+":
+                    await db_manager.add_percent_bonus(user_id, effect_amount)
+                    message = f"You equipped `{item_name}`. It gave you +`{effect_amount}` bonus."
+                elif effect_add_or_minus == "-":
+                    await db_manager.remove_percent_bonus(user_id, effect_amount)
+                    message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` bonus."
+
             await db_manager.equip_item(user_id, item)
             await ctx.send(message)
         else:
@@ -1930,6 +1939,16 @@ class Basic(commands.Cog, name="basic"):
                     #add the effect amount to the user's paralysis resistance
                     await db_manager.add_paralysis_resistance(user_id, effect_amount)
                     message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` paralysis resistance."
+
+            #bonus 
+            elif effect == "bonus":
+                if effect_add_or_minus == "+":
+                    await db_manager.remove_percent_bonus(user_id, effect_amount)
+                    message = f"You unequipped `{item_name}`. It gave you -`{effect_amount}` bonus."
+                elif effect_add_or_minus == "-":
+                    await db_manager.add_percent_bonus(user_id, effect_amount)
+                    message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` bonus."
+
             await db_manager.unequip_item(user_id, item)
             await ctx.send(message)
         else:

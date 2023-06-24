@@ -3741,12 +3741,6 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
                             elif effect_add_or_minus == "-":
                                 await remove_frost_resistance(user_id, effect_amount)
 
-                        elif effect == "bonus":
-                            if effect_add_or_minus == "+":
-                                await add_percent_bonus(user_id, effect_amount)
-                            elif effect_add_or_minus == "-":
-                                await remove_percent_bonus(user_id, effect_amount)
-
                     else:   
                         # handle all possible effects
                         if effect == "health":
@@ -3807,6 +3801,12 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
 
                         elif effect == "lock":
                             await lock_user(user_id)
+
+                        elif effect == "bonus":
+                            if effect_add_or_minus == "+":
+                                await add_percent_bonus(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_percent_bonus(user_id, effect_amount)
 
 
                 # if the item_amount is 0, remove the item from the inventory table
