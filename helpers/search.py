@@ -42,16 +42,68 @@ class SearchButton(discord.ui.Button['SearchButton']):
         print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
         #change the embed based on the comment type
         if comment_type == "positive_comments":
-            await db_manager.add_money(self.user.id, 5000)
+            bonus = await db_manager.get_percent_bonus(self.user.id)
+            bonus_money = int(bonus * 5000)
+            total = 5000 + bonus_money
+            await db_manager.add_money(self.user.id, total)
             comment = str(comment)
             #replace the {thing} in the comment with the user's money
-            comment = comment.replace("{thing}", f"{cash}5000")
-            embed = discord.Embed(description=comment, color=discord.Color.green())
+            comment = comment.replace("{thing}", f"**{cash}{total}**")
+            
+            embed = discord.Embed(description=comment)
+            embed.set_footer(text=f'Bonus +{bonus}% ({cash}{bonus_money})')
             #give the user money
-        
-        embed.set_author(name=self.user.display_name + f"Searched {self.label}", icon_url=self.user.avatar.url)
+            #get the bonus percentage of the user
+            
+    
+            # Add item finding mechanism here
+            firsthuntitems = await db_manager.view_huntable_items()
+            huntItems = []
+            for item in firsthuntitems:
+                item_id = item[0]
+                hunt_chance = item[16]
+                huntItems.append([item_id, hunt_chance])
+    
+            luck = await db_manager.get_luck(interaction.user.id)
+            huntItems = [(item, chance + luck / 100) for item, chance in huntItems]
+            total_chance = sum(chance for item, chance in huntItems)
+            huntItems = [(item, chance / total_chance) for item, chance in huntItems]
+    
+            item = choose_item_based_on_hunt_chance(huntItems)
+    
+            if item is not None:
+                amount = random.randint(1, 5)
+                amount = amount + (luck // 10)
+                if amount < 1:
+                    amount = 1
+                if amount > 10:
+                    amount = 10
+    
+                await db_manager.add_item_to_inventory(interaction.user.id, item, amount)
+                item_id = item
+                item_id = str(item_id)
+    
+                if item_id.split("_")[0] == "chest" or item_id == "chest":
+                    item_emoji = await db_manager.get_chest_icon(item_id)
+                    item_name = await db_manager.get_chest_name(item_id)
+                else:
+                    item_emoji = await db_manager.get_basic_item_emoji(item_id)
+                    item_name = await db_manager.get_basic_item_name(item_id)
+    
+                embed.description += f"\nDang lucky you, you found x{amount} {item_emoji}{item_name}!"
+            
+        embed.set_author(name=self.user.display_name + f" Searched {self.label}", icon_url=self.user.avatar.url)
         await interaction.response.send_message(embed=embed)
 
+def choose_item_based_on_hunt_chance(items_with_chances: List[Tuple]):
+    total = sum(w for i, w in items_with_chances)
+    r = random.uniform(0, total)
+    upto = 0
+    for item, w in items_with_chances:
+        if upto + w >= r:
+            return item
+        upto += w
+    assert False, "Shouldn't get here"
 
 class SearchLocationButton(discord.ui.View):
     def __init__(self, locations, user):
