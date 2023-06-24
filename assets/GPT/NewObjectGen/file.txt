@@ -231,30 +231,50 @@ this is what a pet looks like
     }
 
 this is an example of a search location
-    {
-        "location": "McDonalds",
-        "positive_comments": [
-            "You found a limited edition toy in a Happy Meal. After selling it, you got {thing}.",
-            "You helped a customer with their large order and they tipped you. You got {thing}.",
-            "You found a vintage 'McDonald's Land' poster. A collector bought it from you and you got {thing}.",
-            "A forgotten bag full of burgers was left on a table. You sold the burgers and got {thing}.",
-            "You won the Monopoly game grand prize! You got {thing}."
-        ],
-        "negative_comments": [
-            "You slipped on a spilled McFlurry. That's going to leave a mark.",
-            "You tried to make your own Big Mac but ended up with a Little Mac.",
-            "The self-service machine crashed while you were ordering. Now you're both 'Out of Order'.",
-            "You tried to negotiate the price of a McChicken. It didn't work.",
-            "You got lost in the PlayPlace. Yes, it's possible."
-        ],
-        "death_comments": [
-            "You tried to sneak into the kitchen and slipped on a greasy floor. Oops.",
-            "You challenged Ronald McDonald to a food fight. The clown was not amused. Yikes.",
-            "You thought the deep fryer was a hot tub. It was not. Oops.",
-            "You tried to eat every item on the menu in one sitting. The McStomachache was fatal. Oops.",
-            "You attempted to steal the secret recipe. The Hamburglar took his job very seriously. Yikes."
-        ]
-    },
+        {
+            "location": "Supreme Court",
+            "positive_comments": [
+                "Some Dumbass tripped over the bench, you yoinked {thing} out of their pockets ",
+                "The gavel fell and knocked some sense into them. You picked up the pieces and got {thing}!",
+                "They finally made a decision without a recess. You grabbed their discarded lunch money and got {thing}. What a Sucker",
+                "A justice lost their robe in a heated debate. You sold it on eBay and got {thing}. What a Deal!",
+                "Someone actually read the Constitution today. You found their forgotten glasses and got {thing} for them."
+            ],
+            "positive_outcomes": [
+                {"rewardType": "money", "reward": 20, "chance": 0.4},
+                {"rewardType": "money", "reward": 50, "chance": 0.3},
+                {"rewardType": "money", "reward": 100, "chance": 0.15},
+                {"rewardType": "money", "reward": 500, "chance": 0.1},
+                {"rewardType": "money", "reward": 1000, "chance": 0.05}
+            ],
+            "negative_comments": [
+                "You tried to argue a case but got laughed out of court. Tough luck. You lost {thing} in legal fees.",
+                "You attempted to bribe a justice. It didn't go well. You had to pay {thing} so you didnt go to jail.",
+                "You fell asleep during a hearing and missed your chance to grab something valuable. You lost {thing} in court fees.",
+                "You accidentally insulted a justice. You were thrown out. You lost {thing} in the medical fees.",
+                "You tried to understand the legalese and ended up with a headache. Not your best day. You lost {thing} in medical fees."
+            ],
+            "negative_outcomes": [
+                {"penaltyType": "money", "penalty": 50, "chance": 0.4},
+                {"penaltyType": "money", "penalty": 100, "chance": 0.3},
+                {"penaltyType": "money", "penalty": 200, "chance": 0.2},
+                {"penaltyType": "money", "penalty": 500, "chance": 0.1}
+            ],
+            "death_comments": [
+                "You tried to steal a justice's gavel and got caught. The bailiffs weren't gentle, and you didn't survive the encounter. Oops.",
+                "You got lost in the labyrinthine court building and starved to death. Better luck next time.",
+                "You tried to sneak into the judge's chambers and got trapped. You didn't survive the experience. Oops.",
+                "You mistook the court for a basketball court and tried a slam dunk. The fall was fatal. Oops.",
+                "You tried to play lawyer but ended up getting sentenced to death for contempt of court. Yikes."
+            ],
+            "death_outcomes": [
+                {"penaltyType": "death", "chance": 0.01},
+                {"penaltyType": "death", "chance": 0.02},
+                {"penaltyType": "death", "chance": 0.03},
+                {"penaltyType": "death", "chance": 0.04},
+                {"penaltyType": "death", "chance": 0.05}
+            ]
+        },
 
 this is an example of each minigame in one job
 [
