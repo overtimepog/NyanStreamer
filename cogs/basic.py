@@ -1119,6 +1119,7 @@ class Basic(commands.Cog, name="basic"):
     @commands.hybrid_command(
         name="profile",
         description="This command will view your profile.",
+        aliases=["p", "prof", "pfp"],
     )
     async def profile(self, ctx: Context, user: discord.User = None):
         """
