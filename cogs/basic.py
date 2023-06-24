@@ -1492,6 +1492,21 @@ class Basic(commands.Cog, name="basic"):
             except(IndexError):
                 await ctx.send(f"{user.name} has no pets")
 
+        async def display_stats(ctx, user):
+            # Get user stats from the database
+            user_profile = await db_manager.profile(user.id)
+            if user_profile is None:
+                await ctx.send(f"{user.name} is not in the database yet.")
+                return
+
+            # Create an embed for the stats
+            stats_embed = discord.Embed(title="Stats", description=f"{user.name}'s Stats")
+            stats_embed.add_field(name="Luck", value=user_profile[24])
+            stats_embed.add_field(name="Hours Worked", value=user_profile[29])
+            stats_embed.add_field(name="Bonus %", value=user_profile[33])
+
+            await ctx.send(embed=stats_embed)
+
         class ProfileView(discord.ui.View):
             def __init__(self, ctx):
                 super().__init__()
@@ -1507,6 +1522,11 @@ class Basic(commands.Cog, name="basic"):
             async def pets_button(self, interaction: discord.Interaction, button: discord.ui.Button):
                 # Handle the "Pets" button click here.
                 await display_pets(self.ctx, self.user)
+                await interaction.response.defer()
+
+            @discord.ui.button(label="Stats", custom_id="profile_stats")
+            async def stats_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+                await display_stats(self.ctx, self.user)
                 await interaction.response.defer()
 
         view = ProfileView(ctx)
