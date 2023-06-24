@@ -87,7 +87,50 @@
                 {"penaltyType": "death", "chance": 0.04},
                 {"penaltyType": "death", "chance": 0.05}
             ]
+        },
+        {
+            "location": "Bank",
+            "positive_comments": [
+                "You found a forgotten bank note on the floor, adding {thing} to your wallet.",
+                "You helped a customer and they tipped you {thing}.",
+                "You found a misplaced bag of coins. You got {thing}.",
+                "You found a rare coin in the coin counting machine. You sold it for {thing}.",
+                "You found a forgotten safety deposit box key. After some sleuthing, you got {thing}."
+            ],
+            "positive_outcomes": [
+                {"rewardType": "money", "reward": 100, "chance": 0.5},
+                {"rewardType": "money", "reward": 200, "chance": 0.3},
+                {"rewardType": "money", "reward": 500, "chance": 0.1},
+                {"rewardType": "money", "reward": 1000, "chance": 0.05},
+                {"rewardType": "money", "reward": 5000, "chance": 0.05}
+            ],
+            "negative_comments": [
+                "You accidentally set off the bank alarm and had to pay a fine of {thing}.",
+                "You tried to help a customer but ended up causing a mess, costing you {thing} in damages.",
+                "You got caught in a bank audit and had to pay {thing} in fees.",
+                "You accidentally locked yourself in the vault and had to pay {thing} for a locksmith.",
+                "You tried to play banker but ended up losing {thing} in a bad investment."
+            ],
+            "negative_outcomes": [
+                {"penaltyType": "money", "penalty": 200, "chance": 0.5},
+                {"penaltyType": "money", "penalty": 500, "chance": 0.3},
+                {"penaltyType": "money", "penalty": 1000, "chance": 0.1},
+                {"penaltyType": "money", "penalty": 2000, "chance": 0.1}
+            ],
+            "death_comments": [
+                "You got trapped in the vault and ran out of air. You didn't survive. Oops.",
+                "You were mistaken for a bank robber and shot by security. Better luck next time.",
+                "You tried to lift a heavy bag of coins and dropped it on yourself. The injury was fatal. Oops.",
+                "You got caught in a bank robbery and didn't make it out. Yikes.",
+                "You tried to play hero during a bank heist and got shot. Better luck next time."
+            ],
+            "death_outcomes": [
+                {"penaltyType": "death", "chance": 0.01},
+                {"penaltyType": "death", "chance": 0.02},
+                {"penaltyType": "death", "chance": 0.03},
+                {"penaltyType": "death", "chance": 0.04},
+                {"penaltyType": "death", "chance": 0.05}
+            ]
         }
-        
     ]
 }
