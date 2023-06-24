@@ -1,245 +1,48 @@
 {
     "searches": [
         {
-        "location": "The Supreme Court",
-        "positive_comments": [
-            "Some Dumbass tripped over the bench, you yoinked their fallen coins and got {thing}",
-            "The gavel fell and knocked some sense into them. You picked up the pieces and got {thing}.",
-            "They finally made a decision without a recess. You grabbed their discarded lunch money and got {thing}.",
-            "A justice lost their robe in a heated debate. You sold it on eBay and got {thing}.",
-            "Someone actually read the Constitution today. You found their forgotten glasses and got {thing}."
-        ],
-        "negative_comments": [
-            "You tried to argue a case but got laughed out of court. Tough luck.",
-            "You attempted to bribe a justice. It didn't go well.",
-            "You fell asleep during a hearing and missed your chance to grab something valuable.",
-            "You accidentally insulted a justice. You were thrown out.",
-            "You tried to understand the legalese and ended up with a headache. Not your best day."
-        ],
-        "death_comments": [
-            "You tried to steal a justice's gavel and got caught. The bailiffs weren't gentle, and you didn't survive the encounter. Oops.",
-            "You got lost in the labyrinthine court building and starved to death. Better luck next time.",
-            "You tried to sneak into the judge's chambers and got trapped. You didn't survive the experience. Oops.",
-            "You mistook the court for a basketball court and tried a slam dunk. The fall was fatal. Oops.",
-            "You tried to play lawyer but ended up getting sentenced to death for contempt of court. Yikes."
-        ]
-      },
-      {
-        "location": "The White House",
-        "positive_comments": [
-            "The President actually remembered their speech for once. You found the discarded teleprompter script and sold it as a historical document. You got {thing}.",
-            "Someone left the nuclear codes on a sticky note. You returned them and got a hefty reward. You got {thing}.",
-            "The First Dog lost its diamond-studded collar during a walk. You found it and sold the diamonds. You got {thing}.",
-            "A state dinner went off without a hitch. You found the leftover gourmet food and started a successful catering business. You got {thing}.",
-            "The President's helicopter took off. You found a forgotten Air Force One jacket and sold it to a collector. You got {thing}."
-        ],
-        "negative_comments": [
-            "You tried to sneak into the Oval Office but got caught by the Secret Service. Tough luck.",
-            "You attempted to give policy advice to the President. It didn't go well.",
-            "You fell asleep during a press conference and missed your chance to ask a question.",
-            "You accidentally insulted the First Lady. You were escorted out.",
-            "You tried to understand the political jargon and ended up with a headache. Not your best day."
-        ],
-        "death_comments": [
-            "You tried to steal the President's speech and got caught. The Secret Service wasn't gentle, and you didn't survive the encounter. Oops.",
-            "You got lost in the White House and starved to death. Better luck next time.",
-            "You tried to sneak into the Situation Room and got trapped. You didn't survive the experience. Oops.",
-            "You mistook the White House for a public park and tried to have a picnic. The fall from the fence was fatal. Oops.",
-            "You tried to play President but ended up causing an international incident. Yikes."
-        ]
-    },
-    {
-        "location": "A Discord Server",
-        "positive_comments": [
-            "You became a mod and were given a generous donation. You got {thing}.",
-            "You shared a hilarious meme and got tipped for your humor. You got {thing}.",
-            "Someone accidentally leaked a valuable cheat code in the chat. You sold it and got {thing}.",
-            "You hosted a successful virtual event and the attendees sent you gifts. You got {thing}.",
-            "You found a forgotten gift card code in an old message. It still worked! You got {thing}."
-        ],
-        "negative_comments": [
-            "You got into an argument about pineapple on pizza and were muted by a mod.",
-            "You accidentally sent a heart emoji to the entire server. It didn't go well.",
-            "You fell asleep during a virtual meet-up and missed the whole event.",
-            "You tried to share a joke, but everyone just left you on 'read'.",
-            "You attempted to organize a game night but nobody showed up."
-        ],
-        "death_comments": [
-            "You tried to hack the admin's account and got permanently banned. The digital shame was too much to bear. Oops.",
-            "You spent so long in a voice chat that you forgot to eat and sleep. Better luck next time.",
-            "You got into a feud with a bot. It didn't end well. Oops.",
-            "You posted spoilers for the latest episode of a popular show. The backlash from the server members was fatal. Oops.",
-            "You tried to scam people with fake gift card giveaways. The consequences were lethal. Yikes."
-        ]
-    },
-    {
-        "location": "Walmart",
-        "positive_comments": [
-            "You found a forgotten gift card at a self-checkout station. It was full! You got {thing}.",
-            "A customer left their change at the counter. You picked it up and got {thing}.",
-            "A product was mislabeled with a lower price. Score! You got {thing}.",
-            "You won the store lottery and got a cart full of items for free! You sold them and got {thing}.",
-            "You found a rare collector's item in the discount bin. After selling it online, you got {thing}."
-        ],
-        "negative_comments": [
-            "You got lost in the Home Goods section. Tough luck.",
-            "You got into an argument with a self-checkout machine. It didn't go well.",
-            "You slipped on a spilled Slurpee and had to leave to change your clothes.",
-            "You tried to juggle some apples and caused a spectacle.",
-            "You spent your entire day in the long line at the checkout."
-        ],
-        "death_comments": [
-            "You tried to grab a discounted TV on Black Friday and got trampled. Oops.",
-            "You got locked in overnight and starved to death. Better luck next time.",
-            "You attempted to skateboard down the aisles. The fall was fatal. Oops.",
-            "You tried to stage a protest about long checkout lines. The response was lethal. Yikes.",
-            "You climbed a high shelf to reach a product and fell. The injuries were fatal. Oops."
-        ]
-    },
-    {
-        "location": "The Backrooms",
-        "positive_comments": [
-            "You found a forgotten wallet from another lost soul. You got {thing}.",
-            "You discovered a rare artifact left behind in the maze. You sold it and got {thing}.",
-            "An unexplained glitch in reality produced a valuable object. You got {thing}.",
-            "You found a box filled with age-old treasures. You got {thing}.",
-            "A fellow wanderer gave you a valuable tip before vanishing. You used it and got {thing}."
-        ],
-        "negative_comments": [
-            "You turned a corner and ended up where you started. Deja vu?",
-            "You heard a distant hum and got a migraine.",
-            "You tried to mark your path, but the markings disappeared.",
-            "The monotonous beige color scheme made you incredibly bored.",
-            "You got so lost that you forgot what you were originally looking for."
-        ],
-        "death_comments": [
-            "You tripped over an unseen object and didn't get up. Oops.",
-            "You got lost in the endless maze and starved to death. Better luck next time.",
-            "You found an exit...or so you thought. The door led to a deadly fall. Oops.",
-            "A reality glitch phased you into a wall. Yikes.",
-            "You were chased by an unknown entity. You didn't survive the encounter. Oops."
-        ]
-    },
-    {
-        "location": "Aperture Science Facilities",
-        "positive_comments": [
-            "You found a forgotten Companion Cube. After selling it to a fan, you got {thing}.",
-            "You stumbled upon a portal gun prototype. You sold it to a curious collector and got {thing}.",
-            "You found a stash of unspent Aperture Science gift cards. You used them and got {thing}.",
-            "GLaDOS was in a surprisingly good mood and gave you a valuable object. You got {thing}.",
-            "You discovered an early version of a turret. After disabling it, you sold it as a unique lamp. You got {thing}."
-        ],
-        "negative_comments": [
-            "You got lost in a test chamber. Better luck next time.",
-            "You mistook a turret for a fire extinguisher. It didn't go well.",
-            "You tried to outsmart GLaDOS. The resulting sarcastic comments left you speechless.",
-            "You fell into a pit of repulsion gel and spent the entire day bouncing around.",
-            "You attempted to make a cake... but the recipe was a lie."
-        ],
-        "death_comments": [
-            "You accidentally stepped into an active emancipation grill. Oops.",
-            "You got lost in the facility and starved to death. Better luck next time.",
-            "You tried to play catch with a live turret. The game ended quickly and fatally. Oops.",
-            "You ignored safety procedures and tested a propulsion gel slide without a helmet. The crash was fatal. Yikes.",
-            "You tried to make friends with a group of turrets. It was a one-sided friendship. Oops."
-        ]
-    },
-    {
-        "location": "Idaho",
-        "positive_comments": [
-            "You found a nugget while panning in the Boise River. You sold it and got {thing}.",
-            "An eagle dropped a valuable trinket from its nest. You got {thing}.",
-            "You dug up a rare potato variety. After selling it to a gourmet restaurant, you got {thing}.",
-            "You helped a rancher round up his lost cows. He rewarded you handsomely. You got {thing}.",
-            "You found an artifact from the Old Idaho Penitentiary. You sold it to a museum and got {thing}."
-        ],
-        "negative_comments": [
-            "You got lost hiking in the Sawtooth Range. Better luck next time.",
-            "You tried to start a potato farm but ended up attracting a horde of hungry rabbits.",
-            "You went to a local rodeo and ended up on the wrong end of a bull.",
-            "You tried fishing in Lake Coeur d'Alene but only caught an old boot.",
-            "You tried to master skiing at Sun Valley... the snow won."
-        ],
-        "death_comments": [
-            "You accidentally stumbled into a bear's territory while hiking. Oops.",
-            "You got lost in the wilderness and starved to death. Better luck next time.",
-            "You tried to swim across the Snake River. The current was stronger than expected. Oops.",
-            "You got too close to Shoshone Falls and went over the edge. Yikes.",
-            "You tried to outrun a herd of stampeding deer. They were faster. Oops."
-        ]
-    },
-    {
-        "location": "Wally World",
-        "positive_comments": [
-            "You found a ticket for the next ride on the Ferris wheel that a kid dropped. You sold it and got {thing}.",
-            "The mascot dropped his golden whistle. You picked it up and got {thing}.",
-            "The rollercoaster was stuck and you helped fix it. The park manager rewarded you with {thing}.",
-            "You guessed the weight of the Giant Pumpkin and won the grand prize! You sold it and got {thing}.",
-            "You found a forgotten camera with some really vintage photos. After selling it to a collector, you got {thing}."
-        ],
-        "negative_comments": [
-            "You got stuck at the top of the Ferris wheel. Scary view, though!",
-            "You lost your lunch on the rollercoaster. Ew.",
-            "The mascot scared you and you spilled your popcorn everywhere.",
-            "You got lost in the mirror maze and missed the grand parade.",
-            "You tried to swim in the wave pool and swallowed too much water."
-        ],
-        "death_comments": [
-            "You tried to sneak into the park after hours and got caught. Oops.",
-            "You ate too much cotton candy and... well, it didn't end well.",
-            "You tried to operate the rollercoaster yourself. The fall was fatal. Oops.",
-            "You thought the piranha pool was a regular fish tank. The fish were... hungry. Yikes.",
-            "You ignored the 'Do not feed' sign at the lion enclosure. The lions appreciated the snack. Oops."
-        ]
-    },
-    {
-        "location": "McDonalds",
-        "positive_comments": [
-            "You found a limited edition toy in a Happy Meal. After selling it, you got {thing}.",
-            "You helped a customer with their large order and they tipped you. You got {thing}.",
-            "You found a vintage 'McDonald's Land' poster. A collector bought it from you and you got {thing}.",
-            "A forgotten bag full of burgers was left on a table. You sold the burgers and got {thing}.",
-            "You won the Monopoly game grand prize! You got {thing}."
-        ],
-        "negative_comments": [
-            "You slipped on a spilled McFlurry. That's going to leave a mark.",
-            "You tried to make your own Big Mac but ended up with a Little Mac.",
-            "The self-service machine crashed while you were ordering. Now you're both 'Out of Order'.",
-            "You tried to negotiate the price of a McChicken. It didn't work.",
-            "You got lost in the PlayPlace. Yes, it's possible."
-        ],
-        "death_comments": [
-            "You tried to sneak into the kitchen and slipped on a greasy floor. Oops.",
-            "You challenged Ronald McDonald to a food fight. The clown was not amused. Yikes.",
-            "You thought the deep fryer was a hot tub. It was not. Oops.",
-            "You tried to eat every item on the menu in one sitting. The McStomachache was fatal. Oops.",
-            "You attempted to steal the secret recipe. The Hamburglar took his job very seriously. Yikes."
-        ]
-    },
-    {
-        "location": "Waffle House",
-        "positive_comments": [
-            "You found a forgotten purse filled with cash at a booth. You returned it and got a hefty reward. You got {thing}.",
-            "You won the jukebox challenge and earned a free meal. You sold it and got {thing}.",
-            "You helped the cook during a rush and they tipped you. You got {thing}.",
-            "You found a rare Waffle House commemorative mug. After selling it to a collector, you got {thing}.",
-            "You competed in an impromptu pancake flipping contest and won. You got {thing}."
-        ],
-        "negative_comments": [
-            "You slipped on a syrup spill. That's going to leave a sticky spot.",
-            "You tried to out-eat a trucker on pecan waffles. The result was not pretty.",
-            "You got into a heated debate about waffles vs. pancakes. You were asked to leave.",
-            "You mistook the hot sauce for maple syrup. Your taste buds will never be the same.",
-            "You tried to sneak into the kitchen and got chased out by an angry cook."
-        ],
-        "death_comments": [
-            "You tried to make your own waffles and caused a kitchen fire. Oops.",
-            "You thought the griddle was off and touched it. The burn was serious and you didn't survive. Oops.",
-            "You choked on a waffle during an eating contest. The Heimlich maneuver didn't work in time. Yikes.",
-            "You slipped in the parking lot and hit your head. The fall was fatal. Oops.",
-            "You tried to dine-and-dash, but tripped on the way out. The fall was unexpectedly fatal. Oops."
-        ]
-    }
-
+            "location": "Supreme Court",
+            "positive_comments": [
+                "Some Dumbass tripped over the bench, you yoinked {thing} out of their pockets ",
+                "The gavel fell and knocked some sense into them. You picked up the pieces and got {thing}!",
+                "They finally made a decision without a recess. You grabbed their discarded lunch money and got {thing}. What a Sucker",
+                "A justice lost their robe in a heated debate. You sold it on eBay and got {thing}. What a Deal!",
+                "Someone actually read the Constitution today. You found their forgotten glasses and got {thing} for them."
+            ],
+            "positive_outcomes": [
+                {"rewardType": "money", "reward": 20, "chance": 0.4},
+                {"rewardType": "money", "reward": 50, "chance": 0.3},
+                {"rewardType": "money", "reward": 100, "chance": 0.15},
+                {"rewardType": "money", "reward": 500, "chance": 0.1},
+                {"rewardType": "money", "reward": 1000, "chance": 0.05}
+            ],
+            "negative_comments": [
+                "You tried to argue a case but got laughed out of court. Tough luck. You lost {thing} in legal fees.",
+                "You attempted to bribe a justice. It didn't go well. You had to pay {thing} so you didnt go to jail.",
+                "You fell asleep during a hearing and missed your chance to grab something valuable. You lost {thing} in court fees.",
+                "You accidentally insulted a justice. You were thrown out. You lost {thing} in the medical fees.",
+                "You tried to understand the legalese and ended up with a headache. Not your best day. You lost {thing} in medical fees."
+            ],
+            "negative_outcomes": [
+                {"penaltyType": "money", "penalty": 50, "chance": 0.4},
+                {"penaltyType": "money", "penalty": 100, "chance": 0.3},
+                {"penaltyType": "money", "penalty": 200, "chance": 0.2},
+                {"penaltyType": "money", "penalty": 500, "chance": 0.1}
+            ],
+            "death_comments": [
+                "You tried to steal a justice's gavel and got caught. The bailiffs weren't gentle, and you didn't survive the encounter. Oops.",
+                "You got lost in the labyrinthine court building and starved to death. Better luck next time.",
+                "You tried to sneak into the judge's chambers and got trapped. You didn't survive the experience. Oops.",
+                "You mistook the court for a basketball court and tried a slam dunk. The fall was fatal. Oops.",
+                "You tried to play lawyer but ended up getting sentenced to death for contempt of court. Yikes."
+            ],
+            "death_outcomes": [
+                {"penaltyType": "death", "chance": 0.01},
+                {"penaltyType": "death", "chance": 0.02},
+                {"penaltyType": "death", "chance": 0.03},
+                {"penaltyType": "death", "chance": 0.04},
+                {"penaltyType": "death", "chance": 0.05}
+            ]
+        }
     ]
 }

@@ -36,28 +36,35 @@ class SearchButton(discord.ui.Button['SearchButton']):
         await interaction.message.edit(view=self.view)
 
         comment_types = (["positive_comments"] * 7) + (["negative_comments"] * 5) + (["death_comments"] * 1)
-
         comment_type = random.choice(comment_types)
-        cvomment = random.choice(self.location[comment_type])
+        comment = random.choice(self.location[comment_type])
+
+        # Reward and Penalty Mechanism
+        total = 0
+        if comment_type == "positive_comments":
+            positive_outcomes = self.location['positive_outcomes']
+            positive_outcome = choose_outcome_based_on_chance(positive_outcomes)
+            if positive_outcome is not None:
+                total = positive_outcome['reward']
+
+        elif comment_type == "negative_comments":
+            negative_outcomes = self.location['negative_outcomes']
+            negative_outcome = choose_outcome_based_on_chance(negative_outcomes)
+            if negative_outcome is not None:
+                total = -negative_outcome['penalty']  # Negative because it's a penalty
 
         print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
-        #change the embed based on the comment type
+        
+        # Change the embed based on the comment type
         if comment_type == "positive_comments":
             bonus = await db_manager.get_percent_bonus(self.user.id)
-            #get the bonus % of 5000
-            bonus_money = 500 * (int(bonus) / 100)
-            total = 500 + int(bonus_money)
+            bonus_money = total * (int(bonus) / 100)
+            total += int(bonus_money)
             await db_manager.add_money(self.user.id, total)
-            comment = str(comment)
-            #replace the {thing} in the comment with the user's money
             comment = comment.replace("{thing}", f"**{cash}{total}**")
-            
             embed = discord.Embed(description=comment)
             embed.set_footer(text=f'Bonus +{bonus}% ({cash}{bonus_money})')
-            #give the user money
-            #get the bonus percentage of the user
             
-    
             # Add item finding mechanism here
             item_find_chance = random.random()  # Generates a random float between 0.0 and 1.0
 
@@ -98,11 +105,14 @@ class SearchButton(discord.ui.Button['SearchButton']):
                     embed.description += f"\n \n Dang lucky you, you found **x{amount} {item_emoji}{item_name}**!"
 
         elif comment_type == "negative_comments":
+            await db_manager.remove_money(self.user.id, abs(total))  # Use abs() to ensure the amount is positive
+            comment = comment.replace("{thing}", f"**{cash}{abs(total)}**")
             embed = discord.Embed(description=comment)
         elif comment_type == "death_comments":
             embed = discord.Embed(description=comment + "\n\nYou died! You lost all your health, you'll need to revive ASAP!")
             await db_manager.set_health(interaction.user.id, 0)
             await db_manager.set_dead(interaction.user.id)
+        
         embed.set_author(name=self.user.display_name + f" Searched {self.label}", icon_url=self.user.avatar.url)
         await interaction.response.send_message(embed=embed)
 
@@ -114,6 +124,16 @@ def choose_item_based_on_hunt_chance(items_with_chances: List[Tuple]):
         if upto + w >= r:
             return item
         upto += w
+    assert False, "Shouldn't get here"
+
+def choose_outcome_based_on_chance(outcomes: List[dict]):
+    total = sum(outcome['chance'] for outcome in outcomes)
+    r = random.uniform(0, total)
+    upto = 0
+    for outcome in outcomes:
+        if upto + outcome['chance'] >= r:
+            return outcome
+        upto += outcome['chance']
     assert False, "Shouldn't get here"
 
 class SearchLocationButton(discord.ui.View):
