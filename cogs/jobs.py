@@ -153,10 +153,14 @@ class Jobs(commands.Cog, name="jobs"):
                     minutes_reduction, seconds_reduction = divmod(remainder_reduction, 60)
 
                     # Formatting cooldown string
-                    if hours > 0:
+                    if hours > 0 and minutes > 0 and seconds > 0:
                         cooldown_str = f"{int(hours)}hr {int(minutes)}min {int(seconds)}sec"
-                    elif minutes > 0:
+                    elif hours > 0 and minutes > 0 and seconds == 0:
+                        cooldown_str = f"{int(hours)}hr {int(minutes)}min"
+                    elif minutes > 0 and seconds > 0:
                         cooldown_str = f"{int(minutes)}min {int(seconds)}sec"
+                    elif minutes > 0 and seconds == 0:
+                        cooldown_str = f"{int(minutes)}min"
                     else:
                         cooldown_str = f"{int(seconds)}sec"
 
