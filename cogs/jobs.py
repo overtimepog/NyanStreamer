@@ -123,7 +123,7 @@ class Jobs(commands.Cog, name="jobs"):
                     user_hours = await db_manager.get_hours_worked(user_id)
                     level = await db_manager.get_level(user_id)
                     user_has_item = (item_required is None or item_required == "None") or await db_manager.check_user_has_item(ctx.author.id, item_required) > 0
-                    requirements_met = (int(user_hours) >= int(hours_required)) and user_has_item and (int(level) >= int(level_required))
+                    requirements_met = (float(user_hours) >= int(hours_required)) and user_has_item and (int(level) >= int(level_required))
 
                     # Depending on whether the user meets the requirements, add a check mark or an X
                     requirements_met_icon = "✅" if requirements_met else "❌"
@@ -299,8 +299,7 @@ class Jobs(commands.Cog, name="jobs"):
 
                 # Check if the user meets the requirements
                 user_has_item = (item_required is None or item_required == "None") or await db_manager.check_user_has_item(ctx.user.id, item_required) > 0
-                requirements_met = (int(user_hours) >= int(hours_required)) and user_has_item and (int(user_level) >= int(level_required))
-
+                requirements_met = (float(user_hours) >= int(hours_required)) and user_has_item and (int(user_level) >= int(level_required))
                 # Only add this job to the choices if the user meets the requirements
                 if requirements_met:
                     choices.append(app_commands.Choice(name=job[1], value=job[0]))
@@ -487,7 +486,7 @@ class Jobs(commands.Cog, name="jobs"):
             #get the users bonus percentage
             bonus = await db_manager.get_percent_bonus(user_id)
             #the bonus is a % so we need to convert it to a decimal
-            bonus = bonus / 100
+            bonus = int(bonus) / 100
             #add the bonus to the reduced base pay
             reduced_base_pay = reduced_base_pay + (reduced_base_pay * bonus)
             #turn the reduced base pay into an int
