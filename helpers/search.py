@@ -44,8 +44,8 @@ class SearchButton(discord.ui.Button['SearchButton']):
         #change the embed based on the comment type
         if comment_type == "positive_comments":
             bonus = await db_manager.get_percent_bonus(self.user.id)
-            bonus_money = bonus * 5000
-            total = 5000 + bonus_money
+            bonus_money = int(bonus) * 5000
+            total = 5000 + int(bonus_money)
             await db_manager.add_money(self.user.id, total)
             comment = str(comment)
             #replace the {thing} in the comment with the user's money
