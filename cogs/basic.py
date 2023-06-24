@@ -1981,7 +1981,6 @@ class Basic(commands.Cog, name="basic"):
         user_items = await db_manager.view_inventory(user_id)
         choices = []
         for item in user_items:
-            print(item)
             isEquipped = await db_manager.is_item_equipped(user_id, item[1])
             if isEquipped == 1 or isEquipped == True:
                 choices.append(app_commands.Choice(name=item[2], value=item[1]))

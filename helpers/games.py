@@ -169,55 +169,51 @@ async def slots(ctx: Context, user, gamble):
         if i == slot3:
             break
         await slot_machine.edit(content=f"**{user.name}** is gambling {cash}**{gamble}** \n {slot1} : {slot2} : {i}")
-    #edit the message to show the emoji in the slot
     await slot_machine.edit(content=f"**{user.name}** is gambling {cash}**{gamble}** \n {slot1} : {slot2} : {slot3}")
 
-    #get the result of each slot
     slot1_result = slot1
     slot2_result = slot2
     slot3_result = slot3
 
-    #check if the slots are the same
-    #if any slot is a gem, add the amount they bet  times 1.1 to their balance
     if slot1_result == slot2_result or slot1_result == slot3_result or slot2_result == slot3_result:
-        #if 2 of the slots are the same, add the amount they bet  times 1.5 to their balance
-        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*3}**! \n {slot1} : {slot2} : {slot3}")
-        await db_manager.add_money(user.id, gamble*3)
-        await db_manager.add_money_earned(user.id, gamble*3)
-    
+        money = gamble*3
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{money}**! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, money)
+        await db_manager.add_money_earned(user.id, money)
+
     elif slot1_result == ":gem:" or slot2_result == ":gem:" or slot3_result == ":gem:":
-        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*1.5}**! \n {slot1} : {slot2} : {slot3}")
-        await db_manager.add_money(user.id, gamble*1.5)
-        await db_manager.add_money_earned(user.id, gamble*1.5)
-        
-    #if any slot is a crown, add the amount they bet  times 1.2 to their balance
+        money = gamble*1.5
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{money}**! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, money)
+        await db_manager.add_money_earned(user.id, money)
+
     elif slot1_result == ":crown:" or slot2_result == ":crown:" or slot3_result == ":crown:":
-        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*1.2}**! \n {slot1} : {slot2} : {slot3}")
-        await db_manager.add_money(user.id, gamble*1.2)
-        await db_manager.add_money_earned(user.id, gamble*1.2)
+        money = gamble*1.2
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{money}**! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, money)
+        await db_manager.add_money_earned(user.id, money)
 
     elif slot1_result == slot2_result == slot3_result == ":gem:":
-        #if they are all gems, add the amount they bet  times 10 to their balance
-        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*10}**! \n {slot1} : {slot2} : {slot3}")
-        await db_manager.add_money(user.id, gamble*10)
-        await db_manager.add_money_earned(user.id, gamble*10)
-        
+        money = gamble*10
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{money}**! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, money)
+        await db_manager.add_money_earned(user.id, money)
+
     elif slot1_result == slot2_result == slot3_result == ":crown:":
-        #if they are all crowns, add the amount they bet  times 5 to their balance
-        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*7.5}**! \n {slot1} : {slot2} : {slot3}")
-        await db_manager.add_money(user.id, gamble*8)
-        await db_manager.add_money_earned(user.id, gamble*8)
-        
+        money = gamble*7.5
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{money}**! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, money)
+        await db_manager.add_money_earned(user.id, money)
+
     elif slot1_result == slot2_result == slot3_result:
-        #if they are the same, add the amount they bet  times 3 to their balance
-        await slot_machine.edit(content=f"**{user.name}** won {cash}**{gamble*5}**! \n {slot1} : {slot2} : {slot3}")
-        await db_manager.add_money(user.id, gamble*5)
-        await db_manager.add_money_earned(user.id, gamble*5)
+        money = gamble*5
+        await slot_machine.edit(content=f"**{user.name}** won {cash}**{money}**! \n {slot1} : {slot2} : {slot3}")
+        await db_manager.add_money(user.id, money)
+        await db_manager.add_money_earned(user.id, money)
 
     else:
-        #if they are all different, take the amount they bet from their balance
         await slot_machine.edit(content=f"**{user.name}** lost {cash}**{gamble}**! \n {slot1} : {slot2} : {slot3}")
-        #passx
+        pass
         
 #create slots_rules function
 #this function will be called when the user types !slots_rules

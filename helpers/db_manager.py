@@ -4415,7 +4415,6 @@ async def is_item_equipped(user_id: int, item_id: str) -> int:
     async with aiosqlite.connect("database/database.db") as db:
         async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=? AND isEquipped=?", (user_id, item_id, 1)) as cursor:
             result = await cursor.fetchone()
-            print(result)
             return 1 if result is not None else 0
         
 #check the inventory of a user for any items with the item_type Accessory and if they are equiped with the item_type Accessory
