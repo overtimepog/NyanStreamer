@@ -1981,6 +1981,7 @@ class Basic(commands.Cog, name="basic"):
         user_items = await db_manager.view_inventory(user_id)
         choices = []
         for item in user_items:
+            print(item)
             if argument.lower() in item[2].lower():
                 isEquipped = await db_manager.is_item_equipped(user_id, item[1])
                 if isEquipped == 1 or isEquipped == True:
