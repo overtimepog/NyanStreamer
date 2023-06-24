@@ -93,7 +93,7 @@
             "positive_comments": [
                 "You found a forgotten bank note on the floor, adding {thing} to your wallet.",
                 "You helped a customer and they tipped you {thing}.",
-                "You found a misplaced bag of coins. You got {thing}.",
+                "You found a misplaced bag of coins. You took {thing} out of it.",
                 "You found a rare coin in the coin counting machine. You sold it for {thing}.",
                 "You found a forgotten safety deposit box key. After some sleuthing, you got {thing}."
             ],
