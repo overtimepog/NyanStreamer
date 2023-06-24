@@ -50,8 +50,7 @@ async def slots(ctx: Context, user, gamble):
     gamble = int(gamble)
     if money < gamble:
         return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine")
-    embed.set_description(f"**{user.name}** is gambling **{cash}{gamble}**")
+    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"**{user.name}** is gambling **{cash}{gamble}**")
     slot_machine = await ctx.send(embed=embed)
     
     emoji = [
