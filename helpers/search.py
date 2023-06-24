@@ -92,7 +92,12 @@ class SearchButton(discord.ui.Button['SearchButton']):
                     item_name = await db_manager.get_basic_item_name(item_id)
     
                 embed.description += f"\nDang lucky you, you found x{amount} {item_emoji}{item_name}!"
-            
+        elif comment_type == "negative_comments":
+            embed = discord.Embed(description=comment)
+        elif comment_type == "death_comments":
+            embed = discord.Embed(description=comment + "\n\nYou died! You lost all your health, you'll need to revive ASAP!")
+            await db_manager.set_health(interaction.user.id, 0)
+            await db_manager.set_dead(interaction.user.id)
         embed.set_author(name=self.user.display_name + f" Searched {self.label}", icon_url=self.user.avatar.url)
         await interaction.response.send_message(embed=embed)
 
