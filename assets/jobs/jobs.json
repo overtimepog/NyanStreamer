@@ -261,5 +261,197 @@
                 ]
             }
         ]
-    }
+    },
+    {
+        "id": "hitman",
+        "name": "Hitman",
+        "description": "be a hitman",
+        "job_icon": "<:bullet:1122286037088096327>",
+        "required_item": "handgun",
+        "required_level": 10,
+        "required_hours": 5,
+        "base_pay": 500,
+        "pay_per_level": 50,
+        "max_level": 10,
+        "cooldown": 1800,
+        "cooldown_reduction_per_level": 30,
+        "minigames": [
+            {
+                "type": "Order",
+                "prompt": "**Work for Hitman** - Order - Please arrange the following tasks in the correct order:",
+                "reward": [
+                    {"rewardType": "money", "reward": 60, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.5},
+                    {"rewardType": "money", "reward": 70, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 7, "chance": 0.4},
+                    {"rewardType": "money", "reward": 80, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.2},
+                    {"rewardType": "money", "reward": 100, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.1}
+                ],
+                "sequences": [
+                    {
+                        "task": "Sort the tasks according to the hitman's mission",
+                        "items": ["Receive contract", "Plan mission", "Prepare equipment", "Execute mission", "Escape"],
+                        "correctOrder": ["Receive contract", "Plan mission", "Prepare equipment", "Execute mission", "Escape"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the assassination process",
+                        "items": ["Identify target", "Find opportunity", "Execute target", "Escape", "Report success"],
+                        "correctOrder": ["Identify target", "Find opportunity", "Execute target", "Escape", "Report success"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the equipment preparation",
+                        "items": ["Choose weapon", "Prepare disguise", "Pack tools", "Check equipment"],
+                        "correctOrder": ["Choose weapon", "Prepare disguise", "Pack tools", "Check equipment"]
+                    }
+                ]
+            },
+            {
+                "type": "Trivia",
+                "prompt": "**Work for Hitman** - Trivia - Please answer the following question:",
+                "reward": [
+                    {"rewardType": "money", "reward": 70, "chance": 0.5},
+                    {"rewardType": "item", "reward": "bullet", "chance": 0.2},
+                    {"rewardType": "money", "reward": 80, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType": "money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2}
+                ],
+                "questions": [
+                    {
+                        "question": "What is the main weapon of a hitman?",
+                        "options": ["Knife", "Gun", "Poison"],
+                        "answer": "Gun"
+                    },
+                    {
+                        "question": "What is the most important skill for a hitman?",
+                        "options": ["Strength", "Stealth", "Speed"],
+                        "answer": "Stealth"
+                    },
+                    {
+                        "question": "What is the hitman's main goal?",
+                        "options": ["To kill", "To steal", "To spy"],
+                        "answer": "To kill"
+                    },
+                    {
+                        "question": "What is the hitman's main strategy?",
+                        "options": ["Direct attack", "Ambush", "Long range"],
+                        "answer": "Ambush"
+                    },
+                    {
+                        "question": "What is the hitman's main concern?",
+                        "options": ["Getting caught", "Getting paid", "Getting injured"],
+                        "answer": "Getting caught"
+                    },
+                    {
+                        "question": "What is the hitman's main tool?",
+                        "options": ["Gun", "Knife", "Rope"],
+                        "answer": "Gun"
+                    },
+                    {
+                        "question": "What is the hitman's main target?",
+                        "options": ["Criminals", "Politicians", "Businessmen"],
+                        "answer": "Politicians"
+                    },
+                    {
+                        "question": "What is the hitman's main method?",
+                        "options": ["Shooting", "Stabbing", "Strangling"],
+                        "answer": "Shooting"
+                    },
+                    {
+                        "question": "What is the hitman's main cover?",
+                        "options": ["Businessman", "Police officer", "Ordinary citizen"],
+                        "answer": "Ordinary citizen"
+                    },
+                    {
+                        "question": "What is the hitman's main asset?",
+                        "options": ["Strength", "Intelligence", "Stealth"],
+                        "answer": "Stealth"
+                    }
+                ]
+            },
+            {
+                "type": "Retype",
+                "prompt": "**Work for Hitman** - Retype - Please retype the following phrase:",
+                "phrases": ["The first rule of being a hitman is silence", "A hitman never leaves a trace", "A hitman always completes the mission", "A hitman always stays in the shadows", "A hitman is always prepared", "A hitman never misses", "A hitman always has a plan", "A hitman never gets caught", "A hitman always knows his target", "A hitman always has a backup plan"],
+                "reward": [
+                    {"rewardType": "money", "reward": 80, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType":"money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2},
+                    {"rewardType": "money", "reward": 120, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 12, "chance": 0.1}
+                ]
+            },
+            {
+                "type": "Hangman",
+                "prompt": "**Work for Hitman** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to being a hitman:",
+                "reward": [
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType": "money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2},
+                    {"rewardType": "money", "reward": 120, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 12, "chance": 0.1},
+                    {"rewardType": "money", "reward": 130, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 13, "chance": 0.1}
+                ],
+                "sentences": [
+                    {
+                        "sentence": "A hitman always completes the {word}.",
+                        "answer": "mission"
+                    },
+                    {
+                        "sentence": "The first rule of being a hitman is {word}.",
+                        "answer": "silence"
+                    },
+                    {
+                        "sentence": "A hitman never leaves a {word}.",
+                        "answer": "trace"
+                    },
+                    {
+                        "sentence": "A hitman always stays in the {word}.",
+                        "answer": "shadows"
+                    },
+                    {
+                        "sentence": "A hitman is always {word}.",
+                        "answer": "prepared"
+                    },
+                    {
+                        "sentence": "A hitman never {word}.",
+                        "answer": "misses"
+                    },
+                    {
+                        "sentence": "A hitman always has a {word}.",
+                        "answer": "plan"
+                    },
+                    {
+                        "sentence": "A hitman never gets {word}.",
+                        "answer": "caught"
+                    },
+                    {
+                        "sentence": "A hitman always knows his {word}.",
+                        "answer": "target"
+                    },
+                    {
+                        "sentence": "A hitman always has a backup {word}.",
+                        "answer": "plan"
+                    }
+                ]
+            }            
+        ]
+    }    
 ]

@@ -279,18 +279,9 @@ this is an example of a search location
 this is an example of each minigame in one job
 [
     {
-        "id": "chef",
-        "name": "Chef",
-        "description": "be a chef",
-        "job_icon": "<:jobIcon:12345678910>",
+        "job_name": "Beekeeper",
+        "job_icon": "<:beekeeper:1122286037088096327>",
         "required_item": "None",
-        "required_level": 0,
-        "required_hours": 0,
-        "base_pay": 300,
-        "pay_per_level": 20,
-        "max_level": 8,
-        "cooldown": 1200,
-        "cooldown_reduction_per_level": 15,
         "minigames": [
             {
                 "type": "Order",
@@ -342,7 +333,7 @@ this is an example of each minigame in one job
                         "options": ["Honey", "Milk", "Eggs"],
                         "answer": "Honey"
                     },
-                    {
+                   {
                         "question": "What is the queen bee's primary role?",
                         "options": ["To make honey", "To pollinate flowers", "To lay eggs"],
                         "answer": "To lay eggs"
@@ -375,7 +366,13 @@ this is an example of each minigame in one job
                 "phrases": ["cooking is love made visible", "The secret ingredient is always love", "good food is good mood", "life is short, lick the bowl"],
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 2, "chance": 0.3}
+                    {"rewardType": "experience", "reward": 2, "chance": 0.3},
+                    {"rewardType": "money", "reward": 35, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
+                    {"rewardType": "money", "reward": 40, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.2},
+                    {"rewardType": "money", "reward": 45, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.3}
                 ]
             },
             {
@@ -384,7 +381,11 @@ this is an example of each minigame in one job
                 "words": ["ingredients", "potato", "carrot", "beef"],
                 "reward": [
                     {"rewardType": "money", "reward": 40, "chance": 0.3},
-                    {"rewardType": "item", "reward": "apron", "chance": 0.2}
+                    {"rewardType": "item", "reward": "apron", "chance": 0.2},
+                    {"rewardType": "money", "reward": 45, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.3},
+                    {"rewardType": "money", "reward": 50, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.2}
                 ]
             },
             {
@@ -392,7 +393,11 @@ this is an example of each minigame in one job
                 "prompt": "**Work for Chef** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to cooking:",
                 "reward": [
                     {"rewardType": "money", "reward": 70, "chance": 0.5},
-                    {"rewardType": "item", "reward": "spatula", "chance": 0.3}
+                    {"rewardType": "item", "reward": "spatula", "chance": 0.3},
+                    {"rewardType": "money", "reward": 75, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.3},
+                    {"rewardType": "money", "reward": 80, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.4}
                 ],
                 "sentences": [
                     {
@@ -427,7 +432,11 @@ this is an example of each minigame in one job
                 "reward": [
                     {"rewardType": "money", "reward": 80, "chance": 0.6},
                     {"rewardType": "experience", "reward": 4, "chance": 0.4},
-                    {"rewardType": "item", "reward": "herb_bundle", "chance": 0.1}
+                    {"rewardType": "item", "reward": "herb_bundle", "chance": 0.1},
+                    {"rewardType": "money", "reward": 85, "chance": 0.5},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.2}
                 ],
                 "items": [
                     {"name": "Aloe Vera", "description": "Helps in skin healing"},
@@ -446,7 +455,11 @@ this is an example of each minigame in one job
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 4, "chance": 0.5},
-                    {"rewardType": "item", "reward": "chef_hat", "chance": 0.1}
+                    {"rewardType": "item", "reward": "chef_hat", "chance": 0.1},
+                    {"rewardType": "money", "reward": 35, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.4},
+                    {"rewardType": "money", "reward": 40, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.3}
                 ],
                 "task": "Unscramble the cooking-related word",
                 "words": [
