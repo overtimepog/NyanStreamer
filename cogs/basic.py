@@ -2150,7 +2150,7 @@ class Basic(commands.Cog, name="basic"):
             #if the item effect is "revive"
             if item_effect_type == "revive":
                 #if the user is alive, don't revive them and send a message
-                if await db_manager.is_alive(user_id) == True or 1:
+                if await db_manager.is_alive(user_id) == True:
                     await ctx.send("You are already alive!")
                     #give the item back to the user
                     await db_manager.add_item_to_inventory(user_id, item, 1)

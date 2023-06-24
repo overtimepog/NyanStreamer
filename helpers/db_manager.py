@@ -580,10 +580,10 @@ async def is_alive(user_id: int) -> bool:
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
         users = await db.execute(f"SELECT `isDead` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        if users[0] == 0:
-            return True
-        else:
+        if users[0] == True:
             return False
+        else:
+            return True
     else:
         return False
     
