@@ -15,6 +15,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from helpers import db_manager, battle
 from typing import List, Tuple
+cash = "⚙"
 
 class SearchButton(discord.ui.Button['SearchButton']):
     def __init__(self, label: str, location: dict, user: discord.User):
@@ -34,13 +35,21 @@ class SearchButton(discord.ui.Button['SearchButton']):
         # Update the original message to reflect the disabled buttons
         await interaction.message.edit(view=self.view)
 
-        comment_types = ["positive_comments", "negative_comments"] * 5 + ["death_comments"]
+        comment_types = ["positive_comments", "negative_comments"] * 10 + ["death_comments"]
         comment_type = random.choice(comment_types)
         comment = random.choice(self.location[comment_type])
 
         print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
-        embed = discord.Embed(title=self.label, description=comment)
-        embed.set_footer(text=f'Searched by {self.user.display_name}', icon_url=self.user.avatar.url)
+        #change the embed based on the comment type
+        if comment_type == "positive_comments":
+            await db_manager.add_money(self.user.id, 5000)
+            comment = str(comment)
+            #replace the {thing} in the comment with the user's money
+            comment = comment.replace("{thing}", f"{cash}5000")
+            embed = discord.Embed(description=comment, color=discord.Color.green())
+            #give the user money
+        
+        embed.set_author(name=self.user.display_name + f"Searched {self.label}", icon_url=self.user.avatar.url)
         await interaction.response.send_message(embed=embed)
 
 
