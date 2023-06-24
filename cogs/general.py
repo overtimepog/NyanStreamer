@@ -52,7 +52,7 @@ class General(commands.Cog, name="general"):
             if command_or_group and command_or_group.cog_name != 'owner':
                 from discord.ext import commands
                 if isinstance(command_or_group, commands.Group):
-                    group_commands = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner'])
+                    group_commands = "\n".join([f'`{prefix}{command_or_group.name} {command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner'])
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
                     await context.send(embed=embed)
                 else:
