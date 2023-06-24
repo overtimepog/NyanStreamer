@@ -1982,7 +1982,7 @@ class Basic(commands.Cog, name="basic"):
         choices = []
         for item in user_items:
             print(item)
-            if argument.lower() in item[2].lower():
+            if argument.lower() in item[1].lower():
                 isEquipped = await db_manager.is_item_equipped(user_id, item[1])
                 if isEquipped == 1 or isEquipped == True:
                     choices.append(app_commands.Choice(name=item[2], value=item[1]))
