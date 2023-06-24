@@ -38,15 +38,15 @@ class SearchButton(discord.ui.Button['SearchButton']):
         comment_types = (["positive_comments"] * 7) + (["negative_comments"] * 5) + (["death_comments"] * 1)
 
         comment_type = random.choice(comment_types)
-        comment = random.choice(self.location[comment_type])
+        cvomment = random.choice(self.location[comment_type])
 
         print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
         #change the embed based on the comment type
         if comment_type == "positive_comments":
             bonus = await db_manager.get_percent_bonus(self.user.id)
             #get the bonus % of 5000
-            bonus_money = 5000 * (int(bonus) / 100)
-            total = 5000 + int(bonus_money)
+            bonus_money = 500 * (int(bonus) / 100)
+            total = 500 + int(bonus_money)
             await db_manager.add_money(self.user.id, total)
             comment = str(comment)
             #replace the {thing} in the comment with the user's money
@@ -124,7 +124,6 @@ class SearchLocationButton(discord.ui.View):
 
 
 async def search(ctx: Context):
-    userGain = 5000
     with open('assets/search.json') as f:
         data = json.load(f)
         locations = data['searches']
