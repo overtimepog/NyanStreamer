@@ -169,7 +169,6 @@ class Jobs(commands.Cog, name="jobs"):
                     if level != 0:
                         cooldown_str += f" (reduced by {cooldown_reduction_str} because you are level {level + 1})"
 
-                    field_value += cooldown_str
                     field_value += f"> Cooldown: **{cooldown_str}**\n"
                     field_value += f"> Pay: **{cash}{base_pay}**\n"
                     
