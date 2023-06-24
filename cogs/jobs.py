@@ -135,37 +135,41 @@ class Jobs(commands.Cog, name="jobs"):
                     cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
                     level = level - 1
                     adjusted_cooldown = cooldown - (cooldown_reduction_per_level * level)
-                    
+
                     # Ensure that the adjusted cooldown is not negative
                     if adjusted_cooldown.total_seconds() < 0:
                         adjusted_cooldown = datetime.timedelta(seconds=0)
-                    
+
                     # Calculate adjusted cooldown time
                     total_seconds = adjusted_cooldown.total_seconds()
                     hours, remainder = divmod(total_seconds, 3600)
-                    minutes = remainder // 60
-                    
+                    minutes, seconds = divmod(remainder, 60)
+
                     # format the cooldown reduction per level
                     total_seconds_reduction = (cooldown_reduction_per_level * level).total_seconds()
                     hours_reduction, remainder_reduction = divmod(total_seconds_reduction, 3600)
                     minutes_reduction, seconds_reduction = divmod(remainder_reduction, 60)
-                    
+
+                    # Formatting cooldown string
                     if hours > 0:
-                        if minutes > 0:
-                            cooldown_str = f"{int(hours)}hr {int(minutes)}min"
-                        else:
-                            cooldown_str = f"{int(hours)}hr"
+                        cooldown_str = f"{int(hours)}hr {int(minutes)}min {int(seconds)}sec"
+                    elif minutes > 0:
+                        cooldown_str = f"{int(minutes)}min {int(seconds)}sec"
                     else:
-                        cooldown_str = f"{int(minutes)}min"
-                    
-                    # Format the reduction per level string
-                    cooldown_reduction_str = f"{int(hours_reduction)}hr {int(minutes_reduction)}min" if hours_reduction > 0 else f"{int(minutes_reduction)}min"
-                    if level == 0:
-                        # If the user is level 0, don't show the cooldown reduction
-                        pass
+                        cooldown_str = f"{int(seconds)}sec"
+
+                    # Formatting cooldown reduction string
+                    if hours_reduction > 0:
+                        cooldown_reduction_str = f"{int(hours_reduction)}hr {int(minutes_reduction)}min {int(seconds_reduction)}sec"
+                    elif minutes_reduction > 0:
+                        cooldown_reduction_str = f"{int(minutes_reduction)}min {int(seconds_reduction)}sec"
                     else:
+                        cooldown_reduction_str = f"{int(seconds_reduction)}sec"
+
+                    if level != 0:
                         cooldown_str += f" (reduced by {cooldown_reduction_str} because you are level {level + 1})"
-                    
+
+                    field_value += cooldown_str
                     field_value += f"> Cooldown: **{cooldown_str}**\n"
                     field_value += f"> Pay: **{cash}{base_pay}**\n"
                     
