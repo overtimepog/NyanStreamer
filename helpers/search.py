@@ -35,7 +35,12 @@ class SearchButton(discord.ui.Button['SearchButton']):
         # Update the original message to reflect the disabled buttons
         await interaction.message.edit(view=self.view)
 
-        comment_types = (["positive_comments"] * 7) + (["negative_comments"] * 5) + (["death_comments"] * 1)
+        luck = await db_manager.get_luck(interaction.user.id)
+        luck_factor = (luck // 10) + 1  # Adjust this formula as needed
+
+        comment_types = (["positive_comments"] * (7 * luck_factor)) + \
+                        (["negative_comments"] * max(1, (5 // luck_factor))) + \
+                        (["death_comments"] * max(1, (1 // luck_factor)))
         comment_type = random.choice(comment_types)
         comment = random.choice(self.location[comment_type])
 
