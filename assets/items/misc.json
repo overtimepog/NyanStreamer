@@ -10,7 +10,7 @@
         "isUsable": false,
         "inShop": true,
         "isEquippable": true,
-        "item_description": "Holy crap you must be lucky asf",
+        "item_description": "Holy crap you must be lucky asf, Needs to be equipped to work.",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
