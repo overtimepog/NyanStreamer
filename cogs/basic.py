@@ -2031,7 +2031,7 @@ class Basic(commands.Cog, name="basic"):
         name="search",
         description="Search for cool stuff",
     )
-    @commands.cooldown(1, 600, commands.BucketType.user)
+    @commands.cooldown(1, 10800, commands.BucketType.user)
     async def search(self, ctx: Context):
         userExist = await db_manager.check_user(ctx.author.id)
         if userExist == None or userExist == []:
@@ -2042,7 +2042,6 @@ class Basic(commands.Cog, name="basic"):
     
     #ANCHOR use command
     #a cooldown of 2 minutes
-    @commands.cooldown(1, 120, commands.BucketType.user)
     @commands.hybrid_command(
         name="use",
         description="This command will use an item.",
