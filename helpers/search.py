@@ -40,7 +40,7 @@ class SearchButton(discord.ui.Button['SearchButton']):
 
         print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
         embed = discord.Embed(title=self.label, description=comment)
-        embed.set_footer(text=f'Searched by {self.user.display_name}', icon_url=self.user.avatar_url)
+        embed.set_footer(text=f'Searched by {self.user.display_name}', icon_url=self.user.avatar.url)
         await interaction.response.send_message(embed=embed)
 
 
@@ -60,5 +60,5 @@ async def search(ctx: Context):
     selected_locations = random.sample(locations, 3)
     view = SearchLocationButton(selected_locations, ctx.author)
     embed = discord.Embed(title="Search", description="Choose a location to search:", color=discord.Color.blue())
-    embed.set_footer(text=f'Search initiated by {ctx.author.display_name}', icon_url=ctx.author.avatar_url)
+    embed.set_footer(text=f'Search initiated by {ctx.author.display_name}', icon_url=ctx.author.avatar.url)
     await ctx.send(embed=embed, view=view)

@@ -2,7 +2,7 @@
     {
         "item_id": "clover",
         "item_name": "Lucky Clover",
-        "item_price": 1000000,
+        "item_price": 10000000,
         "item_emoji": "<:FiveLeafClover:1077642975682773102>",
         "item_rarity": "Legendary",
         "item_type": "Misc",
