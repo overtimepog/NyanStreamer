@@ -133,4 +133,4 @@ async def search(ctx: Context):
     view = SearchLocationButton(selected_locations, ctx.author)
     embed = discord.Embed(title="Search", description="Choose a location to search:", color=discord.Color.blue())
     embed.set_footer(text=f'Search initiated by {ctx.author.display_name}', icon_url=ctx.author.avatar.url)
-    await ctx.send(embed=embed, view=view)
+    await ctx.send(content="Choose a location to search: ", view=view)
