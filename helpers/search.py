@@ -116,7 +116,7 @@ class SearchButton(discord.ui.Button['SearchButton']):
             comment = comment.replace("{thing}", f"**{cash}{abs(total)}**")
             embed = discord.Embed(description=comment)
         elif comment_type == "death_comments":
-            embed = discord.Embed(description=comment + "\n\nYou died! You lost all your health, you'll need to revive ASAP!")
+            embed = discord.Embed(description=comment + "\n\nYou died lol!, you should probably revive yourself with a revive potion")
             await db_manager.set_health(interaction.user.id, 0)
             await db_manager.set_dead(interaction.user.id)
         
