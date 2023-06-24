@@ -14,6 +14,7 @@ Here are some rules to be followed when making new stuff
 * the xp needed for a user to level up is 6 times their level and does not overflow after a user levels up, keep this in mind when giving out xp rewards
 * jobs must have multiple rewards with different amounts for each minigame
 * all generated stuff must be given back in json format
+* when I ask you to create stuff, I mean give it back to me in json format, I will handle the rest
 * FOLLOW EVERY RULE AT ALL TIMES WHEN CREATING STUFF WITH THE TEMPLATES, which are below
 
 this is what armor looks like
@@ -279,9 +280,18 @@ this is an example of a search location
 this is an example of each minigame in one job
 [
     {
-        "job_name": "Beekeeper",
-        "job_icon": "<:beekeeper:1122286037088096327>",
-        "required_item": "None",
+        "id": "hitman",
+        "name": "Hitman",
+        "description": "be a hitman",
+        "job_icon": "<:bullet:1122286037088096327>",
+        "required_item": "handgun",
+        "required_level": 10,
+        "required_hours": 5,
+        "base_pay": 500,
+        "pay_per_level": 50,
+        "max_level": 10,
+        "cooldown": 1800,
+        "cooldown_reduction_per_level": 30,
         "minigames": [
             {
                 "type": "Order",
