@@ -45,7 +45,7 @@ class SearchButton(discord.ui.Button['SearchButton']):
         if comment_type == "positive_comments":
             bonus = await db_manager.get_percent_bonus(self.user.id)
             #get the bonus % of 5000
-            bonus_money = 5000 * (bonus / 100)
+            bonus_money = 5000 * (int(bonus) / 100)
             total = 5000 + int(bonus_money)
             await db_manager.add_money(self.user.id, total)
             comment = str(comment)
