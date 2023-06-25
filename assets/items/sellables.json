@@ -56,7 +56,7 @@
         "item_type": "Sellable",
         "item_damage": 0,
         "isUsable": false,
-        "inShop": true,
+        "inShop": false,
         "isEquippable": false,
         "item_description": "A bullet. Found from the Hitman Job.",
         "item_element": "None",
