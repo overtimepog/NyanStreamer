@@ -959,7 +959,9 @@ async def add_shop_items() -> None:
     db = DB()
     #clear the shop table
     await db.execute(f"DELETE FROM `shop`")
+    print("Cleared the shop table.")
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
+    print(f"Retrieved {len(data)} items from the database.")
     
     # Create a set to store the base names of the items that have been added
     added_items = set()
@@ -967,25 +969,32 @@ async def add_shop_items() -> None:
     # Filter the data to only include items that haven't been added yet
     filtered_data = []
     for item in data:
-        base_name = item[0].rsplit('_', 1)[0]  # Get the base name by removing the last part after '_'
-        rarity = item[0].rsplit('_', 1)[1]  # Get the rarity by taking the last part after '_'
-        if base_name not in added_items or rarity not in added_items:
+        base_name = item[0]
+        for rarity in ["_common", "_uncommon", "_rare", "_epic", "_legendary"]:
+            if rarity in base_name:
+                base_name = base_name.replace(rarity, "")
+                break
+        if base_name not in added_items:
             filtered_data.append(item)
             added_items.add(base_name)
-            added_items.add(rarity)
+            print(f"Added {base_name} to the list of added items.")
+        else:
+            print(f"Skipped {base_name} because it's already in the list of added items.")
 
     #add the items to the shop table
     #pick 25 random items from the list
     try:
         filtered_data = random.sample(filtered_data, 25)
+        print("Selected 25 random items to add to the shop.")
     except(ValueError):
         filtered_data = random.sample(filtered_data, len(filtered_data))
+        print(f"Could not select 25 items, selected {len(filtered_data)} items instead.")
     for item in filtered_data:
         item_id = item[0]
         item_amount = 1
         await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7], item[8], item_amount))
         print(f"Added |{item_id}| to the shop")
-
+    print("Finished adding items to the shop.")
         
 #clear the shop table
 async def clear_shop() -> None:
