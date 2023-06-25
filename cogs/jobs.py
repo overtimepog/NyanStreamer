@@ -187,7 +187,7 @@ class Jobs(commands.Cog, name="jobs"):
                     
                     if item_required != "None":
                         item_name = await db_manager.get_basic_item_name(item_required)
-                        field_value += f"> Item required: **{item_icon}{item_name}**\n"
+                        field_value += f"> Item required: **{item_icon} {item_name}**\n"
                     else:
                         field_value += f"> Item required: **None**\n"
                     
