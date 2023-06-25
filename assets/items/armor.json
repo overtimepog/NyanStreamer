@@ -235,5 +235,46 @@
         }],
         "item_effect": "None",
         "item_sub_type": "Boots"
-    }           
+    },
+    {
+        "item_id": "devils_horns",
+        "item_name": "Devil's Horns",
+        "item_price": 6666,
+        "item_emoji": "<:Demon_Horns:1116773260651135006>",
+        "item_rarity": "Legendary",
+        "item_type": "Armor",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "Horns of the devil himself, said to bring luck to those who wear them.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "Luck + 10",
+        "item_sub_type": "Helmet"
+    },
+    {
+        "item_id": "devils_tail",
+        "item_name": "Devil's Tail",
+        "item_price": 6666,
+        "item_emoji": "<:Demon_Tail:1122347257044414554>",
+        "item_rarity": "Legendary",
+        "item_type": "Armor",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "Tail of the devil himself, said to bring luck to those who wear it.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "Luck + 10",
+        "item_sub_type": "Leggings"
+    }
+          
 ]

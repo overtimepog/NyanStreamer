@@ -131,6 +131,95 @@
                 {"penaltyType": "death", "chance": 0.04},
                 {"penaltyType": "death", "chance": 0.05}
             ]
+        },
+        {
+            "location": "The IRS",
+            "positive_comments": [
+                "You found a forgotten tax return and got {thing} from it.",
+                "You helped someone with their taxes and they tipped you {thing}.",
+                "You found a loophole in the tax code and earned {thing}.",
+                "You audited a big corporation and got {thing} as a reward.",
+                "You found an unclaimed tax refund and got {thing}."
+            ],
+            "positive_outcomes": [
+                {"rewardType": "money", "reward": 30, "chance": 0.4},
+                {"rewardType": "money", "reward": 60, "chance": 0.3},
+                {"rewardType": "money", "reward": 100, "chance": 0.15},
+                {"rewardType": "money", "reward": 500, "chance": 0.1},
+                {"rewardType": "money", "reward": 1000, "chance": 0.05}
+            ],
+            "negative_comments": [
+                "You got audited and had to pay {thing} in back taxes.",
+                "You made a mistake on a tax return and had to pay {thing} as a penalty.",
+                "You lost a tax evasion case and had to pay {thing}.",
+                "You got caught in a tax fraud scheme and lost {thing}.",
+                "You misplaced important tax documents and had to pay {thing} to replace them."
+            ],
+            "negative_outcomes": [
+                {"penaltyType": "money", "penalty": 50, "chance": 0.4},
+                {"penaltyType": "money", "penalty": 100, "chance": 0.3},
+                {"penaltyType": "money", "penalty": 200, "chance": 0.2},
+                {"penaltyType": "money", "penalty": 500, "chance": 0.1}
+            ],
+            "death_comments": [
+                "You got caught in a dangerous tax evasion scheme and didn't survive.",
+                "You angered a powerful corporation with your audits and they had you eliminated.",
+                "You tried to steal confidential tax documents and were caught by security.",
+                "You got lost in the labyrinthine IRS building and starved.",
+                "You were crushed by a mountain of paperwork."
+            ],
+            "death_outcomes": [
+                {"penaltyType": "death", "chance": 0.01},
+                {"penaltyType": "death", "chance": 0.02},
+                {"penaltyType": "death", "chance": 0.03},
+                {"penaltyType": "death", "chance": 0.04},
+                {"penaltyType": "death", "chance": 0.05}
+            ]
+        },
+        {
+            "location": "Hell",
+            "positive_comments": [
+                "You managed to trick a demon and stole {thing} from it.",
+                "You found a lost soul who gave you {thing} for guiding it to the light.",
+                "You stumbled upon a hidden treasure chest in the underworld and found {thing}.",
+                "You won a bet against a devil and earned {thing}.",
+                "You found {thing} in the remains of a demonic ritual."
+            ],
+            "positive_outcomes": [
+                {"rewardType": "money", "reward": 100, "chance": 0.4},
+                {"rewardType": "money", "reward": 200, "chance": 0.3},
+                {"rewardType": "money", "reward": 300, "chance": 0.15},
+                {"rewardType": "money", "reward": 500, "chance": 0.05},
+                {"rewardType": "money", "reward": 1000, "chance": 0.05}
+            ],
+            "negative_comments": [
+                "A demon caught you snooping around and took {thing} as a penalty.",
+                "You got lost in the labyrinth of torment and had to pay {thing} to a guide.",
+                "You accidentally stepped into a circle of summoning and lost {thing} in the ensuing chaos.",
+                "You tried to outsmart a devil but ended up losing {thing}.",
+                "You were chased by hellhounds and dropped {thing} while escaping."
+            ],
+            "negative_outcomes": [
+                {"penaltyType": "money", "penalty": 50, "chance": 0.4},
+                {"penaltyType": "money", "penalty": 100, "chance": 0.3},
+                {"penaltyType": "money", "penalty": 200, "chance": 0.2},
+                {"penaltyType": "money", "penalty": 500, "chance": 0.1}
+            ],
+            "death_comments": [
+                "You were caught in a demonic crossfire and didn't survive.",
+                "You fell into the river Styx and drowned.",
+                "You were trapped in a torture chamber and didn't make it out.",
+                "You were turned into a stone statue by a gorgon.",
+                "You were swallowed by a hellish beast."
+            ],
+            "death_outcomes": [
+                {"penaltyType": "death", "chance": 0.01},
+                {"penaltyType": "death", "chance": 0.02},
+                {"penaltyType": "death", "chance": 0.03},
+                {"penaltyType": "death", "chance": 0.04},
+                {"penaltyType": "death", "chance": 0.05}
+            ]
         }
+               
     ]
 }

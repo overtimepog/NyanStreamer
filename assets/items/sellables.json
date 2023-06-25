@@ -74,7 +74,25 @@
             "quote": "None"
         }],
         "item_sub_type": "None"
+    },
+    {
+        "item_id": "demon_sigil",
+        "item_name": "Demon Sigil",
+        "item_price": 666,
+        "item_emoji": "<:Demon_Sigil:1116773259464151040>",
+        "item_rarity": "Epic",
+        "item_type": "Sellable",
+        "item_damage": 0,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A powerful sigil imbued with demonic energy. Found from the Devil Job",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "item_sub_type": "None"
     }
-    
-    
 ]

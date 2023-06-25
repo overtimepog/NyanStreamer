@@ -13,6 +13,7 @@ Here are some rules to be followed when making new stuff
 * only one job minigame per job should have a chance for an item reward
 * the xp needed for a user to level up is 6 times their level and does not overflow after a user levels up, keep this in mind when giving out xp rewards
 * jobs must have multiple rewards with different amounts for each minigame
+* search locations must have at least 15 comments each
 * all generated stuff must be given back in json format
 * when I ask you to create stuff, I mean give it back to me in json format, I will handle the rest
 * FOLLOW EVERY RULE AT ALL TIMES WHEN CREATING STUFF WITH THE TEMPLATES, which are below
@@ -278,7 +279,6 @@ this is an example of a search location
         },
 
 this is an example of each minigame in one job
-[
     {
         "id": "hitman",
         "name": "Hitman",
@@ -295,194 +295,232 @@ this is an example of each minigame in one job
         "minigames": [
             {
                 "type": "Order",
-                "prompt": "**Work for Beekeeper** - Order - Please arrange the following tasks in the correct order:",
+                "prompt": "**Work for Hitman** - Order - Please arrange the following tasks in the correct order:",
                 "reward": [
-                    {"rewardType": "money", "reward": 20, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
-                    {"rewardType": "money", "reward": 25, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
-                    {"rewardType": "money", "reward": 30, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
-                    {"rewardType": "money", "reward": 35, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
+                    {"rewardType": "money", "reward": 60, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.5},
+                    {"rewardType": "money", "reward": 70, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 7, "chance": 0.4},
+                    {"rewardType": "money", "reward": 80, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.2},
+                    {"rewardType": "money", "reward": 100, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.1}
                 ],
                 "sequences": [
                     {
-                        "task": "Sort the tasks according to the beekeeper's daily routine",
-                        "items": ["Inspect hive", "Refill feeder", "Check for pests", "Record findings"],
-                        "correctOrder": ["Put on bee suit", "Inspect hive", "Refill feeder", "Check for pests", "Record findings"]
+                        "task": "Sort the tasks according to the hitman's mission",
+                        "items": ["Receive contract", "Plan mission", "Prepare equipment", "Execute mission", "Escape"],
+                        "correctOrder": ["Receive contract", "Plan mission", "Prepare equipment", "Execute mission", "Escape"]
                     },
                     {
-                        "task": "Sort the tasks according to the honey harvesting process",
-                        "items": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"],
-                        "correctOrder": ["Put on bee suit", "Smoke hive", "Remove honeycombs", "Extract honey"]
+                        "task": "Sort the tasks according to the assassination process",
+                        "items": ["Identify target", "Find opportunity", "Execute target", "Escape", "Report success"],
+                        "correctOrder": ["Identify target", "Find opportunity", "Execute target", "Escape", "Report success"]
                     },
                     {
-                        "task": "Sort the tasks according to the honey processing steps",
-                        "items": ["Uncap honeycombs", "Spin in extractor", "Filter honey", "Jar honey"],
-                        "correctOrder": ["Uncap honeycombs", "Spin in extractor", "Filter honey", "Jar honey"]
+                        "task": "Sort the tasks according to the equipment preparation",
+                        "items": ["Choose weapon", "Prepare disguise", "Pack tools", "Check equipment"],
+                        "correctOrder": ["Choose weapon", "Prepare disguise", "Pack tools", "Check equipment"]
                     }
                 ]
             },
             {
                 "type": "Trivia",
-                "prompt": "**Work for Beekeeper** - Trivia - Please answer the following question:",
+                "prompt": "**Work for Hitman** - Trivia - Please answer the following question:",
                 "reward": [
-                    {"rewardType": "money", "reward": 30, "chance": 0.5},
-                    {"rewardType": "item", "reward": "honey", "chance": 0.2},
-                    {"rewardType": "money", "reward": 35, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 3, "chance": 0.3},
-                    {"rewardType": "money", "reward": 40, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 4, "chance": 0.4},
-                    {"rewardType": "money", "reward": 45, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 5, "chance": 0.3}
+                    {"rewardType": "money", "reward": 70, "chance": 0.5},
+                    {"rewardType": "item", "reward": "bullet", "chance": 0.2},
+                    {"rewardType": "money", "reward": 80, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType": "money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2}
                 ],
                 "questions": [
                     {
-                        "question": "What is the main product produced by bees?",
-                        "options": ["Honey", "Milk", "Eggs"],
-                        "answer": "Honey"
-                    },
-                   {
-                        "question": "What is the queen bee's primary role?",
-                        "options": ["To make honey", "To pollinate flowers", "To lay eggs"],
-                        "answer": "To lay eggs"
+                        "question": "What is the main weapon of a hitman?",
+                        "options": ["Knife", "Gun", "Poison"],
+                        "answer": "Gun"
                     },
                     {
-                        "question": "What do beekeepers use to calm the bees?",
-                        "options": ["Water", "Smoke", "Light"],
-                        "answer": "Smoke"
+                        "question": "What is the most important skill for a hitman?",
+                        "options": ["Strength", "Stealth", "Speed"],
+                        "answer": "Stealth"
                     },
                     {
-                        "question": "What is the name for a baby bee?",
-                        "options": ["Cub", "Pup", "Larva"],
-                        "answer": "Larva"
+                        "question": "What is the hitman's main goal?",
+                        "options": ["To kill", "To steal", "To spy"],
+                        "answer": "To kill"
                     },
                     {
-                        "question": "What is the term for the movement bees use to communicate?",
-                        "options": ["Waggle Dance", "Buzz Shuffle", "Hive Hop"],
-                        "answer": "Waggle Dance"
+                        "question": "What is the hitman's main strategy?",
+                        "options": ["Direct attack", "Ambush", "Long range"],
+                        "answer": "Ambush"
                     },
                     {
-                        "question": "Approximately, how many bees does a typical hive contain?",
-                        "options": ["50,000", "5,000", "500"],
-                        "answer": "50,000"
+                        "question": "What is the hitman's main concern?",
+                        "options": ["Getting caught", "Getting paid", "Getting injured"],
+                        "answer": "Getting caught"
+                    },
+                    {
+                        "question": "What is the hitman's main tool?",
+                        "options": ["Gun", "Knife", "Rope"],
+                        "answer": "Gun"
+                    },
+                    {
+                        "question": "What is the hitman's main target?",
+                        "options": ["Criminals", "Politicians", "Businessmen"],
+                        "answer": "Politicians"
+                    },
+                    {
+                        "question": "What is the hitman's main method?",
+                        "options": ["Shooting", "Stabbing", "Strangling"],
+                        "answer": "Shooting"
+                    },
+                    {
+                        "question": "What is the hitman's main cover?",
+                        "options": ["Businessman", "Police officer", "Ordinary citizen"],
+                        "answer": "Ordinary citizen"
+                    },
+                    {
+                        "question": "What is the hitman's main asset?",
+                        "options": ["Strength", "Intelligence", "Stealth"],
+                        "answer": "Stealth"
                     }
                 ]
             },
             {
                 "type": "Retype",
-                "prompt": "**Work for Chef** - Retype - Please retype the following phrase:",
-                "phrases": ["cooking is love made visible", "The secret ingredient is always love", "good food is good mood", "life is short, lick the bowl"],
+                "prompt": "**Work for Hitman** - Retype - Please retype the following phrase:",
+                "phrases": ["The first rule of being a hitman is silence", "A hitman never leaves a trace", "A hitman always completes the mission", "A hitman always stays in the shadows", "A hitman is always prepared", "A hitman never misses", "A hitman always has a plan", "A hitman never gets caught", "A hitman always knows his target", "A hitman always has a backup plan"],
                 "reward": [
-                    {"rewardType": "money", "reward": 30, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 2, "chance": 0.3},
-                    {"rewardType": "money", "reward": 35, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
-                    {"rewardType": "money", "reward": 40, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 4, "chance": 0.2},
-                    {"rewardType": "money", "reward": 45, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 5, "chance": 0.3}
+                    {"rewardType": "money", "reward": 80, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType":"money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2},
+                    {"rewardType": "money", "reward": 120, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 12, "chance": 0.1}
                 ]
             },
             {
                 "type": "Backwards",
-                "prompt": "**Work for Chef** - Backwards - Please type the following word in reverse order:",
-                "words": ["ingredients", "potato", "carrot", "beef"],
+                "prompt": "**Work for Hitman** - Backwards - type the following word Backwards:",
+                "phrases": ["silence", "shadow", "bullet", "cloak", "prepared", "plan", "target", "backup", "mission", "caught"],
                 "reward": [
-                    {"rewardType": "money", "reward": 40, "chance": 0.3},
-                    {"rewardType": "item", "reward": "apron", "chance": 0.2},
-                    {"rewardType": "money", "reward": 45, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 3, "chance": 0.3},
-                    {"rewardType": "money", "reward": 50, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 4, "chance": 0.2}
+                    {"rewardType": "money", "reward": 80, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType":"money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2},
+                    {"rewardType": "money", "reward": 120, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 12, "chance": 0.1}
                 ]
             },
             {
                 "type": "Hangman",
-                "prompt": "**Work for Chef** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to cooking:",
+                "prompt": "**Work for Hitman** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to being a hitman:",
                 "reward": [
-                    {"rewardType": "money", "reward": 70, "chance": 0.5},
-                    {"rewardType": "item", "reward": "spatula", "chance": 0.3},
-                    {"rewardType": "money", "reward": 75, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 5, "chance": 0.3},
-                    {"rewardType": "money", "reward": 80, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 6, "chance": 0.4}
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType": "money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2},
+                    {"rewardType": "money", "reward": 120, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 12, "chance": 0.1},
+                    {"rewardType": "money", "reward": 130, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 13, "chance": 0.1}
                 ],
                 "sentences": [
                     {
-                        "sentence": "When you cook with {word}, the pan is slippery.",
-                        "answer": "butter"
+                        "sentence": "A hitman always completes the {word}.",
+                        "answer": "mission"
                     },
                     {
-                        "sentence": "{word} is the process of cooking food in hot sand, ashes, etc.",
-                        "answer": "roasting"
+                        "sentence": "The first rule of being a hitman is {word}.",
+                        "answer": "silence"
                     },
                     {
-                        "sentence": "{word} is a cooking technique used in a hot pan with a small amount of fat.",
-                        "answer": "frying"
+                        "sentence": "A hitman never leaves a {word}.",
+                        "answer": "trace"
                     },
                     {
-                        "sentence": "{word} is a moist-heat cooking technique that is used for delicate food.",
-                        "answer": "poaching"
+                        "sentence": "A hitman always stays in the {word}.",
+                        "answer": "shadows"
                     },
                     {
-                        "sentence": "To retain nutrients in vegetables, {word} is a good cooking method.",
-                        "answer": "steaming"
+                        "sentence": "A hitman is always {word}.",
+                        "answer": "prepared"
                     },
                     {
-                        "sentence": "{word} is a cooking technique that involves the use of liquid and low heat.",
-                        "answer": "braising"
+                        "sentence": "A hitman never {word}.",
+                        "answer": "misses"
+                    },
+                    {
+                        "sentence": "A hitman always has a {word}.",
+                        "answer": "plan"
+                    },
+                    {
+                        "sentence": "A hitman never gets {word}.",
+                        "answer": "caught"
+                    },
+                    {
+                        "sentence": "A hitman always knows his {word}.",
+                        "answer": "target"
+                    },
+                    {
+                        "sentence": "A hitman always has a backup {word}.",
+                        "answer": "plan"
                     }
                 ]
             },
             {
-                "type": "Matching",
-                "prompt": "**Work for Chef** - Matching - Please match the following plants with their benefits:",
-                "reward": [
-                    {"rewardType": "money", "reward": 80, "chance": 0.6},
-                    {"rewardType": "experience", "reward": 4, "chance": 0.4},
-                    {"rewardType": "item", "reward": "herb_bundle", "chance": 0.1},
-                    {"rewardType": "money", "reward": 85, "chance": 0.5},
-                    {"rewardType": "experience", "reward": 5, "chance": 0.3},
-                    {"rewardType": "money", "reward": 90, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 6, "chance": 0.2}
-                ],
-                "items": [
-                    {"name": "Aloe Vera", "description": "Helps in skin healing"},
-                    {"name": "Mint", "description": "Aids digestion"},
-                    {"name": "Lavender", "description": "Relieves stress"}
-                ],
-                "correctMatches": [
-                    {"name": "Aloe Vera", "description": "Helps in skin healing"},
-                    {"name": "Mint", "description": "Aids digestion"},
-                    {"name": "Lavender", "description": "Relieves stress"}
-                ]
-            },
-            {
                 "type": "Anagram",
-                "prompt": "**Work for Chef** - Anagram - Please unscramble the following ingredient or cooking-related word:",
+                "prompt": "**Work for Hitman** - Anagram - Please unscramble the following word related to the Hitman profession:",
                 "reward": [
                     {"rewardType": "money", "reward": 30, "chance": 0.4},
                     {"rewardType": "experience", "reward": 4, "chance": 0.5},
-                    {"rewardType": "item", "reward": "chef_hat", "chance": 0.1},
                     {"rewardType": "money", "reward": 35, "chance": 0.3},
                     {"rewardType": "experience", "reward": 5, "chance": 0.4},
                     {"rewardType": "money", "reward": 40, "chance": 0.2},
                     {"rewardType": "experience", "reward": 6, "chance": 0.3}
                 ],
-                "task": "Unscramble the cooking-related word",
+                "task": "Unscramble the Hitman-related word",
                 "words": [
-                    {"scrambled": "otapto", "solution": "potato"},
-                    {"scrambled": "treubt", "solution": "butter"},
-                    {"scrambled": "gnisaseno", "solution": "seasoning"},
-                    {"scrambled": "hctike", "solution": "kitchen"},
-                    {"scrambled": "eschea", "solution": "cheese"}
+                    {"scrambled": "targte", "solution": "target"},
+                    {"scrambled": "sasasnsi", "solution": "assassin"},
+                    {"scrambled": "sileencr", "solution": "silencer"},
+                    {"scrambled": "snipre", "solution": "sniper"},
+                    {"scrambled": "mafluceg", "solution": "camouflage"}
                 ]
-            }
+            }           
         ]
     }
-]
+
+*THESE ARE THE ONLY JOB MINIGAMES YOU CAN USE
+    Order: This minigame involves arranging tasks in the correct order. For example, sorting tasks according to the hitman's mission or the assassination process.
+
+    Trivia: This minigame involves answering trivia questions related to the hitman profession. For example, identifying the main weapon of a hitman or the most important skill for a hitman.
+
+    Retype: This minigame involves retyping phrases related to the hitman profession. For example, "A hitman always completes the mission" or "A hitman never leaves a trace".
+
+    Backwards: This minigame involves typing words related to the hitman profession backwards. For example, "silence" or "shadow".
+
+    Hangman: This minigame involves guessing missing words in sentences related to the hitman profession. For example, "A hitman always completes the {word}." or "The first rule of being a hitman is {word}."
+
+    Anagram: This minigame involves unscrambling words related to the hitman profession. For example, "targte" (target) or "sasasnsi" (assassin).
 
 this is all the json data from my game that you will use as a reference when creating new stuff, mainly in order to keep the game balanced, understand it all and then say so followed by a ✅
 
@@ -490,3 +528,7 @@ https://nyanstreamer.lol/api/data/items
 https://nyanstreamer.lol/api/data/jobs
 https://nyanstreamer.lol/api/data/chests
 https://nyanstreamer.lol/api/data/searches
+
+
+USE THEESE ONLY AS A REFERENCE, DO NOT CHANGE ANYTHING IN THEM, AND DO NOT MAKE POST REQUESTS TO THEM, ONLY GET REQUESTS TO GET THE DATA, YOU WILL BE MAKING NEW STUFF AND GIVING IT BACK TO ME IN JSON FORMAT BASED ON THE TEMPLATES ABOVE
+TELL ME YOU UNDERSTAND ALL OF THIS AND GIVE ME A SUMMERIZED EXPLANATION OF EVERYTHING, FOLLOWED BY A ✅

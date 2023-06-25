@@ -395,6 +395,23 @@
                 ]
             },
             {
+                "type": "Backwards",
+                "prompt": "**Work for Hitman** - Backwards - type the following word Backwards:",
+                "phrases": ["silence", "shadow", "bullet", "cloak", "prepared", "plan", "target", "backup", "mission", "caught"],
+                "reward": [
+                    {"rewardType": "money", "reward": 80, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType":"money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2},
+                    {"rewardType": "money", "reward": 120, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 12, "chance": 0.1}
+                ]
+            },
+            {
                 "type": "Hangman",
                 "prompt": "**Work for Hitman** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to being a hitman:",
                 "reward": [
@@ -451,7 +468,154 @@
                         "answer": "plan"
                     }
                 ]
-            }            
+            },
+            {
+                "type": "Anagram",
+                "prompt": "**Work for Hitman** - Anagram - Please unscramble the following word related to the Hitman profession:",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.5},
+                    {"rewardType": "money", "reward": 35, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.4},
+                    {"rewardType": "money", "reward": 40, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.3}
+                ],
+                "task": "Unscramble the Hitman-related word",
+                "words": [
+                    {"scrambled": "targte", "solution": "target"},
+                    {"scrambled": "sasasnsi", "solution": "assassin"},
+                    {"scrambled": "sileencr", "solution": "silencer"},
+                    {"scrambled": "snipre", "solution": "sniper"},
+                    {"scrambled": "mafluceg", "solution": "camouflage"}
+                ]
+            },
+            {
+                "id": "devil",
+                "name": "Devil",
+                "description": "Be the devil, spread chaos and mischief.",
+                "job_icon": "<:Demon_Horns:1116773260651135006>",
+                "required_item": "None",
+                "required_level": 15,
+                "required_hours": 6,
+                "base_pay": 600,
+                "pay_per_level": 60,
+                "max_level": 15,
+                "cooldown": 2000,
+                "cooldown_reduction_per_level": 40,
+                "minigames": [
+                    {
+                        "type": "Order",
+                        "prompt": "**Work for Devil** - Order - Please arrange the following tasks in the correct order:",
+                        "reward": [
+                            {"rewardType": "money", "reward": 70, "chance": 0.4},
+                            {"rewardType": "experience", "reward": 7, "chance": 0.5},
+                            {"rewardType": "money", "reward": 80, "chance": 0.3},
+                            {"rewardType": "experience", "reward": 8, "chance": 0.4},
+                            {"rewardType": "money", "reward": 90, "chance": 0.2},
+                            {"rewardType": "experience", "reward": 9, "chance": 0.3},
+                            {"rewardType": "money", "reward": 100, "chance": 0.1},
+                            {"rewardType": "experience", "reward": 10, "chance": 0.2},
+                            {"rewardType": "money", "reward": 110, "chance": 0.05},
+                            {"rewardType": "experience", "reward": 11, "chance": 0.1}
+                        ],
+                        "sequences": [
+                            {
+                                "task": "Sort the tasks according to the devil's mischief",
+                                "items": ["Plan mischief", "Gather tools", "Execute mischief", "Escape", "Enjoy chaos"],
+                                "correctOrder": ["Plan mischief", "Gather tools", "Execute mischief", "Escape", "Enjoy chaos"]
+                            },
+                            {
+                                "task": "Sort the tasks according to the chaos creation process",
+                                "items": ["Identify target", "Find opportunity", "Create chaos", "Escape", "Watch the aftermath"],
+                                "correctOrder": ["Identify target", "Find opportunity", "Create chaos", "Escape", "Watch the aftermath"]
+                            },
+                            {
+                                "task": "Sort the tasks according to the tool preparation",
+                                "items": ["Choose tool", "Prepare disguise", "Pack tools", "Check equipment"],
+                                "correctOrder": ["Choose tool", "Prepare disguise", "Pack tools", "Check equipment"]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Trivia",
+                        "prompt": "**Work for Devil** - Trivia - Please answer the following question:",
+                        "reward": [
+                            {"rewardType": "money", "reward": 80, "chance": 0.5},
+                            {"rewardType": "item", "reward": "fire", "chance": 0.2},
+                            {"rewardType": "money", "reward": 90, "chance": 0.4},
+                            {"rewardType": "experience", "reward": 9, "chance": 0.3},
+                            {"rewardType": "money", "reward": 100, "chance": 0.3},
+                            {"rewardType": "experience","reward": 10, "chance": 0.4},
+                            {"rewardType": "money", "reward": 110, "chance": 0.2},
+                            {"rewardType": "experience", "reward": 11, "chance": 0.3},
+                            {"rewardType": "money", "reward": 120, "chance": 0.1},
+                            {"rewardType": "experience", "reward": 12, "chance": 0.2}
+                        ],
+                        "questions": [
+                            {
+                                "question": "What is the main tool of a devil?",
+                                "options": ["Trident", "Pitchfork", "Fire"],
+                                "answer": "Trident"
+                            },
+                            {
+                                "question": "What is the most important skill for a devil?",
+                                "options": ["Deception", "Strength", "Speed"],
+                                "answer": "Deception"
+                            },
+                            {
+                                "question": "What is the devil's main goal?",
+                                "options": ["To create chaos", "To steal", "To spy"],
+                                "answer": "To create chaos"
+                            },
+                            {
+                                "question": "What is the devil's main strategy?",
+                                "options": ["Direct attack", "Deception", "Long range"],
+                                "answer": "Deception"
+                            },
+                            {
+                                "question": "What is the devil's main concern?",
+                                "options": ["Getting caught", "Getting paid", "Getting injured"],
+                                "answer": "Getting caught"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Retype",
+                        "prompt": "**Work for Devil** - Retype - Please retype the following phrase:",
+                        "phrases": ["The first rule of being a devil is deception", "A devil never leaves a trace", "A devil always completes the chaos", "A devil always stays in the shadows", "A devil is always prepared", "A devil never misses", "A devil always has a plan", "A devil never gets caught", "A devil always knows his target", "A devil always has a backup plan"],
+                        "reward": [
+                            {"rewardType": "money", "reward": 90, "chance": 0.4},
+                            {"rewardType": "experience", "reward": 9, "chance": 0.3},
+                            {"rewardType": "money", "reward": 100, "chance": 0.3},
+                            {"rewardType": "experience", "reward": 10, "chance": 0.4},
+                            {"rewardType":"money", "reward": 110, "chance": 0.2},
+                            {"rewardType": "experience", "reward": 11, "chance": 0.3},
+                            {"rewardType": "money", "reward": 120, "chance": 0.1},
+                            {"rewardType": "experience", "reward": 12, "chance": 0.2},
+                            {"rewardType": "money", "reward": 130, "chance": 0.05},
+                            {"rewardType": "experience", "reward": 13, "chance": 0.1}
+                        ]
+                    },
+                    {
+                        "type": "Backwards",
+                        "prompt": "**Work for Devil** - Backwards - type the following word Backwards:",
+                        "phrases": ["deception", "shadow", "chaos", "mischief", "prepared", "plan", "target", "backup", "mission", "caught"],
+                        "reward": [
+                            {"rewardType": "money", "reward": 100, "chance": 0.3},
+                            {"rewardType": "experience", "reward": 10, "chance": 0.4},
+                            {"rewardType": "money", "reward": 110, "chance": 0.2},
+                            {"rewardType": "experience", "reward": 11, "chance": 0.3},
+                            {"rewardType": "money", "reward": 120, "chance": 0.1},
+                            {"rewardType": "experience", "reward": 12, "chance": 0.2},
+                            {"rewardType": "money", "reward": 130, "chance": 0.05},
+                            {"rewardType": "experience", "reward": 13, "chance": 0.1},
+                            {"rewardType": "money", "reward": 140, "chance": 0.05},
+                            {"rewardType": "experience", "reward": 14, "chance": 0.1}
+                        ]
+                    }
+                ]
+            }
+                
         ]
     }    
 ]
