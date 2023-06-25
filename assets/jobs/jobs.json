@@ -829,6 +829,147 @@
         ]
     },
     {
+        "id": "pope",
+        "name": "Pope",
+        "description": "Work as the Pope, leading the Catholic Church",
+        "job_icon": "<:pope:1121194911774019656>",
+        "required_item": "None",
+        "required_level": 50,
+        "required_hours": 10,
+        "base_pay": 1000,
+        "pay_per_level": 100,
+        "cooldown": 3600,
+        "cooldown_reduction_per_level": 60,
+        "minigames": [
+            {
+                "type": "Trivia",
+                "prompt": "Please answer the following question related to the Catholic Church:",
+                "reward": [
+                    {"rewardType": "money", "reward": 200, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 20, "chance": 0.5},
+                    {"rewardType": "money", "reward": 300, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 30, "chance": 0.4},
+                    {"rewardType": "money", "reward": 400, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 40, "chance": 0.3},
+                    {"rewardType": "money", "reward": 500, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 50, "chance": 0.2},
+                    {"rewardType": "money", "reward": 600, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.1}
+                ],
+                "questions": [
+                    {
+                        "question": "Who is the patron saint of the Catholic Church?",
+                        "options": ["Saint Peter", "Saint Paul", "Saint John"],
+                        "answer": "Saint Peter"
+                    },
+                    {
+                        "question": "What is the official language of the Vatican?",
+                        "options": ["Italian", "Latin", "English"],
+                        "answer": "Latin"
+                    },
+                    {
+                        "question": "What is the Pope's official title?",
+                        "options": ["Bishop of Rome", "Archbishop of Rome", "Cardinal of Rome"],
+                        "answer": "Bishop of Rome"
+                    },
+                    {
+                        "question": "What is the Pope's official residence?",
+                        "options": ["Vatican Palace", "Apostolic Palace", "Papal Palace"],
+                        "answer": "Apostolic Palace"
+                    },
+                    {
+                        "question": "What is the Pope's official vehicle?",
+                        "options": ["Popemobile", "Papal Car", "Vatican Car"],
+                        "answer": "Popemobile"
+                    }
+                ]
+            },
+            {
+                "type": "Order",
+                "prompt": "Please arrange the following tasks in the correct order:",
+                "reward": [
+                    {"rewardType": "money", "reward": 200, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 20, "chance": 0.5},
+                    {"rewardType": "money", "reward": 300, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 30, "chance": 0.4},
+                    {"rewardType": "money", "reward": 400, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 40, "chance": 0.3},
+                    {"rewardType": "money", "reward": 500, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 50, "chance": 0.2},
+                    {"rewardType": "money", "reward": 600, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 60, "chance": 0.1}
+                ],
+                "tasks": [
+                    "Wake up and pray",
+                    "Have breakfast",
+                    "Conduct morning mass",
+                    "Meet with Vatican officials",
+                    "Lunch and rest",
+                    "Afternoon prayers",
+                    "Meet with visiting dignitaries",
+                    "Evening prayers",
+                    "Dinner",
+                    "Bedtime prayers and sleep"
+                ]
+            },
+            {
+                "type": "Hangman",
+                "prompt": "**Work for Pope** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to being a Pope:",
+                "reward": [
+                    {"rewardType": "money", "reward": 1000, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 100, "chance": 0.4},
+                    {"rewardType": "money", "reward": 1200, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 120, "chance": 0.3},
+                    {"rewardType": "money", "reward": 1500, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 150, "chance": 0.2},
+                    {"rewardType": "item", "reward": "pope_hat", "chance": 0.05}
+                ],
+                "sentences": [
+                    {
+                        "sentence": "The Pope is the Bishop of {word}.",
+                        "answer": "Rome"
+                    },
+                    {
+                        "sentence": "The Pope resides in the {word}.",
+                        "answer": "Vatican"
+                    },
+                    {
+                        "sentence": "The Pope is the spiritual leader of the {word}.",
+                        "answer": "Catholics"
+                    },
+                    {
+                        "sentence": "The Pope's official residence is the Apostolic {word}.",
+                        "answer": "Palace"
+                    },
+                    {
+                        "sentence": "The Pope is also known as the {word} Father.",
+                        "answer": "Holy"
+                    },
+                    {
+                        "sentence": "The Pope's liturgical vestments are usually {word}.",
+                        "answer": "white"
+                    },
+                    {
+                        "sentence": "The Pope is elected by the {word}.",
+                        "answer": "cardinals"
+                    },
+                    {
+                        "sentence": "The Pope's authority is called {word} power.",
+                        "answer": "papal"
+                    },
+                    {
+                        "sentence": "The Pope is the head of the {word} See.",
+                        "answer": "Holy"
+                    },
+                    {
+                        "sentence": "The Pope's teachings are considered infallible in matters of faith and {word}.",
+                        "answer": "morals"
+                    }
+                ]
+            }            
+        ]
+    },
+    {
         "id": "devil",
         "name": "Devil",
         "description": "Be the devil, spread chaos and mischief.",
@@ -952,5 +1093,5 @@
                 ]
             }
         ]
-    } 
+    }
 ]

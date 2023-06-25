@@ -275,6 +275,26 @@
         "item_recipe": [],
         "item_effect": "Luck + 10",
         "item_sub_type": "Leggings"
-    }
+    },
+    {
+        "item_id": "pope_hat",
+        "item_name": "Pope Hat",
+        "item_price": 5000,
+        "item_emoji": "<:Holy_PopeHat:1120497074778165329>",
+        "item_rarity": "Legendary",
+        "item_type": "Armor",
+        "item_damage": 15,
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": true,
+        "item_description": "a dorky hat that makes you look like a pope. Found from the Pope Job",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "health + 10",
+        "item_sub_type": "Helmet"
+    }    
           
 ]
