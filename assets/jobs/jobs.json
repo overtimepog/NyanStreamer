@@ -397,7 +397,7 @@
             {
                 "type": "Backwards",
                 "prompt": "**Work for Hitman** - Backwards - type the following word Backwards:",
-                "phrases": ["silence", "shadow", "bullet", "cloak", "prepared", "plan", "target", "backup", "mission", "caught"],
+                "words": ["silence", "shadow", "bullet", "cloak", "prepared", "plan", "target", "backup", "mission", "caught"],
                 "reward": [
                     {"rewardType": "money", "reward": 80, "chance": 0.4},
                     {"rewardType": "experience", "reward": 8, "chance": 0.3},
@@ -599,7 +599,7 @@
                     {
                         "type": "Backwards",
                         "prompt": "**Work for Devil** - Backwards - type the following word Backwards:",
-                        "phrases": ["deception", "shadow", "chaos", "mischief", "prepared", "plan", "target", "backup", "mission", "caught"],
+                        "words": ["deception", "shadow", "chaos", "mischief", "prepared", "plan", "target", "backup", "mission", "caught"],
                         "reward": [
                             {"rewardType": "money", "reward": 100, "chance": 0.3},
                             {"rewardType": "experience", "reward": 10, "chance": 0.4},
