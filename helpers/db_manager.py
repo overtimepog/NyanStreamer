@@ -17,6 +17,7 @@ import aiohttp
 import aiosqlite
 import discord
 import requests
+import collections
 
 #`item_id` varchar(20) NOT NULL,
 #`item_name` varchar(255) NOT NULL,
@@ -963,23 +964,18 @@ async def add_shop_items() -> None:
     data = await db.execute(f"SELECT * FROM `basic_items` WHERE inShop = ?", (True,), fetch="all")
     print(f"Retrieved {len(data)} items from the database.")
     
-    # Create a set to store the base names of the items that have been added
-    added_items = set()
-
-    # Filter the data to only include items that haven't been added yet
-    filtered_data = []
+    # Group the items by base name
+    items_by_base_name = collections.defaultdict(list)
     for item in data:
         base_name = item[0]
         for rarity in ["_common", "_uncommon", "_rare", "_epic", "_legendary"]:
             if rarity in base_name:
                 base_name = base_name.replace(rarity, "")
                 break
-        if base_name not in added_items:
-            filtered_data.append(item)
-            added_items.add(base_name)
-            print(f"Added {base_name} to the list of added items.")
-        else:
-            print(f"Skipped {base_name} because it's already in the list of added items.")
+        items_by_base_name[base_name].append(item)
+
+    # Select a random item from each group to add to the shop
+    filtered_data = [random.choice(items) for items in items_by_base_name.values()]
 
     #add the items to the shop table
     #pick 25 random items from the list
