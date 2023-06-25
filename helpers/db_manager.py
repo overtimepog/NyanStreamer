@@ -1140,15 +1140,14 @@ async def add_jobs_and_minigames():
             INSERT INTO `jobs` (
                 `id`, `name`, `description`, `job_icon`,
                 `required_item`, `required_level`, `required_hours`,
-                `base_pay`, `pay_per_level`, `max_level`,
+                `base_pay`, `pay_per_level`,
                 `cooldown`, `cooldown_reduction_per_level`
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 job['id'], job['name'], job['description'], job['job_icon'],
                 job['required_item'], job['required_level'], job['required_hours'],
-                job['base_pay'], job['pay_per_level'], job['max_level'],
-                job['cooldown'], job['cooldown_reduction_per_level']
+                job['base_pay'], job['pay_per_level'], job['cooldown'], job['cooldown_reduction_per_level']
             )
         )
         print(f"Processed job {job['name']}")

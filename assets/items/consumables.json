@@ -22,7 +22,7 @@
     {
         "item_id": "luckpotion",
         "item_name": "Luck Potion",
-        "item_price": 25000,
+        "item_price": 1500,
         "item_emoji": "<:luckpotion:1116535793054392421>",
         "item_rarity": "Rare",
         "item_type": "Consumable",
@@ -42,7 +42,7 @@
     {
         "item_id": "healthpotion",
         "item_name": "Health Potion",
-        "item_price": 3000,
+        "item_price": 200,
         "item_emoji": "<:HealthPotion_Small:1077645426745942116>",
         "item_rarity": "Rare",
         "item_type": "Consumable",
@@ -62,7 +62,7 @@
     {
         "item_id": "glue",
         "item_name": "Glue",
-        "item_price": 30000,
+        "item_price": 4500,
         "item_emoji": "<:glue:1114319335637393438>",
         "item_rarity": "Rare",
         "item_type": "Consumable",
@@ -180,7 +180,7 @@
         "item_sub_type": "None"
     },
     {
-        "item_id": "pet_treat",
+        "item_id": "pet_treat_common",
         "item_name": "Pet Treat",
         "item_price": 500,
         "item_emoji": "<:petTreat:1121029896035119154>",

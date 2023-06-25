@@ -9,7 +9,6 @@
         "required_hours": 0,
         "base_pay": 100,
         "pay_per_level": 10,
-        "max_level": 5,
         "cooldown": 900,
         "cooldown_reduction_per_level": 20,
         "minigames": [
@@ -128,6 +127,205 @@
         ]
     },
     {
+        "id": "server",
+        "name": "Server",
+        "description": "Work as a server in a bustling restaurant",
+        "job_icon": "<:server:1121194911774019656>",
+        "required_item": "None",
+        "required_level": 1,
+        "required_hours": 0,
+        "base_pay": 100,
+        "pay_per_level": 10,
+        "cooldown": 1800,
+        "cooldown_reduction_per_level": 30,
+        "minigames": [
+            {
+                "type": "Order",
+                "prompt": "Arrange the following tasks in the correct order:",
+                "reward": [
+                    {"rewardType": "money", "reward": 20, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 2, "chance": 0.5},
+                    {"rewardType": "money", "reward": 30, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.4},
+                    {"rewardType": "money", "reward": 40, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.3},
+                    {"rewardType": "money", "reward": 50, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.2}
+                ],
+                "sequences": [
+                    {
+                        "task": "Sort the tasks according to the server's duties",
+                        "items": ["Greet customer", "Take order", "Serve food", "Clear table", "Bill customer"],
+                        "correctOrder": ["Greet customer", "Take order", "Serve food", "Clear table", "Bill customer"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the cleaning process",
+                        "items": ["Clear table", "Wipe table", "Set table", "Check table"],
+                        "correctOrder": ["Clear table", "Wipe table", "Set table", "Check table"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the order of a meal",
+                        "items": ["Appetizer", "Main course", "Dessert", "Bill"],
+                        "correctOrder": ["Appetizer", "Main course", "Dessert", "Bill"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the drink serving order",
+                        "items": ["Take drink order", "Prepare drink", "Serve drink", "Refill drink"],
+                        "correctOrder": ["Take drink order", "Prepare drink", "Serve drink", "Refill drink"]
+                    }
+                ]
+            },
+            {
+                "type": "Trivia",
+                "prompt": "Answer the following question:",
+                "reward": [
+                    {"rewardType": "money", "reward": 30, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 3, "chance": 0.5},
+                    {"rewardType": "money", "reward": 40, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.4},
+                    {"rewardType": "money", "reward": 50, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.3},
+                    {"rewardType": "money", "reward": 60, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.2}
+                ],
+                "questions": [
+                    {
+                        "question": "What is the proper way to serve food?",
+                        "options": ["From the customer's left side", "From the customer's right side", "From the front", "From the back"],
+                        "answer": "From the customer's left side"
+                    },
+                    {
+                        "question": "What is the main responsibility of a server?",
+                        "options": ["Cooking the food", "Cleaning the restaurant", "Serving the customers", "Managing the restaurant"],
+                        "answer": "Serving the customers"
+                    },
+                    {
+                        "question": "What should a server do if a customer has a complaint?",
+                        "options": ["Ignore the complaint", "Argue with the customer", "Apologize and try to resolve the issue", "Ask the customer to leave"],
+                        "answer": "Apologize and try to resolve the issue"
+                    },
+                    {
+                        "question": "What is the term for the list of dishes served in a restaurant?",
+                        "options": ["Catalog", "Menu", "Directory", "List"],
+                        "answer": "Menu"
+                    },
+                    {
+                        "question": "What is the term for the small dish served before the main course?",
+                        "options": ["Dessert", "Appetizer", "Side dish", "Entree"],
+                        "answer": "Appetizer"
+                    },
+                    {
+                        "question": "What is the term for a server carrying multiple plates at once?",
+                        "options": ["Juggling", "Balancing", "Multitasking", "Tray carrying"],
+                        "answer": "Tray carrying"
+                    },
+                    {
+                        "question": "What should a server do when a customer is ready to leave?",
+                        "options": ["Ignore them", "Ask them to clean their table", "Present the bill", "Ask them to pay at the counter"],
+                        "answer": "Present the bill"
+                    },
+                    {
+                        "question": "What is the term for the money given to a server over the bill amount?",
+                        "options": ["Bonus", "Gift", "Tip", "Surcharge"],
+                        "answer": "Tip"
+                    },
+                    {
+                        "question": "What is the term for the main dish in a meal?",
+                        "options": ["Appetizer", "Dessert", "Entree", "Side dish"],
+                        "answer": "Entree"
+                    },
+                    {
+                        "question": "What is the term for a server writing down the customer's order?",
+                        "options": ["Noting", "Recording", "Booking", "Order taking"],
+                        "answer": "Order taking"
+                    }
+                ]
+            },
+            {
+                "type": "Retype",
+                "prompt": "Retype the following phrase:",
+                "reward": [
+                    {"rewardType": "money", "reward": 40, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 4, "chance": 0.5},
+                    {"rewardType": "money", "reward": 50, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.4},
+                    {"rewardType": "money", "reward": 60, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.3},
+                    {"rewardType": "money", "reward": 70, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 7, "chance": 0.2}
+                ],
+                "phrases": [
+                    "The customer is always right.",
+                    "Service with a smile.",
+                    "Quality service is our top priority.",
+                    "We aim to please.",
+                    "Your satisfaction is our reward.",
+                    "Good food is good mood.",
+                    "We serve with pride.",
+                    "Hospitality is our specialty.",
+                    "We're here to serve.",
+                    "Enjoy your meal."
+                ]
+            },
+            {
+                "type": "Hangman",
+                "prompt": "Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to being a server:",
+                "reward": [
+                    {"rewardType": "money", "reward": 50, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 5, "chance": 0.5},
+                    {"rewardType": "money", "reward": 60, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.4},
+                    {"rewardType": "money", "reward": 70, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 7, "chance": 0.3},
+                    {"rewardType": "money", "reward": 80, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.2}
+                ],
+                "sentences": [
+                    {
+                        "sentence": "A good server always keeps their {word} clean.",
+                        "answer": "tray"
+                    },
+                    {
+                        "sentence": "The server must always be {word} to the customers.",
+                        "answer": "polite"
+                    },
+                    {
+                        "sentence": "A server should always {word} the orders correctly.",
+                        "answer": "note"
+                    },
+                    {
+                        "sentence": "Servers should have good {word} skills.",
+                        "answer": "communication"
+                    },
+                    {
+                        "sentence": "A server should always be {word} to the needs of the customers.",
+                        "answer": "attentive"
+                    },
+                    {
+                        "sentence": "A server should always {word} the correct order to the customers.",
+                        "answer": "deliver"
+                    },
+                    {
+                        "sentence": "A server should always {word} the customers with a smile.",
+                        "answer": "greet"
+                    },
+                    {
+                        "sentence": "A server should always be {word} in handling food.",
+                        "answer": "careful"
+                    },
+                    {
+                        "sentence": "A server should always {word} the table before serving the food.",
+                        "answer": "clean"
+                    },
+                    {
+                        "sentence": "A server should always {word} the bill to the customers when they are ready to leave.",
+                        "answer": "present"
+                    }
+                ]
+            }                        
+        ]
+    },                        
+    {
         "id": "beekeeper",
         "name": "Beekeeper",
         "description": "Take care of bees and collect honey. Requires a bee suit and a love for small, buzzing creatures.",
@@ -137,7 +335,6 @@
         "required_hours": 3,
         "base_pay": 200,
         "pay_per_level": 15,
-        "max_level": 5,
         "cooldown": 1800,
         "cooldown_reduction_per_level": 30,
         "minigames": [
@@ -272,7 +469,6 @@
         "required_hours": 5,
         "base_pay": 500,
         "pay_per_level": 50,
-        "max_level": 10,
         "cooldown": 1800,
         "cooldown_reduction_per_level": 30,
         "minigames": [
@@ -501,7 +697,6 @@
         "required_hours": 6,
         "base_pay": 600,
         "pay_per_level": 60,
-        "max_level": 15,
         "cooldown": 2000,
         "cooldown_reduction_per_level": 40,
         "minigames": [

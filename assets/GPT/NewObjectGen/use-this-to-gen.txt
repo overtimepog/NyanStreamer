@@ -8,7 +8,7 @@ Here are some rules to be followed when making new stuff
 * Jobs dont need a required item, it can be set to None 
 * Jobs also dont need a required hours, it can be set to 0
 * Only beginner jobs should have no required item or hours, all other jobs should have required hours and better pay based on it 
-* When Generating Jobs, they must have Mnigames and they must have at least 8 minigames
+* When Generating Jobs a Job must have 1 minigame of each type, Order, Trivia, Retype, Backwards, Hangman, Anagram, and must follow the rules for each minigame type
 * these are the only Job minigames: Order, Trivia, Retype, Backwards, Hangman, Anagram
 * for Retype, they must have at least 10 different phrases
 * for Backwards, they must have at least 10 different words
@@ -323,7 +323,6 @@ this is an example of each minigame in one job
         "required_hours": 5,
         "base_pay": 500,
         "pay_per_level": 50,
-        "max_level": 10,
         "cooldown": 1800,
         "cooldown_reduction_per_level": 30,
         "minigames": [
