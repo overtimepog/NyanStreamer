@@ -629,27 +629,29 @@ class TriviaGameButton(Button):
     async def callback(self, interaction: discord.Interaction):
         self.disabled = True
         selected_choice = self.label
-        if selected_choice == self.trivia_view.answer:
-            self.style = discord.ButtonStyle.success
-            self.trivia_view.resolve_callback.set_result(True)
+        if not self.trivia_view.resolve_callback.done():
+            if selected_choice == self.trivia_view.answer:
+                self.style = discord.ButtonStyle.success
+                self.trivia_view.resolve_callback.set_result(True)
+                try:
+                    await interaction.response.defer()
+                except(discord.errors.InteractionResponded):
+                    pass
+            else:
+                self.style = discord.ButtonStyle.danger
+                self.trivia_view.resolve_callback.set_result(False)
+                try:
+                    await interaction.response.defer()
+                except(discord.errors.InteractionResponded):
+                    pass
+                
+        # Check if callback_processed_future is done before trying to set its result
+        if not self.callback_processed_future.done():
+            self.callback_processed_future.set_result(True)
             try:
                 await interaction.response.defer()
             except(discord.errors.InteractionResponded):
                 pass
-        else:
-            self.style = discord.ButtonStyle.danger
-            self.trivia_view.resolve_callback.set_result(False)
-            try:
-                await interaction.response.defer()
-            except(discord.errors.InteractionResponded):
-                pass
-
-        # Set callback_processed_future result here
-        self.callback_processed_future.set_result(True)
-        try:
-            await interaction.response.defer()
-        except(discord.errors.InteractionResponded):
-            pass
 
 async def play_trivia(ctx, game_data, minigameText, callback_processed_future):
     random_trivia = random.choice(game_data)
