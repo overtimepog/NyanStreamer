@@ -9,7 +9,7 @@
         "required_hours": 0,
         "base_pay": 100,
         "pay_per_level": 10,
-        "cooldown": 900,
+        "cooldown": 1800,
         "cooldown_reduction_per_level": 20,
         "minigames": [
             {
@@ -324,7 +324,148 @@
                 ]
             }                        
         ]
-    },                        
+    },
+    {
+        "id": "streamer",
+        "name": "Streamer",
+        "description": "Work as a streamer, entertaining viewers with your gaming skills and engaging personality.",
+        "job_icon": "<:cam:1122638259168743495>",
+        "required_item": "None",
+        "required_level": 2,
+        "required_hours": 0,
+        "base_pay": 100,
+        "pay_per_level": 10,
+        "cooldown": 1800,
+        "cooldown_reduction_per_level": 30,
+        "minigames": [
+            {
+                "type": "Order",
+                "prompt": "Arrange the following tasks in the correct order:",
+                "reward": [
+                    {"rewardType": "money", "reward": 60, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 6, "chance": 0.5},
+                    {"rewardType": "money", "reward": 70, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 7, "chance": 0.4},
+                    {"rewardType": "money", "reward": 80, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.2},
+                    {"rewardType": "money", "reward": 100, "chance": 0.05},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.1}
+                ],
+                "sequences": [
+                    {
+                        "task": "Sort the tasks according to a streamer's routine",
+                        "items": ["Setup stream", "Check audio and video", "Start stream", "Interact with viewers", "End stream"],
+                        "correctOrder": ["Setup stream", "Check audio and video", "Start stream", "Interact with viewers", "End stream"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the streaming process",
+                        "items": ["Choose game", "Start game", "Commentate gameplay", "Interact with chat", "End game"],
+                        "correctOrder": ["Choose game", "Start game", "Commentate gameplay", "Interact with chat", "End game"]
+                    },
+                    {
+                        "task": "Sort the tasks according to the post-streaming process",
+                        "items": ["End stream", "Review stream analytics", "Interact with community", "Plan next stream"],
+                        "correctOrder": ["End stream", "Review stream analytics", "Interact with community", "Plan next stream"]
+                    }
+                ]
+            },
+            {
+                "type": "Trivia",
+                "prompt": "Please answer the following question:",
+                "reward": [
+                    {"rewardType": "money", "reward": 70, "chance": 0.5},
+                    {"rewardType": "experience", "reward": 7, "chance": 0.4},
+                    {"rewardType": "money", "reward": 80, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.3},
+                    {"rewardType": "money", "reward": 90, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.2},
+                    {"rewardType": "money", "reward": 100, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.1}
+                ],
+                "questions": [
+                    {
+                        "question": "What is the most popular streaming platform?",
+                        "options": ["YouTube", "Twitch", "Facebook Gaming", "Mixer"],
+                        "answer": "Twitch"
+                    },
+                    {
+                        "question": "What is the term for a donation made to a streamer?",
+                        "options": ["Gift", "Tip", "Present", "Grant"],
+                        "answer": "Tip"
+                    },
+                    {
+                        "question": "What is a common way for streamers to interact with their audience?",
+                        "options": ["Chat", "Email", "Phone calls", "Letters"],
+                        "answer": "Chat"
+                    },
+                    {
+                        "question": "What is the term for a recurring payment made to a streamer for exclusive content and perks?",
+                        "options": ["Subscription", "Donation", "Membership", "Patronage"],
+                        "answer": "Subscription"
+                    },
+                    {
+                        "question": "What is the term for a streamer playing a game before its official release?",
+                        "options": ["Early Access", "Pre-Release", "Beta Testing", "Sneak Peek"],
+                        "answer": "Early Access"
+                    }
+                ]
+            },
+            {
+                "type": "Hangman",
+                "prompt": "Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to being a streamer:",
+                "reward": [
+                    {"rewardType": "money", "reward": 80, "chance": 0.4},
+                    {"rewardType": "experience", "reward": 8, "chance": 0.5},
+                    {"rewardType": "money", "reward": 90, "chance": 0.3},
+                    {"rewardType": "experience", "reward": 9, "chance": 0.4},
+                    {"rewardType": "money", "reward": 100, "chance": 0.2},
+                    {"rewardType": "experience", "reward": 10, "chance": 0.3},
+                    {"rewardType": "money", "reward": 110, "chance": 0.1},
+                    {"rewardType": "experience", "reward": 11, "chance": 0.2}
+                ],
+                "sentences": [
+                    {
+                        "sentence": "A good streamer always interacts with their {word}.",
+                        "answer": "audience"
+                    },
+                    {
+                        "sentence": "A streamer must always have a reliable {word}.",
+                        "answer": "internet"
+                    },
+                    {
+                        "sentence": "A streamer should always {word} their gameplay.",
+                        "answer": "commentate"
+                    },
+                    {
+                        "sentence": "Streamers should have good {word} skills.",
+                        "answer": "communication"
+                    },
+                    {
+                        "sentence": "A streamer should always be {word} to the needs of their viewers.",
+                        "answer": "attentive"
+                    },
+                    {
+                        "sentence": "A streamer should always {word} their streams.",
+                        "answer": "schedule"
+                    },
+                    {
+                        "sentence": "A streamer should always be {word} to their audience.",
+                        "answer": "respectful"
+                    },
+                    {
+                        "sentence": "A streamer should always {word} their chat.",
+                        "answer": "moderate"
+                    },
+                    {
+                        "sentence": "A streamer should always {word} their equipment.",
+                        "answer": "maintain"
+                    }
+                ]
+            }
+        ]
+    },                       
     {
         "id": "beekeeper",
         "name": "Beekeeper",
