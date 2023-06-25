@@ -1497,7 +1497,7 @@ async def get_cooldown_reduction_per_level_from_id(job_id: str) -> timedelta:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
-        return timedelta(seconds=data[11])
+        return timedelta(seconds=data[10])
     else:
         return timedelta(seconds=0)
 
