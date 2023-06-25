@@ -539,17 +539,6 @@ this is an example of each minigame in one job
                     {"scrambled": "snipre", "solution": "sniper"},
                     {"scrambled": "mafluceg", "solution": "camouflage"}
                 ]
-            }           
+            }
         ]
     }
-
-    
-this is all the json data from my game that you will use as a reference when creating new stuff, mainly in order to keep the game balanced, understand it all and then say so followed by a ✅
-https://nyanstreamer.lol/api/data/items
-https://nyanstreamer.lol/api/data/jobs
-https://nyanstreamer.lol/api/data/chests
-https://nyanstreamer.lol/api/data/searches
-
-
-USE THEESE ONLY AS A REFERENCE, DO NOT CHANGE ANYTHING IN THEM, AND DO NOT MAKE POST REQUESTS TO THEM, ONLY GET REQUESTS TO GET THE DATA, YOU WILL BE MAKING NEW STUFF AND GIVING IT BACK TO ME IN JSON FORMAT BASED ON THE TEMPLATES ABOVE
-TELL ME YOU UNDERSTAND ALL OF THIS AND GIVE ME A SUMMERIZED EXPLANATION OF EVERYTHING, FOLLOWED BY A ✅
