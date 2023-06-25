@@ -832,7 +832,7 @@
         "id": "pope",
         "name": "Pope",
         "description": "Work as the Pope, leading the Catholic Church",
-        "job_icon": "<:pope:1121194911774019656>",
+        "job_icon": "<:Holy_PopeHat:1120497074778165329>",
         "required_item": "None",
         "required_level": 50,
         "required_hours": 10,
