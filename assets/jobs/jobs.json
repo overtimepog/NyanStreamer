@@ -885,34 +885,6 @@
                 ]
             },
             {
-                "type": "Order",
-                "prompt": "Please arrange the following tasks in the correct order:",
-                "reward": [
-                    {"rewardType": "money", "reward": 200, "chance": 0.4},
-                    {"rewardType": "experience", "reward": 20, "chance": 0.5},
-                    {"rewardType": "money", "reward": 300, "chance": 0.3},
-                    {"rewardType": "experience", "reward": 30, "chance": 0.4},
-                    {"rewardType": "money", "reward": 400, "chance": 0.2},
-                    {"rewardType": "experience", "reward": 40, "chance": 0.3},
-                    {"rewardType": "money", "reward": 500, "chance": 0.1},
-                    {"rewardType": "experience", "reward": 50, "chance": 0.2},
-                    {"rewardType": "money", "reward": 600, "chance": 0.05},
-                    {"rewardType": "experience", "reward": 60, "chance": 0.1}
-                ],
-                "tasks": [
-                    "Wake up and pray",
-                    "Have breakfast",
-                    "Conduct morning mass",
-                    "Meet with Vatican officials",
-                    "Lunch and rest",
-                    "Afternoon prayers",
-                    "Meet with visiting dignitaries",
-                    "Evening prayers",
-                    "Dinner",
-                    "Bedtime prayers and sleep"
-                ]
-            },
-            {
                 "type": "Hangman",
                 "prompt": "**Work for Pope** - Hangman - Complete the sentence by guessing the missing word one letter at a time. You only have 7 attempts. The sentence is related to being a Pope:",
                 "reward": [
@@ -927,23 +899,23 @@
                 "sentences": [
                     {
                         "sentence": "The Pope is the Bishop of {word}.",
-                        "answer": "Rome"
+                        "answer": "rome"
                     },
                     {
                         "sentence": "The Pope resides in the {word}.",
-                        "answer": "Vatican"
+                        "answer": "vatican"
                     },
                     {
                         "sentence": "The Pope is the spiritual leader of the {word}.",
-                        "answer": "Catholics"
+                        "answer": "catholics"
                     },
                     {
                         "sentence": "The Pope's official residence is the Apostolic {word}.",
-                        "answer": "Palace"
+                        "answer": "palace"
                     },
                     {
                         "sentence": "The Pope is also known as the {word} Father.",
-                        "answer": "Holy"
+                        "answer": "holy"
                     },
                     {
                         "sentence": "The Pope's liturgical vestments are usually {word}.",
@@ -958,12 +930,12 @@
                         "answer": "papal"
                     },
                     {
-                        "sentence": "The Pope is the head of the {word} See.",
-                        "answer": "Holy"
-                    },
-                    {
                         "sentence": "The Pope's teachings are considered infallible in matters of faith and {word}.",
                         "answer": "morals"
+                    },
+                    {
+                        "sentence": "The Pope's official vehicle is the {word}.",
+                        "answer": "popemobile"
                     }
                 ]
             }            
