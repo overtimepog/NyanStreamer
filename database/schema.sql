@@ -183,6 +183,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   `percent_bonus` varchar(255)
 );
 
+CREATE TABLE IF NOT EXISTS `bank`(
+  `user_id` varchar(20) NOT NULL,
+  `bank_balance` int(11) NOT NULL,
+  `bank_capacity` int(11) NOT NULL
+);
+
+
 CREATE TABLE IF NOT EXISTS `stats`(
   `user_id` int(11) NOT NULL,
   `money_earned` int(11) NOT NULL,

@@ -422,8 +422,99 @@ async def get_user(user_id: int) -> None:
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
         await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, None, None, None, False, 0))
+        #create the bank acount of the user
+        await db.execute(f"INSERT INTO `bank` (`user_id`, `bank_balance`, `bank_capacity`) VALUES (?, ?, ?)", (user_id, 0, 10000))
         return None
         
+#add to a users bank balance
+async def add_to_bank(user_id: int, amount: int) -> None:
+    db = DB()
+    #get the users bank balance
+    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        #add the amount to the users bank balance
+        await db.execute(f"UPDATE `bank` SET `bank_balance` = `bank_balance` + ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        return None
+    
+#remove from a users bank balance
+async def remove_from_bank(user_id: int, amount: int) -> None:
+    db = DB()
+    #get the users bank balance
+    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        #remove the amount from the users bank balance
+        await db.execute(f"UPDATE `bank` SET `bank_balance` = `bank_balance` - ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        return None
+
+#get a users bank balance
+async def get_bank_balance(user_id: int) -> int:
+    db = DB()
+    #get the users bank balance
+    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        #get the users bank balance
+        users = await db.execute(f"SELECT `bank_balance` FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+        return users
+    else:
+        return None
+
+#set a users bank balance
+async def set_bank_balance(user_id: int, amount: int) -> None:
+    db = DB()
+    #get the users bank balance
+    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        #set the users bank balance
+        await db.execute(f"UPDATE `bank` SET `bank_balance` = ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        return None
+    
+#get a users bank capacity
+async def get_bank_capacity(user_id: int) -> int:
+    db = DB()
+    #get the users bank capacity
+    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        #get the users bank capacity
+        users = await db.execute(f"SELECT `bank_capacity` FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+        return users
+    else:
+        return None
+
+#set a users bank capacity
+async def set_bank_capacity(user_id: int, amount: int) -> None:
+    db = DB()
+    #get the users bank capacity
+    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        #set the users bank capacity
+        await db.execute(f"UPDATE `bank` SET `bank_capacity` = ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        return None
+
+#add to a users bank capacity
+async def add_to_bank_capacity(user_id: int, amount: int) -> None:
+    db = DB()
+    #get the users bank capacity
+    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        #add to the users bank capacity
+        await db.execute(f"UPDATE `bank` SET `bank_capacity` = `bank_capacity` + ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        return None
+
+#remove from a users bank capacity
+async def remove_from_bank_capacity(user_id: int, amount: int) -> None:
+    db = DB()
+    #get the users bank capacity
+    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        #remove from the users bank capacity
+        await db.execute(f"UPDATE `bank` SET `bank_capacity` = `bank_capacity` - ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        return None
         
 #get a users luck 
 async def get_luck(user_id: int) -> int:
