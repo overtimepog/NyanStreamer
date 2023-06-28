@@ -85,6 +85,18 @@ class Bank(commands.Cog, name="bank"):
         # Get the updated balances
         updated_bank_balance = await db_manager.get_bank_balance(ctx.author.id)
         updated_wallet_balance = await db_manager.get_money(ctx.author.id)
+        #remove the ( and ) and , from the updated balances
+        updated_bank_balance = str(updated_bank_balance)
+        updated_bank_balance = updated_bank_balance.replace("(", "")
+        updated_bank_balance = updated_bank_balance.replace(")", "")
+        updated_bank_balance = updated_bank_balance.replace(",", "")
+        updated_bank_balance = int(updated_bank_balance)
+        
+        updated_wallet_balance = str(updated_wallet_balance)
+        updated_wallet_balance = updated_wallet_balance.replace("(", "")
+        updated_wallet_balance = updated_wallet_balance.replace(")", "")
+        updated_wallet_balance = updated_wallet_balance.replace(",", "")
+        updated_wallet_balance = int(updated_wallet_balance)
 
         # Create and send the embed with all the information
         embed = Embed(
@@ -157,7 +169,7 @@ class Bank(commands.Cog, name="bank"):
         updated_bank_balance = updated_bank_balance.replace(")", "")
         updated_bank_balance = updated_bank_balance.replace(",", "")
         updated_bank_balance = int(updated_bank_balance)
-        
+
         updated_wallet_balance = str(updated_wallet_balance)
         updated_wallet_balance = updated_wallet_balance.replace("(", "")
         updated_wallet_balance = updated_wallet_balance.replace(")", "")
