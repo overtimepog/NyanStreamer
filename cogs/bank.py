@@ -209,8 +209,7 @@ class Bank(commands.Cog, name="bank"):
             embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{wallet_balance:,}", inline=True)
         else:
             embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{wallet_balance:,}", inline=True)
-        embed.add_field(name="Bank", value=f"{cash}{bank_balance:,}/{cash}{bank_capacity}", inline=True)
-        embed.set_footer(text=f"Your current balances")
+        embed.add_field(name="Bank", value=f"{cash}{bank_balance:,}/{cash}{bank_capacity:,}", inline=True)
 
         await ctx.send(embed=embed)
 

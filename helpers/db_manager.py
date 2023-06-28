@@ -3841,6 +3841,8 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
 
                     else:   
                         # handle all possible effects
+
+                        #for amors and weapons and pet, where when it leaves the iventory, the effect is removed with it
                         if effect == "health":
                             if effect_add_or_minus == "+":
                                 await remove_health_boost(user_id, effect_amount)
@@ -3897,6 +3899,8 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
                             elif effect_add_or_minus == "-":
                                 await add_frost_resistance(user_id, effect_amount)
 
+                        
+                        #for other items, where when its removed, the effect is applied
                         elif effect == "lock":
                             await lock_user(user_id)
 
@@ -3906,6 +3910,12 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
                             elif effect_add_or_minus == "-":
                                 await remove_percent_bonus(user_id, effect_amount)
 
+                        elif effect == "bank_capacity":
+                            if effect_add_or_minus == "+":
+                                await add_to_bank_capacity(user_id, effect_amount)
+                            elif effect_add_or_minus == "-":
+                                await remove_from_bank_capacity(user_id, effect_amount)
+                            
 
                 # if the item_amount is 0, remove the item from the inventory table
                 async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
