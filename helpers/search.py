@@ -56,7 +56,7 @@ class SearchButton(discord.ui.Button['SearchButton']):
         elif comment_type == "negative_comments":
             luck = await db_manager.get_luck(interaction.user.id)
             negative_outcomes = self.location['negative_outcomes']
-            negative_outcome = choose_outcome_based_on_chance(negative_outcomes, luck)
+            negative_outcome = choose_outcome_based_on_chance(negative_outcomes, luck, positive=False)
             if negative_outcome is not None:
                 total = -negative_outcome['penalty']  # Negative because it's a penalty
 
