@@ -164,5 +164,58 @@ class Bank(commands.Cog, name="bank"):
 
         await ctx.send(embed=embed)
 
+    @commands.hybrid_command(
+        name="balance",
+        description="Displays your wallet and bank balance.",
+        usage="balance",
+        aliases=["bal"],
+    )
+    async def balance(self, ctx: Context):
+        # get the user's wallet balance
+        wallet_balance = await db_manager.get_money(ctx.author.id)
+        wallet_balance = str(wallet_balance)
+        # remove the ( and ) and , from the wallet balance
+        wallet_balance = wallet_balance.replace("(", "")
+        wallet_balance = wallet_balance.replace(")", "")
+        wallet_balance = wallet_balance.replace(",", "")
+        wallet_balance = int(wallet_balance)
+
+        # get the user's bank balance
+        bank_balance = await db_manager.get_bank_balance(ctx.author.id)
+        bank_balance = str(bank_balance)
+        bank_balance = bank_balance.replace("(", "")
+        bank_balance = bank_balance.replace(")", "")
+        bank_balance = bank_balance.replace(",", "")
+        bank_balance = int(bank_balance)
+
+        #get the user's bank capacity
+        bank_capacity = await db_manager.get_bank_capacity(ctx.author.id)
+        bank_capacity = str(bank_capacity)
+        bank_capacity = bank_capacity.replace("(", "")
+        bank_capacity = bank_capacity.replace(")", "")
+        bank_capacity = bank_capacity.replace(",", "")
+        bank_capacity = int(bank_capacity)
+
+        profile = await db_manager.profile(ctx.author.id)
+        locked = profile[33]
+
+
+        # Create and send the embed with all the information
+        embed = Embed(
+            title=f"{ctx.author.name}'s Balances", 
+            description=f"Here are your current balances.", 
+            )
+        if locked == True:
+            embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{wallet_balance:,}", inline=True)
+        else:
+            embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{wallet_balance:,}", inline=True)
+        embed.add_field(name="Bank", value=f"{cash}{bank_balance:,}/{cash}{bank_capacity}", inline=True)
+        embed.set_footer(text=f"Your current balances")
+
+        await ctx.send(embed=embed)
+
+
 async def setup(bot):
     await bot.add_cog(Bank(bot))
+
+
