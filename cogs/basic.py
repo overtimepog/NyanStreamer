@@ -2935,7 +2935,7 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.author.id
 
         # Fetch user data
-        user_data = await db_manager.get_user(user_id)
+        user_data = await db_manager.profile(user_id)
 
         # Check if the user is eligible for daily rewards
         current_time = datetime.datetime.now()
