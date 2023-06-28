@@ -40,7 +40,7 @@
         "isUsable": false,
         "inShop": true,
         "isEquippable": true,
-        "item_description": "A Handgun, it's a gun that you hold in your hand, what else do you want? Needed for the Hitman Job",
+        "item_description": "it's a gun, what else do you want? Needed for the Hitman Job",
         "item_element": "None",
         "item_crit_chance": "7%",
         "item_projectile": "None",

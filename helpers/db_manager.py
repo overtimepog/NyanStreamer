@@ -148,6 +148,15 @@ async def remove_money(user_id: int, amount: int) -> None:
         await db.execute(f"UPDATE `users` SET `money` = `money` - ? WHERE `user_id` = ?", (amount, user_id))
     else:
         return None
+    
+#set money
+async def set_money(user_id: int, amount: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one") 
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `money` = ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        return None
 
 #add health to a user
 async def add_health(user_id: int, amount: int) -> None:
@@ -421,9 +430,40 @@ async def get_user(user_id: int) -> None:
   #`paralysis_resistance` int(11) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, None, None, None, False, 0))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus, streak) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 0, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, None, None, None, False, 0, 0))
         #create the bank acount of the user
         await db.execute(f"INSERT INTO `bank` (`user_id`, `bank_balance`, `bank_capacity`) VALUES (?, ?, ?)", (user_id, 0, 10000))
+        return None
+    
+#set streak
+async def set_streak(user_id: int, amount: int) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one") 
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `streak` = ? WHERE `user_id` = ?", (amount, user_id))
+    else:
+        return None
+    
+#get streak
+async def get_streak(user_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one") 
+    if data is not None:
+        users = await db.execute(f"SELECT `streak` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users
+    else:
+        return None
+
+#update the users daily
+async def update_daily(user_id: int) -> None:
+    db = DB()
+    #get the users daily
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is None:
+        return None
+    else:
+        #update the users daily
+        await db.execute(f"UPDATE `users` SET `last_daily` = ? WHERE `user_id` = ?", (datetime.datetime.now(), user_id))
         return None
         
 #add to a users bank balance

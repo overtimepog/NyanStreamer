@@ -14,7 +14,7 @@ import random
 import re
 import pytz
 import requests
-from discord import Webhook, SyncWebhook
+from discord import Color, Webhook, SyncWebhook
 import aiohttp
 import discord
 from discord import Embed, app_commands
@@ -2925,7 +2925,58 @@ class Basic(commands.Cog, name="basic"):
         else:
             await ctx.send(f"{ctx.author.name} has given {item_emoji}{item} (x{item_count}) to {user.name}.")
 
-    
+
+    @commands.hybrid_command(
+        name="daily",
+        description="Grants daily rewards to a user.",
+        usage="daily",
+    )
+    async def daily(self, ctx: Context):
+        user_id = ctx.author.id
+
+        # Fetch user data
+        user_data = await db_manager.get_user(user_id)
+
+        # Check if the user is eligible for daily rewards
+        current_time = datetime.datetime.now()
+        if user_data[30] is not None:
+            last_daily = datetime.datetime.strptime(user_data[30], "%Y-%m-%d %H:%M:%S")
+            hours_passed = (current_time - last_daily).total_seconds() / 3600
+
+            # Calculate the streak
+            if hours_passed < 24:
+                hours_left = 24 - hours_passed
+                embed = Embed(
+                    title="Daily Reward",
+                    description=f"You already claimed your daily reward! Come back in {hours_left:.2f} hours.",
+                    color=Color.red()
+                )
+                await ctx.send(embed=embed)
+                return
+            elif hours_passed < 48:
+                streak = user_data[33] + 1
+            else:
+                streak = 0
+        else:
+            streak = 0  # The streak is not yet established
+
+        # Grant daily reward
+        daily_reward = 500 + (streak * 100)  # Add bonus reward according to streak
+        new_balance = user_data[1] + daily_reward
+        await db_manager.set_money(user_id, new_balance)
+
+        # Update the last_daily and streak fields in the database
+        await db_manager.update_daily(user_id, current_time.strftime("%Y-%m-%d %H:%M:%S"))
+        await db_manager.set_streak(user_id, streak)
+
+        # Notify the user with an embed
+        embed = Embed(
+            title="Daily Reward",
+            description=f"Successfully granted your daily reward!\nYour new balance is {new_balance:,}.\nCurrent streak: {streak}",
+            color=Color.green()
+        )
+        await ctx.send(embed=embed)
+
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

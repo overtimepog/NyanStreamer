@@ -180,7 +180,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `last_daily` DATETIME,
   `last_weekly` DATETIME,
   `rob_locked` boolean NOT NULL,
-  `percent_bonus` varchar(255)
+  `percent_bonus` varchar(255),
+  `streak` int(11),
 );
 
 CREATE TABLE IF NOT EXISTS `bank`(
