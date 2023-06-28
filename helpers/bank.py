@@ -41,7 +41,6 @@ async def get_user_net_worth(ctx: Context, user: discord.User) -> int:
     #return the networth
     #get the bank balance of the user
     bank = await db_manager.get_bank_balance(user.id)
-    print(bank)
     bank = str(bank)
     #remove the ( and ) and , from the bank balance
     bank = bank.replace("(", "")
