@@ -251,17 +251,17 @@ class Basic(commands.Cog, name="basic"):
                         item_description = await db_manager.get_basic_item_description(item_id)
                     isequippable = await db_manager.is_basic_item_equipable(item_id)
                     if isequippable == True:
-                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price:,}` \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
                     #if its item type is pet
                     elif item_type == "Pet":
                         #if its named
                         pet_name = await db_manager.get_pet_name(ctx.author.id, item_id)
                         if pet_name != item_name:
-                            inventory_embed.add_field(name=f"{item_emoji}{pet_name} (`{item_name}`) - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price:,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                            inventory_embed.add_field(name=f"{item_emoji}{pet_name} (`{item_name}`) - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
                         else:
-                            inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price:,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                            inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
                     else:
-                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price:,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
 
                 embeds.append(inventory_embed)
 
@@ -778,10 +778,10 @@ class Basic(commands.Cog, name="basic"):
                         item_emoji = await db_manager.get_chest_icon(item_id)
                         item_description = await db_manager.get_chest_description(item_id)
                         item_amount = await db_manager.get_shop_item_amount(item_id)
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price:,}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{int(item_price):,}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
                     else:
                         #get the item effect
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price:,}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{int(item_price):,}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
                 embeds.append(shop_embed)
 
             return embeds
@@ -1178,9 +1178,9 @@ class Basic(commands.Cog, name="basic"):
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
         if locked == True:
-            embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{user_money:,}", inline=True)
+            embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{int(user_money):,}", inline=True)
         else:
-            embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{user_money:,}", inline=True)
+            embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{int(user_money):,}", inline=True)
         #get the badges from the database
         badges = await db_manager.get_equipped_badges(user_id)
         #make a feild for the badges and set the title to badges and the value to the badges
