@@ -251,17 +251,17 @@ class Basic(commands.Cog, name="basic"):
                         item_description = await db_manager.get_basic_item_description(item_id)
                     isequippable = await db_manager.is_basic_item_equipable(item_id)
                     if isequippable == True:
-                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price}` \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
+                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price:,}` \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
                     #if its item type is pet
                     elif item_type == "Pet":
                         #if its named
                         pet_name = await db_manager.get_pet_name(ctx.author.id, item_id)
                         if pet_name != item_name:
-                            inventory_embed.add_field(name=f"{item_emoji}{pet_name} (`{item_name}`) - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                            inventory_embed.add_field(name=f"{item_emoji}{pet_name} (`{item_name}`) - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price:,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
                         else:
-                            inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                            inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price:,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
                     else:
-                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{item_price:,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
 
                 embeds.append(inventory_embed)
 
@@ -778,10 +778,10 @@ class Basic(commands.Cog, name="basic"):
                         item_emoji = await db_manager.get_chest_icon(item_id)
                         item_description = await db_manager.get_chest_description(item_id)
                         item_amount = await db_manager.get_shop_item_amount(item_id)
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price:,}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
                     else:
                         #get the item effect
-                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
+                        shop_embed.add_field(name=f"{item_emoji}{item_name} - {cash}{item_price:,}", value=f'**{item_description}** \n ID | `{item_id}`', inline=False)
                 embeds.append(shop_embed)
 
             return embeds
@@ -941,7 +941,7 @@ class Basic(commands.Cog, name="basic"):
                     item_crit_chance = await db_manager.get_basic_item_crit_chance(item)
                     #remove the item from the shop
                     #send a message asking the user if they are sure they want to buy the item, and add reactions to the message to confirm or cancel the purchase
-                    message = await ctx.send(f"Are you sure you want to buy `{amount}` of `{item_name}` for `{total_price}` bucks?")
+                    message = await ctx.send(f"Are you sure you want to buy `{amount}` of `{item_name}` for **{cash}{total_price:,}**")
                     await message.add_reaction("✅")
                     await message.add_reaction("❌")
                     #create a function to check if the reaction is the one we want
@@ -1022,7 +1022,7 @@ class Basic(commands.Cog, name="basic"):
                             
                             #remove the price from the users money
                             await db_manager.remove_money(user_id, total_price)
-                            await ctx.send(f"You bought `{amount}` of `{item_name}` for `{total_price}` bucks.")
+                            await ctx.send(f"You bought `{amount}` of `{item_name}` for **{cash}{total_price:,}**")
                         return
                 else:
                     item_name = await db_manager.get_basic_item_name(item)
@@ -1038,9 +1038,9 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[1].lower():
                 if item[5] == 'Pet':
                     rarity = await db_manager.get_basic_item_rarity(item[0])
-                    item_name = f"{rarity} {item[1]} ({cash}{item[2]})"
+                    item_name = f"{rarity} {item[1]} ({cash}{item[2]:,})"
                 else:
-                    item_name = f"{item[1]} ({cash}{item[2]})"
+                    item_name = f"{item[1]} ({cash}{item[2]:,})"
                 choices.append(app_commands.Choice(name=item_name, value=item[0]))
         return choices[:25]
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
@@ -1089,7 +1089,7 @@ class Basic(commands.Cog, name="basic"):
                     await db_manager.remove_item_from_inventory(user_id, item, amount)
                     #add the price to the users money
                     await db_manager.add_money(user_id, total_price)
-                    await ctx.send(f"You sold `{amount}` of `{i[2]}` for `{total_price}` bucks.")
+                    await ctx.send(f"You sold `{amount}` of `{i[2]}` for **{cash}{total_price:,}**")
                     return
                 else:
                     await ctx.send(f"You don't have enough `{i[2]}` to sell `{amount}`.")
@@ -1108,10 +1108,10 @@ class Basic(commands.Cog, name="basic"):
                     pet_name = await db_manager.get_pet_name(item[0], item[1])
                     rarity = await db_manager.get_basic_item_rarity(item[1])
                     if item[7] == "Pet":
-                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{item[3]})"
+                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{item[3]:,})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
                     else:
-                        item_name = f"{item[2]} ({cash}{item[3]})"
+                        item_name = f"{item[2]} ({cash}{item[3]:,})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
@@ -1178,9 +1178,9 @@ class Basic(commands.Cog, name="basic"):
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
         if locked == True:
-            embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{user_money}", inline=True)
+            embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{user_money:,}", inline=True)
         else:
-            embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{user_money}", inline=True)
+            embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{user_money:,}", inline=True)
         #get the badges from the database
         badges = await db_manager.get_equipped_badges(user_id)
         #make a feild for the badges and set the title to badges and the value to the badges
@@ -1548,9 +1548,6 @@ class Basic(commands.Cog, name="basic"):
         userExist = await db_manager.check_user(user_id)
         if userExist == None or userExist == []:
             await db_manager.get_user(user_id)
-            await db_manager.add_money(user_id, 200)
-            await db_manager.add_item_to_inventory(user_id, "huntingbow", 1)
-            await db_manager.add_item_to_inventory(user_id, "pickaxe", 1)
             #equip the iron sword
             await ctx.send(f"You have started your Journey, Welcome {ctx.message.author.name} to **Nyan Streamer**.")
         else:
