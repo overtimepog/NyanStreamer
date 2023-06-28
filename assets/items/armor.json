@@ -18,39 +18,6 @@
         "item_recipe": [],
         "item_effect": "None",
         "item_sub_type": "Chestplate"
-    },    
-    {
-        "item_id": "small_ace_ring",
-        "item_name": "Small Ace Ring",
-        "item_price": 1500,
-        "item_emoji": "<:Small_Ace_ring:1113942608075571351>",
-        "item_rarity": "Rare",
-        "item_type": "Armor",
-        "item_damage": 5,
-        "isUsable": false,
-        "inShop": true,
-        "isEquippable": true,
-        "item_description": "Gambling man fr",
-        "item_element": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "None",
-        "recipe_id": "small_ace_ring",
-        "item_recipe": [
-            {
-                "ingredient_id": "gold_ring",
-                "ingredient_amount": 1
-            },
-            {
-                "ingredient_id": "ace_gem",
-                "ingredient_amount": 1
-            }
-        ],
-        "isHuntable": false,
-        "item_hunt_chance": 0,
-        "item_effect": "luck + 3",
-        "isMineable": false,
-        "item_mine_chance": 0,
-        "item_sub_type": "Ring"
     },
     {
         "item_id": "iron_helmet",

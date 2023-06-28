@@ -273,6 +273,7 @@ class Basic(commands.Cog, name="basic"):
                 def __init__(self):
                     options=[
                         discord.SelectOption(label="All"),
+                        discord.SelectOption(label="Collectable"),
                         discord.SelectOption(label="Sellable"),
                         discord.SelectOption(label="Weapon"),
                         discord.SelectOption(label="Tool"),
