@@ -30,7 +30,7 @@ from helpers import db_manager, bank
 
 from helpers import checks
 
-
+cash = "⚙"
 class Bank(commands.Cog, name="bank"):
     def __init__(self, bot):
         self.bot = bot
@@ -44,8 +44,7 @@ class Bank(commands.Cog, name="bank"):
     async def networth(self, ctx: Context, user: discord.User = None):
         if user is None:
             user = ctx.author
-        networth = await bank.get_user_net_worth(ctx, user)
-        await ctx.send(f"{user.mention}'s networth is ${networth}")
+        await bank.get_user_net_worth(ctx, user)
 
 async def setup(bot):
     await bot.add_cog(Bank(bot))
