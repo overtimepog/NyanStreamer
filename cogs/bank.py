@@ -44,7 +44,7 @@ class Bank(commands.Cog, name="bank"):
     async def networth(self, ctx: Context, user: discord.User = None):
         if user is None:
             user = ctx.author
-        await bank.get_user_net_worth(ctx, user)
+        await bank.get_and_send_net_worth_embed(ctx, user)
 
 async def setup(bot):
     await bot.add_cog(Bank(bot))

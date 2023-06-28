@@ -26,7 +26,7 @@ def format_number(number: int) -> str:
     """Format the number with commas and add the spelled out version."""
     return f"{number:,} ({num2words(number)})"
 
-async def get_user_net_worth(ctx: Context, user: discord.User):
+async def get_and_send_net_worth_embed(ctx: Context, user: discord.User):
     networth = 0
 
     # get the user inventory
@@ -67,3 +67,46 @@ async def get_user_net_worth(ctx: Context, user: discord.User):
 
     # Send the embed
     await ctx.send(embed=embed)
+
+
+async def get_user_net_worth(ctx: Context, user: discord.User):
+    networth = 0
+
+    # get the user inventory
+    inventory = await db_manager.view_inventory(user.id)
+    # cycle through the inventory, adding the value of each item to the networth
+    inventory_networth = 0
+    for item in inventory:
+        price = item[3]
+        price = int(price)
+        inventory_networth += price
+    networth += inventory_networth
+
+    # get the user balance
+    wallet = await db_manager.get_money(user.id)
+    wallet = str(wallet)
+    # remove the ( and ) and , from the balance
+    wallet = wallet.replace("(", "")
+    wallet = wallet.replace(")", "")
+    wallet = wallet.replace(",", "")
+    wallet = int(wallet)
+    networth += wallet
+
+    # get the bank balance of the user
+    bank = await db_manager.get_bank_balance(user.id)
+    bank = str(bank)
+    # remove the ( and ) and , from the bank balance
+    bank = bank.replace("(", "")
+    bank = bank.replace(")", "")
+    bank = bank.replace(",", "")
+    bank = int(bank)
+    networth += bank
+
+    # Create a dictionary with all the values
+    networth_dict = {
+        "networth": networth,
+        "inventory_networth": inventory_networth,
+        "wallet": wallet,
+        "bank": bank
+    }
+    return networth_dict
