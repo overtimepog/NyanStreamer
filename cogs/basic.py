@@ -2210,6 +2210,7 @@ class Basic(commands.Cog, name="basic"):
                     color=discord.Color.blurple()
                 )
                 await ctx.send(embed=embed)
+                return
 
             #split the item_id by the "_"
             chest_name = await db_manager.get_chest_name(item)
