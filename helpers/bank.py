@@ -21,6 +21,10 @@ async def bank(ctx: Context):
 
 from discord import Embed
 
+def format_number(number: int) -> str:
+    """Format the number with commas and add the spelled out version."""
+    return f"{number:,} ({num2words(number)})"
+
 async def get_user_net_worth(ctx: Context, user: discord.User):
     networth = 0
 
@@ -55,10 +59,10 @@ async def get_user_net_worth(ctx: Context, user: discord.User):
     networth += bank
 
     # Create the embed
-    embed = Embed(title=f"{user.name}'s Net Worth", description=f"Total net worth: {networth}", color=0x00ff00)
-    embed.add_field(name="Inventory Worth", value=f"{inventory_networth} ({(inventory_networth / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
-    embed.add_field(name="Wallet Balance", value=f"{wallet} ({(wallet / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
-    embed.add_field(name="Bank Balance", value=f"{bank} ({(bank / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
+    embed = Embed(title=f"{user.name}'s Net Worth", description=f"Total net worth: {format_number(networth)}")
+    embed.add_field(name="Inventory Worth", value=f"{format_number(inventory_networth)} ({(inventory_networth / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
+    embed.add_field(name="Wallet Balance", value=f"{format_number(wallet)} ({(wallet / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
+    embed.add_field(name="Bank Balance", value=f"{format_number(bank)} ({(bank / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
 
     # Send the embed
     await ctx.send(embed=embed)
