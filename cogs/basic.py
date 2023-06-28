@@ -2192,7 +2192,7 @@ class Basic(commands.Cog, name="basic"):
                 await db_manager.set_alive(user_id)
                 #add the item effect amount to the users health
                 await db_manager.add_health(user_id, 100)
-                await ctx.send(f"You used `{item_name}` and revived!")
+                await ctx.send(f"You used **{item_emoji}{item_name}** and revived!")
                 return
             
             if item_effect_type == "bank_capacity":
@@ -2206,7 +2206,7 @@ class Basic(commands.Cog, name="basic"):
                 bank_capacity = int(bank_capacity)
                 embed = discord.Embed(
                     title="Bank Capacity Upraded!",
-                    description=f"Your bank capacity is now {bank_capacity:,}!",
+                    description=f"Your bank can now hold {cash}{bank_capacity:,}!",
                     color=discord.Color.blurple()
                 )
                 ctx.send(embed=embed)
