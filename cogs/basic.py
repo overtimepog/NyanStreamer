@@ -2209,7 +2209,7 @@ class Basic(commands.Cog, name="basic"):
                     description=f"Your bank can now hold {cash}{bank_capacity:,}!",
                     color=discord.Color.blurple()
                 )
-                ctx.send(embed=embed)
+                await ctx.send(embed=embed)
 
             #split the item_id by the "_"
             chest_name = await db_manager.get_chest_name(item)
