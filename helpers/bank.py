@@ -17,3 +17,25 @@ from helpers import db_manager, battle
 
 async def bank(ctx: Context):
     pass
+
+async def get_user_net_worth(ctx: Context, user: discord.User) -> int:
+    networth = 0
+    #get the user inventory
+    inventory = await db_manager.view_inventory(user.id)
+    #cycle through the inventory, adding the value of each item to the networth
+    for item in inventory:
+        price = item[3]
+        price = int(price)
+        networth += price
+
+    #get the user balance
+    wallet = await db_manager.get_money(user.id)
+    #add the balance to the networth
+    networth += wallet
+    #return the networth
+    #get the bank balance of the user
+    bank = await db_manager.get_bank_balance(user.id)
+    #add the bank balance to the networth
+    networth += bank
+    #return the networth
+    return networth
