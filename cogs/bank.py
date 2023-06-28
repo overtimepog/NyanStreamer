@@ -66,6 +66,13 @@ class Bank(commands.Cog, name="bank"):
         bank_balance = bank_balance.replace(")", "")
         bank_balance = bank_balance.replace(",", "")
         bank_balance = int(bank_balance)
+
+        bank_capacity = await db_manager.get_bank_capacity(ctx.author.id)
+        bank_capacity = str(bank_capacity)
+        bank_capacity = bank_capacity.replace("(", "")
+        bank_capacity = bank_capacity.replace(")", "")
+        bank_capacity = bank_capacity.replace(",", "")
+        bank_capacity = int(bank_capacity)
         # check if the user has enough money in their bank
         if bank_balance < amount:
             await ctx.send("You don't have enough money in your bank to withdraw that much!")
@@ -82,14 +89,80 @@ class Bank(commands.Cog, name="bank"):
         # Create and send the embed with all the information
         embed = Embed(
             title="Withdrawal Successful", 
-            description=f"You have successfully withdrawn {amount:,} from your bank.", 
+            description=f"You have successfully withdrawn {cash}{amount:,} from your bank.", 
             )
-        embed.add_field(name="Withdrawn Amount", value=f"{amount:,}", inline=False)
-        embed.add_field(name="Updated Bank Balance", value=f"{updated_bank_balance:,}", inline=False)
-        embed.add_field(name="Updated Wallet Balance", value=f"{updated_wallet_balance:,}", inline=False)
+        embed.add_field(name="Withdrawn Amount", value=f"{cash}{amount:,}", inline=False)
+        embed.add_field(name="Updated Bank Balance", value=f"{cash}{updated_bank_balance:,}/{cash}{bank_capacity:,}", inline=False)
+        embed.add_field(name="Updated Wallet Balance", value=f"{cash}{updated_wallet_balance:,}", inline=False)
         embed.set_footer(text=f"{ctx.author.name}'s updated balances")
 
         await ctx.send(embed=embed)
-        
+
+
+    @commands.hybrid_command(
+        name="deposit",
+        description="Deposits money to your bank.",
+        usage="deposit [amount]",
+        aliases=["dep"],
+    )
+    async def deposit(self, ctx: Context, amount: int):
+        if amount <= 0:
+            await ctx.send("You can't deposit negative or zero money!")
+            return
+
+        # get the user's wallet balance
+        wallet_balance = await db_manager.get_money(ctx.author.id)
+        wallet_balance = str(wallet_balance)
+        # remove the ( and ) and , from the wallet balance
+        wallet_balance = wallet_balance.replace("(", "")
+        wallet_balance = wallet_balance.replace(")", "")
+        wallet_balance = wallet_balance.replace(",", "")
+        wallet_balance = int(wallet_balance)
+
+        # get the user's bank balance
+        bank_balance = await db_manager.get_bank_balance(ctx.author.id)
+        bank_balance = str(bank_balance)
+        bank_balance = bank_balance.replace("(", "")
+        bank_balance = bank_balance.replace(")", "")
+        bank_balance = bank_balance.replace(",", "")
+        bank_balance = int(bank_balance)
+
+        # get the user's bank capacity
+        bank_capacity = await db_manager.get_bank_capacity(ctx.author.id)
+        bank_capacity = str(bank_capacity)
+        bank_capacity = bank_capacity.replace("(", "")
+        bank_capacity = bank_capacity.replace(")", "")
+        bank_capacity = bank_capacity.replace(",", "")
+        bank_capacity = int(bank_capacity)
+
+        # check if the user has enough money in their wallet
+        if wallet_balance < amount:
+            await ctx.send("You don't have enough money in your wallet to deposit that much!")
+            return
+        # check if the deposit does not exceed the bank capacity
+        elif bank_balance + amount > bank_capacity:
+            await ctx.send("This deposit would exceed your bank's capacity!")
+            return
+
+        # if the user has enough money in their wallet and the deposit does not exceed the bank capacity, deposit the money
+        await db_manager.remove_money(ctx.author.id, amount)
+        await db_manager.add_to_bank(ctx.author.id, amount)
+
+        # Get the updated balances
+        updated_bank_balance = await db_manager.get_bank_balance(ctx.author.id)
+        updated_wallet_balance = await db_manager.get_money(ctx.author.id)
+
+        # Create and send the embed with all the information
+        embed = Embed(
+            title="Deposit Successful", 
+            description=f"You have successfully deposited {cash}{amount:,} to your bank.", 
+            )
+        embed.add_field(name="Deposited Amount", value=f"{cash}{amount:,}", inline=False)
+        embed.add_field(name="Updated Bank Balance", value=f"{cash}{updated_bank_balance:,}/{cash}{bank_capacity:,}", inline=False)
+        embed.add_field(name="Updated Wallet Balance", value=f"{cash}{updated_wallet_balance:,}", inline=False)
+        embed.set_footer(text=f"{ctx.author.name}'s updated balances")
+
+        await ctx.send(embed=embed)
+
 async def setup(bot):
     await bot.add_cog(Bank(bot))

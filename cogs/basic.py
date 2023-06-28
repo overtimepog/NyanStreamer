@@ -21,10 +21,10 @@ from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager, hunt, mine, search
+from helpers import battle, checks, db_manager, hunt, mine, search, bank
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
-
+from num2words import num2words
 
 global i
 i = 0
@@ -1177,10 +1177,8 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name="Health", value=f"{user_health} (Dead)", inline=True)
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
-        if locked == True:
-            embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{int(user_money):,}", inline=True)
-        else:
-            embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{int(user_money):,}", inline=True)
+        net_dict = await bank.get_user_net_worth(user)
+        embed.add_field(name="Net Worth", value=f'{cash}{int(net_dict["networth"]):,}', inline=True)
         #get the badges from the database
         badges = await db_manager.get_equipped_badges(user_id)
         #make a feild for the badges and set the title to badges and the value to the badges

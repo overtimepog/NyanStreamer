@@ -69,7 +69,7 @@ async def get_and_send_net_worth_embed(ctx: Context, user: discord.User):
     await ctx.send(embed=embed)
 
 
-async def get_user_net_worth(ctx: Context, user: discord.User):
+async def get_user_net_worth(user: discord.User):
     networth = 0
 
     # get the user inventory
