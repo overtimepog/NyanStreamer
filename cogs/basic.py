@@ -2156,6 +2156,23 @@ class Basic(commands.Cog, name="basic"):
                     return
                 await ctx.send(f"You used {item_emoji}`{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
                 return
+            else:
+                if item_effect_type == "bank_capacity":
+                    #send an embed to the user show their updated bank capacity
+                    bank_capacity = await db_manager.get_bank_capacity(user_id)
+                    #remove the ( and ) and , from the bank capacity
+                    bank_capacity = str(bank_capacity)
+                    bank_capacity = bank_capacity.replace(")", "")
+                    bank_capacity = bank_capacity.replace("(", "")
+                    bank_capacity = bank_capacity.replace(",", "")
+                    bank_capacity = int(bank_capacity)
+
+                    embed = discord.Embed(
+                        title="Bank Capacity Upraded!",
+                        description=f"Your bank capacity is now {bank_capacity:,}!",
+                        color=discord.Color.blurple()
+                    )
+                    ctx.send(embed=embed)
             #if the item's name is "Potion", add 10 health to the user
             #get the items effect
             item_effect = await db_manager.get_basic_item_effect(item)
