@@ -15,6 +15,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 from discord import Embed
 
 from helpers import db_manager, battle
+import num2words
 
 async def bank(ctx: Context):
     pass
