@@ -2206,7 +2206,7 @@ class Basic(commands.Cog, name="basic"):
                 bank_capacity = int(bank_capacity)
                 embed = discord.Embed(
                     title="Bank Capacity Upraded!",
-                    description=f"Your bank can now hold {cash}{bank_capacity:,}!",
+                    description=f"Your bank can now hold **{cash}{bank_capacity:,}**!",
                     color=discord.Color.blurple()
                 )
                 await ctx.send(embed=embed)
