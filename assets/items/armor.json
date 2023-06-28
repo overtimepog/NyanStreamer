@@ -285,7 +285,7 @@
         "item_type": "Armor",
         "item_damage": 15,
         "isUsable": false,
-        "inShop": true,
+        "inShop": false,
         "isEquippable": true,
         "item_description": "a dorky hat that makes you look like a pope. Found from the Pope Job",
         "item_element": "None",
