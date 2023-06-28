@@ -30,11 +30,13 @@ async def get_user_net_worth(ctx: Context, user: discord.User) -> int:
 
     #get the user balance
     wallet = await db_manager.get_money(user.id)
+    wallet = int(wallet)
     #add the balance to the networth
     networth += wallet
     #return the networth
     #get the bank balance of the user
     bank = await db_manager.get_bank_balance(user.id)
+    bank = int(bank)
     #add the bank balance to the networth
     networth += bank
     #return the networth
