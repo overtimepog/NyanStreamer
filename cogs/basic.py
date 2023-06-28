@@ -2966,7 +2966,7 @@ class Basic(commands.Cog, name="basic"):
         await db_manager.set_money(user_id, new_balance)
 
         # Update the last_daily and streak fields in the database
-        await db_manager.update_daily(user_id, current_time.strftime("%Y-%m-%d %H:%M:%S"))
+        await db_manager.update_daily(user_id)
         await db_manager.set_streak(user_id, streak)
 
         # Notify the user with an embed
