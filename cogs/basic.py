@@ -1038,9 +1038,9 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[1].lower():
                 if item[5] == 'Pet':
                     rarity = await db_manager.get_basic_item_rarity(item[0])
-                    item_name = f"{rarity} {item[1]} ({cash}{item[2]:,})"
+                    item_name = f"{rarity} {item[1]} ({cash}{int(item[2]):,})"
                 else:
-                    item_name = f"{item[1]} ({cash}{item[2]:,})"
+                    item_name = f"{item[1]} ({cash}{int(item[2]):,})"
                 choices.append(app_commands.Choice(name=item_name, value=item[0]))
         return choices[:25]
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
@@ -1108,10 +1108,10 @@ class Basic(commands.Cog, name="basic"):
                     pet_name = await db_manager.get_pet_name(item[0], item[1])
                     rarity = await db_manager.get_basic_item_rarity(item[1])
                     if item[7] == "Pet":
-                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{item[3]:,})"
+                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
                     else:
-                        item_name = f"{item[2]} ({cash}{item[3]:,})"
+                        item_name = f"{item[2]} ({cash}{int(item[3]):,})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
