@@ -20,6 +20,7 @@ import discord
 from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
+import time
 
 from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
 from typing import List, Tuple
@@ -582,11 +583,12 @@ class Basic(commands.Cog, name="basic"):
                     est = pytz.timezone('US/Eastern')
                     resetTime = resetTime.astimezone(est)
 
-                    # Format the datetime object as a string
-                    resetTime = resetTime.strftime('%B %d, %Y, %I:%M %p %Z')
+                    # Convert the datetime object to a Unix timestamp
+                    resetTime_unix = int(resetTime.timestamp())
+
                     shop_embed = discord.Embed(
-                    title="Shop",
-                    description=f"Commands: \n **Buy**: `/buy iron_sword 1`. \n \n **Shop Restock Time**: `{resetTime}` \n \n"
+                        title="Shop",
+                        description=f"Commands: \n **Buy**: `/buy iron_sword 1`. \n \n **Shop Restock Time**: <t:{resetTime_unix}:R> \n \n"
                     )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
