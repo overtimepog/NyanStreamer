@@ -36,6 +36,9 @@ async def get_and_send_net_worth_embed(ctx: Context, user: discord.User):
     for item in inventory:
         price = item[3]
         price = int(price)
+        amount = item[6]
+        amount = int(amount)
+        price = price * amount
         inventory_networth += price
     networth += inventory_networth
 
@@ -79,6 +82,9 @@ async def get_user_net_worth(user: discord.User):
     for item in inventory:
         price = item[3]
         price = int(price)
+        amount = item[6]
+        amount = int(amount)
+        price = price * amount
         inventory_networth += price
     networth += inventory_networth
 
