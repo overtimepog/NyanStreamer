@@ -38,6 +38,8 @@ class Jobs(commands.Cog, name="jobs"):
     @commands.hybrid_group(
     name="job",
     description="Job Commands",
+    invoke_without_command=True,
+    aliases=["j"],
     )
     async def job(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -70,6 +72,7 @@ class Jobs(commands.Cog, name="jobs"):
     @job.command(
     name="board",
     description="This command will show the job board.",
+    aliases=["list", "show", "view"],
     )
     async def jobboard(self, ctx: Context):
         # Retrieve all jobs from the database
@@ -241,6 +244,7 @@ class Jobs(commands.Cog, name="jobs"):
     @job.command(
     name="accept",
     description="Accept a job from the job board.",
+    aliases=["take", "join", "apply", "acceptjob", "takejob", "joinjob", "applyjob"],
 )
     async def acceptjob(self, ctx: Context, job: str):
         # Retrieve the specific job from the database
