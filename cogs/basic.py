@@ -2691,11 +2691,18 @@ class Basic(commands.Cog, name="basic"):
             # Calculate the streak
             if hours_passed < 24:
                 hours_left = 24 - hours_passed
-                embed = Embed(
+                hours = int(hours_left)
+                minutes = int((hours_left - hours) * 60)
+                embed = discord.Embed(
                     title="Daily Reward",
-                    description=f"You already claimed your daily reward! Come back in {hours_left:.2f} hours.",
-                    color=Color.red()
+                    color=discord.Color.red()
                 )
+                if hours == 0:
+                    embed.description = f"You already claimed your daily reward! Come back in {minutes} minutes."
+                elif minutes == 0:
+                    embed.description = f"You already claimed your daily reward! Come back in {hours} hours."
+                else:
+                    embed.description = f"You already claimed your daily reward! Come back in {hours} hours and {minutes} minutes."
                 await ctx.send(embed=embed)
                 return
             elif hours_passed < 48:
@@ -2704,6 +2711,7 @@ class Basic(commands.Cog, name="basic"):
                 streak = 0
         else:
             streak = 0  # The streak is not yet established
+
 
         # Grant daily reward
         daily_reward = 500 + (streak * 100)  # Add bonus reward according to streak
