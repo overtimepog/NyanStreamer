@@ -168,35 +168,9 @@ class Basic(commands.Cog, name="basic"):
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
     #registering a streamer will also add them to the database user table
     #command to veiw all streamers in the database streamer table, using the view_streamers function from helpers\db_manager.py
-    @commands.hybrid_command(
-        name="viewstreamers",
-        description="This command will view all streamers in the database.",
-    )
-    @checks.is_owner()
-    async def view_streamers(self, ctx: Context):
-        checkUser = await db_manager.check_user(ctx.author.id)
-        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
-            return
-        """
-        This command will view all streamers in the database.
 
-        :param ctx: The context in which the command was called.
-        """
-        streamers = await db_manager.view_streamers()
-        embed = discord.Embed(title="Streamers", description="All streamers in the database.", color=0x00ff00)
-        for i in streamers:
-            streamer_channel = i[1]
-            def remove_prefix(text, prefix):
-                if text.startswith(prefix):
-                    return text[len(prefix):]
-                return text
-            streamer_channel_name = remove_prefix(streamer_channel, "https://www.twitch.tv/")
-            embed.add_field(name=streamer_channel_name, value=i[1], inline=False)
-        await ctx.send(embed=embed)
-
-#command to view inventory of a user, using the view_inventory function from helpers\db_manager.py
-#ANCHOR - Inventory
+    #command to view inventory of a user, using the view_inventory function from helpers\db_manager.py
+    #ANCHOR - Inventory
     @commands.hybrid_command(
         name="inventory",
         description="This command will view your inventory.",
@@ -346,362 +320,217 @@ class Basic(commands.Cog, name="basic"):
     #`item_name` varchar NOT NULL,
     #`item_emoji` varchar(255) NOT NULL,
     #`item_rarity` varchar(255) NOT NULL,
-    
-    @commands.hybrid_command(
-        name="createitem",
-        description="This command will create a new streamer item in the database.",
-    )
-    @checks.is_streamer()
-    async def create_item(self, ctx: Context, item_name: str, item_emoji: str):
-        checkUser = await db_manager.check_user(ctx.author.id)
-        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
-            return
-        """
-        This command will create a new streamer item in the database.
-
-        :param ctx: The context in which the command was called.
-        :param item_id: The id of the item that should be created.
-        :param item_name: The name of the item that should be created.
-        :param item_emoji: The emoji of the item that should be created.
-        :param item_rarity: The rarity of the item that should be created.
-        """
-        user_id = ctx.message.author.id
-        #get the streamer prefix
-        streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
-        print(streamer_prefix)
-        #print(streamer_prefix)
-        #get streamer broadcast type
-        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
-        print(channel)
-        #print(channel)
-        broadcast_type = await db_manager.get_broadcaster_type_from_user_id(user_id)
-        print(broadcast_type)
-        #check if the item exists in the database
-        items = await db_manager.view_streamer_items(channel)
-        for i in items:
-            if item_name in i:
-                await ctx.send(f"An Item named {item_name} already exists for your channel.")
-                return
-        #create the item
-        #if the streamer has more than 5 items and is an affilate, the item will not be created
-        if broadcast_type == "affiliate" and len(items) >= 5:
-            await ctx.send("You have reached the maximum amount of custom items for an affiliate.")
-            return
-        #if the streamer has more than 10 items and is a partner, the item will not be created
-        elif broadcast_type == "partner" and len(items) >= 10:
-            await ctx.send("You have reached the maximum amount of custom items for a partner.")
-            return
-        else:
-            await db_manager.create_streamer_item(streamer_prefix, channel, item_name, item_emoji)
-            #give the user the item 
-            item_id = str(streamer_prefix) + "_" + item_name
-            #convert all spaces in the item name to underscores
-            item_id = item_id.replace(" ", "_")
-            #send more info
-            embed = discord.Embed(title="Item Creation", description=f"Created item {item_emoji} **{item_name}** for the channel {channel}",)
-            embed.set_footer(text="ID: " + item_id)
-            await ctx.send(embed=embed)
-
-    #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
-    @commands.hybrid_command(
-        name="removeitem",
-        description="This command will remove an item from the database.",
-    )
-    @checks.is_streamer()
-    async def removeitem(self, ctx: Context, item: str):
-        checkUser = await db_manager.check_user(ctx.author.id)
-        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
-            return
-        """
-        This command will remove an item from the database.
-
-        :param ctx: The context in which the command was called.
-        :param item_id: The id of the item that should be removed.
-        """
-        user_id = ctx.message.author.id
-        #check if the item exists in the database
-        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
-        items = await db_manager.view_streamer_items(channel)
-        for i in items:
-            if item in i:
-                await db_manager.remove_item(item)
-                await ctx.send(f"Removed item with the ID `{item}` from your items.")
-                return
-        await ctx.send(f"Item with the ID `{item}` does not exist in the database or you are not the streamer that owns this item.")
-
-    #autocommplete for the removeitem command
-    @removeitem.autocomplete("item")
-    async def remove_item_autocomplete(self, ctx: discord.Interaction, argument):
-        """
-        This function provides autocomplete choices for the remove_item command.
-
-        :param ctx: The context in which the command was called.
-        :param argument: The user's current input for the item name.
-        """
-        streamer_items = await db_manager.view_user_streamer_made_items(ctx.user.id)
-        choices = []
-        for item in streamer_items:
-            if argument.lower() in item[3].lower():  # Assuming item[1] is the item's name
-                choices.append(app_commands.Choice(name=item[3], value=item[2]))  # Assuming item[0] is the item's ID
-        return choices[:25]
-
-
-#command to view all the streamer items owned by the user from a specific streamer, if they dont have the item, display ??? for the emoji
-    @commands.hybrid_command(
-        name="streamercase",
-        description="This command will view all of the items owned by the user from a specific streamer.",
-    )
-    async def streamercase(self, ctx: Context, streamer: str):
-        checkUser = await db_manager.check_user(ctx.author.id)
-        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
-            return
-        """
-        This command will view all of the items owned by the user from a specific streamer.
-
-        :param ctx: The context in which the command was called.
-        """
-        user_id = ctx.message.author.id
-        user_name = ctx.message.author.name
-        streamer = streamer.lower()
-
-        # Get the items from the database
-        items = await db_manager.view_streamer_items(streamer)
-        #print(items)
-
-        # Get the user's items from the database
-        user_items = await db_manager.view_streamer_item_inventory(user_id)
-        #print(user_items)
-
-        if len(items) == 0:
-            await ctx.send("This streamer has no items.")
-            return
-
-        embed = discord.Embed(title=f"{user_name}'s Streamer Items from {streamer}", description=f"Here are every item from {streamer}. If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching {streamer}'s streams :)", color=0x00ff00)
-
-        # Add the items to the embed
-        for i in items:
-            if any(i[2] in j for j in user_items):
-                embed.add_field(name=f"{i[4]}", value=f"**{i[3]}**", inline=False)
-            else:
-                embed.add_field(name=f"**???**", value=f"**???**", inline=False)
-
-        await ctx.send(embed=embed)
-        #else:
-            #await ctx.send("You cannot view your own items.")
      
 
-    @commands.hybrid_group(
-        name="quest",
-        description="Quest Commands",
-    )
-    async def quest(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await ctx.send('Invalid quest command passed...')
-
-
-    @quest.command(
-        name="board",
-        description="This command will show the quest board.",
-    )
-    async def questboard(self, ctx: Context):
-        # Get all the quests from the database
-        quests = await db_manager.get_quests_on_board()
-        if quests == []:
-            await ctx.send("There are no quests on the board.")
-            return
-
-        # Calculate number of pages based on number of quests
-        num_pages = (len(quests) // 5) + (1 if len(quests) % 5 > 0 else 0)
-
-        current_page = 0
-
-        # Create a function to generate embeds from a list of quests
-        async def create_embeds(quest_list):
-            num_pages = (len(quest_list) // 5) + (1 if len(quest_list) % 5 > 0 else 0)
-            embeds = []
-
-            for i in range(num_pages):
-                start_idx = i * 5
-                end_idx = start_idx + 5
-                quest_embed = discord.Embed(
-                    title="Quest Board",
-                    description=f"Quests available for {ctx.author.name}. Use /questinfo <quest_id> to get more details.",
-                )
-                quest_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
-
-                for quest in quest_list[start_idx:end_idx]:
-                    quest_id = quest[0]
-                    quest_name = quest[1]
-                    quest_xp = quest[3]
-                    quest_reward = quest[4]
-                    quest_reward_amount = quest[5]
-                    quest_type = quest[7]
-                    quest = quest[8]
-
-                    # Format the quest type and quest
-                    if quest_type == "collect":
-                        quest_type = "Collect"
-                        quest_parts = quest.split(" ")
-                        item_id = quest_parts[1]
-                        item_name = await db_manager.get_basic_item_name(item_id)
-                        item_emoji = await db_manager.get_basic_item_emoji(item_id)
-                        quest = f"**{quest_parts[0]}** {item_emoji}{item_name}"
-                    
-                    elif quest_type == "kill":
-                            quest_type = "Kill"
-                            quest_parts = quest.split(" ")
-                            enemy_id = quest_parts[1]
-                            enemy_name = await db_manager.get_enemy_name(enemy_id)
-                            enemy_emoji = await db_manager.get_enemy_emoji(enemy_id)
-                            #clear the () and , from the enemy emoji
-                            enemy_emoji = str(enemy_emoji)
-                            enemy_emoji = enemy_emoji.replace("(", "")
-                            enemy_emoji = enemy_emoji.replace(")", "")
-                            enemy_emoji = enemy_emoji.replace(",", "")
-                            #remove the ' on each side of the emoji
-                            enemy_emoji = enemy_emoji.replace("'", "")
-                            quest = f"**{quest_parts[0]}** {enemy_emoji}{enemy_name}"
-
-                    # Replace "Money" with cash emoji
-                    if quest_reward == "Money":
-                        quest_reward = f"{cash} {quest_reward_amount}"
-                    else:
-                        # If the reward is an item, get the item name from the database
-                        item_name = await db_manager.get_basic_item_name(quest_reward)
-                        item_emoji = await db_manager.get_basic_item_emoji(quest_reward)
-                        quest_reward = f"{item_emoji}{item_name} x{quest_reward_amount}"
-
-                    quest_embed.add_field(name=f"**{quest_name}**", value=f"ID | `{quest_id}` \n **Quest**: {quest_type} {quest} \n **XP**: {quest_xp} \n **Reward**: {quest_reward} \n", inline=False)
-
-                embeds.append(quest_embed)
-
-            return embeds
-
-
-        # Create a list of embeds with 5 quests per embed
-        embeds = await create_embeds(quests)
-
-        class QuestBoardButton(discord.ui.View):
-            def __init__(self, current_page, embeds, **kwargs):
-                super().__init__(**kwargs)
-                self.current_page = current_page
-                self.embeds = embeds
-
-            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
-            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = 0
-                await interaction.response.defer()
-                await interaction.message.edit(embed=self.embeds[self.current_page])
-
-            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
-            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                if self.current_page > 0:
-                    self.current_page -= 1
-                    await interaction.response.defer()
-                    await interaction.message.edit(embed=self.embeds[self.current_page])
-
-            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
-            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                if self.current_page < len(self.embeds) - 1:
-                    self.current_page += 1
-                    await interaction.response.defer()
-                    await interaction.message.edit(embed=self.embeds[self.current_page])
-
-            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
-            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                self.current_page = len(self.embeds) - 1
-                await interaction.response.defer()
-                await interaction.message.edit(embed=self.embeds[self.current_page])
-
-        view = QuestBoardButton(current_page=0, embeds=embeds)
-        await ctx.send(embed=embeds[0], view=view)
-
-        #when the user clicks the check mark, add the quest to the users quest list, remove the quest from the quest board, check if the user already has the quest, and if they do, tell them they already have it, and if they dont, add it to their quest list
-    @quest.command(
-    name="info",
-    description="Get detailed information about a specific quest.",
-    )
-    async def questinfo(self, ctx: Context, quest_id: str):
-        # Get the quest from the database
-        quest = await db_manager.get_quest_from_id(quest_id)
-        if quest is None:
-            await ctx.send("That quest does not exist.")
-            return
-
-        quest_id, quest_name, quest_description, quest_xp, quest_reward, quest_reward_amount, quest_level_req, quest_type, quest = quest
-
-        # Create an embed with detailed information about the quest
-        quest_embed = discord.Embed(title=f"**{quest_name}**")
-        quest_embed.add_field(name="ID", value=quest_id)
-        quest_embed.add_field(name="Description", value=quest_description)
-        quest_embed.add_field(name="XP", value=quest_xp)
-        quest_embed.add_field(name="Reward", value=f"{quest_reward_amount} {quest_reward}")
-        quest_embed.add_field(name="Level Requirement", value=quest_level_req)
-        quest_embed.add_field(name="Quest Type", value=quest_type)
-
-        await ctx.send(embed=quest_embed)
-    
-    @quest.command(
-        name="accept",
-        description="Accept a quest from the quest board.",
-    )
-    async def acceptquest(self, ctx: Context, quest: str):
-        # Get the quest id from the database
-        quest = await db_manager.get_quest_from_id(quest)
-        if quest is None:
-            await ctx.send("That quest does not exist.")
-            return
-
-        quest_id = str(quest)
-
-        # Get the user id
-        user_id = ctx.message.author.id
-        user_id = str(user_id)
-
-        # Check if the user already has the quest
-        user_has_quest = await db_manager.check_user_has_quest(user_id, quest_id)
-
-        # Check if the user has any quest 
-        user_has_any_quest = await db_manager.check_user_has_any_quest(user_id)
-
-        isCompleted = await db_manager.check_quest_completed(user_id, quest_id)
-
-        # Check if the user meets the level requirements
-        user_level = await db_manager.get_level(user_id)
-        level_req = await db_manager.get_quest_level_required(quest_id)
-
-        # Convert them to integers
-        user_level = int(user_level[0])
-        level_req = int(level_req)
-
-        if user_level < level_req:
-            await ctx.send("You do not meet the level requirements for this quest!")
-        elif isCompleted == True:
-            await ctx.send("You already completed this quest!")
-        elif user_has_quest == True:
-            await ctx.send("You already have this quest!")
-        elif user_has_any_quest == True:
-            await ctx.send("You already have a quest! Abandon or complete your current quest to get a new one!")
-        else:
-            # If the user doesn't have the quest, add it to their quest list
-            await db_manager.give_user_quest(user_id, quest_id)
-            await db_manager.create_quest_progress(user_id, quest_id)
-            await ctx.send("Quest added to your quest list!")
-            # Remove the quest from the quest board
-            # await db_manager.remove_quest_from_board(quest_id)
-
-        
-    #abandon quest hybrid command 
-    @quest.command(
-        name="abandon",
-        description="Abandon your current quest",
-    )
-    async def abandonquest(self, ctx: Context):
-        await db_manager.remove_quest_from_user(ctx.author.id)
-        await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
+    #@commands.hybrid_group(
+    #    name="quest",
+    #    description="Quest Commands",
+    #)
+    #async def quest(self, ctx):
+    #    if ctx.invoked_subcommand is None:
+    #        await ctx.send('Invalid quest command passed...')
+#
+#
+    #@quest.command(
+    #    name="board",
+    #    description="This command will show the quest board.",
+    #)
+    #async def questboard(self, ctx: Context):
+    #    # Get all the quests from the database
+    #    quests = await db_manager.get_quests_on_board()
+    #    if quests == []:
+    #        await ctx.send("There are no quests on the board.")
+    #        return
+#
+    #    # Calculate number of pages based on number of quests
+    #    num_pages = (len(quests) // 5) + (1 if len(quests) % 5 > 0 else 0)
+#
+    #    current_page = 0
+#
+    #    # Create a function to generate embeds from a list of quests
+    #    async def create_embeds(quest_list):
+    #        num_pages = (len(quest_list) // 5) + (1 if len(quest_list) % 5 > 0 else 0)
+    #        embeds = []
+#
+    #        for i in range(num_pages):
+    #            start_idx = i * 5
+    #            end_idx = start_idx + 5
+    #            quest_embed = discord.Embed(
+    #                title="Quest Board",
+    #                description=f"Quests available for {ctx.author.name}. Use /questinfo <quest_id> to get more details.",
+    #            )
+    #            quest_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
+#
+    #            for quest in quest_list[start_idx:end_idx]:
+    #                quest_id = quest[0]
+    #                quest_name = quest[1]
+    #                quest_xp = quest[3]
+    #                quest_reward = quest[4]
+    #                quest_reward_amount = quest[5]
+    #                quest_type = quest[7]
+    #                quest = quest[8]
+#
+    #                # Format the quest type and quest
+    #                if quest_type == "collect":
+    #                    quest_type = "Collect"
+    #                    quest_parts = quest.split(" ")
+    #                    item_id = quest_parts[1]
+    #                    item_name = await db_manager.get_basic_item_name(item_id)
+    #                    item_emoji = await db_manager.get_basic_item_emoji(item_id)
+    #                    quest = f"**{quest_parts[0]}** {item_emoji}{item_name}"
+    #                
+    #                elif quest_type == "kill":
+    #                        quest_type = "Kill"
+    #                        quest_parts = quest.split(" ")
+    #                        enemy_id = quest_parts[1]
+    #                        enemy_name = await db_manager.get_enemy_name(enemy_id)
+    #                        enemy_emoji = await db_manager.get_enemy_emoji(enemy_id)
+    #                        #clear the () and , from the enemy emoji
+    #                        enemy_emoji = str(enemy_emoji)
+    #                        enemy_emoji = enemy_emoji.replace("(", "")
+    #                        enemy_emoji = enemy_emoji.replace(")", "")
+    #                        enemy_emoji = enemy_emoji.replace(",", "")
+    #                        #remove the ' on each side of the emoji
+    #                        enemy_emoji = enemy_emoji.replace("'", "")
+    #                        quest = f"**{quest_parts[0]}** {enemy_emoji}{enemy_name}"
+#
+    #                # Replace "Money" with cash emoji
+    #                if quest_reward == "Money":
+    #                    quest_reward = f"{cash} {quest_reward_amount}"
+    #                else:
+    #                    # If the reward is an item, get the item name from the database
+    #                    item_name = await db_manager.get_basic_item_name(quest_reward)
+    #                    item_emoji = await db_manager.get_basic_item_emoji(quest_reward)
+    #                    quest_reward = f"{item_emoji}{item_name} x{quest_reward_amount}"
+#
+    #                quest_embed.add_field(name=f"**{quest_name}**", value=f"ID | `{quest_id}` \n **Quest**: {quest_type} {quest} \n **XP**: {quest_xp} \n **Reward**: {quest_reward} \n", inline=False)
+#
+    #            embeds.append(quest_embed)
+#
+    #        return embeds
+#
+#
+    #    # Create a list of embeds with 5 quests per embed
+    #    embeds = await create_embeds(quests)
+#
+    #    class QuestBoardButton(discord.ui.View):
+    #        def __init__(self, current_page, embeds, **kwargs):
+    #            super().__init__(**kwargs)
+    #            self.current_page = current_page
+    #            self.embeds = embeds
+#
+    #        @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+    #        async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #            self.current_page = 0
+    #            await interaction.response.defer()
+    #            await interaction.message.edit(embed=self.embeds[self.current_page])
+#
+    #        @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+    #        async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #            if self.current_page > 0:
+    #                self.current_page -= 1
+    #                await interaction.response.defer()
+    #                await interaction.message.edit(embed=self.embeds[self.current_page])
+#
+    #        @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+    #        async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #            if self.current_page < len(self.embeds) - 1:
+    #                self.current_page += 1
+    #                await interaction.response.defer()
+    #                await interaction.message.edit(embed=self.embeds[self.current_page])
+#
+    #        @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+    #        async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #            self.current_page = len(self.embeds) - 1
+    #            await interaction.response.defer()
+    #            await interaction.message.edit(embed=self.embeds[self.current_page])
+#
+    #    view = QuestBoardButton(current_page=0, embeds=embeds)
+    #    await ctx.send(embed=embeds[0], view=view)
+#
+    #    #when the user clicks the check mark, add the quest to the users quest list, remove the quest from the quest board, check if the user already has the quest, and if they do, tell them they already have it, and if they dont, add it to their quest list
+    #@quest.command(
+    #name="info",
+    #description="Get detailed information about a specific quest.",
+    #)
+    #async def questinfo(self, ctx: Context, quest_id: str):
+    #    # Get the quest from the database
+    #    quest = await db_manager.get_quest_from_id(quest_id)
+    #    if quest is None:
+    #        await ctx.send("That quest does not exist.")
+    #        return
+#
+    #    quest_id, quest_name, quest_description, quest_xp, quest_reward, quest_reward_amount, quest_level_req, quest_type, quest = quest
+#
+    #    # Create an embed with detailed information about the quest
+    #    quest_embed = discord.Embed(title=f"**{quest_name}**")
+    #    quest_embed.add_field(name="ID", value=quest_id)
+    #    quest_embed.add_field(name="Description", value=quest_description)
+    #    quest_embed.add_field(name="XP", value=quest_xp)
+    #    quest_embed.add_field(name="Reward", value=f"{quest_reward_amount} {quest_reward}")
+    #    quest_embed.add_field(name="Level Requirement", value=quest_level_req)
+    #    quest_embed.add_field(name="Quest Type", value=quest_type)
+#
+    #    await ctx.send(embed=quest_embed)
+    #
+    #@quest.command(
+    #    name="accept",
+    #    description="Accept a quest from the quest board.",
+    #)
+    #async def acceptquest(self, ctx: Context, quest: str):
+    #    # Get the quest id from the database
+    #    quest = await db_manager.get_quest_from_id(quest)
+    #    if quest is None:
+    #        await ctx.send("That quest does not exist.")
+    #        return
+#
+    #    quest_id = str(quest)
+#
+    #    # Get the user id
+    #    user_id = ctx.message.author.id
+    #    user_id = str(user_id)
+#
+    #    # Check if the user already has the quest
+    #    user_has_quest = await db_manager.check_user_has_quest(user_id, quest_id)
+#
+    #    # Check if the user has any quest 
+    #    user_has_any_quest = await db_manager.check_user_has_any_quest(user_id)
+#
+    #    isCompleted = await db_manager.check_quest_completed(user_id, quest_id)
+#
+    #    # Check if the user meets the level requirements
+    #    user_level = await db_manager.get_level(user_id)
+    #    level_req = await db_manager.get_quest_level_required(quest_id)
+#
+    #    # Convert them to integers
+    #    user_level = int(user_level[0])
+    #    level_req = int(level_req)
+#
+    #    if user_level < level_req:
+    #        await ctx.send("You do not meet the level requirements for this quest!")
+    #    elif isCompleted == True:
+    #        await ctx.send("You already completed this quest!")
+    #    elif user_has_quest == True:
+    #        await ctx.send("You already have this quest!")
+    #    elif user_has_any_quest == True:
+    #        await ctx.send("You already have a quest! Abandon or complete your current quest to get a new one!")
+    #    else:
+    #        # If the user doesn't have the quest, add it to their quest list
+    #        await db_manager.give_user_quest(user_id, quest_id)
+    #        await db_manager.create_quest_progress(user_id, quest_id)
+    #        await ctx.send("Quest added to your quest list!")
+    #        # Remove the quest from the quest board
+    #        # await db_manager.remove_quest_from_board(quest_id)
+#
+    #    
+    ##abandon quest hybrid command 
+    #@quest.command(
+    #    name="abandon",
+    #    description="Abandon your current quest",
+    #)
+    #async def abandonquest(self, ctx: Context):
+    #    await db_manager.remove_quest_from_user(ctx.author.id)
+    #    await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
         
 
 
