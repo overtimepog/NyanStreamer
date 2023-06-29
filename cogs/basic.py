@@ -2725,9 +2725,10 @@ class Basic(commands.Cog, name="basic"):
         # Notify the user with an embed
         embed = Embed(
             title="Daily Reward",
-            description=f"Successfully granted your daily reward!\nYour new balance is {new_balance:,}.\nCurrent streak: {streak}",
+            description=f"Successfully granted your daily reward!\nYour new balance is **{cash}{new_balance:,}**",
             color=Color.green()
         )
+        embed.set_footer(f"Current streak: {streak} days")
         await ctx.send(embed=embed)
 
 
