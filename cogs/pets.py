@@ -429,7 +429,10 @@ class Pets(commands.Cog, name="pets"):
         self.expired_item_check.start()
         self.check_pet_death.start()
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(
+        name="pet",
+        description="shows the pet menu where you can feed, clean, and play with your pet",
+    )
     async def pet(self, ctx: Context):
         """Display your pet's stats."""
         pets = await db_manager.get_users_pets(ctx.author.id)
