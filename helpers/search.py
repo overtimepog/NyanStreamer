@@ -109,7 +109,7 @@ class SearchButton(discord.ui.Button['SearchButton']):
                     else:
                         item_emoji = await db_manager.get_basic_item_emoji(item_id)
                         item_name = await db_manager.get_basic_item_name(item_id)
-                    embed.description += f"\n \n Dang lucky you, you found **x{amount} {item_emoji}{item_name}**!"
+                    embed.description += f"\n also check this out, you found **x{amount} {item_emoji}{item_name}**!"
 
         elif comment_type == "negative_comments":
             await db_manager.remove_money(self.user.id, abs(total))  # Use abs() to ensure the amount is positive
@@ -120,7 +120,7 @@ class SearchButton(discord.ui.Button['SearchButton']):
             await db_manager.set_health(interaction.user.id, 0)
             await db_manager.set_dead(interaction.user.id)
         
-        embed.set_author(name=self.user.display_name + f" Searched {self.label}", icon_url=self.user.avatar.url)
+        embed.set_author(name=self.user.display_name + f" Searched {self.label}")
         await interaction.response.send_message(embed=embed)
 
 def choose_item_based_on_hunt_chance(items_with_chances: List[Tuple]):
@@ -167,6 +167,4 @@ async def search(ctx: Context):
 
     selected_locations = random.sample(locations, 3)
     view = SearchLocationButton(selected_locations, ctx.author)
-    embed = discord.Embed(title="Search", description="Choose a location to search:", color=discord.Color.blue())
-    embed.set_footer(text=f'Search initiated by {ctx.author.display_name}', icon_url=ctx.author.avatar.url)
     await ctx.send(content="Choose a location to search: ", view=view)
