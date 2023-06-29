@@ -2728,7 +2728,7 @@ class Basic(commands.Cog, name="basic"):
             description=f"Successfully granted your daily reward!\nYour new balance is **{cash}{new_balance:,}**",
             color=Color.green()
         )
-        embed.set_footer(f"Current streak: {streak} days")
+        embed.set_footer(text=f"Current streak: {streak} days")
         await ctx.send(embed=embed)
 
 
