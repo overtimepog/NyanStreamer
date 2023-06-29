@@ -2698,11 +2698,11 @@ class Basic(commands.Cog, name="basic"):
                     color=discord.Color.red()
                 )
                 if hours == 0:
-                    embed.description = f"You already claimed your daily reward! Come back in {minutes} minutes."
+                    embed.description = f"You already claimed your daily reward! Come back in **{minutes} minutes**"
                 elif minutes == 0:
-                    embed.description = f"You already claimed your daily reward! Come back in {hours} hours."
+                    embed.description = f"You already claimed your daily reward! Come back in **{hours} hours**"
                 else:
-                    embed.description = f"You already claimed your daily reward! Come back in {hours} hours and {minutes} minutes."
+                    embed.description = f"You already claimed your daily reward! Come back in **{hours} hours and {minutes} minutes**"
                 await ctx.send(embed=embed)
                 return
             elif hours_passed < 48:
