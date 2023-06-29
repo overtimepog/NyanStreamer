@@ -3538,7 +3538,7 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
             result = await cursor.fetchone()
             if result is not None:
                 #if the item already exists in the inventory table, add 1 to the item_amount
-                await db.execute("UPDATE inventory SET item_amount = item_amount + 1 WHERE user_id = ? AND item_id = ?", (user_id, item_id))
+                await db.execute("UPDATE inventory SET item_amount = item_amount + ? WHERE user_id = ? AND item_id = ?", (item_amount, user_id, item_id))
                 await db.commit()
                 return 1
             else:
