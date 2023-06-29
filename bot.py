@@ -235,7 +235,7 @@ async def on_command_error(context: Context, error) -> None:
 
         embed = discord.Embed(
             title="Hey, please slow down!",
-            description=f"You can use this command again in <t:{retry_time}:R>.",
+            description=f"You can use this command again <t:{retry_time}:R>.",
             color=0xE02B2B
         )
         await context.send(embed=embed)

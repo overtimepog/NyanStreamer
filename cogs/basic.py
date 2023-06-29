@@ -1050,7 +1050,6 @@ class Basic(commands.Cog, name="basic"):
         est_min_datetime = datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC).astimezone(pytz.timezone('US/Eastern'))
         item_info = defaultdict(lambda: {"count": 0, "latest_expire": est_min_datetime})
 
-        
         if timed_items:
             for item in timed_items:
                 # get the item name
@@ -1062,24 +1061,22 @@ class Basic(commands.Cog, name="basic"):
                 expiration_datetime = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
                 # Make the datetime object timezone-aware (UTC)
                 expiration_datetime = expiration_datetime.replace(tzinfo=pytz.UTC)
-                
+
                 # Convert the datetime object to Eastern Standard Time
                 est = pytz.timezone('US/Eastern')
                 expiration_datetime = expiration_datetime.astimezone(est)
-        
+
+                # Convert the datetime object to a Unix timestamp
+                expiration_unix = int(expiration_datetime.timestamp())
+
                 # Update item_info
                 item_key = f"{item_emoji}{item_name}"
                 item_info[item_key]["count"] += 1
-                item_info[item_key]["latest_expire"] = max(item_info[item_key]["latest_expire"], expiration_datetime)
-        
+                item_info[item_key]["latest_expire"] = max(item_info[item_key]["latest_expire"], expiration_unix)
+
         # Display information
         for item_key, info in item_info.items():
-            # Format the datetime object into a string
-            expiration_str = info["latest_expire"].strftime('%B %d, %Y, %I:%M %p %Z')
-            embed.add_field(name=f"{item_key} x{info['count']}", value=f"Latest expiration: `{expiration_str}`", inline=False)
-
-
-        
+            embed.add_field(name=f"{item_key} x{info['count']}", value=f"Latest expiration: <t:{info['latest_expire']}:R>", inline=False)
         #add xp and level
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
         embed.add_field(name="Level", value=f"{user_level}", inline=True)
