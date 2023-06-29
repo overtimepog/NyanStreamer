@@ -3,11 +3,11 @@
         {
             "name": "Markiplier",
             "comments": [
-                "Markiplier was feeling generous today. He gave you {thing}.",
-                "Markiplier appreciated your humor and gave you {thing}.",
-                "Markiplier was in a good mood and decided to give you {thing}.",
-                "Markiplier liked your style and rewarded you with {thing}.",
-                "Markiplier was impressed by your courage and gave you {thing}."
+                "Markiplier was feeling generous today. He gave you {thing}",
+                "Markiplier appreciated your humor and gave you {thing}",
+                "Markiplier was in a good mood and decided to give you {thing}",
+                "Markiplier liked your style and rewarded you with {thing}",
+                "Markiplier was impressed by your courage and gave you {thing}"
             ],
             "outcomes": [
                 {"rewardType": "money", "reward": 10, "chance": 0.5},
@@ -20,11 +20,11 @@
         {
             "name": "PewDiePie",
             "comments": [
-                "PewDiePie found your request amusing and gave you {thing}.",
-                "PewDiePie was impressed by your creativity and gave you {thing}.",
-                "PewDiePie appreciated your support and rewarded you with {thing}.",
-                "PewDiePie liked your determination and gave you {thing}.",
-                "PewDiePie was moved by your story and gave you {thing}."
+                "PewDiePie found your request amusing and gave you {thing}",
+                "PewDiePie was impressed by your creativity and gave you {thing}",
+                "PewDiePie appreciated your support and rewarded you with {thing}",
+                "PewDiePie liked your determination and gave you {thing}",
+                "PewDiePie was moved by your story and gave you {thing}"
             ],
             "outcomes": [
                 {"rewardType": "money", "reward": 20, "chance": 0.5},

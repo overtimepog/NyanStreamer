@@ -53,7 +53,7 @@ async def beg(ctx: Context):
     comment = comment.replace("{thing}", f"**{cash}{total}**")
     await db_manager.add_money(ctx.author.id, total)
 
-    embed = discord.Embed(description=comment, color=0x00ff00)
+    embed = discord.Embed(description=comment)
     embed.set_author(name=f"{ctx.author.display_name} begged {beg['name']}", icon_url=ctx.author.avatar.url)
 
     # Add item finding mechanism here
@@ -93,6 +93,6 @@ async def beg(ctx: Context):
             else:
                 item_emoji = await db_manager.get_basic_item_emoji(item_id)
                 item_name = await db_manager.get_basic_item_name(item_id)
-            embed.description += f"\n \nDang lucky you, you found **x{amount} {item_emoji}{item_name}**!"
+            embed.description += f" and **x{amount} {item_emoji}{item_name}**!"
 
     await ctx.send(embed=embed)
