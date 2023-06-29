@@ -2694,8 +2694,7 @@ class Basic(commands.Cog, name="basic"):
                 end_idx = start_idx + 5
                 recipe_embed = discord.Embed(
                     title="Recipe Book",
-                    description="All the recipes in the game!",
-                    color=0x000000,
+                    description="All the recipes in the game!"
                 )
                 recipe_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
