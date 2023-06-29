@@ -1109,7 +1109,7 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[2].lower():
                     pet_name = await db_manager.get_pet_name(item[0], item[1])
                     rarity = await db_manager.get_basic_item_rarity(item[1])
-                    item_amount_in_inventory = db_manager.get_item_amount_from_inventory(user_id, item[1])
+                    item_amount_in_inventory = await db_manager.get_item_amount_from_inventory(user_id, item[1])
                     if item[7] == "Pet":
                         item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
