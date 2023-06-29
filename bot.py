@@ -15,6 +15,7 @@ import random
 import sys
 import subprocess
 import requests
+import time
 
 import aiosqlite
 import discord
@@ -228,12 +229,13 @@ async def on_command_error(context: Context, error) -> None:
     :param error: The error that has been faced.
     """
     if isinstance(error, commands.CommandOnCooldown):
-        minutes, seconds = divmod(error.retry_after, 60)
-        hours, minutes = divmod(minutes, 60)
-        hours = hours % 24
+        retry_after = int(error.retry_after)  # Get the retry_after value in seconds
+        current_time = int(time.time())  # Get the current time in seconds since the Unix Epoch
+        retry_time = current_time + retry_after  # Calculate the Unix timestamp for the retry time
+
         embed = discord.Embed(
             title="Hey, please slow down!",
-            description=f"You can use this command again in {f'{round(hours)} hours' if round(hours) > 0 else ''} {f'{round(minutes)} minutes' if round(minutes) > 0 else ''} {f'{round(seconds)} seconds' if round(seconds) > 0 else ''}.",
+            description=f"You can use this command again in <t:{retry_time}:R>.",
             color=0xE02B2B
         )
         await context.send(embed=embed)

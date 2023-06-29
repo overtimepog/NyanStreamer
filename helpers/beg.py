@@ -54,7 +54,7 @@ async def beg(ctx: Context):
     await db_manager.add_money(ctx.author.id, total)
 
     embed = discord.Embed(description=comment)
-    embed.set_author(name=f"{ctx.author.display_name} begged {beg['name']}")
+    embed.set_author(name=f"{beg['name']}")
 
     # Add item finding mechanism here
     item_find_chance = random.random()  # Generates a random float between 0.0 and 1.0

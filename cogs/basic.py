@@ -1843,8 +1843,8 @@ class Basic(commands.Cog, name="basic"):
         await battle.userattack(ctx, target)
         
     #mine command
-    #command cooldown of 4 hours
-    @commands.cooldown(1, 14400, commands.BucketType.user)
+    #command cooldown of 20 seconds
+    @commands.cooldown(1, 20, commands.BucketType.user)
     @commands.hybrid_command(
         name="search",
         description="Search for cool stuff",
@@ -1857,7 +1857,7 @@ class Basic(commands.Cog, name="basic"):
             return
         await search.search(ctx)
 
-    @commands.cooldown(1, 7200, commands.BucketType.user)
+    @commands.cooldown(1, 40, commands.BucketType.user)
     @commands.hybrid_command(
         name="beg",
         description="beg for money",
