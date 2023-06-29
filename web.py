@@ -118,6 +118,14 @@ async def get_search():
         #get the searches from assets\search.json
     return {"searches": locations}
 
+@app.get("/api/data/begs", response_model=Dict[str, Any])
+async def get_beg():        
+    with open('assets/beg.json') as f:
+        data = json.load(f)
+        begs = data['begs']
+        #get the begs from assets\beg.json
+    return {"begs": begs}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
