@@ -1984,55 +1984,6 @@ class Basic(commands.Cog, name="basic"):
                 choices.append(app_commands.Choice(name=item[2], value=item[1]))
         return choices[:25]
     #hybrid command to battle a monster
-
-    @commands.hybrid_command(
-        name="connect",
-        description="Connect your twitch account to your discord account!",
-    )
-    async def connect(self, ctx: Context):
-        #check if th user exists in the database
-        user_exists = await db_manager.check_user(ctx.author.id)
-        if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
-            return
-        #create an embed to send to the user, then add a button to connect their twitch account
-        embed = discord.Embed(
-            title="Connect your twitch account to your discord account!",
-            description="Click the button below to connect your twitch account to your discord account!",
-            color=discord.Color.blurple()
-        )
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/881056455321487390/881056516333762580/unknown.png")
-        embed.set_footer(text="NyanStreamer")
-        #make a discord.py button interaction
-        class MyView(discord.ui.View): # Create a class called MyView that subclasses discord.ui.View
-            def __init__(self, url: str):
-                super().__init__()
-                self.url = url
-                self.add_item(discord.ui.Button(label="Register With Twitch!", url=self.url))
-        #send the embed to the user in DMs
-        await ctx.send("Check your DMs :)")
-        try:
-            await ctx.author.send(embed=embed, view=MyView(f"https://nyanstreamer.lol/webhook?discord_id={ctx.author.id}")) # Send a message with our View class that contains the button
-        except(CommandInvokeError):
-            await ctx.send("I couldn't DM you! Make sure your DMs are open!")
-            return
-        
-#disconnect command
-    @commands.hybrid_command(
-        name="disconnect",
-        description="Disconnect your twitch account from your discord account!",
-    )
-    async def disconnect(self, ctx: Context):
-        #check if the user is connected
-        isConnected = await db_manager.is_connected(ctx.author.id)
-        if isConnected == False:
-            await ctx.send("You are not connected to a twitch account!")
-            return
-        #disconnect the user
-        await db_manager.disconnect_twitch_id(ctx.author.id)
-        await db_manager.disconnect_twitch_name(ctx.author.id)
-        await db_manager.update_is_not_streamer(ctx.author.id)
-        await ctx.send("Your twitch account has been disconnected from your discord account!")
         
     @commands.hybrid_command(
         name="fight",
