@@ -1359,7 +1359,6 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 #send a message to the channel saying the user has died
                 await ctx.send(userName + " has died!")
                 #set the users health to 0
-                await db_manager.set_health(userID, 0)
                 #set the user as dead 
                 await db_manager.set_dead(userID)
                 #set the user not in combat
@@ -1617,7 +1616,6 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
         #send a message to the channel saying the user has died
         await ctx.send("**"+ userName + "** has died!")
         #set the users health to 0
-        await db_manager.set_health(userID, 0)
         #set the user as dead 
         await db_manager.set_dead(userID)
         #set the user not in combat

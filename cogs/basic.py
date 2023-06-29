@@ -1002,13 +1002,18 @@ class Basic(commands.Cog, name="basic"):
         print(f"User Twitch Name: {user_twitch_name}")
         user_items = await db_manager.view_inventory(user_id)
         embed = discord.Embed(title="Profile", description=f"{user.mention}'s Profile.")
+        isalive = await db_manager.is_alive(user_id)
         if user_health <= 0:
             #check if the user is marked as dead
             isalive = await db_manager.is_alive(user_id)
             if isalive == True:
                 #if they are, mark them as dead
                 await db_manager.set_dead(user_id)
-            embed.add_field(name="Health", value=f"{user_health} (Dead)", inline=True)
+            revivetimestamp = await db_manager.get_revival_timestamp()
+            embed.add_field(name="Health", value=f"0 (Dead) <t:{revivetimestamp}:R>", inline=True)
+        elif isalive == False:
+            revivetimestamp = await db_manager.get_revival_timestamp()
+            embed.add_field(name="Health", value=f"0 (Dead) Revive: <t:{revivetimestamp}:R>", inline=True)
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
         net_dict = await bank.get_user_net_worth(user)
@@ -1050,6 +1055,7 @@ class Basic(commands.Cog, name="basic"):
         est_min_datetime = datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC).astimezone(pytz.timezone('US/Eastern'))
         item_info = defaultdict(lambda: {"count": 0, "latest_expire": est_min_datetime})
 
+        
         if timed_items:
             for item in timed_items:
                 # get the item name
