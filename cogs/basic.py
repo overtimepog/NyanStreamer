@@ -21,7 +21,7 @@ from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 
-from helpers import battle, checks, db_manager, hunt, mine, search, bank
+from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from num2words import num2words
@@ -2061,13 +2061,12 @@ class Basic(commands.Cog, name="basic"):
         await battle.userattack(ctx, target)
         
     #mine command
-    #command cooldown of 2 hours
-    @commands.cooldown(1, 7200, commands.BucketType.user)
+    #command cooldown of 4 hours
+    @commands.cooldown(1, 14400, commands.BucketType.user)
     @commands.hybrid_command(
         name="search",
         description="Search for cool stuff",
     )
-    @commands.cooldown(1, 10800, commands.BucketType.user)
     async def search(self, ctx: Context):
         userExist = await db_manager.check_user(ctx.author.id)
         if userExist == None or userExist == []:
@@ -2075,6 +2074,19 @@ class Basic(commands.Cog, name="basic"):
             await self.search.reset_cooldown(ctx)
             return
         await search.search(ctx)
+
+    @commands.cooldown(1, 7200, commands.BucketType.user)
+    @commands.hybrid_command(
+        name="beg",
+        description="beg for money",
+    )
+    async def beg(self, ctx: Context):
+        userExist = await db_manager.check_user(ctx.author.id)
+        if userExist == None or userExist == []:
+            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
+            await self.beg.reset_cooldown(ctx)
+            return
+        await beg.beg(ctx)
     
     #ANCHOR use command
     #a cooldown of 2 minutes
