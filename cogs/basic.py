@@ -1088,9 +1088,10 @@ class Basic(commands.Cog, name="basic"):
                     total_price = item_price * amount
                     #remove the item from the users inventory
                     await db_manager.remove_item_from_inventory(user_id, item, amount)
+                    item_emoji = await db_manager.get_basic_item_emoji(item)
                     #add the price to the users money
                     await db_manager.add_money(user_id, total_price)
-                    await ctx.send(f"You sold `{amount}` of `{i[2]}` for **{cash}{total_price:,}**")
+                    await ctx.send(f"You sold {amount} **{item_emoji}{i[2]}** for **{cash}{total_price:,}**")
                     return
                 else:
                     await ctx.send(f"You don't have enough `{i[2]}` to sell `{amount}`.")
@@ -1108,11 +1109,12 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[2].lower():
                     pet_name = await db_manager.get_pet_name(item[0], item[1])
                     rarity = await db_manager.get_basic_item_rarity(item[1])
+                    item_amount_in_inventory = db_manager.get_item_amount_from_inventory(user_id, item[1])
                     if item[7] == "Pet":
-                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,})"
+                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
                     else:
-                        item_name = f"{item[2]} ({cash}{int(item[3]):,})"
+                        item_name = f"{item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
