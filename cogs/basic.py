@@ -2685,7 +2685,7 @@ class Basic(commands.Cog, name="basic"):
         # Check if the user is eligible for daily rewards
         current_time = datetime.datetime.now()
         if user_data[31] is not None:
-            last_daily = datetime.datetime.strptime(user_data[31], "%Y-%m-%d %H:%M:%S")
+            last_daily = datetime.datetime.strptime(user_data[31].split('.')[0], "%Y-%m-%d %H:%M:%S")
             hours_passed = (current_time - last_daily).total_seconds() / 3600
 
             # Calculate the streak
