@@ -149,8 +149,15 @@ async def remove_money(user_id: int, amount: int) -> None:
     if data is not None:
         await db.execute(f"UPDATE `users` SET `money` = `money` - ? WHERE `user_id` = ?", (amount, user_id))
         #if the  user has less than 0 money, set their money to 0
-        if await db.execute(f"SELECT `money` FROM `users` WHERE user_id = ?", (user_id,), fetch="one") < 0:
-            await db.execute(f"UPDATE `users` SET `money` = 0 WHERE `user_id` = ?", (user_id,))
+        user_money = await get_money(user_id)
+        #convert user_money to a str, remove the () and , from it, and convert it to an int
+        user_money = str(user_money)
+        user_money = user_money.replace("(", "")
+        user_money = user_money.replace(")", "")
+        user_money = user_money.replace(",", "")
+        user_money = int(user_money)
+        if user_money < 0:
+            await set_money(user_id, 0)
     else:
         return None
     
