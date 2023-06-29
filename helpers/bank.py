@@ -63,7 +63,7 @@ async def get_and_send_net_worth_embed(ctx: Context, user: discord.User):
     networth += bank
 
     # Create the embed
-    embed = Embed(title=f"{user.name}'s Net Worth", description=f"Total net worth: {cash}{format_number(networth)}")
+    embed = Embed(title=f"{user.name}'s Net Worth", description=f"Total net worth: **{cash}{format_number(networth)}**")
     embed.add_field(name="Inventory Worth", value=f"{cash}{format_number(inventory_networth)} ({(inventory_networth / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
     embed.add_field(name="Wallet Balance", value=f"{cash}{format_number(wallet)} ({(wallet / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
     embed.add_field(name="Bank Balance", value=f"{cash}{format_number(bank)} ({(bank / networth) * 100:.2f}%)" if networth != 0 else "0 (0.00%)", inline=False)
