@@ -18,5 +18,25 @@
         "item_recipe": [],
         "item_effect": "None",
         "item_sub_type": "None"
+    },
+    {
+        "item_id": "bank_expansion_voucher",
+        "item_name": "Bank Expansion Voucher",
+        "item_price": 5000,
+        "item_emoji": "<:Golden_Pass:1116772934971834479>",
+        "item_rarity": "Rare",
+        "item_type": "Tool",
+        "item_damage": 0,
+        "isUsable": true,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A valuable voucher that expands your bank capacity. Increases bank capacity by 1000.",
+        "item_element": "None",
+        "item_crit_chance": "0%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "bank_capacity + 1000",
+        "item_sub_type": "User Item"
     }    
 ]
