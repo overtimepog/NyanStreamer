@@ -117,7 +117,7 @@ class SearchButton(discord.ui.Button['SearchButton']):
             embed = discord.Embed(description=comment)
         elif comment_type == "death_comments":
             await db_manager.set_dead(interaction.user.id)
-            revivetimestamp = await db_manager.get_revival_timestamp()
+            revivetimestamp = await db_manager.get_revival_timestamp(interaction.user.id)
             embed = discord.Embed(description=comment + f"\n\nYou died lol! You'll Revive <t:{revivetimestamp}:R>")
         
         embed.set_author(name=self.user.display_name + f" Searched {self.label}")

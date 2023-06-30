@@ -40,15 +40,15 @@ class General(commands.Cog, name="general"):
         description="List all commands the bot has loaded."
     )
     @checks.not_blacklisted()
-    async def help(self, context: Context, command_or_cog: str = None) -> None:
+    async def help(self, context: Context, command: str = None) -> None:
         checkUser = await db_manager.check_user(context.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await context.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
             return
         prefix = self.bot.config["prefix"]
 
-        if command_or_cog:
-            command_or_group = self.bot.get_command(command_or_cog.lower())
+        if command:
+            command_or_group = self.bot.get_command(command.lower())
             if command_or_group and command_or_group.cog_name != 'owner':
                 from discord.ext import commands
                 if isinstance(command_or_group, commands.Group):
@@ -61,7 +61,7 @@ class General(commands.Cog, name="general"):
                     await context.send(embed=embed)
                 return
 
-            cog = self.bot.get_cog(command_or_cog.title())
+            cog = self.bot.get_cog(command.title())
             if cog:
                 commands = cog.get_commands()
                 if commands:
@@ -72,7 +72,7 @@ class General(commands.Cog, name="general"):
                     await context.send(f'The {cog.qualified_name} category has no commands.')
                 return
 
-            await context.send(f'No command or category named "{command_or_cog}" was found.')
+            await context.send(f'No command or category named "{command}" was found.')
             return
 
         else:
@@ -126,7 +126,7 @@ class General(commands.Cog, name="general"):
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
             view = HelpButton(current_page=0, embeds=cog_embeds)
-            await context.send(embed=cog_embeds[0], view=view)
+            await context.send(embed=cog_embeds[0], view=view, ephemeral=True)
 
     @commands.hybrid_command(
         name="botinfo",
