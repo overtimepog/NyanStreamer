@@ -50,14 +50,9 @@ async def beg(ctx: Context):
     if outcome is not None:
         total = outcome['reward']
 
-    comment = comment.replace("{thing}", f"**{cash}{total}**")
-    await db_manager.add_money(ctx.author.id, total)
-
-    embed = discord.Embed(description=comment)
-    embed.set_author(name=f"{beg['name']}")
-
     # Add item finding mechanism here
     item_find_chance = random.random()  # Generates a random float between 0.0 and 1.0
+    item_string = ""  # This will hold the item string if an item is found
 
     # Only try to find an item if the random chance is less than a certain threshold
     if item_find_chance < 0.3:  # Adjust this value to make finding items more or less rare
@@ -93,6 +88,13 @@ async def beg(ctx: Context):
             else:
                 item_emoji = await db_manager.get_basic_item_emoji(item_id)
                 item_name = await db_manager.get_basic_item_name(item_id)
-            embed.description += f" and **x{amount} {item_emoji}{item_name}**!"
+            item_string = f" and **x{amount} {item_emoji}{item_name}**"
+
+    # Now replace "{thing}" with the cash and item string (if any)
+    comment = comment.replace("{thing}", f"**{cash}{total}{item_string}**")
+    await db_manager.add_money(ctx.author.id, total)
+
+    embed = discord.Embed(description=comment)
+    embed.set_author(name=f"{beg['name']}")
 
     await ctx.send(embed=embed)
