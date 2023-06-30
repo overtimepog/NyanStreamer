@@ -3,11 +3,7 @@
         {
             "name": "Markiplier",
             "comments": [
-                "\"Here's {thing}, don't spend it all on FNAF merchandise!\"",
-                "\"Your joke was so funny, I laughed my {thing} off. Now it's yours, no take-backs.\"",
-                "\"I'm in such a good mood, I'm giving you {thing}. No, it's not because I finally beat Dark Souls.\"",
-                "\"I like your style, so here's {thing}. It's not a pink mustache, but it'll do.\"",
-                "\"You're so brave, you deserve this {thing}. It's not a Warfstache, but it's something.\""
+                "\"Here's {thing}, don't spend it all on FNAF merchandise!\""
             ],
             "outcomes": [
                 {"rewardType": "money", "reward": 10, "chance": 0.5},
@@ -18,20 +14,81 @@
             ]
         },
         {
-            "name": "PewDiePie",
+            "name": "JSchlatt",
             "comments": [
-                "\"Your request was so amusing, I'm giving you {thing}. That's more than I earned from my first Minecraft video.\"",
-                "\"Impressed by your creativity, here's {thing}. It's not a PewDiePie chair, but it'll do.\"",
-                "\"Appreciate your support, so here's {thing}. It's not a brofist, but it's close.\"",
-                "\"I like your determination, so here's {thing}. It's not a diamond play button, but it's shiny.\"",
-                "\"Moved by your story, I'm giving you {thing}. It's not a pet tambourine, but it'll help.\""
+                "\"I make so much money off tiktok reactions so heres {thing}\""
             ],
             "outcomes": [
-                {"rewardType": "money", "reward": 20, "chance": 0.5},
-                {"rewardType": "money", "reward": 40, "chance": 0.3},
-                {"rewardType": "money", "reward": 80, "chance": 0.1},
-                {"rewardType": "money", "reward": 160, "chance": 0.05},
-                {"rewardType": "money", "reward": 320, "chance": 0.05}
+                {"rewardType": "money", "reward": 10, "chance": 0.5},
+                {"rewardType": "money", "reward": 20, "chance": 0.3},
+                {"rewardType": "money", "reward": 50, "chance": 0.1},
+                {"rewardType": "money", "reward": 100, "chance": 0.05},
+                {"rewardType": "money", "reward": 200, "chance": 0.05}
+            ]
+        },
+        {
+            "name": "MrBeast",
+            "comments": [
+                "\"Im giving away money for fun, so here's {thing} for you!\""
+            ],
+            "outcomes": [
+                {"rewardType": "money", "reward": 10, "chance": 0.5},
+                {"rewardType": "money", "reward": 20, "chance": 0.3},
+                {"rewardType": "money", "reward": 50, "chance": 0.1},
+                {"rewardType": "money", "reward": 100, "chance": 0.05},
+                {"rewardType": "money", "reward": 200, "chance": 0.05}
+            ]
+        },
+        {
+            "name": "Ninja",
+            "comments": [
+                "\"I Made a fortune from Fortnite, so here's {thing} for you!\""
+            ],
+            "outcomes": [
+                {"rewardType": "money", "reward": 10, "chance": 0.5},
+                {"rewardType": "money", "reward": 20, "chance": 0.3},
+                {"rewardType": "money", "reward": 50, "chance": 0.1},
+                {"rewardType": "money", "reward": 100, "chance": 0.05},
+                {"rewardType": "money", "reward": 200, "chance": 0.05}
+            ]
+        },
+        {
+            "name": "Pokimane",
+            "comments": [
+                "\"I got alot from simps, so heres {thing}\""
+            ],
+            "outcomes": [
+                {"rewardType": "money", "reward": 10, "chance": 0.5},
+                {"rewardType": "money", "reward": 20, "chance": 0.3},
+                {"rewardType": "money", "reward": 50, "chance": 0.1},
+                {"rewardType": "money", "reward": 100, "chance": 0.05},
+                {"rewardType": "money", "reward": 200, "chance": 0.05}
+            ]
+        },
+        {
+            "name": "Overtime",
+            "comments": [
+                "\"here you go nerd take {thing}\""
+            ],
+            "outcomes": [
+                {"rewardType": "money", "reward": 10, "chance": 0.5},
+                {"rewardType": "money", "reward": 20, "chance": 0.3},
+                {"rewardType": "money", "reward": 50, "chance": 0.1},
+                {"rewardType": "money", "reward": 100, "chance": 0.05},
+                {"rewardType": "money", "reward": 200, "chance": 0.05}
+            ]
+        },
+        {
+            "name": "Barack Obama",
+            "comments": [
+                "\"Change is good, and so is this {thing} I'm giving you!\""
+            ],
+            "outcomes": [
+                {"rewardType": "money", "reward": 10, "chance": 0.5},
+                {"rewardType": "money", "reward": 20, "chance": 0.3},
+                {"rewardType": "money", "reward": 50, "chance": 0.1},
+                {"rewardType": "money", "reward": 100, "chance": 0.05},
+                {"rewardType": "money", "reward": 200, "chance": 0.05}
             ]
         }
     ]
