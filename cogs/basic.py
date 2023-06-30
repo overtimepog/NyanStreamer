@@ -1051,11 +1051,11 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name=f"Pet", value=f'{pet_emoji}{pet_name}', inline=False)
 
         timed_items = await db_manager.view_timed_items(user.id)
-        
         est_min_datetime = datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC).astimezone(pytz.timezone('US/Eastern'))
-        item_info = defaultdict(lambda: {"count": 0, "latest_expire": est_min_datetime})
+        # Convert the datetime object to a Unix timestamp
+        est_min_unix = int(est_min_datetime.timestamp())
+        item_info = defaultdict(lambda: {"count": 0, "latest_expire": est_min_unix})
 
-        
         if timed_items:
             for item in timed_items:
                 # get the item name
@@ -1083,6 +1083,7 @@ class Basic(commands.Cog, name="basic"):
         # Display information
         for item_key, info in item_info.items():
             embed.add_field(name=f"{item_key} x{info['count']}", value=f"Latest expiration: <t:{info['latest_expire']}:R>", inline=False)
+
         #add xp and level
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
         embed.add_field(name="Level", value=f"{user_level}", inline=True)
