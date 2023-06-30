@@ -40,26 +40,6 @@
         "item_sub_type": "Potion"
     },
     {
-        "item_id": "healthpotion",
-        "item_name": "Health Potion",
-        "item_price": 200,
-        "item_emoji": "<:HealthPotion_Small:1077645426745942116>",
-        "item_rarity": "Rare",
-        "item_type": "Consumable",
-        "item_damage": 0,
-        "isUsable": true,
-        "inShop": true,
-        "isEquippable": false,
-        "item_description": "\"Heal up\" -Doc Mcstuffins",
-        "item_element": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "None",
-        "recipe_id": "None",
-        "item_recipe": [],
-        "item_effect": "health + 50",
-        "item_sub_type": "Potion"
-    },
-    {
         "item_id": "glue",
         "item_name": "Glue",
         "item_price": 4500,
@@ -70,13 +50,13 @@
         "isUsable": true,
         "inShop": true,
         "isEquippable": false,
-        "item_description": "Sniff it to Gain 50 health for 2 hours",
+        "item_description": "crazy good stuff, especially for sniffing",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
         "recipe_id": "None",
         "item_recipe": [],
-        "item_effect": "health + 50 2hr",
+        "item_effect": "luck + 50 2hr",
         "item_sub_type": "Potion"
     },
     {
