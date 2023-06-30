@@ -1020,7 +1020,7 @@ class Basic(commands.Cog, name="basic"):
         embed.add_field(name="Net Worth", value=f'{cash}{int(net_dict["networth"]):,}', inline=True)
         #add xp and level
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
-        embed.add_field(name="Level", value=f"{user_level}", inline=False)
+        embed.add_field(name="Level", value=f"{user_level}", inline=True)
         #get the badges from the database
         badges = await db_manager.get_equipped_badges(user_id)
         #make a feild for the badges and set the title to badges and the value to the badges
