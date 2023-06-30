@@ -1018,6 +1018,9 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
         net_dict = await bank.get_user_net_worth(user)
         embed.add_field(name="Net Worth", value=f'{cash}{int(net_dict["networth"]):,}', inline=True)
+        #add xp and level
+        embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
+        embed.add_field(name="Level", value=f"{user_level}", inline=True)
         #get the badges from the database
         badges = await db_manager.get_equipped_badges(user_id)
         #make a feild for the badges and set the title to badges and the value to the badges
@@ -1081,12 +1084,16 @@ class Basic(commands.Cog, name="basic"):
                 item_info[item_key]["latest_expire"] = max(item_info[item_key]["latest_expire"], expiration_unix)
 
         # Display information
-        for item_key, info in item_info.items():
-            embed.add_field(name=f"{item_key} x{info['count']}", value=f"Latest expiration: <t:{info['latest_expire']}:R>", inline=False)
+        # Initialize an empty string to hold all the item information
+        active_items = ""
 
-        #add xp and level
-        embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
-        embed.add_field(name="Level", value=f"{user_level}", inline=True)
+        # Loop through all the items and add their information to the string
+        for item_key, info in item_info.items():
+            active_items += f"**{item_key} x{info['count']}** - Latest expiration: <t:{info['latest_expire']}:R>\n"
+
+        # Add the string as a single field in the embed
+        embed.add_field(name="Active Items", value=active_items, inline=False)
+
         #for i in user_items:
         #    item_name = i[2]
         #    item_emote = i[4]
