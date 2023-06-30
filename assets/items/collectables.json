@@ -43,5 +43,34 @@
                 "quote": "None"
             }],
             "item_sub_type": "None"
+        },
+        {
+            "item_id": "ducktopus",
+            "item_name": "Ducktopus",
+            "item_price": 2000,
+            "item_emoji": "<:rubber_ducktopus:1114319451085606932>",
+            "item_rarity": "Epic",
+            "item_type": "Collectable",
+            "item_damage": 0,
+            "isUsable": false,
+            "inShop": true,
+            "isEquippable": false,
+            "item_description": "a duck with tentacles, best used in the bath, wink wink",
+            "item_element": "None",
+            "item_crit_chance": "0%",
+            "item_projectile": "None",
+            "recipe_id": "None",
+            "item_recipe": [],
+            "isHuntable": false,
+            "item_hunt_chance": 0,
+            "item_effect": "None",
+            "isMineable": false,
+            "item_mine_chance": 0,
+            "quote_id": "None",
+            "item_quotes": [{
+                "quote": "None"
+            }],
+            "item_sub_type": "None"
         }        
+    
     ]

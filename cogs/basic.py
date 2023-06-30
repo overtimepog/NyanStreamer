@@ -871,6 +871,9 @@ class Basic(commands.Cog, name="basic"):
                 if item[5] == 'Pet':
                     rarity = await db_manager.get_basic_item_rarity(item[0])
                     item_name = f"{rarity} {item[1]} ({cash}{int(item[2]):,})"
+                elif item[5] == 'Collectable':
+                    #not for sale
+                    continue
                 else:
                     item_name = f"{item[1]} ({cash}{int(item[2]):,})"
                 choices.append(app_commands.Choice(name=item_name, value=item[0]))
