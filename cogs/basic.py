@@ -871,9 +871,6 @@ class Basic(commands.Cog, name="basic"):
                 if item[5] == 'Pet':
                     rarity = await db_manager.get_basic_item_rarity(item[0])
                     item_name = f"{rarity} {item[1]} ({cash}{int(item[2]):,})"
-                elif item[5] == 'Collectable':
-                    #not for sale
-                    continue
                 else:
                     item_name = f"{item[1]} ({cash}{int(item[2]):,})"
                 choices.append(app_commands.Choice(name=item_name, value=item[0]))
@@ -913,6 +910,9 @@ class Basic(commands.Cog, name="basic"):
                 if i[9] == 1:
                     await ctx.send(f"You can't sell an equipped item!, unequip it first with `/unequip {item}`")
                     return
+                if i[5] == 'Collectable':
+                    await ctx.send(f"You can't sell a collectable!")
+                    return
                 #check if the user has enough of the item
                 item_amount = i[6]
                 item_amount = int(item_amount)
@@ -928,7 +928,7 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(f"You sold {amount} **{item_emoji}{i[2]}** for **{cash}{total_price:,}**")
                     return
                 else:
-                    await ctx.send(f"You don't have enough `{i[2]}` to sell `{amount}`.")
+                    await ctx.send(f"You don't have enough **{item_emoji}{i[2]}** to sell `{amount}`.")
                     return
         await ctx.send(f"Item doesn't exist in your inventory.")
         
@@ -947,6 +947,9 @@ class Basic(commands.Cog, name="basic"):
                     if item[7] == "Pet":
                         item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
+                    elif item[5] == 'Collectable':
+                        #not for sale
+                        continue
                     else:
                         item_name = f"{item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
