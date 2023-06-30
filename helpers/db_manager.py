@@ -5107,15 +5107,20 @@ async def get_nameOfThirdDamageDealer(monster_id: str, server_id: int) -> str:
         
 
 async def add_timed_item(user_id: str, item_id: str, effect: str) -> None:
-    """
-    This function will add a timed item to a user's inventory.
-
-    :param user_id: The ID of the user that the item should be added for.
-    :param item_id: The ID of the item that should be added.
-    :param effect: The effect of the item (e.g., "luck + 20 24hr").
-    """
     db = DB()
-    now = datetime.datetime.now()
+
+    # Check if the user already has an active item of the same type
+    active_item = await db.execute(
+        "SELECT expires_at FROM timed_items WHERE user_id = ? AND item_id = ? AND expires_at > datetime('now')",
+        (user_id, item_id),
+        fetch="one"
+    )
+
+    # If the user has an active item, use its expiration time as the start time
+    if active_item:
+        now = datetime.datetime.strptime(active_item[0], '%Y-%m-%d %H:%M:%S')
+    else:
+        now = datetime.datetime.now()
 
     # parse effect for time units (days, hours, minutes, seconds)
     time_units = re.findall(r'(\d+(?:d|hr|m|s))', effect)
