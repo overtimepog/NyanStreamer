@@ -88,10 +88,10 @@ async def beg(ctx: Context):
             else:
                 item_emoji = await db_manager.get_basic_item_emoji(item_id)
                 item_name = await db_manager.get_basic_item_name(item_id)
-            item_string = f" and **x{amount} {item_emoji}{item_name}**"
+            item_string = f"and **x{amount} {item_emoji}{item_name}**"
 
     # Now replace "{thing}" with the cash and item string (if any)
-    comment = comment.replace("{thing}", f"**{cash}{total}{item_string}**")
+    comment = comment.replace("{thing}", f"**{cash}{total}** {item_string}")
     await db_manager.add_money(ctx.author.id, total)
 
     embed = discord.Embed(description=comment)
