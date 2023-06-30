@@ -24,26 +24,6 @@
         "item_sub_type": "None"
     },
     {
-        "item_id": "iron",
-        "item_name": "Iron Ingot",
-        "item_price": 100,
-        "item_emoji": "<:Iron_Ingot:1077609302992367758>",
-        "item_rarity": "Common",
-        "item_type": "Material",
-        "item_damage": 0,
-        "isUsable": false,
-        "inShop": true,
-        "isEquippable": false,
-        "item_description": "A solid block of iron, I have no idea how you carry it.",
-        "item_element": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "None",
-        "item_effect": "None",
-        "isMineable": true,
-        "item_mine_chance": 0.8,
-        "item_sub_type": "None"
-    },
-    {
         "item_id": "gold",
         "item_name": "Gold Ingot",
         "item_price": 500,
