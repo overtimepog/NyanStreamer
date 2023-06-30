@@ -625,6 +625,8 @@ class Basic(commands.Cog, name="basic"):
             def __init__(self):
                 options=[
                     discord.SelectOption(label="All"),
+                    discord.SelectOption(label="Collectable"),
+                    discord.SelectOption(label="Sellable"),
                     discord.SelectOption(label="Consumable"),
                     discord.SelectOption(label="Material"),
                     discord.SelectOption(label="Tool"),
@@ -632,8 +634,9 @@ class Basic(commands.Cog, name="basic"):
                     discord.SelectOption(label="Armor"),
                     discord.SelectOption(label="Badge"),
                     discord.SelectOption(label="Pet"),
+                    discord.SelectOption(label="Misc"),
                 ]
-                super().__init__(placeholder="Select an option", max_values=1, min_values=1, options=options)
+                super().__init__(placeholder="Select an option", max_values=11, min_values=1, options=options)
 
             async def callback(self, interaction: discord.Interaction):
                 selected_item_type = self.values[0]
