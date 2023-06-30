@@ -588,7 +588,7 @@ class Basic(commands.Cog, name="basic"):
 
                     shop_embed = discord.Embed(
                         title="Shop",
-                        description=f"Commands: \n **Buy**: `/buy iron_sword 1`. \n \n **Shop Restock Time**: <t:{resetTime_unix}:R> \n \n"
+                        description=f"Shop Resets: <t:{resetTime_unix}:t> (<t:{resetTime_unix}:R>) \n \n"
                     )
                 shop_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
