@@ -1346,7 +1346,7 @@ class Basic(commands.Cog, name="basic"):
             stats_embed = discord.Embed(title="Stats", description=f"{user.name}'s Stats")
             stats_embed.add_field(name="Luck", value=user_profile[24])
             stats_embed.add_field(name="Hours Worked", value=user_profile[29])
-            stats_embed.add_field(name="Bonus %", value=user_profile[33])
+            stats_embed.add_field(name="Bonus %", value=user_profile[34] + "%")
 
             await ctx.send(embed=stats_embed)
 
