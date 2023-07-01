@@ -116,13 +116,6 @@ class Jobs(commands.Cog, name="jobs"):
 
                     # Get requirements
                     hours_required = await db_manager.get_required_hours_from_id(job_id)
-                    item_required = await db_manager.get_required_item_from_id(job_id)
-                    level_required = await db_manager.get_required_level_from_id(job_id)
-
-                    # If there's an item requirement, get the icon for it
-                    item_icon = ""
-                    if item_required is not None and item_required != "None":
-                        item_icon = await db_manager.get_basic_item_emoji(item_required)
 
                     # Check if the user meets the requirements
                     user_hours = await db_manager.get_hours_worked(user_id)
@@ -264,21 +257,6 @@ class Jobs(commands.Cog, name="jobs"):
                 if user_hours < hours_required:
                     await ctx.send(f"You need to have worked {hours_required} hours to accept this job!")
                     return
-            #check the item 
-            item_required = await db_manager.get_required_item_from_id(job)
-            if item_required is not None and item_required != "None":
-                if await db_manager.check_user_has_item(ctx.author.id, item_required) == 0:
-                    icon = await db_manager.get_basic_item_emoji(item_required)
-                    await ctx.send(f"You need to have a {icon}`{item_required}` to accept this job!")
-                    return
-                
-            #check the level
-            level_required = await db_manager.get_required_level_from_id(job)
-            if level_required is not None:
-                level = await db_manager.get_level(ctx.author.id)
-                if level < level_required:
-                    await ctx.send(f"You need to be level {level_required} to accept this job!")
-                    return
             await db_manager.add_user_job(ctx.author.id, job)
             job_icon = await db_manager.get_job_icon_from_id(job)
             jobName = await db_manager.get_job_name_from_id(job)
@@ -299,12 +277,8 @@ class Jobs(commands.Cog, name="jobs"):
             if argument.lower() in job[1].lower():
                 # Get the requirements for this job
                 hours_required = await db_manager.get_required_hours_from_id(job[0])
-                item_required = await db_manager.get_required_item_from_id(job[0])
-                level_required = await db_manager.get_required_level_from_id(job[0])
-
                 # Check if the user meets the requirements
-                user_has_item = (item_required is None or item_required == "None") or await db_manager.check_user_has_item(ctx.user.id, item_required) > 0
-                requirements_met = (float(user_hours) >= int(hours_required)) and user_has_item and (int(user_level) >= int(level_required))
+                requirements_met = (float(user_hours) >= int(hours_required))
                 # Only add this job to the choices if the user meets the requirements
                 if requirements_met:
                     choices.append(app_commands.Choice(name=job[1], value=job[0]))
