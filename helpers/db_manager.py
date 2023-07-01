@@ -442,7 +442,7 @@ async def get_user(user_id: int) -> None:
   #`paralysis_resistance` int(11) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, hours_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus, streak, time_of_death, time_of_revival) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 500, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1), False, 0, 0, datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1)))
+        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, shifts_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus, streak, time_of_death, time_of_revival) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 500, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1), False, 0, 0, datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1)))
         #create the bank acount of the user
         await db.execute(f"INSERT INTO `bank` (`user_id`, `bank_balance`, `bank_capacity`) VALUES (?, ?, ?)", (user_id, 0, 10000))
         return None
@@ -996,13 +996,13 @@ async def print_items() -> None:
     for job in jobs:
         #"required_item": "spacesuit",
         #"required_level": 7,
-        #"required_hours": 1000,
+        #"required_shifts": 1000,
         #"base_pay": 2000,
         #"pay_per_level": 200,
         #"max_level": 15,
         #"cooldown": 10800,
         #"cooldown_reduction_per_level": 180,
-        print(f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}")
+        print(f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Hours: {job['required_shifts']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}")
 
 
 async def print_items_discord(ctx) -> None:
@@ -1028,7 +1028,7 @@ async def print_items_discord(ctx) -> None:
     #    message += "Type: Quest | ID: " + quest['quest_id'] + "\n"
 
     for job in jobs:
-        message += f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}\n"
+        message += f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Hours: {job['required_shifts']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}\n"
 
     # Check if the message is too long for a single send
     if len(message) > 2000:
@@ -1310,13 +1310,13 @@ async def add_jobs_and_minigames():
         await db.execute(
             """
             INSERT INTO `jobs` (
-                `id`, `name`, `description`, `job_icon`, `required_hours`,
+                `id`, `name`, `description`, `job_icon`, `required_shifts`,
                 `base_pay`, `pay_per_level`,
                 `cooldown`, `cooldown_reduction_per_level`
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
-                job['id'], job['name'], job['description'], job['job_icon'], job['required_hours'],
+                job['id'], job['name'], job['description'], job['job_icon'], job['required_shifts'],
                 job['base_pay'], job['pay_per_level'], job['cooldown'], job['cooldown_reduction_per_level']
             )
         )
@@ -1429,13 +1429,13 @@ async def get_user_job(user_id: int) -> str:
     else:
         return None
 
-async def add_hours_worked(user_id: str, hours) -> None:
+async def add_shifts_worked(user_id: str, hours) -> None:
     db = DB()
-    await db.execute("UPDATE `users` SET `hours_worked` = `hours_worked` + ? WHERE `user_id` = ?", (hours, user_id))
+    await db.execute("UPDATE `users` SET `shifts_worked` = `shifts_worked` + ? WHERE `user_id` = ?", (hours, user_id))
 
-async def get_hours_worked(user_id: str) -> int:
+async def get_shifts_worked(user_id: str) -> int:
     db = DB()
-    data = await db.execute("SELECT `hours_worked` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
+    data = await db.execute("SELECT `shifts_worked` FROM `users` WHERE `user_id` = ?", (user_id,), fetch="one")
     if data is not None:
         return data[0]
     else:
@@ -1604,8 +1604,8 @@ async def get_job_name_from_id(job_id: str) -> str:
     else:
         return 0
 
-# get required hours from job ID
-async def get_required_hours_from_id(job_id: str) -> int:
+# get required shifts from job ID
+async def get_required_shifts_from_id(job_id: str) -> int:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:

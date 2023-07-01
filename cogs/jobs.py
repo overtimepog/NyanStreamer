@@ -5,6 +5,7 @@ import json
 import os
 import random
 import re
+import time
 import requests
 from discord import Webhook, SyncWebhook
 import aiohttp
@@ -118,18 +119,18 @@ class Jobs(commands.Cog, name="jobs"):
                     desc = await db_manager.get_job_description_from_id(job_id)
 
                     # Get requirements
-                    hours_required = await db_manager.get_required_hours_from_id(job_id)
+                    shifts_required = await db_manager.get_required_shifts_from_id(job_id)
 
                     # Check if the user meets the requirements
-                    user_hours = await db_manager.get_hours_worked(user_id)
+                    user_shifts = await db_manager.get_shifts_worked(user_id)
                     level = await db_manager.get_level(user_id)
-                    requirements_met = (float(user_hours) >= int(hours_required))
+                    requirements_met = (float(user_shifts) >= int(shifts_required))
 
                     # Depending on whether the user meets the requirements, add a check mark or an X
                     requirements_met_icon = "<:checkmark:1124503593471463486>" if requirements_met else "<:Xmark:1124503594691989635>"
 
                     # Build the field value string with job description, requirements, and whether the user meets them
-                    field_value = f"{desc}\n"
+                    field_value = f""
                     base_pay = await db_manager.get_base_pay_from_id(job_id)
                     cooldown = await db_manager.get_cooldown_from_id(job_id)
                     cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
@@ -254,11 +255,11 @@ class Jobs(commands.Cog, name="jobs"):
         if user_job is None or user_job == 0 or user_job == "None":
             #give the user the job
             #check the requirements
-            hours_required = await db_manager.get_required_hours_from_id(job)
-            if hours_required > 0:
-                user_hours = await db_manager.get_hours_worked(ctx.author.id)
-                if user_hours < hours_required:
-                    await ctx.send(f"You need to have worked {hours_required} hours to accept this job!")
+            shifts_required = await db_manager.get_required_shifts_from_id(job)
+            if shifts_required > 0:
+                user_shifts = await db_manager.get_shifts_worked(ctx.author.id)
+                if user_shifts < shifts_required:
+                    await ctx.send(f"You need to have worked {shifts_required} shifts total to accept this job!, right now you have worked {user_shifts} shifts.")
                     return
             await db_manager.add_user_job(ctx.author.id, job)
             job_icon = await db_manager.get_job_icon_from_id(job)
@@ -271,7 +272,7 @@ class Jobs(commands.Cog, name="jobs"):
     @acceptjob.autocomplete("job")
     async def job_autocomplete(self, ctx: discord.Interaction, argument):
         # Get the user's hours worked, level, and owned items
-        user_hours = await db_manager.get_hours_worked(ctx.user.id)
+        user_shifts = await db_manager.get_shifts_worked(ctx.user.id)
         user_level = await db_manager.get_level(ctx.user.id)
 
         user_jobs = await db_manager.get_jobs_on_board()
@@ -279,9 +280,9 @@ class Jobs(commands.Cog, name="jobs"):
         for job in user_jobs:
             if argument.lower() in job[1].lower():
                 # Get the requirements for this job
-                hours_required = await db_manager.get_required_hours_from_id(job[0])
+                shifts_required = await db_manager.get_required_shifts_from_id(job[0])
                 # Check if the user meets the requirements
-                requirements_met = (float(user_hours) >= int(hours_required))
+                requirements_met = (float(user_shifts) >= int(shifts_required))
                 # Only add this job to the choices if the user meets the requirements
                 if requirements_met:
                     choices.append(app_commands.Choice(name=job[1], value=job[0]))
@@ -312,12 +313,14 @@ class Jobs(commands.Cog, name="jobs"):
         total_seconds = remaining_cooldown.total_seconds()
         hours, remainder = divmod(total_seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
-
+        
         formatted_cooldown = "{:02d}:{:02d}:{:02d}".format(int(hours), int(minutes), int(seconds))
-
-
+        
+        unix_timestamp_now = int(time.time())  # get the current Unix timestamp
+        unix_timestamp_cooldown_end = unix_timestamp_now + int(total_seconds)  # get the Unix timestamp of when the cooldown will end
+        
         if remaining_cooldown.total_seconds() > 0:
-            await ctx.send(f"You're still on cooldown! Wait for `{formatted_cooldown}`")
+            await ctx.send(f"You're still on cooldown! you can work again <t:{unix_timestamp_cooldown_end}:R>")
             return
         
         await db_manager.set_last_worked(user_id)
@@ -479,14 +482,7 @@ class Jobs(commands.Cog, name="jobs"):
             await asyncio.wait_for(callback_processed_future, timeout=10.0)
             await ctx.send(content=fail_message)
             #add the cooldown
-
-        #get the cooldown for the job
-        cooldown = await db_manager.get_cooldown_from_id(job_id)
-        #convert the timedelta to a float
-        cooldown = cooldown.total_seconds()
-        #convert the cooldown to hours
-        cooldown = cooldown / 3600
-        await db_manager.add_hours_worked(user_id, cooldown)
+        await db_manager.add_shifts_worked(user_id, 1)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.

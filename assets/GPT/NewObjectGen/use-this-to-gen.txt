@@ -320,7 +320,7 @@ this is an example of each minigame in one job
         "job_icon": "<:bullet:1122286037088096327>",
         "required_item": "handgun",
         "required_level": 10,
-        "required_hours": 5,
+        "required_shifts": 5,
         "base_pay": 500,
         "pay_per_level": 50,
         "cooldown": 1800,
