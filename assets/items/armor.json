@@ -10,7 +10,7 @@
         "isUsable": false,
         "inShop": true,
         "isEquippable": true,
-        "item_description": "A full body suit that protects you from bees. Needed for the Beekeeper job.",
+        "item_description": "A full body suit that protects you from bees. found from the Beekeeper job.",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",

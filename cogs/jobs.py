@@ -127,8 +127,7 @@ class Jobs(commands.Cog, name="jobs"):
                     # Check if the user meets the requirements
                     user_hours = await db_manager.get_hours_worked(user_id)
                     level = await db_manager.get_level(user_id)
-                    user_has_item = (item_required is None or item_required == "None") or await db_manager.check_user_has_item(ctx.author.id, item_required) > 0
-                    requirements_met = (float(user_hours) >= int(hours_required)) and user_has_item and (int(level) >= int(level_required))
+                    requirements_met = (float(user_hours) >= int(hours_required))
 
                     # Depending on whether the user meets the requirements, add a check mark or an X
                     requirements_met_icon = "✅" if requirements_met else "❌"
@@ -140,10 +139,9 @@ class Jobs(commands.Cog, name="jobs"):
                     cooldown_reduction_per_level = await db_manager.get_cooldown_reduction_per_level_from_id(job_id)
                     level = level - 1
                     adjusted_cooldown = cooldown - (cooldown_reduction_per_level * level)
-
-                    # Ensure that the adjusted cooldown is not negative
-                    if adjusted_cooldown.total_seconds() < 0:
-                        adjusted_cooldown = datetime.timedelta(seconds=0)
+                    #if the cooldown is less than a mninute set it to a minute
+                    if adjusted_cooldown.total_seconds() < 60:
+                        adjusted_cooldown = datetime.timedelta(seconds=60)
 
                     # Calculate adjusted cooldown time
                     total_seconds = adjusted_cooldown.total_seconds()
@@ -176,24 +174,18 @@ class Jobs(commands.Cog, name="jobs"):
                         cooldown_reduction_str = f"{int(seconds_reduction)}sec"
 
                     if level != 0:
-                        cooldown_str += f" (reduced by {cooldown_reduction_str} because you are level {level + 1})"
+                        #if the cooldown is a minute it means the user has hit the cooldown reduction cap
+                        if adjusted_cooldown.total_seconds() == 60:
+                            cooldown_str += f" (reduced by {cooldown_reduction_str} because you are level {level + 1}, cooldown reduction cap reached)"
+                        else:
+                            cooldown_str += f" (reduced by {cooldown_reduction_str} because you are level {level + 1})"
 
                     field_value += f"> Cooldown: **{cooldown_str}**\n"
                     field_value += f"> Pay: **{cash}{base_pay}**\n"
                     
-                    #turn level required into a int
-                    level_required = int(level_required)
                     #turn hours required into a int
                     hours_required = int(hours_required)
-                    field_value += f"> Level required: **{level_required}**\n"
-                    field_value += f"> Hours required: **{hours_required}**\n"    
-                    
-                    if item_required != "None":
-                        item_name = await db_manager.get_basic_item_name(item_required)
-                        field_value += f"> Item required: **{item_icon} {item_name}**\n"
-                    else:
-                        field_value += f"> Item required: **None**\n"
-                    
+                    field_value += f"> Hours required: **{hours_required}**\n"
                     #get the pay and cooldown
                     field_value += f"> ID: `{job_id}`\n"
                     

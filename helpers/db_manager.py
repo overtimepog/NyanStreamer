@@ -364,7 +364,7 @@ async def xp_needed(user_id: int) -> int:
         #times the users level by 6 to get the amount of xp needed to level up
         #convert users to int
         users = int(users[0])
-        xp_needed = (users * 6)
+        xp_needed = (users * 20)
         return xp_needed
     else:
         return None
@@ -390,7 +390,7 @@ async def job_xp_needed(user_id: str) -> int:
         # Multiply the user's job level by 6 to get the amount of job XP needed to level up
         # Convert user_job_level to int
         user_job_level = int(user_job_level[0])
-        xp_needed = (user_job_level * 6)
+        xp_needed = (user_job_level * 20)
         return xp_needed
     else:
         return None
@@ -1310,15 +1310,13 @@ async def add_jobs_and_minigames():
         await db.execute(
             """
             INSERT INTO `jobs` (
-                `id`, `name`, `description`, `job_icon`,
-                `required_item`, `required_level`, `required_hours`,
+                `id`, `name`, `description`, `job_icon`, `required_hours`,
                 `base_pay`, `pay_per_level`,
                 `cooldown`, `cooldown_reduction_per_level`
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
-                job['id'], job['name'], job['description'], job['job_icon'],
-                job['required_item'], job['required_level'], job['required_hours'],
+                job['id'], job['name'], job['description'], job['job_icon'], job['required_hours'],
                 job['base_pay'], job['pay_per_level'], job['cooldown'], job['cooldown_reduction_per_level']
             )
         )
@@ -1502,6 +1500,9 @@ async def get_cooldown_status(user_id: str, cooldown: timedelta, cooldown_reduct
     level = level - 1
     cooldown -= level * cooldown_reduction_per_level
     cooldown_time = cooldown
+    #if the cooldown is less than 1 minute set it to 1 minute
+    if cooldown_time.total_seconds() < 60:
+        cooldown_time = timedelta(minutes=1)
     if last_worked is None:
         return timedelta(0)  # User has never worked before
 
@@ -5332,7 +5333,7 @@ async def pet_xp_needed(item_id: str, user_id: int) -> int:
     if data is not None:
         current_level = data[3]
         # Times the pet's level by 6 to get the amount of xp needed to level up
-        xp_needed = current_level * 6
+        xp_needed = current_level * 20
         return xp_needed
     else:
         return None
