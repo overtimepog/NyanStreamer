@@ -1062,57 +1062,6 @@ class Basic(commands.Cog, name="basic"):
     
             embed.add_field(name=f"Pet", value=f'{pet_emoji}{pet_name}', inline=False)
 
-        timed_items = await db_manager.view_timed_items(user.id)
-        est_min_datetime = datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC).astimezone(pytz.timezone('US/Eastern'))
-        # Convert the datetime object to a Unix timestamp
-        est_min_unix = int(est_min_datetime.timestamp())
-        item_info = defaultdict(lambda: {"count": 0, "latest_expire": est_min_unix})
-
-        if timed_items:
-            for item in timed_items:
-                # get the item name
-                item_name = await db_manager.get_basic_item_name(item[0])
-                # get the item emoji
-                item_emoji = await db_manager.get_basic_item_emoji(item[0])
-                # get the item expire time
-                expire_time = item[3]
-                expiration_datetime = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
-                # Make the datetime object timezone-aware (UTC)
-                expiration_datetime = expiration_datetime.replace(tzinfo=pytz.UTC)
-
-                # Convert the datetime object to Eastern Standard Time
-                est = pytz.timezone('US/Eastern')
-                expiration_datetime = expiration_datetime.astimezone(est)
-
-                # Convert the datetime object to a Unix timestamp
-                expiration_unix = int(expiration_datetime.timestamp())
-
-                # Update item_info
-                item_key = f"{item_emoji}{item_name}"
-                item_info[item_key]["count"] += 1
-                item_info[item_key]["latest_expire"] = max(item_info[item_key]["latest_expire"], expiration_unix)
-
-        # Display information
-        # Initialize an empty string to hold all the item information
-        active_items = ""
-
-        # Loop through all the items and add their information to the string
-        for item_key, info in item_info.items():
-            active_items += f"**{item_key} x{info['count']}** - Latest expiration: <t:{info['latest_expire']}:R>\n"
-
-        # Add the string as a single field in the embed
-        embed.add_field(name="Active Items", value=active_items, inline=False)
-
-        #for i in user_items:
-        #    item_name = i[2]
-        #    item_emote = i[4]
-        #    item_amount = i[6]
-        #    item_type = i[7]
-        #    if item_type == "Weapon":
-        #        embed.add_field(name=f"{item_emote} {item_name}", value=f"Damage: {item_amount}", inline=True)
-            
-        #create a section for the users current quest
-
         if job_id is None or job_id == 0 or job_id == "None":
             embed.add_field(name="Current Job", value="`You currently have no job. see the board to get one.`", inline=False)
         else:
@@ -1359,11 +1308,100 @@ class Basic(commands.Cog, name="basic"):
 
             await ctx.send(embed=stats_embed)
 
+        async def display_active_items(ctx, user):
+            # Get user active items from the database
+            active_items = await db_manager.view_timed_items(user.id)
+            est_min_datetime = datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC).astimezone(pytz.timezone('US/Eastern'))
+            # Convert the datetime object to a Unix timestamp
+            est_min_unix = int(est_min_datetime.timestamp())
+            item_info = defaultdict(lambda: {"count": 0, "latest_expire": est_min_unix})
+
+            if active_items:
+                for item in active_items:
+                    # get the item name
+                    item_name = await db_manager.get_basic_item_name(item[0])
+                    # get the item emoji
+                    item_emoji = await db_manager.get_basic_item_emoji(item[0])
+                    # get the item expire time
+                    expire_time = item[3]
+                    expiration_datetime = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
+                    # Make the datetime object timezone-aware (UTC)
+                    expiration_datetime = expiration_datetime.replace(tzinfo=pytz.UTC)
+
+                    # Convert the datetime object to Eastern Standard Time
+                    est = pytz.timezone('US/Eastern')
+                    expiration_datetime = expiration_datetime.astimezone(est)
+
+                    # Convert the datetime object to a Unix timestamp
+                    expiration_unix = int(expiration_datetime.timestamp())
+
+                    # Update item_info
+                    item_key = f"{item_emoji}{item_name}"
+                    item_info[item_key]["count"] += 1
+                    item_info[item_key]["latest_expire"] = max(item_info[item_key]["latest_expire"], expiration_unix)
+
+            # Display information
+            # Initialize an empty string to hold all the item information
+            active_items_str = ""
+
+            # Loop through all the items and add their information to the string
+            for item_key, info in item_info.items():
+                active_items_str += f"**{item_key} x{info['count']}** - Latest expiration: <t:{info['latest_expire']}:R>\n"
+
+            # Create a list of embeds with 5 items per embed
+            embeds = []
+            for i in range(0, len(active_items_str), 5):
+                embed = discord.Embed()
+                embed.add_field(name="Active Items", value=active_items_str[i:i+5], inline=False)
+                embeds.append(embed)
+
+            class ActiveItemsButton(discord.ui.View):
+                def __init__(self, current_page, embeds, **kwargs):
+                    super().__init__(**kwargs)
+                    self.current_page = current_page
+                    self.embeds = embeds
+
+                @discord.ui.button(label="<<", style=discord.ButtonStyle.green)
+                async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = 0
+                    await interaction.response.edit_message(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label="<", style=discord.ButtonStyle.green)
+                async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page > 0:
+                        self.current_page -= 1
+                        await interaction.response.edit_message(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">", style=discord.ButtonStyle.green)
+                async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    if self.current_page < len(self.embeds) - 1:
+                        self.current_page += 1
+                        await interaction.response.edit_message(embed=self.embeds[self.current_page])
+
+                @discord.ui.button(label=">>", style=discord.ButtonStyle.green)
+                async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    self.current_page = len(self.embeds) - 1
+                    await interaction.response.edit_message(embed=self.embeds[self.current_page])
+
+            # If there are multiple pages, add the buttons
+            if len(embeds) > 1:
+                view = ActiveItemsButton(current_page=0, embeds=embeds)
+                await ctx.send(embed=embeds[0], view=view)
+            elif len(embeds) == 0:
+                await ctx.send(f"{user.name} has no active items.", ephemeral=True)
+            else:
+                await ctx.send(embed=embeds[0])
+
         class ProfileView(discord.ui.View):
             def __init__(self, ctx):
                 super().__init__()
                 self.ctx = ctx
                 self.user = user
+
+            @discord.ui.button(label="Active Items", custom_id="profile_active_items")
+            async def active_items_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+                await display_active_items(self.ctx, self.user)
+                await interaction.response.defer()
 
             @discord.ui.button(label="Inventory", custom_id="profile_inv")
             async def inv_button(self, interaction: discord.Interaction, button: discord.ui.Button):
