@@ -22,6 +22,8 @@ from discord.ext.commands.errors import CommandInvokeError
 global i
 i = 0
 cash = "⚙"
+replycont = "<:replycontinued:1124415317054070955>"
+replyend = "<:replyend:1124415034643189912>"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
@@ -174,14 +176,14 @@ class Jobs(commands.Cog, name="jobs"):
                         else:
                             cooldown_str += f" (reduced by {cooldown_reduction_str} because you are level {level + 1})"
 
-                    field_value += f"> Cooldown: **{cooldown_str}**\n"
-                    field_value += f"> Pay: **{cash}{base_pay}**\n"
+                    field_value += f"{replycont} Cooldown: **{cooldown_str}**\n"
+                    field_value += f"{replycont} Pay: **{cash}{base_pay}**\n"
                     
                     #turn hours required into a int
                     hours_required = int(hours_required)
-                    field_value += f"> Hours required: **{hours_required}**\n"
+                    field_value += f"{replycont} Hours required: **{hours_required}**\n"
                     #get the pay and cooldown
-                    field_value += f"> ID: `{job_id}`\n"
+                    field_value += f"{replyend} ID: `{job_id}`\n"
                     
                     job_embed.add_field(name=f"{requirements_met_icon} {icon}**{job_name}**", value=field_value, inline=False)
 
