@@ -88,18 +88,19 @@ class Jobs(commands.Cog, name="jobs"):
         if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
             return
-
+        
+        jobs_per_page = 3
         # Calculate number of pages based on number of jobs
-        num_pages = (len(jobs) // 2) + (1 if len(jobs) % 2 > 0 else 0)
+        num_pages = (len(jobs) // jobs_per_page) + (1 if len(jobs) % jobs_per_page > 0 else 0)
 
         # Create a function to generate embeds from a list of jobs
         async def create_embeds(job_list, user_id):
-            num_pages = (len(job_list) // 2) + (1 if len(job_list) % 2 > 0 else 0)
+            num_pages = (len(job_list) // jobs_per_page) + (1 if len(job_list) % jobs_per_page > 0 else 0)
             embeds = []
 
             for i in range(num_pages):
-                start_idx = i * 2
-                end_idx = start_idx + 2
+                start_idx = i * jobs_per_page
+                end_idx = start_idx + jobs_per_page
                 job_embed = discord.Embed(
                     title="Job Board",
                     description="Jobs available :)",
