@@ -206,10 +206,10 @@ class Streamer(commands.Cog, name="streamer"):
         # Create a list of embeds with 2 streamers per embed
         embeds = []
         for i in range(0, len(streamers), 2):
-            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description=f"Here are every item from the streamers. If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching the streams :)", color=0x00ff00)
+            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description=f"Here are every item from the streamers. If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching the streams :)")
     
             for streamer in streamers[i:i+2]:
-                streamer = streamer[0].lower()
+                streamer = streamer[1].lower()
 
                 # Get the items from the database
                 items = await db_manager.view_streamer_items(streamer)
@@ -277,7 +277,7 @@ class Streamer(commands.Cog, name="streamer"):
         streamers = await db_manager.view_streamers()
 
         # Filter the streamers based on the user's input
-        choices = [app_commands.Choice(name=streamer[0], value=streamer[0]) for streamer in streamers if argument.lower() in streamer[0].lower()]
+        choices = [app_commands.Choice(name=streamer[1], value=streamer[1]) for streamer in streamers if argument.lower() in streamer[1].lower()]
 
         # Return the first 25 matches
         return choices[:25]
