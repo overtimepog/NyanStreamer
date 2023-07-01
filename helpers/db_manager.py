@@ -1313,7 +1313,7 @@ async def add_jobs_and_minigames():
                 `id`, `name`, `description`, `job_icon`, `required_hours`,
                 `base_pay`, `pay_per_level`,
                 `cooldown`, `cooldown_reduction_per_level`
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 job['id'], job['name'], job['description'], job['job_icon'], job['required_hours'],
