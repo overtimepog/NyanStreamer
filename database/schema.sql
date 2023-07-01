@@ -349,8 +349,6 @@ CREATE TABLE IF NOT EXISTS `jobs` (
     `name` TEXT,
     `description` TEXT,
     `job_icon` TEXT,
-    `required_item` TEXT,
-    `required_level` INTEGER,
     `required_hours` INTEGER,
     `base_pay` INTEGER,
     `pay_per_level` INTEGER,
