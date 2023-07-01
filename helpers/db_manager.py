@@ -1603,30 +1603,13 @@ async def get_job_name_from_id(job_id: str) -> str:
         return data[1]
     else:
         return 0
-    
-async def get_required_item_from_id(job_id: str) -> str:
-    db = DB()
-    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
-    if data is not None:
-        return data[4]
-    else:
-        return None
-
-# get required level from job ID
-async def get_required_level_from_id(job_id: str) -> int:
-    db = DB()
-    data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
-    if data is not None:
-        return data[5]
-    else:
-        return 0
 
 # get required hours from job ID
 async def get_required_hours_from_id(job_id: str) -> int:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
-        return data[6]
+        return data[4]
     else:
         return 0
 
@@ -1635,7 +1618,7 @@ async def get_base_pay_from_id(job_id: str) -> int:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
-        return data[7]
+        return data[5]
     else:
         return 0
 
@@ -1644,7 +1627,7 @@ async def get_pay_per_level_from_id(job_id: str) -> int:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
-        return data[8]
+        return data[6]
     else:
         return 0
 
@@ -1662,7 +1645,7 @@ async def get_cooldown_from_id(job_id: str) -> timedelta:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
-        return timedelta(seconds=data[9])
+        return timedelta(seconds=data[7])
     else:
         return timedelta(seconds=0)
     
@@ -1670,7 +1653,7 @@ async def get_cooldown_reduction_per_level_from_id(job_id: str) -> timedelta:
     db = DB()
     data = await db.execute(f"SELECT * FROM `jobs` WHERE id = ?", (job_id,), fetch="one")
     if data is not None:
-        return timedelta(seconds=data[10])
+        return timedelta(seconds=data[8])
     else:
         return timedelta(seconds=0)
 
