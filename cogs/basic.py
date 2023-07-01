@@ -1019,7 +1019,7 @@ class Basic(commands.Cog, name="basic"):
                 #if they are, mark them as dead
                 await db_manager.set_dead(user_id)
             revivetimestamp = await db_manager.get_revival_timestamp()
-            embed.add_field(name="Health", value=f"0 (Dead) <t:{revivetimestamp}:R>", inline=True)
+            embed.add_field(name="Health", value=f"0 (Dead) Revive: <t:{revivetimestamp}:R>", inline=True)
         elif isalive == False:
             revivetimestamp = await db_manager.get_revival_timestamp()
             embed.add_field(name="Health", value=f"0 (Dead) Revive: <t:{revivetimestamp}:R>", inline=True)
@@ -1078,11 +1078,11 @@ class Basic(commands.Cog, name="basic"):
             user_twitch_id = "Not Connected"
         embed.set_footer(text=f"User ID: {user_id} | Twitch: {user_twitch_id} | Streamer: {isStreamer}")
         
-        async def display_inventory(ctx, user):
+        async def display_inventory(ctx: Context, user):
             # Get user inventory items from the database
             inventory_items = await db_manager.view_inventory(user.id)
             if inventory_items == []:
-                await ctx.send(f"{user.name} has no items in their inventory")
+                await ctx.send(f"{user.name} has no items in their inventory", ephemeral=True)
                 return
 
             # Calculate number of pages based on number of items
@@ -1197,7 +1197,7 @@ class Basic(commands.Cog, name="basic"):
             view = InventoryButton(current_page=0, embeds=embeds)
             await ctx.send(embed=embeds[0], view=view)
              
-        async def display_pets(ctx, user):
+        async def display_pets(ctx: Context, user):
             # Get user inventory items from the database
             inventory_items = await db_manager.view_inventory(user.id)
             if inventory_items == []:
@@ -1291,9 +1291,9 @@ class Basic(commands.Cog, name="basic"):
             try:
                 await ctx.send(embed=embeds[0], view=view)
             except(IndexError):
-                await ctx.send(f"{user.name} has no pets")
+                await ctx.send(content=f"{user.name} has no pets", ephemeral=True)
 
-        async def display_stats(ctx, user):
+        async def display_stats(ctx: Context, user):
             # Get user stats from the database
             user_profile = await db_manager.profile(user.id)
             if user_profile is None:
@@ -1303,12 +1303,12 @@ class Basic(commands.Cog, name="basic"):
             # Create an embed for the stats
             stats_embed = discord.Embed(title="Stats", description=f"{user.name}'s Stats")
             stats_embed.add_field(name="Luck", value=user_profile[24])
-            stats_embed.add_field(name="Hours Worked", value=user_profile[29])
+            stats_embed.add_field(name="Shifts Worked", value=user_profile[29])
             stats_embed.add_field(name="Bonus %", value=user_profile[34] + "%")
 
             await ctx.send(embed=stats_embed)
 
-        async def display_active_items(ctx, user):
+        async def display_active_items(ctx: Context, user):
             # Get user active items from the database
             active_items = await db_manager.view_timed_items(user.id)
             est_min_datetime = datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC).astimezone(pytz.timezone('US/Eastern'))
@@ -1388,7 +1388,7 @@ class Basic(commands.Cog, name="basic"):
                 view = ActiveItemsButton(current_page=0, embeds=embeds)
                 await ctx.send(embed=embeds[0], view=view)
             elif len(embeds) == 0:
-                await ctx.send(f"{user.name} has no active items.", ephemeral=True)
+                await ctx.send(content=f"{user.name} has no active items.", ephemeral=True)
             else:
                 await ctx.send(embed=embeds[0])
 
