@@ -1002,7 +1002,7 @@ async def print_items() -> None:
         #"max_level": 15,
         #"cooldown": 10800,
         #"cooldown_reduction_per_level": 180,
-        print(f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Item: {job['required_item']} | Required Level: {job['required_level']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}")
+        print(f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}")
 
 
 async def print_items_discord(ctx) -> None:
@@ -1028,7 +1028,7 @@ async def print_items_discord(ctx) -> None:
     #    message += "Type: Quest | ID: " + quest['quest_id'] + "\n"
 
     for job in jobs:
-        message += f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Item: {job['required_item']} | Required Level: {job['required_level']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}\n"
+        message += f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Hours: {job['required_hours']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}\n"
 
     # Check if the message is too long for a single send
     if len(message) > 2000:
