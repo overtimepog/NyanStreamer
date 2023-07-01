@@ -463,7 +463,7 @@
     {
         "id": "beekeeper",
         "name": "Beekeeper",
-        "description": "Take care of bees and collect honey. Requires a bee suit and a love for small, buzzing creatures.",
+        "description": "Take care of bees and collect honey. Requires a love for small, buzzing creatures.",
         "job_icon": "<:Beekeeper:1121203445077127180>",
         "required_hours": 3,
         "base_pay": 200,
