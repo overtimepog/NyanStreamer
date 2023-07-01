@@ -217,22 +217,24 @@ class Streamer(commands.Cog, name="streamer"):
                 # Get the user's items from the database
                 user_items = await db_manager.view_streamer_item_inventory(user_id)
 
-                if len(items) == 0:
-                    embed.add_field(name=f"{streamer}", value="This streamer has no items.", inline=False)
-                    continue
-                
-                # Add the items to the embed
+                        # Initialize an empty string to hold all the item information
+                item_info = ""
+
+                # Add the items to the string
                 for index, item in enumerate(items):
                     if any(item[2] in user_item for user_item in user_items):
                         if index == len(items) - 1:  # Check if this is the last item
-                            embed.add_field(name=f"{streamer}", value=f"{reply} **{item[4]}{item[3]}**", inline=False)
+                            item_info += f"{reply} **{item[4]}{item[3]}**\n"
                         else:
-                            embed.add_field(name=f"{streamer}", value=f"{replycont} **{item[4]}{item[3]}**", inline=False)
+                            item_info += f"{replycont} **{item[4]}{item[3]}**\n"
                     else:
                         if index == len(items) - 1:  # Check if this is the last item
-                            embed.add_field(name=f"{streamer}", value=f"{reply} **???**", inline=False)
+                            item_info += f"{reply} **???**\n"
                         else:
-                            embed.add_field(name=f"{streamer}", value=f"{replycont} **???**", inline=False)
+                            item_info += f"{replycont} **???**\n"
+
+                # Add the string as a single field in the embed
+                embed.add_field(name=f"{streamer}", value=item_info, inline=False)
 
             embeds.append(embed)
     
