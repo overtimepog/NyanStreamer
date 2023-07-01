@@ -23,7 +23,7 @@ global i
 i = 0
 cash = "⚙"
 replycont = "<:replycontinued:1124415317054070955>"
-replyend = "<:replyend:1124415034643189912>"
+reply = "<:reply:1124415034643189912>"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
@@ -104,8 +104,8 @@ class Jobs(commands.Cog, name="jobs"):
                 start_idx = i * jobs_per_page
                 end_idx = start_idx + jobs_per_page
                 job_embed = discord.Embed(
-                    title="Job Board",
-                    description="Jobs available :)",
+                    title="Jobs available",
+                    description="Jobs with a <:Xmark:1124503594691989635> next to them are jobs you do not meet the requirements for yet.",
                 )
                 job_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -126,7 +126,7 @@ class Jobs(commands.Cog, name="jobs"):
                     requirements_met = (float(user_hours) >= int(hours_required))
 
                     # Depending on whether the user meets the requirements, add a check mark or an X
-                    requirements_met_icon = "✅" if requirements_met else "❌"
+                    requirements_met_icon = "<:checkmark:1124503593471463486>" if requirements_met else "<:Xmark:1124503594691989635>"
 
                     # Build the field value string with job description, requirements, and whether the user meets them
                     field_value = f"{desc}\n"
@@ -183,7 +183,7 @@ class Jobs(commands.Cog, name="jobs"):
                     hours_required = int(hours_required)
                     field_value += f"{replycont} Hours required: **{hours_required}**\n"
                     #get the pay and cooldown
-                    field_value += f"{replyend} ID: `{job_id}`\n"
+                    field_value += f"{reply} ID: `{job_id}`\n"
                     
                     job_embed.add_field(name=f"{requirements_met_icon} {icon}**{job_name}**", value=field_value, inline=False)
 
