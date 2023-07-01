@@ -29,6 +29,8 @@ from num2words import num2words
 global i
 i = 0
 cash = "⚙"
+replycont = "<:replycontinued:1124415317054070955>"
+reply = "<:reply:1124415034643189912>"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
@@ -67,7 +69,7 @@ class Streamer(commands.Cog, name="streamer"):
                     return text[len(prefix):]
                 return text
             streamer_channel_name = remove_prefix(streamer_channel, "https://www.twitch.tv/")
-            embed.add_field(name=streamer_channel_name, value=i[1], inline=False)
+            embed.add_field(name=streamer_channel_name, value=i[1], inline=True)
         await ctx.send(embed=embed)
 
 
@@ -182,46 +184,105 @@ class Streamer(commands.Cog, name="streamer"):
     #command to view all the streamer items owned by the user from a specific streamer, if they dont have the item, display ??? for the emoji
     @commands.hybrid_command(
         name="streamercase",
-        description="This command will view all of the items owned by the user from a specific streamer.",
+        description="This command will view all of the items owned by the user from all streamers.",
     )
-    async def streamercase(self, ctx: Context, streamer: str):
+    async def streamercase(self, ctx: Context, streamer: str = None):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
             return
-        """
-        This command will view all of the items owned by the user from a specific streamer.
-
-        :param ctx: The context in which the command was called.
-        """
+        
+        if streamer == None:
+            streamers = await db_manager.view_streamers()
+        else:
+            streamers = [(streamer,)]
+    
         user_id = ctx.message.author.id
         user_name = ctx.message.author.name
-        streamer = streamer.lower()
+    
+        # Get all streamers from the database
+        
+    
+        # Create a list of embeds with 2 streamers per embed
+        embeds = []
+        for i in range(0, len(streamers), 2):
+            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description=f"Here are every item from the streamers. If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching the streams :)", color=0x00ff00)
+    
+            for streamer in streamers[i:i+2]:
+                streamer = streamer[0].lower()
 
-        # Get the items from the database
-        items = await db_manager.view_streamer_items(streamer)
-        #print(items)
+                # Get the items from the database
+                items = await db_manager.view_streamer_items(streamer)
 
-        # Get the user's items from the database
-        user_items = await db_manager.view_streamer_item_inventory(user_id)
-        #print(user_items)
+                # Get the user's items from the database
+                user_items = await db_manager.view_streamer_item_inventory(user_id)
 
-        if len(items) == 0:
-            await ctx.send("This streamer has no items.")
-            return
+                if len(items) == 0:
+                    embed.add_field(name=f"{streamer}", value="This streamer has no items.", inline=False)
+                    continue
+                
+                # Add the items to the embed
+                for index, item in enumerate(items):
+                    if any(item[2] in user_item for user_item in user_items):
+                        if index == len(items) - 1:  # Check if this is the last item
+                            embed.add_field(name=f"{streamer}", value=f"{reply} **{item[4]}{item[3]}**", inline=False)
+                        else:
+                            embed.add_field(name=f"{streamer}", value=f"{replycont} **{item[4]}{item[3]}**", inline=False)
+                    else:
+                        if index == len(items) - 1:  # Check if this is the last item
+                            embed.add_field(name=f"{streamer}", value=f"{reply} **???**", inline=False)
+                        else:
+                            embed.add_field(name=f"{streamer}", value=f"{replycont} **???**", inline=False)
 
-        embed = discord.Embed(title=f"{user_name}'s Streamer Items from {streamer}", description=f"Here are every item from {streamer}. If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching {streamer}'s streams :)", color=0x00ff00)
+            embeds.append(embed)
+    
+        class StreamerItemsButton(discord.ui.View):
+            def __init__(self, current_page, embeds, **kwargs):
+                super().__init__(**kwargs)
+                self.current_page = current_page
+                self.embeds = embeds
+    
+            @discord.ui.button(label="<<", style=discord.ButtonStyle.green)
+            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = 0
+                await interaction.response.edit_message(embed=self.embeds[self.current_page])
+    
+            @discord.ui.button(label="<", style=discord.ButtonStyle.green)
+            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page > 0:
+                    self.current_page -= 1
+                    await interaction.response.edit_message(embed=self.embeds[self.current_page])
+    
+            @discord.ui.button(label=">", style=discord.ButtonStyle.green)
+            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page < len(self.embeds) - 1:
+                    self.current_page += 1
+                    await interaction.response.edit_message(embed=self.embeds[self.current_page])
+    
+            @discord.ui.button(label=">>", style=discord.ButtonStyle.green)
+            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = len(self.embeds) - 1
+                await interaction.response.edit_message(embed=self.embeds[self.current_page])
+    
+        # If there are multiple pages, add the buttons
+        if len(embeds) > 1:
+            view = StreamerItemsButton(current_page=0, embeds=embeds)
+            await ctx.send(embed=embeds[0], view=view)
+        else:
+            await ctx.send(embed=embeds[0])
 
-        # Add the items to the embed
-        for i in items:
-            if any(i[2] in j for j in user_items):
-                embed.add_field(name=f"{i[4]}", value=f"**{i[3]}**", inline=False)
-            else:
-                embed.add_field(name=f"**???**", value=f"**???**", inline=False)
+    @streamercase.autocomplete("streamer")
+    async def streamercase_autocomplete(self, ctx: Context, argument):
+        # Get all streamers from the database
+        streamers = await db_manager.view_streamers()
 
-        await ctx.send(embed=embed)
-        #else:
-            #await ctx.send("You cannot view your own items.")
+        # Filter the streamers based on the user's input
+        choices = [app_commands.Choice(name=streamer[0], value=streamer[0]) for streamer in streamers if argument.lower() in streamer[0].lower()]
+
+        # Return the first 25 matches
+        return choices[:25]
+
+
 
     @commands.hybrid_command(
         name="connect",
