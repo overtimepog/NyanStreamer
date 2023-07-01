@@ -181,8 +181,8 @@ class Jobs(commands.Cog, name="jobs"):
                     field_value += f"{replycont} Pay: **{cash}{base_pay}**\n"
                     
                     #turn hours required into a int
-                    hours_required = int(hours_required)
-                    field_value += f"{replycont} Hours required: **{hours_required}**\n"
+                    shifts_required = int(shifts_required)
+                    field_value += f"{replycont} Shifts required: **{shifts_required}**\n"
                     #get the pay and cooldown
                     field_value += f"{reply} ID: `{job_id}`\n"
                     
