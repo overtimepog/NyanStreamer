@@ -1194,8 +1194,8 @@ class Basic(commands.Cog, name="basic"):
                         await interaction.response.defer()
                         await interaction.message.edit(embed=self.embeds[self.current_page])
 
-            view = InventoryButton(current_page=0, embeds=embeds)
-            await ctx.send(embed=embeds[0], view=view)
+            view = InventoryButton(current_page=0, embeds=embeds, ephemeral=True)
+            await ctx.send(embed=embeds[0], view=view, ephemeral=True)
              
         async def display_pets(ctx: Context, user):
             # Get user inventory items from the database
@@ -1289,7 +1289,7 @@ class Basic(commands.Cog, name="basic"):
 
             view = PetButton(current_page=0, embeds=embeds)
             try:
-                await ctx.send(embed=embeds[0], view=view)
+                await ctx.send(embed=embeds[0], view=view, ephemeral=True)
             except(IndexError):
                 await ctx.send(content=f"{user.name} has no pets", ephemeral=True)
 
@@ -1386,11 +1386,11 @@ class Basic(commands.Cog, name="basic"):
             # If there are multiple pages, add the buttons
             if len(embeds) > 1:
                 view = ActiveItemsButton(current_page=0, embeds=embeds)
-                await ctx.send(embed=embeds[0], view=view)
+                await ctx.send(embed=embeds[0], view=view, ephemeral=True)
             elif len(embeds) == 0:
                 await ctx.send(content=f"{user.name} has no active items.", ephemeral=True)
             else:
-                await ctx.send(embed=embeds[0])
+                await ctx.send(embed=embeds[0], ephemeral=True)
 
         class ProfileView(discord.ui.View):
             def __init__(self, ctx):
