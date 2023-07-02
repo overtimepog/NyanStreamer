@@ -215,7 +215,9 @@ class Streamer(commands.Cog, name="streamer"):
 
                 # Add the items to the string
                 for index, item in enumerate(items):
+                    user_item_count = 0  # Initialize counter for user items
                     if any(item[2] in user_item for user_item in user_items):
+                        user_item_count += 1  # Increment counter if user owns the item
                         if index == len(items) - 1:  # Check if this is the last item
                             item_info += f"{reply} **{item[4]}{item[3]}**\n"
                         else:
@@ -227,7 +229,7 @@ class Streamer(commands.Cog, name="streamer"):
                             item_info += f"{replycont} **???**\n"
 
                 # Add the streamer information to the description
-                description += f"**[{streamer}](https://twitch.tv/{streamer})**\n{item_info}\n\n"
+                description += f"**[{streamer}](https://twitch.tv/{streamer})**({user_item_count}/{len(items)})\n{item_info}\n\n"
 
             # Create the embed with the description
             embed = discord.Embed(title=f"{user_name}'s Streamer Items", description="Here are your Streamer Items, If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching their streams :) \n \n" + description)
