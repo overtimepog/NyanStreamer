@@ -3365,7 +3365,7 @@ async def remove_item(item_id: str) -> int:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
         
-async def remove_streamer_items(user_id):
+async def remove_streamer_items(user_id: int):
     db = DB()
     async with aiosqlite.connect("database/database.db") as db:
         # Get the streamer's prefix

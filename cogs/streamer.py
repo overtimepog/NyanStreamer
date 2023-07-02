@@ -337,6 +337,7 @@ class Streamer(commands.Cog, name="streamer"):
         await db_manager.disconnect_twitch_name(ctx.author.id)
         await db_manager.update_is_not_streamer(ctx.author.id)
         await db_manager.remove_streamer_items(ctx.author.id)
+        await db_manager.remove_streamer(ctx.author.id)
         await ctx.send("Your twitch account has been disconnected from your discord account!")
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
