@@ -15,7 +15,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from helpers import db_manager, battle
 from typing import List, Tuple
-cash = "✧"
+cash = "⌬"
 
 def choose_outcome_based_on_chance(outcomes):
     total = sum(outcome['chance'] for outcome in outcomes)

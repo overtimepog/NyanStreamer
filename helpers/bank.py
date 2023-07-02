@@ -18,7 +18,7 @@ from helpers import db_manager, battle
 from num2words import num2words
 
 
-cash = "✧"
+cash = "⌬"
 async def bank(ctx: Context):
     pass
 

@@ -28,7 +28,7 @@ from num2words import num2words
 
 global i
 i = 0
-cash = "✧"
+cash = "⌬"
 replycont = "<:replycontinued:1124415317054070955>"
 reply = "<:reply:1124415034643189912>"
 rarity_colors = {

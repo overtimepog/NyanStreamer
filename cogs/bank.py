@@ -30,7 +30,7 @@ from helpers import db_manager, bank
 
 from helpers import checks
 
-cash = "✧"
+cash = "⌬"
 class Bank(commands.Cog, name="bank"):
     def __init__(self, bot):
         self.bot = bot

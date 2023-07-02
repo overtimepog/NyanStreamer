@@ -29,7 +29,7 @@ from num2words import num2words
 
 global i
 i = 0
-cash = "✧"
+cash = "⌬"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
