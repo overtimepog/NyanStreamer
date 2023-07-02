@@ -200,7 +200,7 @@ class Streamer(commands.Cog, name="streamer"):
         # Create a list of embeds with 2 streamers per embed
         embeds = []
         for i in range(0, len(streamers), 2):
-            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description=f"Here are every item from the streamers. If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching the streams :)")
+            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description=f"Here are your Streamer Items, If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching their streams :)")
     
             for streamer in streamers[i:i+2]:
                 streamer = streamer[1].lower()
@@ -228,7 +228,7 @@ class Streamer(commands.Cog, name="streamer"):
                             item_info += f"{replycont} **???**\n"
 
                 # Add the string as a single field in the embed
-                embed.add_field(name=f"{streamer}", value=item_info, inline=False)
+                embed.add_field(name=f"[{streamer}](https://twitch.tv/{streamer} '{streamer}'s Twitch Channel')", value=item_info, inline=False)
 
             embeds.append(embed)
     
