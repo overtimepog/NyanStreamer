@@ -66,6 +66,11 @@ class TwitchBot(commands.Bot):
                 with open('joined_channels.json', 'w') as f:
                     json.dump(joined_channels, f)
             await asyncio.sleep(600)
+    
+    #when command on cooldown
+    async def event_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"This command is on cooldown, please retry in {error.retry_after:.2f}s.")
 
     @commands.command()
     async def hello(self, ctx: commands.Context):
@@ -117,7 +122,7 @@ class TwitchBot(commands.Bot):
                     print(randomViewer)
                     itemgiven = await db_manager.add_streamer_item_to_user(userDiscordID, itemID)
                     if itemgiven == 0:
-                        await ctx.send(f"{randomViewer} already has {itemName} in their inventory!, you have been given 1000 coins instead!")
+                        await ctx.send(f"{randomViewer} already has {itemName} in their inventory!, they have been given 1000 coins instead!")
                         await db_manager.add_money(userDiscordID, 1000)
                         itemGiven = True
                         break
