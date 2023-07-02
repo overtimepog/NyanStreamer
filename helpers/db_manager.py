@@ -3364,8 +3364,16 @@ async def remove_item(item_id: str) -> int:
         async with rows as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
+        
+async def remove_streamer_items(user_id):
+    db = DB()
+    async with aiosqlite.connect("database/database.db") as db:
+        # Get the streamer's prefix
+        channel = await get_streamer_channel_from_user_id(user_id)
 
-#get streamer from user_id
+        # Delete the items associated with the streamer
+        await db.execute("DELETE FROM streamer_item_inventory WHERE channel = ?", (channel,))
+        await db.commit()
 
 async def view_user_streamer_made_items(user_id: int) -> list:
     """
