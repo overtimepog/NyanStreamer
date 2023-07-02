@@ -212,10 +212,10 @@ class Streamer(commands.Cog, name="streamer"):
 
                 # Initialize an empty string to hold all the item information
                 item_info = ""
+                user_item_count = 0
 
                 # Add the items to the string
-                for index, item in enumerate(items):
-                    user_item_count = 0  # Initialize counter for user items
+                for index, item in enumerate(items):  # Initialize counter for user items
                     if any(item[2] in user_item for user_item in user_items):
                         user_item_count += 1  # Increment counter if user owns the item
                         if index == len(items) - 1:  # Check if this is the last item
