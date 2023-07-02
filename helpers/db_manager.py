@@ -3372,6 +3372,7 @@ async def remove_streamer_items(user_id):
         channel = await get_streamer_channel_from_user_id(user_id)
 
         # Delete the items associated with the streamer
+        await db.execute("DELETE FROM streamer_items WHERE channel = ?", (channel,))
         await db.execute("DELETE FROM streamer_item_inventory WHERE channel = ?", (channel,))
         await db.commit()
 
