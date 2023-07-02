@@ -196,6 +196,8 @@ class Streamer(commands.Cog, name="streamer"):
             streamers = await db_manager.view_streamers()
         else:
             streamers = [(streamer,)]
+
+        print(streamers)
     
         user_id = ctx.message.author.id
         user_name = ctx.message.author.name
