@@ -18,7 +18,7 @@ from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from petpetgif import petpet
 
-cash = "⚙"
+cash = "✧"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green

@@ -22,7 +22,7 @@ from discord.ext.commands.errors import CommandInvokeError
 
 global i
 i = 0
-cash = "⚙"
+cash = "✧"
 replycont = "<:replycontinued:1124415317054070955>"
 reply = "<:reply:1124415034643189912>"
 rarity_colors = {
@@ -414,10 +414,10 @@ class Jobs(commands.Cog, name="jobs"):
 
             if reward_type == "money":
                 reward_value = int(reward_value) + base_pay  # Add base pay to the reward
-                thing = f"**⚙{reward_value}**"
+                thing = f"**✧{reward_value}**"
             elif reward_type == "experience" or reward_type == "item":
                 await db_manager.add_money(user_id, base_pay)  # Add the base pay separately
-                base_pay_message = f"You also earned your base pay of **⚙{base_pay}**."
+                base_pay_message = f"You also earned your base pay of **✧{base_pay}**."
                 if reward_type == "experience":
                     thing = f"⭐{reward_value} XP"
                 else:  # reward_type == "item"
@@ -477,7 +477,7 @@ class Jobs(commands.Cog, name="jobs"):
             #turn the reduced base pay into an int
             reduced_base_pay = int(reduced_base_pay)
             await db_manager.add_money(user_id, reduced_base_pay)  # Give the reduced base pay to the user
-            fail_message = fail_message.format(user=ctx.author.mention, thing=f"your base pay of **⚙{reduced_base_pay}** after a 20% penalty.")
+            fail_message = fail_message.format(user=ctx.author.mention, thing=f"your base pay of **✧{reduced_base_pay}** after a 20% penalty.")
 
             await asyncio.wait_for(callback_processed_future, timeout=10.0)
             await ctx.send(content=fail_message)

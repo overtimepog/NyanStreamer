@@ -29,7 +29,7 @@ from discord.ext import commands
 from helpers.card import Card
 from PIL import Image
 
-cash = "⚙"
+cash = "✧"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green

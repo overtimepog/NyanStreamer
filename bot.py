@@ -29,7 +29,7 @@ import exceptions
 from helpers import db_manager
 import twitch
 
-cash = "⚙"
+cash = "✧"
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
 else:

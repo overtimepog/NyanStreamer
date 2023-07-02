@@ -29,7 +29,7 @@ from num2words import num2words
 
 global i
 i = 0
-cash = "⚙"
+cash = "✧"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
@@ -1194,7 +1194,7 @@ class Basic(commands.Cog, name="basic"):
                         await interaction.response.defer()
                         await interaction.message.edit(embed=self.embeds[self.current_page])
 
-            view = InventoryButton(current_page=0, embeds=embeds, ephemeral=True)
+            view = InventoryButton(current_page=0, embeds=embeds)
             await ctx.send(embed=embeds[0], view=view, ephemeral=True)
              
         async def display_pets(ctx: Context, user):

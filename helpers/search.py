@@ -15,7 +15,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from helpers import db_manager, battle
 from typing import List, Tuple
-cash = "⚙"
+cash = "✧"
 
 class SearchButton(discord.ui.Button['SearchButton']):
     def __init__(self, label: str, location: dict, user: discord.User):
