@@ -227,10 +227,10 @@ class Streamer(commands.Cog, name="streamer"):
                             item_info += f"{replycont} **???**\n"
 
                 # Add the streamer information to the description
-                description += f"**[{streamer}](https://twitch.tv/{streamer})**\n{item_info}\n"
+                description += f"**[{streamer}](https://twitch.tv/{streamer})**\n{item_info}\n\n"
 
             # Create the embed with the description
-            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description="Here are your Streamer Items, If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching their streams :) \n" + description)
+            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description="Here are your Streamer Items, If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching their streams :) \n \n" + description)
             embeds.append(embed)
 
     
