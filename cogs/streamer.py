@@ -45,32 +45,19 @@ class Streamer(commands.Cog, name="streamer"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command(
-        name="viewstreamers",
-        description="This command will view all streamers in the database.",
+    @commands.hybrid_group(
+        name="streamer",
+        description="The base command for all streamer commands.",
+        aliases=["s"],
     )
-    @checks.is_owner()
-    async def view_streamers(self, ctx: Context):
-        checkUser = await db_manager.check_user(ctx.author.id)
-        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
-            return
+    async def streamer(self, ctx: Context):
         """
-        This command will view all streamers in the database.
+        The base command for all streamer commands.
 
         :param ctx: The context in which the command was called.
         """
-        streamers = await db_manager.view_streamers()
-        embed = discord.Embed(title="Streamers", description="All streamers in the database.", color=0x00ff00)
-        for i in streamers:
-            streamer_channel = i[1]
-            def remove_prefix(text, prefix):
-                if text.startswith(prefix):
-                    return text[len(prefix):]
-                return text
-            streamer_channel_name = remove_prefix(streamer_channel, "https://www.twitch.tv/")
-            embed.add_field(name=streamer_channel_name, value=i[1], inline=True)
-        await ctx.send(embed=embed)
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help("streamer")
 
 
     #command to create a new item in the database item table, using the create_streamer_item function from helpers\db_manager.py
@@ -80,12 +67,13 @@ class Streamer(commands.Cog, name="streamer"):
     #`item_emoji` varchar(255) NOT NULL,
     #`item_rarity` varchar(255) NOT NULL,
     
-    @commands.hybrid_command(
+    @streamer.command(
         name="createitem",
-        description="This command will create a new streamer item in the database.",
+        description="make a new item for your viewers to collect!",
+        aliases=["ci", "create_item"],
     )
     @checks.is_streamer()
-    async def create_item(self, ctx: Context, item_name: str, item_emoji: str):
+    async def create_item(self, ctx: Context, name: str, emoji: str):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
@@ -113,8 +101,8 @@ class Streamer(commands.Cog, name="streamer"):
         #check if the item exists in the database
         items = await db_manager.view_streamer_items(channel)
         for i in items:
-            if item_name in i:
-                await ctx.send(f"An Item named {item_name} already exists for your channel.")
+            if name in i:
+                await ctx.send(f"An Item named {name} already exists for your channel.")
                 return
         #create the item
         #if the streamer has more than 5 items and is an affilate, the item will not be created
@@ -126,20 +114,21 @@ class Streamer(commands.Cog, name="streamer"):
             await ctx.send("You have reached the maximum amount of custom items for a partner.")
             return
         else:
-            await db_manager.create_streamer_item(streamer_prefix, channel, item_name, item_emoji)
+            await db_manager.create_streamer_item(streamer_prefix, channel, name, emoji)
             #give the user the item 
-            item_id = str(streamer_prefix) + "_" + item_name
+            item_id = str(streamer_prefix) + "_" + name
             #convert all spaces in the item name to underscores
             item_id = item_id.replace(" ", "_")
             #send more info
-            embed = discord.Embed(title="Item Creation", description=f"Created item {item_emoji} **{item_name}** for the channel {channel}",)
+            embed = discord.Embed(title="Item Creation", description=f"Created item {emoji} **{name}** for the channel {channel}",)
             embed.set_footer(text="ID: " + item_id)
             await ctx.send(embed=embed)
 
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
-    @commands.hybrid_command(
+    @streamer.command(
         name="removeitem",
-        description="This command will remove an item from the database.",
+        description="delete an item from your channel! (only works for items you created)",
+        aliases=["ri", "remove_item"],
     )
     @checks.is_streamer()
     async def removeitem(self, ctx: Context, item: str):
@@ -182,11 +171,11 @@ class Streamer(commands.Cog, name="streamer"):
 
 
     #command to view all the streamer items owned by the user from a specific streamer, if they dont have the item, display ??? for the emoji
-    @commands.hybrid_command(
-        name="streamercase",
-        description="This command will view all of the items owned by the user from all streamers.",
+    @streamer.command(
+        name="case",
+        description="see all the items you have from streamers! :)",
     )
-    async def streamercase(self, ctx: Context, streamer: str = None):
+    async def case(self, ctx: Context, streamer: str = None):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
@@ -278,7 +267,7 @@ class Streamer(commands.Cog, name="streamer"):
         else:
             await ctx.send(embed=embeds[0])
 
-    @streamercase.autocomplete("streamer")
+    @case.autocomplete("streamer")
     async def streamercase_autocomplete(self, ctx: Context, argument):
         # Get all streamers from the database
         streamers = await db_manager.view_streamers()
