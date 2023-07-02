@@ -195,9 +195,12 @@ class Streamer(commands.Cog, name="streamer"):
         if streamer == None:
             streamers = await db_manager.view_streamers()
         else:
-            streamers = [(streamer,)]
-
-        print(streamers)
+            streamers = await db_manager.view_streamers()
+            for i in streamers:
+                if streamer in i:
+                    streamers = []
+                    streamers.append(i)
+                    break
     
         user_id = ctx.message.author.id
         user_name = ctx.message.author.name
