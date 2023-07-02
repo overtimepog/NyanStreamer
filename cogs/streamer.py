@@ -200,20 +200,19 @@ class Streamer(commands.Cog, name="streamer"):
         # Create a list of embeds with 2 streamers per embed
         embeds = []
         for i in range(0, len(streamers), 2):
-            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description=f"Here are your Streamer Items, If it has ???, it means you don't own one, think of this as a trophy case for streamer items you collect by watching their streams :)")
-    
+            description = ""
             for streamer in streamers[i:i+2]:
                 streamer = streamer[1].lower()
-
+        
                 # Get the items from the database
                 items = await db_manager.view_streamer_items(streamer)
-
+        
                 # Get the user's items from the database
                 user_items = await db_manager.view_streamer_item_inventory(user_id)
-
-                        # Initialize an empty string to hold all the item information
+        
+                # Initialize an empty string to hold all the item information
                 item_info = ""
-
+        
                 # Add the items to the string
                 for index, item in enumerate(items):
                     if any(item[2] in user_item for user_item in user_items):
@@ -226,11 +225,14 @@ class Streamer(commands.Cog, name="streamer"):
                             item_info += f"{reply} **???**\n"
                         else:
                             item_info += f"{replycont} **???**\n"
-
-                # Add the string as a single field in the embed
-                embed.add_field(name=f"[{streamer}](https://twitch.tv/{streamer} '{streamer}'s Twitch Channel')", value=item_info, inline=False)
-
+        
+                # Add the streamer information to the description
+                description += f"**[{streamer}](https://twitch.tv/{streamer})**\n{item_info}\n"
+        
+            # Create the embed with the description
+            embed = discord.Embed(title=f"{user_name}'s Streamer Items", description=description, color=0x00ff00)
             embeds.append(embed)
+
     
         class StreamerItemsButton(discord.ui.View):
             def __init__(self, current_page, embeds, **kwargs):
