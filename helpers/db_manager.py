@@ -4322,9 +4322,20 @@ async def get_basic_item_name(item_id: str) -> str:
     :return: The name of the item.
     """
     async with aiosqlite.connect("database/database.db") as db:
+        # Try to get name from the basic_items table
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
-            return result[1] if result is not None else 0
+            if result is not None: 
+                return result[1] 
+
+        # If not found in basic_items, try to get name from the chests table
+        async with db.execute("SELECT * FROM chests WHERE chest_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            if result is not None:
+                return result[1]
+        
+    # Return None if not found in either table
+    return None
         
 
 #get items basic items price via its id
@@ -4349,9 +4360,20 @@ async def get_basic_item_emoji(item_id: str) -> str:
     :return: The emote of the item.
     """
     async with aiosqlite.connect("database/database.db") as db:
+        # Try to get emoji from the basic_items table
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
-            return result[3] if result is not None else 0
+            if result is not None: 
+                return result[3] 
+
+        # If not found in basic_items, try to get emoji from the chests table
+        async with db.execute("SELECT * FROM chests WHERE chest_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            if result is not None:
+                return result[3]
+        
+    # Return None if not found in either table
+    return None
 
 #get items basic items rarity via its id
 async def get_basic_item_rarity(item_id: str) -> str:

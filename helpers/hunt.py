@@ -54,12 +54,8 @@ async def hunt(ctx: Context):
         item_id = str(item_id)
 
         # get the item's emoji and name
-        if item_id.split("_")[0] == "chest" or item_id == "chest":
-            item_emoji = await db_manager.get_chest_icon(item_id)
-            item_name = await db_manager.get_chest_name(item_id)
-        else:
-            item_emoji = await db_manager.get_basic_item_emoji(item_id)
-            item_name = await db_manager.get_basic_item_name(item_id)
+        item_emoji = await db_manager.get_basic_item_emoji(item_id)
+        item_name = await db_manager.get_basic_item_name(item_id)
 
         # tell the user what they got
         #make it an embed

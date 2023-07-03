@@ -102,13 +102,9 @@ class SearchButton(discord.ui.Button['SearchButton']):
                     await db_manager.add_item_to_inventory(interaction.user.id, item, amount)
                     item_id = item
                     item_id = str(item_id)
-
-                    if item_id.split("_")[0] == "chest" or item_id == "chest":
-                        item_emoji = await db_manager.get_chest_icon(item_id)
-                        item_name = await db_manager.get_chest_name(item_id)
-                    else:
-                        item_emoji = await db_manager.get_basic_item_emoji(item_id)
-                        item_name = await db_manager.get_basic_item_name(item_id)
+                    
+                    item_emoji = await db_manager.get_basic_item_emoji(item_id)
+                    item_name = await db_manager.get_basic_item_name(item_id)
                     embed.description += f"\n also check this out, you found **x{amount} {item_emoji}{item_name}**!"
 
         elif comment_type == "negative_comments":

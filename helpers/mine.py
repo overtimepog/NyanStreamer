@@ -64,12 +64,8 @@ async def mine(ctx: Context):
         await db_manager.add_item_to_inventory(ctx.author.id, item, amount)
         item_id = item
         item_id = str(item_id)
-        if item_id.split("_")[0] == "chest" or item_id == "chest":
-            item_emoji = await db_manager.get_chest_icon(item_id)
-            item_name = await db_manager.get_chest_name(item_id)
-        else:
-            item_emoji = await db_manager.get_basic_item_emoji(item_id)
-            item_name = await db_manager.get_basic_item_name(item_id)
+        item_emoji = await db_manager.get_basic_item_emoji(item_id)
+        item_name = await db_manager.get_basic_item_name(item_id)
         #tell the user what they got
         embed = discord.Embed(title="Mine", description=random.choice(outcome_phrases), color=0x00ff00)
         embed.add_field(name=f"{item_emoji} **{item_name}**", value=f"{amount}", inline=False)
