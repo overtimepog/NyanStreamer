@@ -72,126 +72,130 @@ async def slots(self, ctx: Context, user, gamble):
     ]
 
     # Slot 1
-    await asyncio.sleep(1)
-    random_number = random.randint(1, 100)
-    if random_number <= 5:
-        slot1 = ":gem:"
-    elif random_number <= 10:
-        slot1 = ":crown:"
-    elif random_number <= luck:
-        slot1 = slot1
-    else:
-        slot1 = random.choice(emoji)
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
-    await slot_machine.edit(embed=embed)
-
-    # Slot 2
-    await asyncio.sleep(1)
-    random_number = random.randint(1, 100)
-    if random_number <= 5:
-        slot2 = ":gem:"
-    elif random_number <= 10:
-        slot2 = ":crown:"
-    elif random_number <= luck:
-        slot2 = slot1
-    else:
-        slot2 = random.choice(emoji)
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
-    await slot_machine.edit(embed=embed)
-    
-
-    # Slot 3
-    await asyncio.sleep(1)
-    random_number = random.randint(1, 100)
-    if random_number <= 5:
-        slot3 = ":gem:"
-    elif random_number <= 10:
-        slot3 = ":crown:"
-    elif random_number <= luck:
-        slot3 = slot2
-    else:
-        slot3 = random.choice(emoji)
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{cash}{gamble}**")
-    embed.set_footer(text=f"use 🔁 to play again")
-    await slot_machine.edit(embed=embed)
-
-    slot1_result = slot1
-    slot2_result = slot2
-    slot3_result = slot3
-
-    if slot1_result == slot2_result or slot1_result == slot3_result or slot2_result == slot3_result:
-        money = gamble*3
-        profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
-        embed.set_footer(text=f"use 🔁 to play again")
-        await slot_machine.edit(embed=embed)
-        await db_manager.add_money(user.id, money)
-        await db_manager.add_money_earned(user.id, money)
-
-    elif slot1_result == ":gem:" or slot2_result == ":gem:" or slot3_result == ":gem:":
-        money = gamble*1.5
-        profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
-        embed.set_footer(text=f"use 🔁 to play again")
-        await slot_machine.edit(embed=embed)
-        await db_manager.add_money(user.id, money)
-        await db_manager.add_money_earned(user.id, money)
-
-    elif slot1_result == ":crown:" or slot2_result == ":crown:" or slot3_result == ":crown:":
-        money = gamble*1.2
-        profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
-        embed.set_footer(text=f"use 🔁 to play again")
-        await slot_machine.edit(embed=embed)
-        await db_manager.add_money(user.id, money)
-        await db_manager.add_money_earned(user.id, money)
-
-    elif slot1_result == slot2_result == slot3_result == ":gem:":
-        money = gamble*10
-        profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
-        embed.set_footer(text=f"use 🔁 to play again")
-        await slot_machine.edit(embed=embed)
-        await db_manager.add_money(user.id, money)
-        await db_manager.add_money_earned(user.id, money)
-
-    elif slot1_result == slot2_result == slot3_result == ":crown:":
-        money = gamble*7.5
-        profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
-        embed.set_footer(text=f"use 🔁 to play again")
-        await slot_machine.edit(embed=embed)
-        await db_manager.add_money(user.id, money)
-        await db_manager.add_money_earned(user.id, money)
-
-    elif slot1_result == slot2_result == slot3_result:
-        money = gamble*5
-        profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
-        embed.set_footer(text=f"use 🔁 to play again")
-        await slot_machine.edit(embed=embed)
-        await db_manager.add_money(user.id, money)
-        await db_manager.add_money_earned(user.id, money)
-
-    else:
-        loss = gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Lost: **{cash}{loss}**", color=0xff0000)
-        embed.set_footer(text=f"use 🔁 to play again")
-        await slot_machine.edit(embed=embed)
-        pass
-
     redo_emoji = "🔁"  # Change this to any emoji you want to represent "redo"
     await slot_machine.add_reaction(redo_emoji)
 
     def check(reaction, user):
         return user == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
 
-    try:
-        reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
-    except asyncio.TimeoutError:
-        await slot_machine.clear_reaction(redo_emoji)
-    else:
-        await slots(self, ctx, user, gamble)
+    while True:
+        # Slot 1
+        await asyncio.sleep(1)
+        random_number = random.randint(1, 100)
+        if random_number <= 5:
+            slot1 = ":gem:"
+        elif random_number <= 10:
+            slot1 = ":crown:"
+        elif random_number <= luck:
+            slot1 = slot1
+        else:
+            slot1 = random.choice(emoji)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
+        await slot_machine.edit(embed=embed)
+
+        # Slot 2
+        await asyncio.sleep(1)
+        random_number = random.randint(1, 100)
+        if random_number <= 5:
+            slot2 = ":gem:"
+        elif random_number <= 10:
+            slot2 = ":crown:"
+        elif random_number <= luck:
+            slot2 = slot1
+        else:
+            slot2 = random.choice(emoji)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
+        await slot_machine.edit(embed=embed)
+        
+        # Slot 3
+        await asyncio.sleep(1)
+        random_number = random.randint(1, 100)
+        if random_number <= 5:
+            slot3 = ":gem:"
+        elif random_number <= 10:
+            slot3 = ":crown:"
+        elif random_number <= luck:
+            slot3 = slot2
+        else:
+            slot3 = random.choice(emoji)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{cash}{gamble}**")
+        embed.set_footer(text=f"use 🔁 to play again")
+        await slot_machine.edit(embed=embed)
+
+        slot1_result = slot1
+        slot2_result = slot2
+        slot3_result = slot3
+
+        if slot1_result == slot2_result or slot1_result == slot3_result or slot2_result == slot3_result:
+            money = gamble*3
+            profit = money - gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            await db_manager.add_money(user.id, money)
+            await db_manager.add_money_earned(user.id, money)
+
+        elif slot1_result == ":gem:" or slot2_result == ":gem:" or slot3_result == ":gem:":
+            money = gamble*1.5
+            profit = money - gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            await db_manager.add_money(user.id, money)
+            await db_manager.add_money_earned(user.id, money)
+
+        elif slot1_result == ":crown:" or slot2_result == ":crown:" or slot3_result == ":crown:":
+            money = gamble*1.2
+            profit = money - gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            await db_manager.add_money(user.id, money)
+            await db_manager.add_money_earned(user.id, money)
+
+        elif slot1_result == slot2_result == slot3_result == ":gem:":
+            money = gamble*10
+            profit = money - gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            await db_manager.add_money(user.id, money)
+            await db_manager.add_money_earned(user.id, money)
+
+        elif slot1_result == slot2_result == slot3_result == ":crown:":
+            money = gamble*7.5
+            profit = money - gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            await db_manager.add_money(user.id, money)
+            await db_manager.add_money_earned(user.id, money)
+
+        elif slot1_result == slot2_result == slot3_result:
+            money = gamble*5
+            profit = money - gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            await db_manager.add_money(user.id, money)
+            await db_manager.add_money_earned(user.id, money)
+
+        else:
+            loss = gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Lost: **{cash}{loss}**", color=0xff0000)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            pass
+
+        try:
+            reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+            await slot_machine.clear_reaction(redo_emoji)
+            break
+        else:
+            await slot_machine.clear_reaction(redo_emoji)
+            await slot_machine.add_reaction(redo_emoji)
+
 
         
 #create slots_rules function
