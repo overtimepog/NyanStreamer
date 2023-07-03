@@ -136,8 +136,26 @@ async def slots(self, ctx: Context, user, gamble):
         slot2_result = slot2
         slot3_result = slot3
 
-        if slot1_result == slot2_result or slot1_result == slot3_result or slot2_result == slot3_result:
-            money = gamble*3 + gamble
+        if slot1_result == slot2_result == slot3_result == ":gem:":
+            money = gamble*10
+            profit = money - gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            await db_manager.add_money(user.id, money)
+            await db_manager.add_money_earned(user.id, money)
+
+        elif slot1_result == slot2_result == slot3_result == ":crown:":
+            money = gamble*7.5
+            profit = money - gamble
+            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+            embed.set_footer(text=f"use 🔁 to play again")
+            await slot_machine.edit(embed=embed)
+            await db_manager.add_money(user.id, money)
+            await db_manager.add_money_earned(user.id, money)
+        
+        elif slot1_result == slot2_result == slot3_result:
+            money = gamble*5
             profit = money - gamble
             embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
             embed.set_footer(text=f"use 🔁 to play again")
@@ -163,26 +181,8 @@ async def slots(self, ctx: Context, user, gamble):
             await db_manager.add_money(user.id, money)
             await db_manager.add_money_earned(user.id, money)
 
-        elif slot1_result == slot2_result == slot3_result == ":gem:":
-            money = gamble*10
-            profit = money - gamble
-            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
-            embed.set_footer(text=f"use 🔁 to play again")
-            await slot_machine.edit(embed=embed)
-            await db_manager.add_money(user.id, money)
-            await db_manager.add_money_earned(user.id, money)
-
-        elif slot1_result == slot2_result == slot3_result == ":crown:":
-            money = gamble*7.5
-            profit = money - gamble
-            embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
-            embed.set_footer(text=f"use 🔁 to play again")
-            await slot_machine.edit(embed=embed)
-            await db_manager.add_money(user.id, money)
-            await db_manager.add_money_earned(user.id, money)
-
-        elif slot1_result == slot2_result == slot3_result:
-            money = gamble*5
+        elif slot1_result == slot2_result or slot1_result == slot3_result or slot2_result == slot3_result:
+            money = gamble*3
             profit = money - gamble
             embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
             embed.set_footer(text=f"use 🔁 to play again")
