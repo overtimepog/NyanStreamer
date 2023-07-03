@@ -44,7 +44,7 @@ rarity_colors = {
 async def slots(self, ctx: Context, user, gamble):
     money = await db_manager.get_money(user.id)
     luck = await db_manager.get_luck(user.id)
-    print(luck)
+    #print(luck)
     await db_manager.remove_money(user.id, gamble)
     await db_manager.add_money_spent(user.id, gamble)
     money = int(money[0])
@@ -54,7 +54,7 @@ async def slots(self, ctx: Context, user, gamble):
     #start
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     slot_machine = await ctx.send(embed=embed)
-    
+
     emoji = [
         ":apple:",
         ":cherries:",
@@ -81,7 +81,7 @@ async def slots(self, ctx: Context, user, gamble):
     while True:
         money = await db_manager.get_money(user.id)
         luck = await db_manager.get_luck(user.id)
-        print(luck)
+        #print(luck)
         await db_manager.remove_money(user.id, gamble)
         await db_manager.add_money_spent(user.id, gamble)
         money = int(money[0])
