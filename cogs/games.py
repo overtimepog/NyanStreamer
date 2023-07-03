@@ -31,12 +31,21 @@ class Games(commands.Cog, name="games"):
         self.bot = bot
 
     # Here we create a new command called "slots".
-    @commands.hybrid_command(
+    @commands.hybrid_group(
         name="slots",
         description="Play a game of slots.",
         aliases=['slot']
     )
-    async def slots(self, ctx: Context, bet: int):
+    async def slots(self, ctx: Context):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
+    #slots play command
+    @slots.command(
+        name="play",
+        description="Play a game of slots.",
+    )
+    async def play(self, ctx: Context, bet: int):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
@@ -44,11 +53,11 @@ class Games(commands.Cog, name="games"):
         await games.slots(ctx, ctx.author, bet)
 
     #slots rules command
-    @commands.hybrid_command(
-        name="slotrules",
+    @slots.command(
+        name="rules",
         description="Shows the rules for slots.",
     )
-    async def slotrules(self, ctx: Context):
+    async def rules(self, ctx: Context):
         await games.slot_rules(ctx)
 
     @staticmethod
