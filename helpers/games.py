@@ -30,6 +30,7 @@ from helpers.card import Card
 from PIL import Image
 
 cash = "⌬"
+slot_spin = "  <a:spin:1125313101307314187>"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
@@ -50,8 +51,9 @@ async def slots(ctx: Context, user, gamble):
     gamble = int(gamble)
     if money < gamble:
         return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"**{user.name}** is gambling **{cash}{gamble}**")
+    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     slot_machine = await ctx.send(embed=embed)
+    asyncio.sleep(1)
     
     emoji = [
         ":apple:",
@@ -70,86 +72,47 @@ async def slots(ctx: Context, user, gamble):
         ":gem:",
     ]
 
+    # Slot 1
     random_number = random.randint(1, 100)
     if random_number <= 5:
         slot1 = ":gem:"
-    else:
-        slot1 = random.choice(emoji)
-        if slot1 == ":gem:":
-            slot1 = random.choice(emoji)
-    
-    if random_number <= 10:
+    elif random_number <= 10:
         slot1 = ":crown:"
+    elif random_number <= luck:
+        slot1 = slot1
     else:
         slot1 = random.choice(emoji)
-        if slot1 == ":crown:":
-            slot1 = random.choice(emoji)
-
-    if random_number <= luck:
-        slot1 = slot1
-        
-    for i in emoji:
-        if i == slot1:
-            break
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{i} : :question: : :question: \n **{user.name}** is gambling **{cash}{gamble}**")
-        await slot_machine.edit(embed=embed)
-
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : :question: : :question: \n **{user.name}** is gambling **{cash}{gamble}**")
+    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
+    asyncio.sleep(1)
 
+    # Slot 2
     random_number = random.randint(1, 100)
     if random_number <= 5:
         slot2 = ":gem:"
-    else:
-        slot2 = random.choice(emoji)
-        if slot2 == ":gem:":
-            slot2 = random.choice(emoji)
-
-    if random_number <= 10:
+    elif random_number <= 10:
         slot2 = ":crown:"
+    elif random_number <= luck:
+        slot2 = slot1
     else:
         slot2 = random.choice(emoji)
-        if slot2 == ":crown:":
-            slot2 = random.choice(emoji)
-            
-    if random_number <= luck:
-        slot2 = slot1
-
-    for i in emoji:
-        if i == slot2:
-            break
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {i} : :question: \n **{user.name}** is gambling **{cash}{gamble}**")
-        await slot_machine.edit(embed=embed)
-
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : :question: \n **{user.name}** is gambling **{cash}{gamble}**")
+    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
+    asyncio.sleep(1)
 
+    # Slot 3
     random_number = random.randint(1, 100)
     if random_number <= 5:
         slot3 = ":gem:"
-    else:
-        slot3 = random.choice(emoji)
-        if slot3 == ":gem:":
-            slot3 = random.choice(emoji)
-
-    if random_number <= 10:
+    elif random_number <= 10:
         slot3 = ":crown:"
+    elif random_number <= luck:
+        slot3 = slot2
     else:
         slot3 = random.choice(emoji)
-        if slot3 == ":crown:":
-            slot3 = random.choice(emoji)
-            
-    if random_number <= luck:
-        slot3 = slot2
-
-    for i in emoji:
-        if i == slot3:
-            break
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {i} \n **{user.name}** is gambling **{cash}{gamble}**")
-        await slot_machine.edit(embed=embed)
-
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {slot3} \n **{user.name}** is gambling **{cash}{gamble}**")
+    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
+    asyncio.sleep(1)
 
     slot1_result = slot1
     slot2_result = slot2
@@ -158,7 +121,7 @@ async def slots(ctx: Context, user, gamble):
     if slot1_result == slot2_result or slot1_result == slot3_result or slot2_result == slot3_result:
         money = gamble*3
         profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -166,7 +129,7 @@ async def slots(ctx: Context, user, gamble):
     elif slot1_result == ":gem:" or slot2_result == ":gem:" or slot3_result == ":gem:":
         money = gamble*1.5
         profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -174,7 +137,7 @@ async def slots(ctx: Context, user, gamble):
     elif slot1_result == ":crown:" or slot2_result == ":crown:" or slot3_result == ":crown:":
         money = gamble*1.2
         profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -182,7 +145,7 @@ async def slots(ctx: Context, user, gamble):
     elif slot1_result == slot2_result == slot3_result == ":gem:":
         money = gamble*10
         profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -190,7 +153,7 @@ async def slots(ctx: Context, user, gamble):
     elif slot1_result == slot2_result == slot3_result == ":crown:":
         money = gamble*7.5
         profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -198,14 +161,14 @@ async def slots(ctx: Context, user, gamble):
     elif slot1_result == slot2_result == slot3_result:
         money = gamble*5
         profit = money - gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** \n Profit: **{cash}{profit}**", color=0x00ff00)
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
 
     else:
         loss = gamble
-        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} : {slot2} : {slot3} \n Lost: **{cash}{loss}**", color=0xff0000)
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Lost: **{cash}{loss}**", color=0xff0000)
         await slot_machine.edit(embed=embed)
         pass
         
@@ -218,7 +181,7 @@ async def slot_rules(ctx: Context):
     #create the embed
     embed = discord.Embed(
         title="Slots Rules",
-        description="Slots is a game where you bet money and spin the slots. If the slots are the same, you win money. If the slots are different, you lose money. \n :gem: : :gem: : :gem: | 10x \n :crown: : :crown: : :crown: | 7.5x \n :apple: : :apple: : :apple: | 5x \n :apple: : :apple: : :question: | 3x \n :gem: : :question: : :question: | 1.5x \n :crown: : :question: : :question: | 1.2x",
+        description="Slots is a game where you bet money and spin the slots. If the slots are the same, you win money. If the slots are different, you lose money. \n :gem: | :gem: | :gem: | 10x \n :crown: | :crown: | :crown: | 7.5x \n :apple: | :apple: | :apple: | 5x \n :apple: | :apple: | :question: | 3x \n :gem: | :question: | :question: | 1.5x \n :crown: | :question: | :question: | 1.2x",
         color=discord.Color.blue()
     )
     #send the embed
