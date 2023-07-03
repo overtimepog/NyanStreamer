@@ -42,6 +42,19 @@ rarity_colors = {
 
 #slots
 async def slots(self, ctx: Context, user, gamble):
+    money = await db_manager.get_money(user.id)
+    luck = await db_manager.get_luck(user.id)
+    print(luck)
+    await db_manager.remove_money(user.id, gamble)
+    await db_manager.add_money_spent(user.id, gamble)
+    money = int(money[0])
+    gamble = int(gamble)
+    if money < gamble:
+        return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
+    #start
+    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
+    slot_machine = await ctx.send(embed=embed)
+    
     emoji = [
         ":apple:",
         ":cherries:",
@@ -77,7 +90,7 @@ async def slots(self, ctx: Context, user, gamble):
             return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
         #start
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
-        slot_machine = await ctx.send(embed=embed)
+        await slot_machine.edit(embed=embed)
 
         # Slot 1
         await asyncio.sleep(1)
