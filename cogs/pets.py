@@ -429,7 +429,7 @@ class Pets(commands.Cog, name="pets"):
         self.expired_item_check.start()
         self.check_pet_death.start()
 
-    @commands.hybrid_command(
+    @commands.hybrid_group(
         name="pet",
         description="shows the pet menu where you can feed, clean, and play with your pet",
     )
@@ -446,7 +446,7 @@ class Pets(commands.Cog, name="pets"):
         view.message = message
     
     #evolve command for pets
-    @commands.hybrid_command(
+    @pet.command(
         name="evolve",
         description="This command will evolve a pet if it's at level 10.",
     )
