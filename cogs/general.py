@@ -30,18 +30,6 @@ from helpers import db_manager
 
 from helpers import checks
 
-def _get_command_signature(command):
-    """Recursively obtains command and subcommand structure"""
-    result = []
-    if isinstance(command, commands.Command):
-        result.append(command.name)
-    elif isinstance(command, commands.Group):
-        result.append(command.name)
-        for subcommand in command.commands:
-            result.extend([f"{command.name} {sub}" for sub in _get_command_signature(subcommand)])
-    return result
-
-
 class General(commands.Cog, name="general"):
     def __init__(self, bot):
         self.bot = bot
@@ -63,7 +51,7 @@ class General(commands.Cog, name="general"):
             if command_or_group and command_or_group.cog_name != 'owner':
                 from discord.ext import commands
                 if isinstance(command_or_group, commands.Group):
-                    group_commands = "\n".join([f'`{prefix}{command}`: {command.description}' for command in _get_command_signature(command_or_group) if command.cog_name != 'owner'])
+                    group_commands = "\n".join([f'`{prefix}{command_or_group.name} {command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner'])
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
                     await context.send(embed=embed)
                 else:
@@ -90,16 +78,24 @@ class General(commands.Cog, name="general"):
             # If no command or cog was provided, create a page for each cog except the 'owner' cog
             cogs = self.bot.cogs
             cog_embeds = []
-
+        
             for cog_name in cogs:
                 # Skip the 'owner' cog
                 if cog_name.lower() == 'owner':
                     continue
-
+                
                 cog = self.bot.get_cog(cog_name)
                 commands = cog.get_commands()
                 if commands:
-                    command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'owner'])
+                    command_list = []
+                    for command in commands:
+                        if command.cog_name != 'owner':
+                            if isinstance(command, commands.Group):
+                                group_commands = "\n".join([f'`{prefix}{command.name} {subcommand.name}`: {subcommand.description}' for subcommand in command.commands])
+                                command_list.append(group_commands)
+                            else:
+                                command_list.append(f'`{prefix}{command.name}`: {command.description}')
+                    command_list = "\n".join(command_list)
                     embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
                     cog_embeds.append(embed)
 
