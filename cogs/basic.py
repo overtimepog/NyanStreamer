@@ -2770,7 +2770,7 @@ class Basic(commands.Cog, name="basic"):
         # Grant daily reward
         #get the bonus % of the user 
         bonus = await db_manager.get_percent_bonus(user_id)
-        bonus = bonus / 100
+        bonus = int(bonus) / 100
         daily_reward = 500 + (streak * 100)  # Add bonus reward according to streak
         daily_reward = int(daily_reward + (daily_reward * bonus))  # Add bonus reward according to user's bonus %
         #get the bonus % of the daily reward and add it to the daily reward
