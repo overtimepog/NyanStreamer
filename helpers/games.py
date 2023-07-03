@@ -207,7 +207,10 @@ async def slots(self, ctx: Context, user, gamble):
             await slot_machine.clear_reaction(redo_emoji)
             break
         else:
-            await slot_machine.clear_reaction(redo_emoji)
+            try:
+                await slot_machine.clear_reaction(redo_emoji)
+            except discord.Forbidden:
+                await ctx.send("I cant do this in DMs, im sorry")
 
 
         
