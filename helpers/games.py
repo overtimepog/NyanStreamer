@@ -40,7 +40,7 @@ rarity_colors = {
     # Add more rarities and colors as needed
 }
 
-#slots 2, this time use a new method of creating the slot machine
+#slots
 async def slots(self, ctx: Context, user, gamble):
     money = await db_manager.get_money(user.id)
     luck = await db_manager.get_luck(user.id)
@@ -112,6 +112,7 @@ async def slots(self, ctx: Context, user, gamble):
     else:
         slot3 = random.choice(emoji)
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{cash}{gamble}**")
+    embed.set_footer(text=f"use 🔁 to play again")
     await slot_machine.edit(embed=embed)
 
     slot1_result = slot1
@@ -122,6 +123,7 @@ async def slots(self, ctx: Context, user, gamble):
         money = gamble*3
         profit = money - gamble
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+        embed.set_footer(text=f"use 🔁 to play again")
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -130,6 +132,7 @@ async def slots(self, ctx: Context, user, gamble):
         money = gamble*1.5
         profit = money - gamble
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+        embed.set_footer(text=f"use 🔁 to play again")
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -138,6 +141,7 @@ async def slots(self, ctx: Context, user, gamble):
         money = gamble*1.2
         profit = money - gamble
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+        embed.set_footer(text=f"use 🔁 to play again")
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -146,6 +150,7 @@ async def slots(self, ctx: Context, user, gamble):
         money = gamble*10
         profit = money - gamble
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+        embed.set_footer(text=f"use 🔁 to play again")
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -154,6 +159,7 @@ async def slots(self, ctx: Context, user, gamble):
         money = gamble*7.5
         profit = money - gamble
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+        embed.set_footer(text=f"use 🔁 to play again")
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -162,6 +168,7 @@ async def slots(self, ctx: Context, user, gamble):
         money = gamble*5
         profit = money - gamble
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Won: **{cash}{money}** ", color=0x00ff00)
+        embed.set_footer(text=f"use 🔁 to play again")
         await slot_machine.edit(embed=embed)
         await db_manager.add_money(user.id, money)
         await db_manager.add_money_earned(user.id, money)
@@ -169,6 +176,7 @@ async def slots(self, ctx: Context, user, gamble):
     else:
         loss = gamble
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Lost: **{cash}{loss}**", color=0xff0000)
+        embed.set_footer(text=f"use 🔁 to play again")
         await slot_machine.edit(embed=embed)
         pass
 
@@ -183,7 +191,7 @@ async def slots(self, ctx: Context, user, gamble):
     except asyncio.TimeoutError:
         await slot_machine.clear_reaction(redo_emoji)
     else:
-        await slots(ctx, user, gamble)
+        await slots(self, ctx, user, gamble)
 
         
 #create slots_rules function
