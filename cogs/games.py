@@ -34,6 +34,7 @@ class Games(commands.Cog, name="games"):
     @commands.hybrid_command(
         name="slots",
         description="Play a game of slots.",
+        aliases=['slot']
     )
     async def slots(self, ctx: Context, bet: int):
         checkUser = await db_manager.check_user(ctx.author.id)
