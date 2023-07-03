@@ -30,6 +30,17 @@ from helpers import db_manager
 
 from helpers import checks
 
+def _get_command_signature(command):
+    """Recursively obtains command and subcommand structure"""
+    result = []
+    if isinstance(command, commands.Command):
+        result.append(command.name)
+    elif isinstance(command, commands.Group):
+        result.append(command.name)
+        for subcommand in command.commands:
+            result.extend([f"{command.name} {sub}" for sub in _get_command_signature(subcommand)])
+    return result
+
 
 class General(commands.Cog, name="general"):
     def __init__(self, bot):
@@ -52,7 +63,7 @@ class General(commands.Cog, name="general"):
             if command_or_group and command_or_group.cog_name != 'owner':
                 from discord.ext import commands
                 if isinstance(command_or_group, commands.Group):
-                    group_commands = "\n".join([f'`{prefix}{command_or_group.name} {command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner'])
+                    group_commands = "\n".join([f'`{prefix}{command}`: {command.description}' for command in _get_command_signature(command_or_group) if command.cog_name != 'owner'])
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
                     await context.send(embed=embed)
                 else:
