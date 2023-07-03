@@ -50,7 +50,7 @@ class Games(commands.Cog, name="games"):
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
             return
-        await games.slots(ctx, ctx.author, bet)
+        await games.slots(self, ctx, ctx.author, bet)
 
     #slots rules command
     @slots.command(
