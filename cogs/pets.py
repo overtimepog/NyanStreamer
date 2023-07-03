@@ -431,15 +431,27 @@ class Pets(commands.Cog, name="pets"):
 
     @commands.hybrid_group(
         name="pet",
-        description="shows the pet menu where you can feed, clean, and play with your pet",
+        description="Pet Commands",
     )
     async def pet(self, ctx: Context):
-        """Display your pet's stats."""
+        """
+        The base command for all streamer commands.
+
+        :param ctx: The context in which the command was called.
+        """
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help("pet")
+        
+    @pet.command(
+        name="menu",
+        description="shows the pet menu where you can feed, clean, and play with your pet",
+    )
+    async def menu(self, ctx: Context):
         pets = await db_manager.get_users_pets(ctx.author.id)
         if not pets:
             await ctx.send('You do not own any pets.')
             return
-
+        
         view = PetSelectView(pets, ctx.author, self.bot)
         await view.prepare()
         message = await ctx.send('Select a Pet :)', view=view)
