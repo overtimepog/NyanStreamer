@@ -2746,32 +2746,25 @@ class Basic(commands.Cog, name="basic"):
         current_time = datetime.datetime.now()
         if user_data[31] is not None:
             last_daily = datetime.datetime.strptime(user_data[31].split('.')[0], "%Y-%m-%d %H:%M:%S")
-            hours_passed = (current_time - last_daily).total_seconds() / 3600
+            seconds_passed = (current_time - last_daily).total_seconds()
 
             # Calculate the streak
-            if hours_passed < 24:
-                hours_left = 24 - hours_passed
-                hours = int(hours_left)
-                minutes = int((hours_left - hours) * 60)
+            if seconds_passed < 86400:  # 86400 seconds in a day
+                reset_time_unix = int((current_time + datetime.timedelta(days=1)).timestamp())  # Unix timestamp for the next day
                 embed = discord.Embed(
                     title="Daily Reward",
                     color=discord.Color.red()
                 )
-                if hours == 0:
-                    embed.description = f"You already claimed your daily reward!\nCome back in **{minutes} minutes**"
-                elif minutes == 0:
-                    embed.description = f"You already claimed your daily reward!\nCome back in **{hours} hours**"
-                else:
-                    embed.description = f"You already claimed your daily reward!\nCome back in **{hours} hours and {minutes} minutes**"
+                embed.description = f"You already claimed your daily reward!\nCome back <t:{reset_time_unix}:R>"
 
                 await ctx.send(embed=embed)
                 return
-            elif hours_passed < 48:
+            elif seconds_passed < 172800:  # 172800 seconds in two days
                 streak = user_data[33] + 1
             else:
                 streak = 0
         else:
-            streak = 0  # The streak is not yet established
+            streak = 0  
 
 
         # Grant daily reward
