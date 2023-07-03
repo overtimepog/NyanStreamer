@@ -120,7 +120,7 @@ class PetSelect(discord.ui.Select):
             #check if the pet already has the item
             for i in pet_items:
                 if self.item in i:
-                    await interaction.response.send_message(f"{pet_name} already has this item, Please wait for its Durration to run out", ephemeral = True)
+                    await interaction.response.send_message(f"{pet_name} already has this item, Please wait for its Durration to run out", hidden = True)
                     return
             await db_manager.add_pet_item(self.user.id, pet_id, self.item)
             await db_manager.add_timed_item(self.user.id, self.item, effect)
@@ -129,9 +129,9 @@ class PetSelect(discord.ui.Select):
                 description=f"You used `{item_name}` on `{pet_name}` and gave them the effect `{item_effect_type}` for `{item_effect_time}`!",
                 color=discord.Color.green(),
             )
-            await interaction.response.send_message(embed=embed, ephemeral = True)
+            await interaction.response.send_message(embed=embed, hidden = True)
         else:
-            await interaction.response.send_message('No pet was selected.', ephemeral = True)
+            await interaction.response.send_message('No pet was selected.', hidden = True)
             return
         
 
@@ -977,9 +977,9 @@ class Basic(commands.Cog, name="basic"):
         user_profile = await db_manager.profile(user_id)
         if user_profile == None:
             if user_id == ctx.author.id:
-                await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!", ephemeral = True)
+                await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!", hidden = True)
             else:
-                await ctx.send(f"{user.name} isnt in the database yet, please tell them to use the `nya start or /start` command to start their adventure!", ephemeral = True)
+                await ctx.send(f"{user.name} isnt in the database yet, please tell them to use the `nya start or /start` command to start their adventure!", hidden = True)
         #print(user_profile)
         user_id = user_profile[0]
         user_money = user_profile[1]
@@ -1082,7 +1082,7 @@ class Basic(commands.Cog, name="basic"):
             # Get user inventory items from the database
             inventory_items = await db_manager.view_inventory(user.id)
             if inventory_items == []:
-                await ctx.send(f"{user.name} has no items in their inventory", ephemeral = True)
+                await ctx.send(f"{user.name} has no items in their inventory", hidden = True)
                 return
 
             # Calculate number of pages based on number of items
@@ -1195,13 +1195,13 @@ class Basic(commands.Cog, name="basic"):
                         await interaction.message.edit(embed=self.embeds[self.current_page])
 
             view = InventoryButton(current_page=0, embeds=embeds)
-            await ctx.send(embed=embeds[0], view=view, ephemeral = True)
+            await ctx.send(embed=embeds[0], view=view, hidden = True)
              
         async def display_pets(ctx: Context, user):
             # Get user inventory items from the database
             inventory_items = await db_manager.view_inventory(user.id)
             if inventory_items == []:
-                await ctx.send(f"{user.name} has no items in their inventory", ephemeral = True)
+                await ctx.send(f"{user.name} has no items in their inventory", hidden = True)
                 return
 
             # Filter out items that are not pets
@@ -1289,15 +1289,15 @@ class Basic(commands.Cog, name="basic"):
 
             view = PetButton(current_page=0, embeds=embeds)
             try:
-                await ctx.send(embed=embeds[0], view=view, ephemeral = True)
+                await ctx.send(embed=embeds[0], view=view, hidden = True)
             except(IndexError):
-                await ctx.send(content=f"{user.name} has no pets", ephemeral = True)
+                await ctx.send(content=f"{user.name} has no pets", hidden = True)
 
         async def display_stats(ctx: Context, user):
             # Get user stats from the database
             user_profile = await db_manager.profile(user.id)
             if user_profile is None:
-                await ctx.send(f"{user.name} is not in the database yet.", ephemeral = True)
+                await ctx.send(f"{user.name} is not in the database yet.", hidden = True)
                 return
 
             # Create an embed for the stats
@@ -1306,7 +1306,7 @@ class Basic(commands.Cog, name="basic"):
             stats_embed.add_field(name="Shifts Worked", value=user_profile[29])
             stats_embed.add_field(name="Bonus %", value=user_profile[34] + "%")
 
-            await ctx.send(embed=stats_embed, ephemeral = True)
+            await ctx.send(embed=stats_embed, hidden = True)
 
         async def display_active_items(ctx: Context, user):
             # Get user active items from the database
@@ -1386,11 +1386,11 @@ class Basic(commands.Cog, name="basic"):
             # If there are multiple pages, add the buttons
             if len(embeds) > 1:
                 view = ActiveItemsButton(current_page=0, embeds=embeds)
-                await ctx.send(embed=embeds[0], view=view, ephemeral = True)
+                await ctx.send(embed=embeds[0], view=view, hidden = True)
             elif len(embeds) == 0:
-                await ctx.send(content=f"{user.name} has no active items.", ephemeral = True)
+                await ctx.send(content=f"{user.name} has no active items.", hidden = True)
             else:
-                await ctx.send(embed=embeds[0], ephemeral = True)
+                await ctx.send(embed=embeds[0], hidden = True)
 
         class ProfileView(discord.ui.View):
             def __init__(self, ctx):
@@ -1420,7 +1420,7 @@ class Basic(commands.Cog, name="basic"):
                 await interaction.response.defer()
 
         view = ProfileView(ctx)
-        await ctx.send(embed=embed, view=view, ephemeral = True)
+        await ctx.send(embed=embed, view=view, hidden = True)
         
     #hybrid command to start the user on their journy, this will create a profile for the user using the profile function from helpers\db_manager.py and give them 200 bucks
     @commands.hybrid_command(
