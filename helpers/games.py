@@ -53,7 +53,7 @@ async def slots(ctx: Context, user, gamble):
         return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     slot_machine = await ctx.send(embed=embed)
-    asyncio.sleep(1)
+    asyncio.sleep(3)
     
     emoji = [
         ":apple:",
@@ -84,7 +84,7 @@ async def slots(ctx: Context, user, gamble):
         slot1 = random.choice(emoji)
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
-    asyncio.sleep(1)
+    asyncio.sleep(3)
 
     # Slot 2
     random_number = random.randint(1, 100)
@@ -98,7 +98,7 @@ async def slots(ctx: Context, user, gamble):
         slot2 = random.choice(emoji)
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
-    asyncio.sleep(1)
+    asyncio.sleep(3)
 
     # Slot 3
     random_number = random.randint(1, 100)
@@ -112,7 +112,7 @@ async def slots(ctx: Context, user, gamble):
         slot3 = random.choice(emoji)
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
-    asyncio.sleep(1)
+    asyncio.sleep(3)
 
     slot1_result = slot1
     slot2_result = slot2
