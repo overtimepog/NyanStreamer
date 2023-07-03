@@ -84,7 +84,7 @@ async def slots(self, ctx: Context, user, gamble):
         money = int(money[0])
         gamble = int(gamble)
         if money < gamble:
-            return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
+            return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{cash}{gamble}**.")
         #start
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
         await slot_machine.edit(embed=embed)
