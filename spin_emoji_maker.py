@@ -20,11 +20,18 @@ emojis = [
     "💎",  # :gem:
 ]
 
-# Convert the emojis to their corresponding Twemoji URLs
-emoji_urls = [
-    f"https://twemoji.maxcdn.com/v/latest/72x72/{'-'.join(hex(ord(c))[2:] for c in emoji)}.png"
-    for emoji in emojis
-]
+# Convert the emojis to their corresponding URLs
+emoji_urls = []
+for emoji in emojis:
+    if emoji.startswith("<:"):  # Discord static emoji
+        emoji_id = emoji.split(":")[-1][:-1]  # Extract the emoji id
+        url = f"https://cdn.discordapp.com/emojis/{emoji_id}.png"
+    elif emoji.startswith("<a:"):  # Discord animated emoji
+        emoji_id = emoji.split(":")[-1][:-1]  # Extract the emoji id
+        url = f"https://cdn.discordapp.com/emojis/{emoji_id}.gif"
+    else:  # Regular emoji
+        url = f"https://twemoji.maxcdn.com/v/latest/72x72/{'-'.join(hex(ord(c))[2:] for c in emoji)}.png"
+    emoji_urls.append(url)
 
 print("Emoji URLs:", emoji_urls)
 
@@ -34,8 +41,14 @@ for url in emoji_urls:
     print("Downloading:", url)
     response = requests.get(url)
     print("Response status code:", response.status_code)
-    img = Image.open(BytesIO(response.content))
-    emoji_images.append(img.convert("RGBA"))  # Convert image to RGBA
+    if url.endswith(".gif"):  # Animated emoji
+        img = Image.open(BytesIO(response.content))
+        img.seek(0)  # Go to the first frame
+        img = img.convert("RGBA")  # Convert image to RGBA
+    else:  # Static emoji
+        img = Image.open(BytesIO(response.content))
+        img = img.convert("RGBA")  # Convert image to RGBA
+    emoji_images.append(img)
 
 print("Downloaded all emojis")
 
