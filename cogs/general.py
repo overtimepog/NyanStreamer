@@ -27,7 +27,6 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 from helpers import db_manager
-
 from helpers import checks
 
 class General(commands.Cog, name="general"):
@@ -40,6 +39,7 @@ class General(commands.Cog, name="general"):
     )
     @checks.not_blacklisted()
     async def help(self, context: Context, command: str = None) -> None:
+        from discord.ext import commands
         checkUser = await db_manager.check_user(context.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await context.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
@@ -49,7 +49,6 @@ class General(commands.Cog, name="general"):
         if command:
             command_or_group = self.bot.get_command(command.lower())
             if command_or_group and command_or_group.cog_name != 'owner':
-                from discord.ext import commands
                 if isinstance(command_or_group, commands.Group):
                     group_commands = "\n".join([f'`{prefix}{command_or_group.name} {command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner'])
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
@@ -85,10 +84,10 @@ class General(commands.Cog, name="general"):
                     continue
                 
                 cog = self.bot.get_cog(cog_name)
-                commands = cog.get_commands()
-                if commands:
+                cmd_list = cog.get_commands()
+                if cmd_list:
                     command_list = []
-                    for command in commands:
+                    for command in cmd_list:
                         if command.cog_name != 'owner':
                             if isinstance(command, commands.Group):
                                 group_commands = "\n".join([f'`{prefix}{command.name} {subcommand.name}`: {subcommand.description}' for subcommand in command.commands])
