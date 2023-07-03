@@ -41,7 +41,7 @@ rarity_colors = {
 }
 
 #slots 2, this time use a new method of creating the slot machine
-async def slots(ctx: Context, user, gamble):
+async def slots(self, ctx: Context, user, gamble):
     money = await db_manager.get_money(user.id)
     luck = await db_manager.get_luck(user.id)
     print(luck)
@@ -171,6 +171,20 @@ async def slots(ctx: Context, user, gamble):
         embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Lost: **{cash}{loss}**", color=0xff0000)
         await slot_machine.edit(embed=embed)
         pass
+
+    redo_emoji = "🔁"  # Change this to any emoji you want to represent "redo"
+    await slot_machine.add_reaction(redo_emoji)
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
+
+    try:
+        reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+    except asyncio.TimeoutError:
+        await slot_machine.clear_reaction(redo_emoji)
+    else:
+        await slots(ctx, user, gamble)
+
         
 #create slots_rules function
 #this function will be called when the user types !slots_rules
