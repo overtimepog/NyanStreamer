@@ -103,6 +103,7 @@ class Games(commands.Cog, name="games"):
     @commands.hybrid_command(
         name="blackjack",
         description="Play a game of blackjack.",
+        aliases=['bj']
     )
     async def blackjack(self, ctx: Context, bet: int):
         #make sure bet is valid
@@ -327,6 +328,7 @@ class Games(commands.Cog, name="games"):
     @commands.hybrid_command(
         name="puzzle",
         description="Solve a puzzle for a prize",
+        aliases=['puz']
     )
     async def puzzle(self, ctx: Context):
         checkUser = await db_manager.check_user(ctx.author.id)
