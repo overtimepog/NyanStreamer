@@ -73,7 +73,6 @@ async def slots(self, ctx: Context, user, gamble):
 
     # Slot 1
     redo_emoji = "🔁"  # Change this to any emoji you want to represent "redo"
-    await slot_machine.add_reaction(redo_emoji)
 
     def check(reaction, user):
         return user == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
@@ -187,6 +186,8 @@ async def slots(self, ctx: Context, user, gamble):
             await slot_machine.edit(embed=embed)
             pass
 
+        await slot_machine.add_reaction(redo_emoji)
+
         try:
             reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
         except asyncio.TimeoutError:
@@ -194,7 +195,6 @@ async def slots(self, ctx: Context, user, gamble):
             break
         else:
             await slot_machine.clear_reaction(redo_emoji)
-            await slot_machine.add_reaction(redo_emoji)
 
 
         
