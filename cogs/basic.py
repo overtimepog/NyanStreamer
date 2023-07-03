@@ -1306,7 +1306,7 @@ class Basic(commands.Cog, name="basic"):
             stats_embed.add_field(name="Shifts Worked", value=user_profile[29])
             stats_embed.add_field(name="Bonus %", value=user_profile[34] + "%")
 
-            await ctx.send(embed=stats_embed)
+            await ctx.send(embed=stats_embed, ephemeral=True)
 
         async def display_active_items(ctx: Context, user):
             # Get user active items from the database
@@ -1420,7 +1420,7 @@ class Basic(commands.Cog, name="basic"):
                 await interaction.response.defer()
 
         view = ProfileView(ctx)
-        await ctx.send(embed=embed, view=view)
+        await ctx.send(embed=embed, view=view, ephemeral=True)
         
     #hybrid command to start the user on their journy, this will create a profile for the user using the profile function from helpers\db_manager.py and give them 200 bucks
     @commands.hybrid_command(
