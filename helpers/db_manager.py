@@ -1298,6 +1298,8 @@ async def clear_jobs() -> None:
     await db.execute(f"DELETE FROM `anagram`")
     #clear the rewards table
     await db.execute(f"DELETE FROM `rewards`")
+    #clear the job board table
+    await db.execute(f"DELETE FROM `jobboard`")
 
 # Async function to add jobs and minigames
 async def add_jobs_and_minigames():
@@ -4384,9 +4386,20 @@ async def get_basic_item_rarity(item_id: str) -> str:
     :return: The rarity of the item.
     """
     async with aiosqlite.connect("database/database.db") as db:
+        # Try to get emoji from the basic_items table
         async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
             result = await cursor.fetchone()
-            return result[4] if result is not None else 0
+            if result is not None: 
+                return result[4] 
+
+        # If not found in basic_items, try to get emoji from the chests table
+        async with db.execute("SELECT * FROM chests WHERE chest_id=?", (item_id,)) as cursor:
+            result = await cursor.fetchone()
+            if result is not None:
+                return result[4]
+        
+    # Return None if not found in either table
+    return None
 
 #get items basic items type via its id
 async def get_basic_item_type(item_id: str) -> str:

@@ -5,9 +5,7 @@ Here are some rules to be followed when making new stuff
 * All items need item_damage even if its 0
 * For Armor, item_damage is the amount of damage it reduces but it is still called item_damage for consistency
 * Armors have subtypes, Helmet, Chestplate, Leggings and Boots that must be present when making a piece of armor
-* Jobs dont need a required item, it can be set to None 
-* Jobs also dont need a required hours, it can be set to 0
-* Only beginner jobs should have no required item or hours, all other jobs should have required hours and better pay based on it 
+* Jobs also dont need required shifts, it can be set to 0
 * When Generating Jobs a Job must have 1 minigame of each type, Order, Trivia, Retype, Backwards, Hangman, Anagram, and must follow the rules for each minigame type
 * these are the only Job minigames: Order, Trivia, Retype, Backwards, Hangman, Anagram
 * for Retype, they must have at least 10 different phrases
@@ -19,7 +17,6 @@ Here are some rules to be followed when making new stuff
 * for Anagram they must have at least 8 different words
 * when Generating jobs, please give each minigame at least 10 rewards of differing money and xp amounts
 * only one job minigame per job should have a chance for an item reward
-* the xp needed for a user to level up is 6 times their level and does not overflow after a user levels up, keep this in mind when giving out xp rewards
 * jobs must have multiple rewards with different amounts for each minigame
 * search locations must have at least 15 comments each
 * all generated stuff must be given back in json format
@@ -318,8 +315,6 @@ this is an example of each minigame in one job
         "name": "Hitman",
         "description": "be a hitman",
         "job_icon": "<:bullet:1122286037088096327>",
-        "required_item": "handgun",
-        "required_level": 10,
         "required_shifts": 5,
         "base_pay": 500,
         "pay_per_level": 50,
