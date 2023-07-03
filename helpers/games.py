@@ -51,8 +51,6 @@ async def slots(self, ctx: Context, user, gamble):
     gamble = int(gamble)
     if money < gamble:
         return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
-    embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
-    slot_machine = await ctx.send(embed=embed)
     
     emoji = [
         ":apple:",
@@ -78,6 +76,10 @@ async def slots(self, ctx: Context, user, gamble):
         return user == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
 
     while True:
+        #start
+        embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
+        slot_machine = await ctx.send(embed=embed)
+
         # Slot 1
         await asyncio.sleep(1)
         random_number = random.randint(1, 100)
