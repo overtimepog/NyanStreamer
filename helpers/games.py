@@ -53,7 +53,6 @@ async def slots(ctx: Context, user, gamble):
         return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     slot_machine = await ctx.send(embed=embed)
-    await asyncio.sleep(2)
     
     emoji = [
         ":apple:",
@@ -73,6 +72,7 @@ async def slots(ctx: Context, user, gamble):
     ]
 
     # Slot 1
+    await asyncio.sleep(2)
     random_number = random.randint(1, 100)
     if random_number <= 5:
         slot1 = ":gem:"
@@ -84,9 +84,9 @@ async def slots(ctx: Context, user, gamble):
         slot1 = random.choice(emoji)
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
-    await asyncio.sleep(2)
 
     # Slot 2
+    await asyncio.sleep(2)
     random_number = random.randint(1, 100)
     if random_number <= 5:
         slot2 = ":gem:"
@@ -98,9 +98,10 @@ async def slots(ctx: Context, user, gamble):
         slot2 = random.choice(emoji)
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot_spin} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
-    await asyncio.sleep(2)
+    
 
     # Slot 3
+    await asyncio.sleep(2)
     random_number = random.randint(1, 100)
     if random_number <= 5:
         slot3 = ":gem:"
@@ -112,7 +113,6 @@ async def slots(ctx: Context, user, gamble):
         slot3 = random.choice(emoji)
     embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{cash}{gamble}**")
     await slot_machine.edit(embed=embed)
-    await asyncio.sleep(2)
 
     slot1_result = slot1
     slot2_result = slot2
