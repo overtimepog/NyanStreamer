@@ -81,9 +81,6 @@ async def slots(self, ctx: Context, user, gamble):
     while True:
         money = await db_manager.get_money(user.id)
         luck = await db_manager.get_luck(user.id)
-        #print(luck)
-        await db_manager.remove_money(user.id, gamble)
-        await db_manager.add_money_spent(user.id, gamble)
         money = int(money[0])
         gamble = int(gamble)
         if money < gamble:
@@ -197,6 +194,8 @@ async def slots(self, ctx: Context, user, gamble):
             loss = gamble
             embed = discord.Embed(title=f"Nyan Streamer Slot Machine", description=f"{slot1} | {slot2} | {slot3} \n Lost: **{cash}{loss}**", color=0xff0000)
             embed.set_footer(text=f"use 🔁 to play again")
+            await db_manager.remove_money(user.id, gamble)
+            await db_manager.add_money_spent(user.id, gamble)
             await slot_machine.edit(embed=embed)
             pass
 
