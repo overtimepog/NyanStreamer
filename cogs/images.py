@@ -481,10 +481,10 @@ class Images(commands.Cog, name="images"):
         name="whothisis",
         description="who is this",
     )
-    async def whothisis(self, ctx: Context, user: discord.User):
+    async def whothisis(self, ctx: Context, user: discord.User, text: str):
         await ctx.defer()
         whothisis_instance = whothisis.WhoThisIs()
-        image = await self.bot.loop.run_in_executor(self.executor, whothisis_instance.generate, [user.avatar.url], "", [], "")
+        image = await self.bot.loop.run_in_executor(self.executor, whothisis_instance.generate, [user.avatar.url], f"{text}", [], "")
         # send the image
         await ctx.send(file=File(fp=image, filename="whothisis.png"))
 
