@@ -197,8 +197,19 @@ class Images(commands.Cog, name="images"):
         top = format_text(top)
         bottom = format_text(bottom)
         url = f"https://api.memegen.link/images/buzz/{top}/{bottom}.gif?api_key=nu449chc96&watermark=nyanstreamer.lol"
-        #send the image, which is the url
-        await ctx.send(url)
+
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                print("Could not download file...")
+                return
+            data = await resp.read()
+
+        with open("buzz.gif", "wb") as f:
+            f.write(data)
+
+        await ctx.send(file=discord.File("buzz.gif"))
+
+        os.remove("buzz.gif")
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
