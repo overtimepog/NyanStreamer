@@ -470,6 +470,17 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="kowalski.gif"))
 
+    @image.command(
+        name="trigger",
+        description="triggered",
+    )
+    async def trigger(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        trigger_instance = trigger.Trigger()
+        image = await self.bot.loop.run_in_executor(self.executor, trigger_instance.generate, [user.avatar.url], "", [], "")
+        # send the image
+        await ctx.send(file=File(fp=image, filename="trigger.gif"))
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
