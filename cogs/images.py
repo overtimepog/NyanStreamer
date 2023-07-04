@@ -76,7 +76,7 @@ class Images(commands.Cog, name="images"):
         name="deepfry",
         description="deepfry an image or user",
     )
-    async def deepfry(self, ctx: Context, image: discord.User = None):
+    async def deepfry(self, ctx: Context, image: discord.User or discord.Attachment = None):
         fry_instance = deepfry.DeepFry()
         # Check if an image was provided
         if image is None:
