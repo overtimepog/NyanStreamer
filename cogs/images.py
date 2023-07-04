@@ -452,10 +452,10 @@ class Images(commands.Cog, name="images"):
         name="youtube",
         description="just dont edit it",
     )
-    async def youtube(self, ctx: Context, user: discord.User, text1: str):
+    async def youtube(self, ctx: Context, user: discord.User, text: str):
         await ctx.defer()
         youtube_instance = youtube.Youtube()
-        image = await self.bot.loop.run_in_executor(self.executor, youtube_instance.generate, [user.avatar.url], f"{text1}", [user.name], "")
+        image = await self.bot.loop.run_in_executor(self.executor, youtube_instance.generate, [user.avatar.url], f"{text}", [user.name], "")
         # send the image
         await ctx.send(file=File(fp=image, filename="youtube.png"))
 
