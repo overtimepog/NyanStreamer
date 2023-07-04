@@ -23,6 +23,7 @@ from discord import User, File
 from aiohttp import ClientSession
 from io import BytesIO
 import concurrent.futures
+from typing import Union
 
 class Images(commands.Cog, name="images"):
     def __init__(self, bot):
@@ -76,21 +77,22 @@ class Images(commands.Cog, name="images"):
         name="deepfry",
         description="deepfry an image or user",
     )
-    async def deepfry(self, ctx: Context, image: discord.User or discord.Attachment = None):
+    async def deepfry(self, ctx: Context, image: Union[discord.User, discord.Attachment]):
         fry_instance = deepfry.DeepFry()
-        # Check if an image was provided
-        if image is None:
-            # Check if it's an attachment
-            if ctx.message.attachments:
-                image_url = ctx.message.attachments[0].url
-            else:
-                image_url = ctx.author.avatar.url
+
+        # Check the type of the image parameter
+        if isinstance(image, discord.User):
+            # If it's a User, use their avatar URL
+            image_url = str(image.avatar.url)
+        elif isinstance(image, discord.Attachment):
+            # If it's an Attachment, use its URL
+            image_url = image.url
         else:
-            image_url = image.avatar.url
+            # If it's neither, raise an error
+            raise commands.BadArgument("You must provide a user mention or an image attachment.")
 
         # Generate the deep fried image
         image = await self.bot.loop.run_in_executor(self.executor, fry_instance.generate, [image_url], "", [], "")
-
 
         await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
 
