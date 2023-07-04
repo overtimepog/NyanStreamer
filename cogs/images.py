@@ -96,6 +96,16 @@ class Images(commands.Cog, name="images"):
 
         await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
 
+    @image.command(
+        name="change_my_mind",
+        description="change my mind",
+        aliases=["cmm", "changemymind"],
+    )
+    async def change_my_mind(self, ctx: Context, *, text: str):
+        change_my_mind_instance = changemymind.ChangeMyMind()
+        image = await self.bot.loop.run_in_executor(self.executor, change_my_mind_instance.generate, [], text, [], "")
+        await ctx.send(file=discord.File(fp=image, filename="changemymind.png"))
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
