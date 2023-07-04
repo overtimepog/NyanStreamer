@@ -45,10 +45,21 @@ class Images(commands.Cog, name="images"):
     )
     async def bed(self, ctx: Context, user1: discord.User, user2: discord.User):
         bed_instance = bed.Bed()
-        image = bed_instance.generate([user1.avatar.url, user2.avatar.url], "Penis", [user1.name, user2.name], "Gamin")
+        image = bed_instance.generate([user1.avatar.url, user2.avatar.url], "", [], "")
 
         # send the image
         await ctx.send(file=File(fp=image, filename="image.png"))
+
+    @image.command(
+        name="crab",
+        description="TIME TO RAVE",
+    )
+    async def crab(self, ctx: Context, text: str):
+        crab_instance = crab.Crab()
+        video = crab_instance.generate([], f"{text}", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=video, filename="crab.mp4"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
