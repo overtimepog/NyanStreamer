@@ -276,7 +276,7 @@ class Images(commands.Cog, name="images"):
         name="gru",
         description="I have a plan",
     )
-    async def gru(self, ctx: Context, text1: str, text2: str, text3: str, text4: str):
+    async def gru(self, ctx: Context, text1: str, text2: str, text3: str, text4: str = None):
         # Defer the interaction
         await ctx.defer()
 
@@ -284,6 +284,9 @@ class Images(commands.Cog, name="images"):
         text2 = format_text(text2)
         text3 = format_text(text3)
         text4 = format_text(text4)
+        if text4 is None:
+            text4 = text3
+            
         url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         async with self.session.get(url) as resp:
