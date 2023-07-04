@@ -127,6 +127,30 @@ class Images(commands.Cog, name="images"):
 
         # send the image
         await ctx.send(file=File(fp=image, filename="airpods.gif"))
+
+    @image.command(
+        name="america",
+        description="god bless this country",
+    )
+    async def america(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+        await ctx.defer()
+        america_instance = america.America()
+
+        # Check the type of the image parameter
+        if user is not None:
+            # If a User is provided, use their avatar URL
+            image_url = str(user.avatar.url)
+        elif image is not None:
+            # If an Attachment is provided, use its URL
+            image_url = image.url
+        else:
+            # If neither is provided, raise an error
+            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+        
+        # Generate the image
+        image = await self.bot.loop.run_in_executor(self.executor, america_instance.generate, [image_url], "", [], "")
+
+        await ctx.send(file=discord.File(fp=image, filename="america.gif"))
         
     @image.command(
     name="armor",
