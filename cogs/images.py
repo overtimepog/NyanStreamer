@@ -178,13 +178,8 @@ class Images(commands.Cog, name="images"):
         headers = {"X-API-KEY": "nu449chc96"}
 
         async with self.session.get(url, headers=headers) as resp:
-            data = await resp.read()
-
-        with open("plan.png", "wb") as f:
-            f.write(data)
-
-        await ctx.send(file=discord.File("plan.png"))
-
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(fp=data, filename='cool_image.png'))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
