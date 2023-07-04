@@ -55,11 +55,20 @@ class Images(commands.Cog, name="images"):
         description="TIME TO RAVE",
     )
     async def crab(self, ctx: Context, text: str):
+        parts = text.split(',')
+        # Check if we have exactly two parts
+        if len(parts) != 2:
+            await ctx.send("You must provide exactly two strings separated by a comma.")
+            return
+        # Trim whitespace from the parts
+        parts = [part.strip() for part in parts]
+        # Join the parts back together with a comma
+        text = ','.join(parts)
+        # Now you can call the generate method with the properly formatted text
         crab_instance = crab.Crab()
-        video = crab_instance.generate([], f"{text}", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=video, filename="crab.mp4"))
+        video = crab_instance.generate([], text, [], "")
+        # Send the video
+        await ctx.send(file=discord.File(fp=video, filename="crab.mp4"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
