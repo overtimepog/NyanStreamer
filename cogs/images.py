@@ -219,7 +219,7 @@ class Images(commands.Cog, name="images"):
         choices = []
         for format in ["png", "jpeg", "gif", "webp"]:
             if format.startswith(argument.lower()):
-                choices.append(format)
+                choices.append(app_commands.Choice(name=format, value=format))
         return choices[:25]
 
 
