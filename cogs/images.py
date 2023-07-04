@@ -286,12 +286,12 @@ class Images(commands.Cog, name="images"):
         text4 = format_text(text4)
         if text4 is None:
             text4 = text3
-            
+
         url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file...')
+                return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'gru.png'))
 
@@ -309,7 +309,7 @@ class Images(commands.Cog, name="images"):
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file...')
+                return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'buzz.gif'))
 
@@ -327,7 +327,7 @@ class Images(commands.Cog, name="images"):
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file...')
+                return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'buttons.png'))
 
@@ -371,7 +371,7 @@ class Images(commands.Cog, name="images"):
         # Send the image
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file...')
+                return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'butterfly.png'))
 
@@ -399,7 +399,7 @@ class Images(commands.Cog, name="images"):
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file...')
+                return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'genius.gif'))
 
