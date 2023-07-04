@@ -22,11 +22,14 @@ from assets.endpoints import abandon, aborted, affect, airpods, america, armor, 
 from discord import User, File
 from aiohttp import ClientSession
 from io import BytesIO
+import concurrent.futures
 
 class Images(commands.Cog, name="images"):
     def __init__(self, bot):
         self.bot = bot
         self.session = ClientSession(loop=bot.loop)
+        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+
     
     @commands.hybrid_group(
     name="image",
@@ -56,15 +59,15 @@ class Images(commands.Cog, name="images"):
     )
     async def crab(self, ctx: Context, text1: str, text2: str):
         crab_instance = crab.Crab()
-        
-        # Send a message indicating that the video is being generated
-        message = await ctx.send("Generating Rave... Please wait.")
 
-        # Generate the video
-        video = crab_instance.generate([], f"{text1},{text2}", [], "")
+        # Send a message indicating that the video is being generated
+        message = await ctx.send("Generating your Rave... Please wait.")
+
+        # Generate the video in a separate thread
+        video = await self.bot.loop.run_in_executor(self.executor, crab_instance.generate, [], f"{text1},{text2}", [], "")
 
         # Edit the message to indicate that the video is ready
-        await message.edit(content="Here you go!")
+        await message.edit(content="Your Rave is ready!")
 
         # Send the video
         await ctx.send(file=discord.File(fp=video, filename="crab.mp4"))
