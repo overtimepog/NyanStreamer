@@ -264,5 +264,22 @@ class Images(commands.Cog, name="images"):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'butterfly.png'))
 
+    @image.command(
+        name="genius",
+        description="smart af",
+    )
+    async def genius(self, ctx: Context, text: str):
+        await ctx.defer()
+
+        text = format_text(text)
+        url = f"https://api.memegen.link/images/rollsafe/{text}.gif?api_key=nu449chc96&watermark=nyanstreamer.lol"
+
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'genius.gif'))
+
+
 async def setup(bot):
     await bot.add_cog(Images(bot))
