@@ -195,6 +195,10 @@ class Images(commands.Cog, name="images"):
         await ctx.defer()
         custom_instance = meme.Meme()
 
+        if top is None:
+            top = "_"
+        if bottom is None:
+            bottom = "_"
         # Check the type of the image parameter
         if user is not None:
             # If a User is provided, use their avatar URL
@@ -206,7 +210,7 @@ class Images(commands.Cog, name="images"):
             # If neither is provided, raise an error
             raise commands.BadArgument("You must provide a user mention or an image attachment.")
         
-        url = f"https://api.memegen.link/images/custom/{top}/{bottom}.{format}?background={image_url}"
+        url = f"https://api.memegen.link/images/custom/{top}/{bottom}.{format}?background={image_url}&api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
