@@ -76,9 +76,22 @@ class Images(commands.Cog, name="images"):
         name="deepfry",
         description="deepfry an image or user",
     )
-    async def deepfry(self, ctx: Context, image: discord.User or discord.File):
+    async def deepfry(self, ctx: Context, image: discord.User = None):
         fry_instance = deepfry.DeepFry()
-        image = await self.bot.loop.run_in_executor(self.executor, fry_instance.generate, [image.avatar.url], "", [], "")
+        # Check if an image was provided
+        if image is None:
+            # Check if it's an attachment
+            if ctx.message.attachments:
+                image_url = ctx.message.attachments[0].url
+            else:
+                image_url = ctx.author.avatar.url
+        else:
+            image_url = image.avatar.url
+
+        # Generate the deep fried image
+        image = await self.bot.loop.run_in_executor(self.executor, fry_instance.generate, [image_url], "", [], "")
+
+
         await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
 
 
