@@ -128,6 +128,18 @@ class Images(commands.Cog, name="images"):
 
         await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
 
+    @image.command(
+        name="citation",
+        description="citation needed",
+    )
+    async def citation(self, ctx: Context, text1: str, text2: str, text3: str):
+        await ctx.defer()
+        citation_instance = citation.Citation()
+        image = await self.bot.loop.run_in_executor(self.executor, citation_instance.generate, [], f"{text1},{text2},{text3}", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="citation.png"))
+
 
     @image.command(
         name="change_my_mind",
