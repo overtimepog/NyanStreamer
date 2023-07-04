@@ -191,12 +191,7 @@ class Images(commands.Cog, name="images"):
         name="custom",
         description="give top and bottom text to a user or image (Uses API)",
     )
-    #create choices
-    @app_commands.choices(choices=[
-        app_commands.Choice(name="png", value="png"),
-        app_commands.Choice(name="gif", value="gif"),
-        ])
-    async def custom(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None, top: str = None, bottom: str = None, format: app_commands.Choice[str] = "png"):
+    async def custom(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None, top: str = None, bottom: str = None, format: str = "png"):
         await ctx.defer()
         custom_instance = meme.Meme()
 
@@ -218,6 +213,8 @@ class Images(commands.Cog, name="images"):
                 return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, f'custom.{format}'))
+
+    @custom.autocomplete("format", choices=["png", "gif"])
 
 
     @commands.hybrid_command(
