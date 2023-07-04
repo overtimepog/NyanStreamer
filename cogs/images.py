@@ -54,21 +54,8 @@ class Images(commands.Cog, name="images"):
         self.bot = bot
         self.session = ClientSession(loop=bot.loop)
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
-
-    
-    @commands.hybrid_group(
-    name="image",
-    description="create funny images",
-    invoke_without_command=True,
-    aliases=["images", "meme", "memes"],
-    )
-    async def image(self, ctx: Context):
-        if ctx.invoked_subcommand is None:
-            #send an embed with the job commands
-            await ctx.send_help(ctx.command)
-            return
         
-    @image.command(
+    @commands.hybrid_command(
         name="abandon",
         description="abandon all hope",
     )
@@ -80,7 +67,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="abandon.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="aborted",
         description="aborted mission",
     )
@@ -92,7 +79,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="aborted.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="affect",
         description="no this doesnt affect my baby",
     )
@@ -116,7 +103,7 @@ class Images(commands.Cog, name="images"):
 
         await ctx.send(file=discord.File(fp=image, filename="affect.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="airpods",
         description="wear some airpods",
     )
@@ -128,7 +115,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="airpods.gif"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="america",
         description="god bless this country",
     )
@@ -152,7 +139,7 @@ class Images(commands.Cog, name="images"):
 
         await ctx.send(file=discord.File(fp=image, filename="america.gif"))
         
-    @image.command(
+    @commands.hybrid_command(
     name="armor",
     description="nothing gets through here",
     )
@@ -164,7 +151,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="armor.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="balloon",
         description="nothing gets through here",
     )
@@ -176,7 +163,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="balloon.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="bed",
         description="why do you hate me brother?",
     )
@@ -188,7 +175,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="bed.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="crab",
         description="TIME TO RAVE",
     )
@@ -200,7 +187,7 @@ class Images(commands.Cog, name="images"):
         # Send the video
         await ctx.send(file=discord.File(fp=video, filename="crab.mp4"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="deepfry",
         description="deepfry an image or user",
     )
@@ -224,7 +211,7 @@ class Images(commands.Cog, name="images"):
 
         await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="citation",
         description="citation needed",
     )
@@ -237,7 +224,7 @@ class Images(commands.Cog, name="images"):
         await ctx.send(file=File(fp=image, filename="citation.png"))
 
 
-    @image.command(
+    @commands.hybrid_command(
         name="change_my_mind",
         description="change my mind",
         aliases=["cmm", "changemymind"],
@@ -248,7 +235,7 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, change_my_mind_instance.generate, [], text, [], "")
         await ctx.send(file=discord.File(fp=image, filename="changemymind.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="delete",
         description="delete an image or user",
     )
@@ -272,7 +259,7 @@ class Images(commands.Cog, name="images"):
 
         await ctx.send(file=discord.File(fp=image, filename="delete.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="gru",
         description="I have a plan (Uses API)",
     )
@@ -295,7 +282,7 @@ class Images(commands.Cog, name="images"):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'gru.png'))
 
-    @image.command(
+    @commands.hybrid_command(
         name="buzz",
         description="To infinity and beyond! (Uses API)",
     )
@@ -313,7 +300,7 @@ class Images(commands.Cog, name="images"):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'buzz.gif'))
 
-    @image.command(
+    @commands.hybrid_command(
         name="buttons",
         description="I cant Choose! (Uses API)",
     )
@@ -332,7 +319,7 @@ class Images(commands.Cog, name="images"):
             await ctx.send(file=discord.File(data, 'buttons.png'))
 
 
-    @image.command(
+    @commands.hybrid_command(
         name="butterfly",
         description="Is this a butterfly? (Uses API)",
     )
@@ -375,7 +362,7 @@ class Images(commands.Cog, name="images"):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'butterfly.png'))
 
-    @image.command(
+    @commands.hybrid_command(
         name="expand_dong",
         description="my ding dong",
     )
@@ -387,7 +374,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename=f"{text}.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="genius",
         description="smart af (Uses API)",
     )
@@ -403,7 +390,7 @@ class Images(commands.Cog, name="images"):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'genius.gif'))
 
-    @image.command(
+    @commands.hybrid_command(
         name="tweet",
         description="tweet something",
     )
@@ -415,7 +402,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="tweet.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="wanted",
         description="just kidding nobody wants you",
     )
@@ -426,7 +413,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="wanted.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="whodidthis",
         description="who did this",
     )
@@ -437,7 +424,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="whodidthis.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="whothisis",
         description="who is this",
     )
@@ -448,7 +435,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="whothisis.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="youtube",
         description="just dont edit it",
     )
@@ -459,7 +446,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="youtube.png"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="kowalski",
         description="analysis",
     )
@@ -470,7 +457,7 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="kowalski.gif"))
 
-    @image.command(
+    @commands.hybrid_command(
         name="trigger",
         description="triggered",
     )
