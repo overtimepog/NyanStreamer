@@ -317,13 +317,14 @@ class Images(commands.Cog, name="images"):
         name="buttons",
         description="I cant Choose! (Uses API)",
     )
-    async def buttons(self, ctx: Context, button1: str, button2: str):
+    async def buttons(self, ctx: Context, user: discord.User, button1: str, button2: str):
         # Defer the interaction
         await ctx.defer()
 
         button1 = format_text(button1)
         button2 = format_text(button2)
-        url = f"https://api.memegen.link/images/ds/{button1}/{button2}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
+        style = user.avatar.url
+        url = f"https://api.memegen.link/images/ds/{button1}/{button2}.png?style={style}&api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
