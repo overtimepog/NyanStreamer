@@ -188,6 +188,52 @@ class Images(commands.Cog, name="images"):
         await ctx.send(file=discord.File(fp=video, filename="crab.mp4"))
 
     @commands.hybrid_command(
+        name="custom",
+        description="give top and bottom text to a user or image (Uses API)",
+    )
+    #create choices
+    @app_commands.choices(choices=[
+        app_commands.Choice(name="png", value="png"),
+        app_commands.Choice(name="gif", value="gif"),
+        ])
+    async def custom(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None, top: str = None, bottom: str = None, format: app_commands.Choice[str] = "png"):
+        await ctx.defer()
+        custom_instance = meme.Meme()
+
+        # Check the type of the image parameter
+        if user is not None:
+            # If a User is provided, use their avatar URL
+            image_url = str(user.avatar.url)
+        elif image is not None:
+            # If an Attachment is provided, use its URL
+            image_url = image.url
+        else:
+            # If neither is provided, raise an error
+            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+        
+        url = f"https://api.memegen.link/images/custom/{top}/{bottom}.{format}?background={image_url}"
+
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file... The Api is down :(')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, f'custom.{format}'))
+
+
+    @commands.hybrid_command(
+        name="dab",
+        description="dab on them haters",
+    )
+    async def dab(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        dab_instance = dab.Dab()
+        image = await self.bot.loop.run_in_executor(self.executor, dab_instance.generate, [user.avatar.url], "", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="dab.png"))
+
+
+    @commands.hybrid_command(
         name="deepfry",
         description="deepfry an image or user",
     )
