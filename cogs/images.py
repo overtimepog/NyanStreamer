@@ -36,6 +36,7 @@ class Images(commands.Cog, name="images"):
     name="image",
     description="create funny images",
     invoke_without_command=True,
+    aliases=["images", "meme", "memes"],
     )
     async def image(self, ctx):
         if ctx.invoked_subcommand is None:
