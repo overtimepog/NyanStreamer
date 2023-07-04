@@ -47,7 +47,7 @@ class Jobs(commands.Cog, name="jobs"):
     async def job(self, ctx):
         if ctx.invoked_subcommand is None:
             #send an embed with the job commands
-            ctx.send("Please use the `nya help job` command to see the job commands")
+            await ctx.send_help(ctx.command)
             return
 
     @job.command(

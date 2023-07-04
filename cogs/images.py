@@ -27,16 +27,23 @@ class Images(commands.Cog, name="images"):
     def __init__(self, bot):
         self.bot = bot
         self.session = ClientSession(loop=bot.loop)
+    
+    @commands.hybrid_group(
+    name="image",
+    description="create funny images",
+    invoke_without_command=True,
+    )
+    async def image(self, ctx):
+        if ctx.invoked_subcommand is None:
+            #send an embed with the job commands
+            await ctx.send_help(ctx.command)
+            return
 
-    async def get_avatar(self, url):
-        async with self.session.get(url) as response:
-            return BytesIO(await response.read())
-
-    @commands.hybrid_command(name="bed")
+    @image.command(
+        name="bed",
+        description="why do you hate me brother?",
+    )
     async def bed(self, ctx: Context, user1: discord.User, user2: discord.User):
-        avatar1 = await self.get_avatar(str(user1.avatar.url))
-        avatar2 = await self.get_avatar(str(user2.avatar.url))
-
         bed_instance = bed.Bed()
         image = bed_instance.generate([user1.avatar.url, user2.avatar.url], "Penis", [user1.name, user2.name], "Gamin")
 
