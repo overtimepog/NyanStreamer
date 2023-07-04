@@ -243,6 +243,7 @@ class Images(commands.Cog, name="images"):
             style = None
         else:
             # If neither is provided, raise an error
+            await ctx.send("You must provide text, a user mention or an image attachment for the butterfly.")
             raise commands.BadArgument("You must provide a text, user mention or an image attachment for the butterfly.")
 
         # Format the person and text parameters
