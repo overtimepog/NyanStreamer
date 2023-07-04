@@ -272,7 +272,7 @@ class Images(commands.Cog, name="images"):
         await ctx.defer()
 
         text = format_text(text)
-        url = f"https://api.memegen.link/images/rollsafe/{text}.gif?api_key=nu449chc96&watermark=nyanstreamer.lol"
+        url = f"https://api.memegen.link/images/rollsafe/{text}.gif?api_key=nu449chc96&watermark=nyanstreamer.lol?layout=top"
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
