@@ -69,6 +69,54 @@ class Images(commands.Cog, name="images"):
             return
         
     @image.command(
+        name="abandon",
+        description="abandon all hope",
+    )
+    async def abandon(self, ctx: Context, text: str):
+        await ctx.defer()
+        abandon_instance = abandon.Abandon()
+        image = await self.bot.loop.run_in_executor(self.executor, abandon_instance.generate, [], text, [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="abandon.png"))
+
+    @image.command(
+        name="aborted",
+        description="aborted mission",
+    )
+    async def aborted(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        aborted_instance = aborted.Aborted()
+        image = await self.bot.loop.run_in_executor(self.executor, aborted_instance.generate, [user.avatar.url], "", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="aborted.png"))
+
+    @image.command(
+        name="affect",
+        description="no this doesnt affect my baby",
+    )
+    async def affect(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+        await ctx.defer()
+        affect_instance = affect.Affect()
+
+        # Check the type of the image parameter
+        if user is not None:
+            # If a User is provided, use their avatar URL
+            image_url = str(user.avatar.url)
+        elif image is not None:
+            # If an Attachment is provided, use its URL
+            image_url = image.url
+        else:
+            # If neither is provided, raise an error
+            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+
+        # Generate the image
+        image = await self.bot.loop.run_in_executor(self.executor, affect_instance.generate, [image_url], "", [], "")
+
+        await ctx.send(file=discord.File(fp=image, filename="affect.png"))
+        
+    @image.command(
     name="armor",
     description="nothing gets through here",
     )
