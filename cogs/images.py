@@ -42,6 +42,17 @@ class Images(commands.Cog, name="images"):
             #send an embed with the job commands
             await ctx.send_help(ctx.command)
             return
+        
+    @image.command(
+    name="armor",
+    description="nothing gets through here",
+    )
+    async def armor(self, ctx: Context, text: str):
+        armor_instance = armor.Armor()
+        image = await self.bot.loop.run_in_executor(self.executor, armor_instance.generate, [], text, [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="armor.png"))
 
     @image.command(
         name="bed",
@@ -49,10 +60,10 @@ class Images(commands.Cog, name="images"):
     )
     async def bed(self, ctx: Context, user1: discord.User, user2: discord.User):
         bed_instance = bed.Bed()
-        image = await self.bot.loop.run_in_executor(self.executor, bed_instance.generate([user1.avatar.url, user2.avatar.url], "", [], ""))
+        image = await self.bot.loop.run_in_executor(self.executor, bed_instance.generate, [user1.avatar.url, user2.avatar.url], "", [], "")
 
         # send the image
-        await ctx.send(file=File(fp=image, filename="image.png"))
+        await ctx.send(file=File(fp=image, filename="bed.png"))
 
     @image.command(
         name="crab",
@@ -79,7 +90,7 @@ class Images(commands.Cog, name="images"):
     )
     async def deepfry(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
         fry_instance = deepfry.DeepFry()
-    
+
         # Check the type of the image parameter
         if user is not None:
             # If a User is provided, use their avatar URL
@@ -90,10 +101,10 @@ class Images(commands.Cog, name="images"):
         else:
             # If neither is provided, raise an error
             raise commands.BadArgument("You must provide a user mention or an image attachment.")
-    
+
         # Generate the deep fried image
         image = await self.bot.loop.run_in_executor(self.executor, fry_instance.generate, [image_url], "", [], "")
-    
+
         await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
 
 
@@ -129,8 +140,6 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, delete_instance.generate, [image_url], "", [], "")
 
         await ctx.send(file=discord.File(fp=image, filename="delete.png"))
-
-
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
