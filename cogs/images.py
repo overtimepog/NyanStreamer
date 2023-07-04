@@ -48,7 +48,7 @@ class Images(commands.Cog, name="images"):
     )
     async def bed(self, ctx: Context, user1: discord.User, user2: discord.User):
         bed_instance = bed.Bed()
-        image = bed_instance.generate([user1.avatar.url, user2.avatar.url], "", [], "")
+        image = await self.bot.loop.run_in_executor(self.executor, bed_instance.generate([user1.avatar.url, user2.avatar.url], "", [], ""))
 
         # send the image
         await ctx.send(file=File(fp=image, filename="image.png"))
@@ -71,6 +71,16 @@ class Images(commands.Cog, name="images"):
 
         # Send the video
         await ctx.send(file=discord.File(fp=video, filename="crab.mp4"))
+
+    @image.command(
+        name="deepfry",
+        description="deepfry an image or user",
+    )
+    async def deepfry(self, ctx: Context, image: discord.User or discord.File):
+        fry_instance = deepfry.DeepFry()
+        image = await self.bot.loop.run_in_executor(self.executor, fry_instance.generate, [image.avatar.url], "", [], "")
+        await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
