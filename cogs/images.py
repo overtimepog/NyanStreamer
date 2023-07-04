@@ -106,6 +106,29 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, change_my_mind_instance.generate, [], text, [], "")
         await ctx.send(file=discord.File(fp=image, filename="changemymind.png"))
 
+    @image.command(
+        name="delete",
+        description="delete an image or user",
+    )
+    async def delete(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+        delete_instance = delete.Delete()
+
+        # Check the type of the image parameter
+        if isinstance(user, discord.User):
+            # If it's a User, use their avatar URL
+            image_url = str(user.avatar.url)
+        elif isinstance(image, discord.Attachment):
+            # If it's an Attachment, use its URL
+            image_url = image.url
+        else:
+            # If it's neither, raise an error
+            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+
+        # Generate the deep fried image
+        image = await self.bot.loop.run_in_executor(self.executor, delete_instance.generate, [image_url], "", [], "")
+
+        await ctx.send(file=discord.File(fp=image, filename="delete.png"))
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
