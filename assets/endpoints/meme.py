@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import ImageDraw, Image
+from PIL import ImageDraw, Image, ImageFont
 from flask import send_file
 
 from assets.utils import http
@@ -114,4 +114,4 @@ class Meme():
         b = BytesIO()
         img.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return b

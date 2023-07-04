@@ -26,4 +26,4 @@ class KeepUrDistance():
         b = BytesIO()
         base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return b

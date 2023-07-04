@@ -1,3 +1,4 @@
+from io import BytesIO
 import uuid
 import os
 from flask import send_file, after_this_request
@@ -6,7 +7,6 @@ from flask import send_file, after_this_request
 from assets.utils.exceptions import BadRequest
 
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
-
 
 class Crab():
     """
@@ -18,15 +18,6 @@ class Crab():
 
     def generate(self, avatars, text, usernames, kwargs):
         name = uuid.uuid4().hex + '.mp4'
-
-        @after_this_request
-        def remove(response):  # pylint: disable=W0612
-            try:
-                os.remove(name)
-            except (FileNotFoundError, OSError, PermissionError):
-                pass
-
-            return response
 
         t = text.upper().replace(', ', ',').split(',')
         if len(t) != 2:
@@ -46,4 +37,10 @@ class Crab():
         video.write_videofile(name, threads=4, preset='superfast', verbose=False)
         clip.close()
         video.close()
-        return send_file(name, mimetype='video/mp4')
+        with open(name, 'rb') as f:
+            video_data = BytesIO(f.read())
+
+        # Remove the file after reading it
+        os.remove(name)
+
+        return video_data

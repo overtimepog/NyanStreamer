@@ -43,4 +43,4 @@ class Magik():
         img.save(file=b)
         b.seek(0)
         img.destroy()
-        return send_file(b, mimetype='image/png')
+        return b

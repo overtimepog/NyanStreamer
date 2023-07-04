@@ -35,7 +35,7 @@ class Profile():
             b = BytesIO()
             base.save(b, format='png')
             b.seek(0)
-            return send_file(b, mimetype='image/png')
+            return b
 
         active_effects = kwargs.get('active_effects', None)
         total_h = 0
@@ -225,4 +225,4 @@ class Profile():
         get_redis().set(f'expiry:avatar:{avatar_hash}', str(int(time())), ex=7200)
 
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return b

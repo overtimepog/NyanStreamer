@@ -21,4 +21,4 @@ class Gay():
         b = BytesIO()
         img1.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return b

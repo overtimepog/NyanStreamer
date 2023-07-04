@@ -45,4 +45,4 @@ class Unpopular():
         b = BytesIO()
         base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return b

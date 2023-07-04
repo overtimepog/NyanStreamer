@@ -32,4 +32,4 @@ class Airpods():
         out[0].save(b, format='gif', save_all=True, append_images=out[1:], loop=0, disposal=2, optimize=True,
                     duration=30, transparency=0)
         b.seek(0)
-        return send_file(b, mimetype='image/gif')
+        return b

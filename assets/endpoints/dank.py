@@ -51,4 +51,4 @@ class Dank():
         frames[0].save(b, save_all=True, append_images=frames[1:], format='gif', loop=0, duration=20,
                        optimize=True)
         b.seek(0)
-        return send_file(b, mimetype='image/gif')
+        return b

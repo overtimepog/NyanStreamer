@@ -24,4 +24,4 @@ class Fakenews():
         b = BytesIO()
         final_image.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return b

@@ -1,3 +1,4 @@
+from io import BytesIO
 import uuid
 import os
 from flask import send_file, after_this_request
@@ -44,4 +45,10 @@ class LetMeIn():
         video.write_videofile(name, threads=4, preset='superfast', verbose=False)
         clip.close()
         video.close()
-        return send_file(name, mimetype='video/mp4')
+        with open(name, 'rb') as f:
+            video_data = BytesIO(f.read())
+
+        # Remove the file after reading it
+        os.remove(name)
+
+        return video_data
