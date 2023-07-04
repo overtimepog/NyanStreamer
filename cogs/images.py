@@ -226,32 +226,35 @@ class Images(commands.Cog, name="images"):
         description="Is this a butterfly?",
     )
     async def butterfly(self, ctx: Context, person: str, text: str, butterfly_text: str = None, butterfly_user: discord.User = None, butterfly_image: discord.Attachment = None):
-        # Defer the interaction
         await ctx.defer()
 
         # Check the type of the butterfly parameter
-        if butterfly_text is not None:
-            # If it's a text, use it directly
+        if butterfly_user is not None:
+            # If a User is provided, use their avatar URL
+            butterfly_content = "_"
+            style = str(butterfly_user.avatar.url)
+        elif butterfly_image is not None:
+            # If an Attachment is provided, use its URL
+            butterfly_content = "_"
+            style = butterfly_image.url
+        elif butterfly_text is not None:
+            # If a text is provided, use it
             butterfly_content = butterfly_text
             style = None
-        elif isinstance(butterfly_user, discord.User):
-            # If it's a User, use their avatar URL
-            butterfly_content = '_'
-            style = str(butterfly_user.avatar.url)
-        elif isinstance(butterfly_image, discord.Attachment):
-            # If it's an Attachment, use its URL
-            butterfly_content = '_'
-            style = butterfly_image.url
         else:
-            # If it's neither, raise an error
+            # If neither is provided, raise an error
             raise commands.BadArgument("You must provide a text, user mention or an image attachment for the butterfly.")
+
+        # Format the person and text parameters
+        person = format_text(person)
+        text = format_text(text)
 
         # Generate the image URL
         url = f"https://api.memegen.link/images/pigeon/{person}/{butterfly_content}/{text}.png"
         if style is not None:
             url += f"?style={style}"
 
-        url += "?api_key=nu449chc96&watermark=nyanstreamer.lol"
+        url += "&api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         # Send the image
         async with self.session.get(url) as resp:
