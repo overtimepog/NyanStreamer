@@ -202,5 +202,63 @@ class Images(commands.Cog, name="images"):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'buzz.gif'))
 
+    @image.command(
+        name="buttons",
+        description="I cant Choose!",
+    )
+    async def buttons(self, ctx: Context, button1: str, button2: str):
+        # Defer the interaction
+        await ctx.defer()
+
+        button1 = format_text(button1)
+        button2 = format_text(button2)
+        url = f"https://api.memegen.link/images/ds/{button1}/{button2}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
+
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'buttons.png'))
+
+
+    @image.command(
+        name="butterfly",
+        description="Is this a butterfly?",
+    )
+    async def butterfly(self, ctx: Context, person: str, text: str, butterfly_text: str = None, butterfly_user: discord.User = None, butterfly_image: discord.Attachment = None):
+        # Defer the interaction
+        await ctx.defer()
+
+        # Check the type of the butterfly parameter
+        if butterfly_text is not None:
+            # If it's a text, use it directly
+            butterfly_content = butterfly_text
+            style = None
+        elif isinstance(butterfly_user, discord.User):
+            # If it's a User, use their avatar URL
+            butterfly_content = '_'
+            style = str(butterfly_user.avatar.url)
+        elif isinstance(butterfly_image, discord.Attachment):
+            # If it's an Attachment, use its URL
+            butterfly_content = '_'
+            style = butterfly_image.url
+        else:
+            # If it's neither, raise an error
+            raise commands.BadArgument("You must provide a text, user mention or an image attachment for the butterfly.")
+
+        # Generate the image URL
+        url = f"https://api.memegen.link/images/pigeon/{person}/{butterfly_content}/{text}.png"
+        if style is not None:
+            url += f"?style={style}"
+
+        url += "?api_key=nu449chc96&watermark=nyanstreamer.lol"
+
+        # Send the image
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'butterfly.png'))
+
 async def setup(bot):
     await bot.add_cog(Images(bot))
