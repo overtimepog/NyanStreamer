@@ -12,8 +12,8 @@ class Balloon():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/balloon/balloon.bmp')).convert('RGBA')
-        font = ImageFont.truetype('assets/fonts/sans.ttf')
+        base = Image.open(('assets/assets/balloon/balloon.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/assets/fonts/sans.ttf')
         canv = ImageDraw.Draw(base)
 
         text = text.split(', ')

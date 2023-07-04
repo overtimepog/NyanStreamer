@@ -13,7 +13,7 @@ class Affect():
 
     def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((200, 157)).convert('RGBA')
-        base = Image.open(('assets/affect/affect.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/affect/affect.bmp')).convert('RGBA')
 
         base.paste(avatar, (180, 383, 380, 540), avatar)
         base = base.convert('RGB')

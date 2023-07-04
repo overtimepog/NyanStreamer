@@ -12,8 +12,8 @@ class EmergencyMeeting():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/emergencymeeting/emergencymeeting.bmp'))
-        font = ImageFont.truetype('assets/fonts/medium.woff', size=33)
+        base = Image.open(('assets/assets/emergencymeeting/emergencymeeting.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/medium.woff', size=33)
         canv = ImageDraw.Draw(base)
         if len(text) >= 140:
             text = text[:137] + "..."

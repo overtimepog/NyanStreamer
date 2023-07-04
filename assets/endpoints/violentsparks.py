@@ -12,8 +12,8 @@ class ViolentSparks():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/violentsparks/violentsparks.bmp'))
-        font = ImageFont.truetype('assets/fonts/medium.woff', size=36)
+        base = Image.open(('assets/assets/violentsparks/violentsparks.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/medium.woff', size=36)
         canv = ImageDraw.Draw(base)
         try:
             me, sparks = text.replace(' ,', ',', 1).split(',', 1)

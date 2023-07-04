@@ -12,9 +12,9 @@ class Walking():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/walking/walking.bmp'))
+        base = Image.open(('assets/assets/walking/walking.bmp'))
 
-        font = ImageFont.truetype('assets/fonts/sans.ttf', size=50)
+        font = ImageFont.truetype('assets/assets/fonts/sans.ttf', size=50)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 1000)
         render_text_with_emoji(base, canv, (35, 35), text, font=font, fill='black')

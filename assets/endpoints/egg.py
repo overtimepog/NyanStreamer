@@ -12,7 +12,7 @@ class Egg():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/egg/egg.bmp')).resize((350, 350)).convert('RGBA')
+        base = Image.open(('assets/assets/egg/egg.bmp')).resize((350, 350)).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((50, 50)).convert('RGBA')
 
         base.paste(avatar, (143, 188), avatar)

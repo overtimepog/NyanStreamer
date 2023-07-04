@@ -12,8 +12,8 @@ class Cheating():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/cheating/cheating.bmp'))
-        font = ImageFont.truetype('assets/fonts/medium.woff', size=26)
+        base = Image.open(('assets/assets/cheating/cheating.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/medium.woff', size=26)
         canv = ImageDraw.Draw(base)
         try:
             me, classmate = text.replace(' ,', ',', 1).split(',', 1)

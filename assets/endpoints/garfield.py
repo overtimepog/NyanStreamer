@@ -15,9 +15,9 @@ class Garfield():
 
     def generate(self, avatars, text, usernames, kwargs):
 
-        base = Image.open(('assets/garfield/garfield.png')).convert('RGB')
-        no_entry = Image.open(('assets/garfield/no_entry.png')).convert('RGBA').resize((224, 224), Image.LANCZOS)
-        font = ImageFont.truetype('assets/fonts/arial.ttf', size=28)
+        base = Image.open(('assets/assets/garfield/garfield.png')).convert('RGB')
+        no_entry = Image.open(('assets/assets/garfield/no_entry.png')).convert('RGBA').resize((224, 224), Image.LANCZOS)
+        font = ImageFont.truetype('assets/assets/fonts/arial.ttf', size=28)
         avatar = get_image(avatars[0]).resize((192, 192), Image.LANCZOS).convert('RGBA')
         avatar2 = avatar.copy().resize((212, 212), Image.LANCZOS).convert('RGBA')
 

@@ -14,9 +14,9 @@ class Unpopular():
 
     def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((666, 666)).convert('RGBA')
-        base = Image.open(('assets/unpopular/unpopular.bmp')).convert('RGBA')
-        font = ImageFont.truetype('assets/fonts/semibold.woff', size=100)
-        reticle = Image.open(('assets/unpopular/reticle.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/unpopular/unpopular.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/assets/fonts/semibold.woff', size=100)
+        reticle = Image.open(('assets/assets/unpopular/reticle.bmp')).convert('RGBA')
         temp = Image.new('RGBA', (1200, 800), color=(0, 0, 0, 0))
         avatar_square = Image.new(mode='RGBA', size=(360, 270), color=(0, 0, 0, 0))
         avatar_mono = avatar.resize((300, 310)).rotate(16, expand=1).convert('1')

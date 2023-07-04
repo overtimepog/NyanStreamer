@@ -61,7 +61,7 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
 
     emoji_set = 'twemoji'
     if emoji_set == 'apple':
-        emojis = os.listdir('assets/emoji')
+        emojis = os.listdir('assets/assets/emoji')
         for i in range(0, len(text)):
             char = text[i]
             if char == '\n':
@@ -110,11 +110,11 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
                 draw.text(coords, char, font=font, fill=fill)
                 coords = (coords[0] + size[0], coords[1])
             else:
-                emoji_img = Image.open(f'assets/emoji/{emoji}.png').convert('RGBA').resize((emoji_size, emoji_size), Image.LANCZOS)
+                emoji_img = Image.open(f'assets/assets/emoji/{emoji}.png').convert('RGBA').resize((emoji_size, emoji_size), Image.LANCZOS)
                 img.paste(emoji_img, (coords[0], coords[1] + 4), emoji_img)
                 coords = (coords[0] + emoji_size + 4, coords[1])
     elif emoji_set == 'twemoji':
-        emojis = os.listdir('assets/twemoji')
+        emojis = os.listdir('assets/assets/twemoji')
         for i in range(0, len(text)):
             char = text[i]
             if char == '\n':
@@ -148,7 +148,7 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
                 draw.text(coords, char, font=font, fill=fill)
                 coords = (coords[0] + size[0], coords[1])
             else:
-                emoji_img = Image.open(f'assets/twemoji/{emoji}.png').convert('RGBA').resize((emoji_size, emoji_size),
+                emoji_img = Image.open(f'assets/assets/twemoji/{emoji}.png').convert('RGBA').resize((emoji_size, emoji_size),
                                                                                            Image.LANCZOS)
                 img.paste(emoji_img, (coords[0], coords[1] + 4), emoji_img)
                 coords = (coords[0] + emoji_size + 4, coords[1])

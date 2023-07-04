@@ -15,8 +15,8 @@ class JustPretending():
         text = text.replace(', ', ',').split(',')
         if len(text) != 2:
             text = ['you should add two things split by commas', 'idiot']
-        base = Image.open(('assets/justpretending/justpretending.jpg'))
-        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=24)
+        base = Image.open(('assets/assets/justpretending/justpretending.jpg'))
+        font = ImageFont.truetype('assets/assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
         render_text_with_emoji(base, canv, (678, 12), wrap(font, text[0], 320), font, 'black')
         render_text_with_emoji(base, canv, (9, 800), wrap(font, text[1], 100), font, 'black')

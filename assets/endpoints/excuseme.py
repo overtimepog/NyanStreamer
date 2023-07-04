@@ -12,9 +12,9 @@ class ExcuseMe():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/excuseme/excuseme.bmp'))
+        base = Image.open(('assets/assets/excuseme/excuseme.bmp'))
 
-        font = ImageFont.truetype('assets/fonts/sans.ttf', size=40)
+        font = ImageFont.truetype('assets/assets/fonts/sans.ttf', size=40)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 787)
         render_text_with_emoji(base, canv, (20, 15), text, font=font, fill='Black')

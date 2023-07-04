@@ -27,7 +27,7 @@ class Kowalski():
                 pass
 
             return response
-        clip = VideoFileClip("assets/kowalski/kowalski.gif")
+        clip = VideoFileClip("assets/assets/kowalski/kowalski.gif")
         text = TextClip(text, fontsize=36, method='caption', size=(245, None), align='West',  color='black',
                         stroke_color='black', stroke_width=1,
                         font='Verdana').set_duration(clip.duration)

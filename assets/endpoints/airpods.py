@@ -14,8 +14,8 @@ class Airpods():
     def generate(self, avatars, text, usernames, kwargs):
         blank = Image.new('RGBA', (400, 128), (255, 255, 255, 0))
         avatar = http.get_image(avatars[0]).convert('RGBA').resize((128, 128))
-        left = Image.open('assets/airpods/left.gif')
-        right = Image.open('assets/airpods/right.gif')
+        left = Image.open('assets/assets/airpods/left.gif')
+        right = Image.open('assets/assets/airpods/right.gif')
         out = []
         for i in range(0, left.n_frames):
             left.seek(i)

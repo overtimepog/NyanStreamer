@@ -12,7 +12,7 @@ class SickBan():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/ban/ban.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/ban/ban.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((400, 400)).convert('RGBA')
         base.paste(avatar, (70, 344), avatar)
         base = base.convert('RGBA')

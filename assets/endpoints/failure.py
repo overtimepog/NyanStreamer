@@ -12,7 +12,7 @@ class Failure():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/failure/failure.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/failure/failure.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((215, 215)).convert('RGBA')
 
         base.paste(avatar, (143, 525), avatar)

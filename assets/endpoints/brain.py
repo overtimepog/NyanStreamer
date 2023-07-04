@@ -12,8 +12,8 @@ class Brain():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/brain/brain.bmp'))
-        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=30)
+        base = Image.open(('assets/assets/brain/brain.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/verdana.ttf', size=30)
 
         if len(text.split(',')) < 4:
             a, b, c, d = 'you need, four items, for this, command (split by commas)'.split(',')

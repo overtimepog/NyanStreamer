@@ -23,7 +23,7 @@ class Meme():
     def generate(self, avatars, text, usernames, kwargs):  # pylint: disable=R0915
         img = http.get_image(avatars[0]).convert('RGBA')
         factor = int(img.height / 10)
-        font = ImageFont.truetype(f'assets/fonts/{kwargs.get("font", "impact")}.ttf', size=factor)
+        font = ImageFont.truetype(f'assets/assets/fonts/{kwargs.get("font", "impact")}.ttf', size=factor)
         draw = ImageDraw.Draw(img)
         color = kwargs.get('color', 'white')
 
@@ -96,7 +96,7 @@ class Meme():
                 last_y = y
 
         if kwargs.get('altstyle', 'null').lower() == 'true':
-            text_font = ImageFont.truetype(f'assets/fonts/{kwargs.get("font", "arial")}.ttf', size=24)
+            text_font = ImageFont.truetype(f'assets/assets/fonts/{kwargs.get("font", "arial")}.ttf', size=24)
             text = wrap(text_font, kwargs.get('top_text', 'TOP TEXT'), img.width)
             text_img = Image.new('RGB', (img.width, 10000), 'white')
             text_draw = ImageDraw.Draw(text_img)

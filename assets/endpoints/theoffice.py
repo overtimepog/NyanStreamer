@@ -12,8 +12,8 @@ class TheOffice():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/theoffice/theoffice.png'))
-        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=28)
+        base = Image.open(('assets/assets/theoffice/theoffice.png'))
+        font = ImageFont.truetype('assets/assets/fonts/verdana.ttf', size=28)
         canv = ImageDraw.Draw(base)
 
         left, right = text.replace(', ', ',').split(',', 2)

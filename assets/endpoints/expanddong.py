@@ -21,9 +21,9 @@ class ExpandDong():
         line = 0
         pos = 0
         chars = dict()
-        for i in listdir('assets/expanddong'):
+        for i in listdir('assets/assets/expanddong'):
             if i.endswith('.bmp'):
-                chars[i[0]] = Image.open(f'assets/expanddong/{i}')
+                chars[i[0]] = Image.open(f'assets/assets/expanddong/{i}')
         for word in text.split(' '):
             if 15 - pos <= len(word):
                 pos = 0

@@ -12,8 +12,8 @@ class Violence():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/violence/violence.jpg'))
-        font = ImageFont.truetype('assets/fonts/arimobold.ttf', size=24)
+        base = Image.open(('assets/assets/violence/violence.jpg'))
+        font = ImageFont.truetype('assets/assets/fonts/arimobold.ttf', size=24)
         canv = ImageDraw.Draw(base)
         render_text_with_emoji(base, canv, (355, 0), wrap(font, text, 270), font, 'black')
 

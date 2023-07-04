@@ -13,9 +13,9 @@ class WhoThisIs():
     params = ['avatar0', 'text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/whothisis/whothisis.bmp'))
+        base = Image.open(('assets/assets/whothisis/whothisis.bmp'))
         avatar = http.get_image(avatars[0]).resize((215, 215)).convert('RGBA')
-        font = ImageFont.truetype('assets/fonts/arimobold.ttf', size=40)
+        font = ImageFont.truetype('assets/assets/fonts/arimobold.ttf', size=40)
         base.paste(avatar, (523, 15), avatar)
         base.paste(avatar, (509, 567), avatar)
         base = base.convert('RGBA')

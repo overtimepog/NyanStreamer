@@ -13,7 +13,7 @@ class Brazzers():
 
     def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).convert('RGBA')
-        base = Image.open(('assets/brazzers/brazzers.bmp'))
+        base = Image.open(('assets/assets/brazzers/brazzers.bmp'))
         aspect = avatar.width / avatar.height
 
         new_height = int(base.height * aspect)

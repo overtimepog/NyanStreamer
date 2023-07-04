@@ -12,8 +12,8 @@ class ExpandingWWE():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/expandingwwe/expandingwwe.jpg'))
-        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=30)
+        base = Image.open(('assets/assets/expandingwwe/expandingwwe.jpg'))
+        font = ImageFont.truetype('assets/assets/fonts/verdana.ttf', size=30)
 
         text = text.replace(', ', ',')
 

@@ -12,7 +12,7 @@ class Door():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/door/door.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/door/door.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((479, 479)).convert('RGBA')
         final_image = Image.new('RGBA', base.size)
 

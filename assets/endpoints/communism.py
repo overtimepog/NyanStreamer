@@ -13,7 +13,7 @@ class Communism():
 
     def generate(self, avatars, text, usernames, kwargs):
         img1 = http.get_image(avatars[0]).convert('RGBA').resize((300, 300))
-        img2 = Image.open('assets/communism/communism.gif')
+        img2 = Image.open('assets/assets/communism/communism.gif')
         img1.putalpha(96)
 
         out = []

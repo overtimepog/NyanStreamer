@@ -115,7 +115,7 @@ this is all the object templates for the game
                 {
                     "structure_id": "dungeon",
                     "structure_name": "Dungeon",
-                    "structure_image": "https://cdnb.artstation.com/p/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
+                    "structure_image": "https://cdnb.artstation.com/p/assets/assets/images/images/019/287/549/large/sergey-saranov-3st.jpg?1562812038",
                     "structure_description": "A dark, foreboding dungeon filled with traps and treasures.",
                     "structure_outcomesID": "dungeon",
                     "structure_outcomes": [

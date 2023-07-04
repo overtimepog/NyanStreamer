@@ -12,7 +12,7 @@ class Kimborder():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/kimborder/kimborder.png'))
+        base = Image.open(('assets/assets/kimborder/kimborder.png'))
         white = Image.new('RGBA', (base.width, base.height), 0x00000000)
         img1 = http.get_image(avatars[0]).convert('RGBA')
         img1 = img1.resize((img1.width, img1.height), Image.LANCZOS)

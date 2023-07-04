@@ -17,7 +17,7 @@ class DeepFry():
 
         # noinspection PyPep8
         joy, hand, hundred, fire = [
-            Image.open((f'assets/deepfry/{asset}.bmp'))
+            Image.open((f'assets/assets/deepfry/{asset}.bmp'))
             .resize((100, 100))
             .rotate(randint(-30, 30))
             .convert('RGBA')

@@ -13,7 +13,7 @@ class Disability():
 
     def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((175, 175)).convert('RGBA')
-        base = Image.open(('assets/disability/disability.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/disability/disability.bmp')).convert('RGBA')
 
         base.paste(avatar, (450, 325), avatar)
         base = base.convert('RGBA')

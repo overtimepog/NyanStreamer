@@ -12,7 +12,7 @@ class Cancer():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/cancer/cancer.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/cancer/cancer.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((100, 100)).convert('RGBA')
 
         base.paste(avatar, (351, 200), avatar)

@@ -13,10 +13,10 @@ class Floor():
     params = ['avatar0', 'text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/floor/floor.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/floor/floor.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((45, 45)).convert('RGBA')
         avatar2 = avatar.copy().resize((23, 23))
-        font = ImageFont.truetype('assets/fonts/sans.ttf', size=22)
+        font = ImageFont.truetype('assets/assets/fonts/sans.ttf', size=22)
         canv = ImageDraw.Draw(base)
 
         text = wrap(font, text, 300)

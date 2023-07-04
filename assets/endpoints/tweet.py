@@ -18,12 +18,12 @@ class Tweet():
     params = ['avatar0', 'username0', 'text', 'username1', 'altstyle']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/tweet/trump.bmp'))
+        base = Image.open(('assets/assets/tweet/trump.bmp'))
         avatar = http.get_image(avatars[0]).resize((98, 98)).convert('RGBA')
-        font = ImageFont.truetype('assets/fonts/segoeuireg.ttf', size=50, )
-        font2 = ImageFont.truetype('assets/fonts/robotomedium.ttf', size=40)
-        font3 = ImageFont.truetype('assets/fonts/robotoregular.ttf', size=29)
-        font4 = ImageFont.truetype('assets/fonts/robotoregular.ttf', size=35)
+        font = ImageFont.truetype('assets/assets/fonts/segoeuireg.ttf', size=50, )
+        font2 = ImageFont.truetype('assets/assets/fonts/robotomedium.ttf', size=40)
+        font3 = ImageFont.truetype('assets/assets/fonts/robotoregular.ttf', size=29)
+        font4 = ImageFont.truetype('assets/assets/fonts/robotoregular.ttf', size=35)
 
         circle = Image.new('L', (20, 20), 0)
         draw = ImageDraw.Draw(circle)

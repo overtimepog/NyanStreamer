@@ -12,10 +12,10 @@ class SaveHumanity():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/humanity/humanity.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/humanity/humanity.bmp')).convert('RGBA')
         # We need a text layer here for the rotation
         text_layer = Image.new('RGBA', base.size)
-        font = ImageFont.truetype('assets/fonts/sans.ttf', size=16)
+        font = ImageFont.truetype('assets/assets/fonts/sans.ttf', size=16)
         canv = ImageDraw.Draw(text_layer)
 
         text = wrap(font, text, 180)

@@ -13,7 +13,7 @@ class Trash():
 
     def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((483, 483)).convert('RGBA')
-        base = Image.open(('assets/trash/trash.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/trash/trash.bmp')).convert('RGBA')
 
         avatar = avatar.filter(ImageFilter.GaussianBlur(radius=6))
         base.paste(avatar, (480, 0), avatar)

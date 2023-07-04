@@ -12,8 +12,8 @@ class ConfusedCat():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/confusedcat/confusedcat.bmp'))
-        font = ImageFont.truetype('assets/fonts/medium.woff', size=36)
+        base = Image.open(('assets/assets/confusedcat/confusedcat.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/medium.woff', size=36)
         canv = ImageDraw.Draw(base)
         try:
             ladies, cat = text.replace(' ,', ',', 1).split(',', 1)

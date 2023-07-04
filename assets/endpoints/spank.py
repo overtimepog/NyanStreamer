@@ -12,7 +12,7 @@ class Spank():
     params = ['avatar0', 'avatar1']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/spank/spank.bmp')).resize((500, 500))
+        base = Image.open(('assets/assets/spank/spank.bmp')).resize((500, 500))
         img1 = http.get_image(avatars[0]).resize((140, 140)).convert('RGBA')
         img2 = http.get_image(avatars[1]).resize((120, 120)).convert('RGBA')
         base.paste(img1, (225, 5), img1)

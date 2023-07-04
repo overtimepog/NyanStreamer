@@ -15,8 +15,8 @@ class Citation():
         text = text.replace(', ', ',').split(',')
         if len(text) != 3:
             text = ['M.O.A. CITATION', 'You must have 3 arguments split by comma', 'PENALTY ASSESSED - WRONG IMAGE']
-        base = Image.open(('assets/citation/citation.bmp'))
-        font = ImageFont.truetype('assets/fonts/bmmini.ttf', size=16)
+        base = Image.open(('assets/assets/citation/citation.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/bmmini.ttf', size=16)
         canv = ImageDraw.Draw(base)
         text_0 = wrap(font, text[0], 320)
         text_1 = wrap(font, text[1], 320)

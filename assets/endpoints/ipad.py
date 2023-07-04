@@ -13,7 +13,7 @@ class IPad():
 
     def generate(self, avatars, text, usernames, kwargs):
         white = Image.new('RGBA', (2048, 1364), 0x00000000)
-        base = Image.open(('assets/ipad/ipad.png'))
+        base = Image.open(('assets/assets/ipad/ipad.png'))
         img1 = http.get_image(avatars[0]).convert('RGBA').resize((512, 512), Image.LANCZOS)
 
         img1 = skew(img1, [(476, 484), (781, 379), (956, 807), (668, 943)])

@@ -13,7 +13,7 @@ class America():
 
     def generate(self, avatars, text, usernames, kwargs):
         img1 = http.get_image(avatars[0]).convert('RGBA').resize((480, 480))
-        img2 = Image.open('assets/america/america.gif')
+        img2 = Image.open('assets/assets/america/america.gif')
         img1.putalpha(128)
 
         out = []

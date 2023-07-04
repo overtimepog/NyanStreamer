@@ -17,9 +17,9 @@ class Profile():
     params = ['avatar0', 'username1', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
 
     def generate(self, avatars, text, usernames, kwargs):
-        font = ImageFont.truetype('assets/fonts/MontserratBold.ttf', size=30, )
-        font2 = ImageFont.truetype('assets/fonts/Montserrat.ttf', size=22, )
-        font3 = ImageFont.truetype('assets/fonts/MontserratBold.ttf', size=30, )
+        font = ImageFont.truetype('assets/assets/fonts/MontserratBold.ttf', size=30, )
+        font2 = ImageFont.truetype('assets/assets/fonts/Montserrat.ttf', size=22, )
+        font3 = ImageFont.truetype('assets/assets/fonts/MontserratBold.ttf', size=30, )
         test = Image.new('L', (1, 1))
         test_draw = ImageDraw.Draw(test)
 
@@ -46,7 +46,7 @@ class Profile():
                 return total_h + h
 
         base = Image.new('RGBA', (600, 600 + total_h + 32), '#2C2F33')
-        image = Image.open(('assets/profile/background.jpg')).resize((600, 260), Image.LANCZOS).convert('RGB')
+        image = Image.open(('assets/assets/profile/background.jpg')).resize((600, 260), Image.LANCZOS).convert('RGB')
         base.paste(image, (0, 0))
 
         avatar_hash = hashlib.sha256(avatars[0].encode()).hexdigest()
@@ -117,7 +117,7 @@ class Profile():
         base.paste(avatar, avatar_pos, avatar)  # Calculate center with banner bottom - 64 and image width - 64
 
         if prestige:
-            icon = Image.open((f'assets/profile/prestige/{prestige}.png'))
+            icon = Image.open((f'assets/assets/profile/prestige/{prestige}.png'))
             base.paste(icon, (avatar_pos[0] + 64, avatar_pos[1] - 16), icon)
 
         draw = ImageDraw.Draw(base)
@@ -165,7 +165,7 @@ class Profile():
                 for j in possible_effects:
                     if i.startswith(f':{j}:'):
                         effect = i.replace(f':{j}:', '')
-                        effect_icon = Image.open((f'assets/profile/activeitems/{j}.png')).resize((32, 32), Image.LANCZOS)
+                        effect_icon = Image.open((f'assets/assets/profile/activeitems/{j}.png')).resize((32, 32), Image.LANCZOS)
                         base.paste(effect_icon, (365, 455 + height), effect_icon)
                         w, h = draw.textsize(wrap(font2, effect, 170), font2)
                         draw.text((402, 460 + height), wrap(font2, effect, 170), font=font2)

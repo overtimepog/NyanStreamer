@@ -12,8 +12,8 @@ class Ohno():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/ohno/ohno.bmp')).convert('RGBA')
-        font = ImageFont.truetype('assets/fonts/sans.ttf', size=16 if len(text) > 38 else 32)
+        base = Image.open(('assets/assets/ohno/ohno.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/assets/fonts/sans.ttf', size=16 if len(text) > 38 else 32)
         canv = ImageDraw.Draw(base)
 
         text = wrap(font, text, 260)

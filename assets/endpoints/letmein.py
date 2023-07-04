@@ -30,7 +30,7 @@ class LetMeIn():
 
             return response
 
-        clip = VideoFileClip("assets/letmein/letmein.mp4")
+        clip = VideoFileClip("assets/assets/letmein/letmein.mp4")
 
 
 

@@ -12,7 +12,7 @@ class Boo():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/boo/boo.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/boo/boo.bmp')).convert('RGBA')
         # We need a text layer here for the rotation
         canv = ImageDraw.Draw(base)
 
@@ -24,10 +24,10 @@ class Boo():
         first, second = text
 
         first_font, first_text = auto_text_size(first,
-                                                ImageFont.truetype('assets/fonts/sans.ttf'), 144,
+                                                ImageFont.truetype('assets/assets/fonts/sans.ttf'), 144,
                                                 font_scalar=0.7)
         second_font, second_text = auto_text_size(second,
-                                                  ImageFont.truetype('assets/fonts/sans.ttf'),
+                                                  ImageFont.truetype('assets/assets/fonts/sans.ttf'),
                                                   144,
                                                   font_scalar=0.7)
 

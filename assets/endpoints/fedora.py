@@ -12,7 +12,7 @@ class Fedora():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/fedora/fedora.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/fedora/fedora.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((275, 275)).convert('RGBA')
         final_image = Image.new('RGBA', base.size)
 

@@ -15,8 +15,8 @@ class Lick():
         text = text.replace(', ', ',').split(',')
         if len(text) != 2:
             text = ['Dank Memer', 'People who do not split with a comma']
-        base = Image.open(('assets/lick/lick.jpg'))
-        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=24)
+        base = Image.open(('assets/assets/lick/lick.jpg'))
+        font = ImageFont.truetype('assets/assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
         render_text_with_emoji(base, canv, (80, 200), wrap(font, text[0], 220), font, 'white')
         render_text_with_emoji(base, canv, (290, 240), wrap(font, text[1], 320), font, 'white')

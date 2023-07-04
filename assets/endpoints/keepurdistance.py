@@ -12,8 +12,8 @@ class KeepUrDistance():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/keepurdistance/keepurdistance.png'))
-        font = ImageFont.truetype('assets/fonts/MontserratBold.ttf', size=24)
+        base = Image.open(('assets/assets/keepurdistance/keepurdistance.png'))
+        font = ImageFont.truetype('assets/assets/fonts/MontserratBold.ttf', size=24)
         canv = ImageDraw.Draw(base)
 
         text = text.upper()

@@ -12,8 +12,8 @@ class Plan():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/plan/plan.bmp')).convert('RGBA')
-        font = ImageFont.truetype('assets/fonts/sans.ttf', size=16)
+        base = Image.open(('assets/assets/plan/plan.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/assets/fonts/sans.ttf', size=16)
         canv = ImageDraw.Draw(base)
 
         words = text.split(', ')

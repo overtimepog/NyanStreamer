@@ -12,8 +12,8 @@ class DogLemon():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/doglemon/doglemon.bmp'))
-        font = ImageFont.truetype('assets/fonts/medium.woff', size=30)
+        base = Image.open(('assets/assets/doglemon/doglemon.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/medium.woff', size=30)
         canv = ImageDraw.Draw(base)
         try:
             lemon, dog = text.replace(' ,', ',', 1).split(',', 1)

@@ -12,7 +12,7 @@ class Ugly():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/ugly/ugly.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/ugly/ugly.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((175, 175)).convert('RGBA')
         base.paste(avatar, (120, 55), avatar)
         base = base.convert('RGBA')

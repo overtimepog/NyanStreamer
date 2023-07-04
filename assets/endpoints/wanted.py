@@ -12,7 +12,7 @@ class Wanted():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/wanted/wanted.bmp')).convert('RGBA')
+        base = Image.open(('assets/assets/wanted/wanted.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((447, 447)).convert('RGBA')
         base.paste(avatar, (145, 282), avatar)
 

@@ -12,7 +12,7 @@ class Slap():
     params = ['avatar0', 'avatar1']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/batslap/batslap.bmp')).resize((1000, 500)).convert('RGBA')
+        base = Image.open(('assets/assets/batslap/batslap.bmp')).resize((1000, 500)).convert('RGBA')
         avatar = http.get_image(avatars[1]).resize((220, 220)).convert('RGBA')
         avatar2 = http.get_image(avatars[0]).resize((200, 200)).convert('RGBA')
         base.paste(avatar, (580, 260), avatar)

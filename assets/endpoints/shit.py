@@ -12,8 +12,8 @@ class Shit():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/shit/shit.bmp'))
-        font = ImageFont.truetype('assets/fonts/segoeuireg.ttf', size=30)
+        base = Image.open(('assets/assets/shit/shit.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/segoeuireg.ttf', size=30)
 
         # We need a text layer here for the rotation
         text_layer = Image.new('RGBA', base.size)

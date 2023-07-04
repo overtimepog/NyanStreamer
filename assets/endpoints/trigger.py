@@ -11,8 +11,8 @@ class Trigger():
 
     def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((320, 320)).convert('RGBA')
-        triggered = Image.open(('assets/triggered/triggered.bmp'))
-        tint = Image.open(('assets/triggered/red.bmp')).convert('RGBA')
+        triggered = Image.open(('assets/assets/triggered/triggered.bmp'))
+        tint = Image.open(('assets/assets/triggered/red.bmp')).convert('RGBA')
         blank = Image.new('RGBA', (256, 256), color=(231, 19, 29))
         frames = []
 

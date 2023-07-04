@@ -12,8 +12,8 @@ class Surprised():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/surprised/surprised.bmp')).convert('RGBA')
-        font = ImageFont.truetype('assets/fonts/robotoregular.ttf', size=36)
+        base = Image.open(('assets/assets/surprised/surprised.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/assets/fonts/robotoregular.ttf', size=36)
         try:
             text1, text2 = text.replace(', ', ',').split(',')
         except ValueError:

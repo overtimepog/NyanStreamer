@@ -12,8 +12,8 @@ class SneakyFox():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(('assets/sneakyfox/sneakyfox.bmp'))
-        font = ImageFont.truetype('assets/fonts/arimobold.ttf', size=36)
+        base = Image.open(('assets/assets/sneakyfox/sneakyfox.bmp'))
+        font = ImageFont.truetype('assets/assets/fonts/arimobold.ttf', size=36)
         canv = ImageDraw.Draw(base)
         try:
             fox, otherthing = text.replace(' ,', ',', 1).split(',', 1)
