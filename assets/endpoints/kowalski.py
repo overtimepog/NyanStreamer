@@ -19,15 +19,6 @@ class Kowalski():
 
     def generate(self, avatars, text, usernames, kwargs):
         name = uuid.uuid4().hex + '.gif'
-
-        @after_this_request
-        def remove(response):  # pylint: disable=W0612
-            try:
-                os.remove(name)
-            except (FileNotFoundError, OSError, PermissionError):
-                pass
-
-            return response
         clip = VideoFileClip("assets/assets/kowalski/kowalski.gif")
         text = TextClip(text, fontsize=36, method='caption', size=(245, None), align='West',  color='black',
                         stroke_color='black', stroke_width=1,
