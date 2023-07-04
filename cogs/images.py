@@ -214,7 +214,9 @@ class Images(commands.Cog, name="images"):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, f'custom.{format}'))
 
-    @custom.autocomplete("format", choices=["png", "gif"])
+    @custom.autocomplete("format")
+    async def custom_format(self, ctx: Context, argument):
+        return ["png", "gif"]
 
 
     @commands.hybrid_command(
