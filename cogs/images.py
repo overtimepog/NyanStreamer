@@ -115,6 +115,18 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, affect_instance.generate, [image_url], "", [], "")
 
         await ctx.send(file=discord.File(fp=image, filename="affect.png"))
+
+    @image.command(
+        name="airpods",
+        description="wear some airpods",
+    )
+    async def airpods(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        airpods_instance = airpods.Airpods()
+        image = await self.bot.loop.run_in_executor(self.executor, airpods_instance.generate, [user.avatar.url], "", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="airpods.gif"))
         
     @image.command(
     name="armor",
