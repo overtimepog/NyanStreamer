@@ -56,7 +56,16 @@ class Images(commands.Cog, name="images"):
     )
     async def crab(self, ctx: Context, text1: str, text2: str):
         crab_instance = crab.Crab()
+        
+        # Send a message indicating that the video is being generated
+        message = await ctx.send("Generating Rave... Please wait.")
+
+        # Generate the video
         video = crab_instance.generate([], f"{text1},{text2}", [], "")
+
+        # Edit the message to indicate that the video is ready
+        await message.edit(content="Here you go!")
+
         # Send the video
         await ctx.send(file=discord.File(fp=video, filename="crab.mp4"))
 
