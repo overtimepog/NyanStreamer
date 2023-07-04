@@ -410,7 +410,7 @@ class Images(commands.Cog, name="images"):
     async def tweet(self, ctx: Context, user: discord.User, text: str):
         await ctx.defer()
         tweet_instance = tweet.Tweet()
-        image = await self.bot.loop.run_in_executor(self.executor, tweet_instance.generate, [user.avatar.url], text, [], "")
+        image = await self.bot.loop.run_in_executor(self.executor, tweet_instance.generate, [user.avatar.url], text, [user.name], "")
 
         # send the image
         await ctx.send(file=File(fp=image, filename="tweet.png"))
