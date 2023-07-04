@@ -403,6 +403,29 @@ class Images(commands.Cog, name="images"):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'genius.gif'))
 
+    @image.command(
+        name="tweet",
+        description="tweet something",
+    )
+    async def tweet(self, ctx: Context, user: discord.User, text: str):
+        await ctx.defer()
+        tweet_instance = tweet.Tweet()
+        image = await self.bot.loop.run_in_executor(self.executor, tweet_instance.generate, [user.avatar.url], text, [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="tweet.png"))
+
+    @image.command(
+        name="wanted",
+        description="just kidding nobody wants you",
+    )
+    async def wanted(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        wanted_instance = wanted.Wanted()
+        image = await self.bot.loop.run_in_executor(self.executor, wanted_instance.generate, [user.avatar.url], "", [], "")
+        # send the image
+        await ctx.send(file=File(fp=image, filename="wanted.png"))
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
