@@ -426,6 +426,39 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="wanted.png"))
 
+    @image.command(
+        name="whodidthis",
+        description="who did this",
+    )
+    async def whodidthis(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        whodidthis_instance = whodidthis.Whodidthis()
+        image = await self.bot.loop.run_in_executor(self.executor, whodidthis_instance.generate, [user.avatar.url], "", [], "")
+        # send the image
+        await ctx.send(file=File(fp=image, filename="whodidthis.png"))
+
+    @image.command(
+        name="whothisis",
+        description="who is this",
+    )
+    async def whothisis(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        whothisis_instance = whothisis.WhoThisIs()
+        image = await self.bot.loop.run_in_executor(self.executor, whothisis_instance.generate, [user.avatar.url], "", [], "")
+        # send the image
+        await ctx.send(file=File(fp=image, filename="whothisis.png"))
+
+    @image.command(
+        name="youtube",
+        description="just dont edit it",
+    )
+    async def youtube(self, ctx: Context, user: discord.User, text1: str):
+        await ctx.defer()
+        youtube_instance = youtube.Youtube()
+        image = await self.bot.loop.run_in_executor(self.executor, youtube_instance.generate, [user.avatar.url], f"{text1}", [user.name], "")
+        # send the image
+        await ctx.send(file=File(fp=image, filename="youtube.png"))
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
