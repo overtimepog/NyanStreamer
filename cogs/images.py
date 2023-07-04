@@ -317,14 +317,13 @@ class Images(commands.Cog, name="images"):
         name="buttons",
         description="I cant Choose! (Uses API)",
     )
-    async def buttons(self, ctx: Context, user: discord.User, button1: str, button2: str):
+    async def buttons(self, ctx: Context, button1: str, button2: str):
         # Defer the interaction
         await ctx.defer()
 
         button1 = format_text(button1)
         button2 = format_text(button2)
-        style = user.avatar.url
-        url = f"https://api.memegen.link/images/ds/{button1}/{button2}.png?style={style}&api_key=nu449chc96&watermark=nyanstreamer.lol"
+        url = f"https://api.memegen.link/images/ds/{button1}/{button2}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
@@ -459,6 +458,17 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, youtube_instance.generate, [user.avatar.url], f"{text}", [user.name], "")
         # send the image
         await ctx.send(file=File(fp=image, filename="youtube.png"))
+
+    @image.command(
+        name="kowalski",
+        description="analysis",
+    )
+    async def kowalski(self, ctx: Context, text: str):
+        await ctx.defer()
+        kowalski_instance = kowalski.Kowalski()
+        image = await self.bot.loop.run_in_executor(self.executor, kowalski_instance.generate, [], f"{text}", [], "")
+        # send the image
+        await ctx.send(file=File(fp=image, filename="kowalski.gif"))
 
 
 async def setup(bot):
