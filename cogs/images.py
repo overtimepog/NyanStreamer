@@ -32,7 +32,7 @@ class Images(commands.Cog, name="images"):
         async with self.session.get(url) as response:
             return BytesIO(await response.read())
 
-    @commands.command(name="bed")
+    @commands.hybrid_command(name="bed")
     async def bed(self, ctx: Context, user1: discord.User, user2: discord.User):
         avatar1 = await self.get_avatar(str(user1.avatar.url))
         avatar2 = await self.get_avatar(str(user2.avatar.url))
