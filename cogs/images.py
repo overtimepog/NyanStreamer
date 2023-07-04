@@ -165,6 +165,18 @@ class Images(commands.Cog, name="images"):
         await ctx.send(file=File(fp=image, filename="armor.png"))
 
     @image.command(
+        name="balloon",
+        description="nothing gets through here",
+    )
+    async def balloon(self, ctx: Context, text1: str, text2: str):
+        await ctx.defer()
+        balloon_instance = balloon.Balloon()
+        image = await self.bot.loop.run_in_executor(self.executor, balloon_instance.generate, [], f"{text1},{text2}", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="balloon.png"))
+
+    @image.command(
         name="bed",
         description="why do you hate me brother?",
     )
@@ -359,6 +371,18 @@ class Images(commands.Cog, name="images"):
                 return await ctx.send('Could not download file...')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'butterfly.png'))
+
+    @image.command(
+        name="expand_dong",
+        description="my ding dong",
+    )
+    async def expand_dong(self, ctx: Context, text: str):
+        await ctx.defer()
+        expand_dong_instance = expanddong.ExpandDong()
+        image = await self.bot.loop.run_in_executor(self.executor, expand_dong_instance.generate, [], text, [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename=f"{text}.png"))
 
     @image.command(
         name="genius",
