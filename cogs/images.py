@@ -274,7 +274,7 @@ class Images(commands.Cog, name="images"):
 
     @image.command(
         name="gru",
-        description="I have a plan",
+        description="I have a plan (Uses API)",
     )
     async def gru(self, ctx: Context, text1: str, text2: str, text3: str, text4: str = None):
         # Defer the interaction
@@ -297,7 +297,7 @@ class Images(commands.Cog, name="images"):
 
     @image.command(
         name="buzz",
-        description="To infinity and beyond!",
+        description="To infinity and beyond! (Uses API)",
     )
     async def buzz(self, ctx: Context, top: str, bottom: str):
         # Defer the interaction
@@ -315,7 +315,7 @@ class Images(commands.Cog, name="images"):
 
     @image.command(
         name="buttons",
-        description="I cant Choose!",
+        description="I cant Choose! (Uses API)",
     )
     async def buttons(self, ctx: Context, button1: str, button2: str):
         # Defer the interaction
@@ -334,7 +334,7 @@ class Images(commands.Cog, name="images"):
 
     @image.command(
         name="butterfly",
-        description="Is this a butterfly?",
+        description="Is this a butterfly? (Uses API)",
     )
     async def butterfly(self, ctx: Context, person: str, text: str, butterfly_text: str = None, butterfly_user: discord.User = None, butterfly_image: discord.Attachment = None):
         await ctx.defer()
@@ -389,7 +389,7 @@ class Images(commands.Cog, name="images"):
 
     @image.command(
         name="genius",
-        description="smart af",
+        description="smart af (Uses API)",
     )
     async def genius(self, ctx: Context, text: str):
         await ctx.defer()
