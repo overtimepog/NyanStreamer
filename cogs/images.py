@@ -77,9 +77,9 @@ class Images(commands.Cog, name="images"):
         name="deepfry",
         description="deepfry an image or user",
     )
-    async def deepfry(self, ctx: Context, image: Union[discord.User, discord.Attachment]):
+    async def deepfry(self, ctx: Context, image):
         fry_instance = deepfry.DeepFry()
-
+    
         # Check the type of the image parameter
         if isinstance(image, discord.User):
             # If it's a User, use their avatar URL
@@ -90,10 +90,10 @@ class Images(commands.Cog, name="images"):
         else:
             # If it's neither, raise an error
             raise commands.BadArgument("You must provide a user mention or an image attachment.")
-
+    
         # Generate the deep fried image
         image = await self.bot.loop.run_in_executor(self.executor, fry_instance.generate, [image_url], "", [], "")
-
+    
         await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
 
 
