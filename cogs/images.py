@@ -73,6 +73,7 @@ class Images(commands.Cog, name="images"):
     description="nothing gets through here",
     )
     async def armor(self, ctx: Context, text: str):
+        await ctx.defer()
         armor_instance = armor.Armor()
         image = await self.bot.loop.run_in_executor(self.executor, armor_instance.generate, [], text, [], "")
 
@@ -84,6 +85,7 @@ class Images(commands.Cog, name="images"):
         description="why do you hate me brother?",
     )
     async def bed(self, ctx: Context, user1: discord.User, user2: discord.User):
+        await ctx.defer()
         bed_instance = bed.Bed()
         image = await self.bot.loop.run_in_executor(self.executor, bed_instance.generate, [user1.avatar.url, user2.avatar.url], "", [], "")
 
@@ -95,17 +97,10 @@ class Images(commands.Cog, name="images"):
         description="TIME TO RAVE",
     )
     async def crab(self, ctx: Context, text1: str, text2: str):
+        await ctx.defer()
         crab_instance = crab.Crab()
-
-        # Send a message indicating that the video is being generated
-        message = await ctx.send("Generating your Rave... Please wait.")
-
         # Generate the video in a separate thread
         video = await self.bot.loop.run_in_executor(self.executor, crab_instance.generate, [], f"{text1},{text2}", [], "")
-
-        # Edit the message to indicate that the video is ready
-        await message.edit(content="Your Rave is ready!")
-
         # Send the video
         await ctx.send(file=discord.File(fp=video, filename="crab.mp4"))
 
@@ -114,6 +109,7 @@ class Images(commands.Cog, name="images"):
         description="deepfry an image or user",
     )
     async def deepfry(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+        await ctx.defer()
         fry_instance = deepfry.DeepFry()
 
         # Check the type of the image parameter
@@ -139,6 +135,7 @@ class Images(commands.Cog, name="images"):
         aliases=["cmm", "changemymind"],
     )
     async def change_my_mind(self, ctx: Context, *, text: str):
+        await ctx.defer()
         change_my_mind_instance = changemymind.ChangeMyMind()
         image = await self.bot.loop.run_in_executor(self.executor, change_my_mind_instance.generate, [], text, [], "")
         await ctx.send(file=discord.File(fp=image, filename="changemymind.png"))
@@ -148,6 +145,7 @@ class Images(commands.Cog, name="images"):
         description="delete an image or user",
     )
     async def delete(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+        await ctx.defer()
         delete_instance = delete.Delete()
 
         # Check the type of the image parameter
