@@ -1,6 +1,7 @@
 import asyncio
 from collections import defaultdict
 import datetime
+import io
 import json
 import random
 import re
@@ -24,6 +25,28 @@ from aiohttp import ClientSession
 from io import BytesIO
 import concurrent.futures
 from typing import Union
+
+def format_text(text):
+    replacements = {
+        " ": "_",
+        "_": "__",
+        "-": "--",
+        "\n": "~n",
+        "?": "~q",
+        "&": "~a",
+        "%": "~p",
+        "#": "~h",
+        "/": "~s",
+        "\\": "~b",
+        "<": "~l",
+        ">": "~g",
+        "\"": "''"
+    }
+
+    for key, value in replacements.items():
+        text = text.replace(key, value)
+
+    return text
 
 class Images(commands.Cog, name="images"):
     def __init__(self, bot):
@@ -141,6 +164,26 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, delete_instance.generate, [image_url], "", [], "")
 
         await ctx.send(file=discord.File(fp=image, filename="delete.png"))
+
+    @image.command(
+        name="gru",
+        description="I have a plan",
+    )
+    async def gru(self, ctx: Context, text1: str, text2: str, text3: str, text4: str):
+        text1 = format_text(text1)
+        text2 = format_text(text2)
+        text3 = format_text(text3)
+        text4 = format_text(text4)
+        url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.png" + "&watermark=nyanstreamer.lol"
+        headers = {"X-API-KEY": "nu449chc96"}
+
+        async with self.session.get(url, headers=headers) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'cool_image.png'))
+
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
