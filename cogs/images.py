@@ -216,7 +216,11 @@ class Images(commands.Cog, name="images"):
 
     @custom.autocomplete("format")
     async def custom_format(self, ctx: Context, argument):
-        return ["png", "gif"]
+        choices = []
+        for format in ["png", "jpeg", "gif", "webp"]:
+            if format.startswith(argument.lower()):
+                choices.append(format)
+        return choices[:25]
 
 
     @commands.hybrid_command(
