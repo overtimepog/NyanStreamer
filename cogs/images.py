@@ -29,7 +29,6 @@ import os
 
 def format_text(text):
     replacements = {
-        " ": "_",
         "_": "__",
         "-": "--",
         "\n": "~n",
