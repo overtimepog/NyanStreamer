@@ -45,7 +45,6 @@ async def slots(self, ctx: Context, user, gamble):
     money = await db_manager.get_money(user.id)
     luck = await db_manager.get_luck(user.id)
     #print(luck)
-    await db_manager.remove_money(user.id, gamble)
     await db_manager.add_money_spent(user.id, gamble)
     money = int(money[0])
     gamble = int(gamble)

@@ -24,6 +24,7 @@ from discord.ext.commands import Bot, Context
 from discord.ext.commands import Context, has_permissions
 
 from helpers import battle, checks, db_manager, hunt, mine
+from assets import endpoints
 
 import exceptions
 from helpers import db_manager
@@ -317,6 +318,7 @@ async def load_cogs() -> None:
 
 async def setup() -> None:
     await init_db()
+    print("\n" + "-----------------------------")
     #delete the joined_channels.json file
     if os.path.isfile('joined_channels.json'):
         os.remove('joined_channels.json')
@@ -357,7 +359,6 @@ async def setup() -> None:
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
                 await db_manager.get_user(member.id)
-
     print("Setup Complete")
     print("-----------------------------")
 
