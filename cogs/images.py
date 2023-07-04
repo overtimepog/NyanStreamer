@@ -25,6 +25,7 @@ from aiohttp import ClientSession
 from io import BytesIO
 import concurrent.futures
 from typing import Union
+import os
 
 def format_text(text):
     replacements = {
@@ -174,12 +175,21 @@ class Images(commands.Cog, name="images"):
         text2 = format_text(text2)
         text3 = format_text(text3)
         text4 = format_text(text4)
-        url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.png" + "&watermark=nyanstreamer.lol"
-        headers = {"X-API-KEY": "nu449chc96"}
+        url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
 
-        async with self.session.get(url, headers=headers) as resp:
-            data = io.BytesIO(await resp.read())
-            await ctx.send(file=discord.File(fp=data, filename='cool_image.png'))
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                print("Could not download file...")
+                return
+            data = await resp.read()
+
+        with open("plan.png", "wb") as f:
+            f.write(data)
+
+        await ctx.send(file=discord.File("plan.png"))
+
+        os.remove("plan.png")
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
