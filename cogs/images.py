@@ -132,10 +132,10 @@ class Images(commands.Cog, name="images"):
         name="citation",
         description="citation needed",
     )
-    async def citation(self, ctx: Context, text1: str, text2: str, text3: str):
+    async def citation(self, ctx: Context, title: str, text: str, footer: str):
         await ctx.defer()
         citation_instance = citation.Citation()
-        image = await self.bot.loop.run_in_executor(self.executor, citation_instance.generate, [], f"{text1},{text2},{text3}", [], "")
+        image = await self.bot.loop.run_in_executor(self.executor, citation_instance.generate, [], f"{title},{text},{footer}", [], "")
 
         # send the image
         await ctx.send(file=File(fp=image, filename="citation.png"))
