@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class TheOffice():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/theoffice/theoffice.png'))
-        font = self.assets.get_font('assets/fonts/verdana.ttf', size=28)
+        base = Image.open(('assets/theoffice/theoffice.png'))
+        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=28)
         canv = ImageDraw.Draw(base)
 
         left, right = text.replace(', ', ',').split(',', 2)

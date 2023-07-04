@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class GodWhy():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/godwhy/godwhy.png')).resize((1061, 1080), Image.LANCZOS)
-        font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
+        base = Image.open(('assets/godwhy/godwhy.png')).resize((1061, 1080), Image.LANCZOS)
+        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
 
         if len(text) >= 127:

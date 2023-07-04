@@ -1,7 +1,7 @@
 from io import BytesIO
 from random import randint
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 from assets.utils import http
@@ -16,10 +16,10 @@ class Youtube():
     def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((52, 52)).convert('RGBA')
         name = usernames[0]
-        base = Image.open(self.assets.get('assets/youtube/youtube.bmp')).convert('RGBA')
-        font = self.assets.get_font('assets/fonts/robotomedium.ttf', size=17, )
-        font2 = self.assets.get_font('assets/fonts/robotoregular.ttf', size=17, )
-        font3 = self.assets.get_font('assets/fonts/robotoregular.ttf', size=19, )
+        base = Image.open(('assets/youtube/youtube.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/fonts/robotomedium.ttf', size=17, )
+        font2 = ImageFont.truetype('assets/fonts/robotoregular.ttf', size=17, )
+        font3 = ImageFont.truetype('assets/fonts/robotoregular.ttf', size=19, )
 
         bigsize = (avatar.size[0] * 3, avatar.size[1] * 3)
         mask = Image.new('L', bigsize, 0)

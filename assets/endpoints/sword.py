@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -15,8 +15,8 @@ class Sword():
         text = text.replace(', ', ',').split(',')
         if len(text) != 2:
             text = ['SPLIT BY', 'COMMA']
-        base = Image.open(self.assets.get('assets/sword/sword.bmp'))
-        font = self.assets.get_font('assets/fonts/verdana.ttf', size=48)
+        base = Image.open(('assets/sword/sword.bmp'))
+        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=48)
         temp = Image.new('RGBA', (1200, 800), color=(0, 0, 0, 0))
 
         sword = wrap(font, text[0], 3000)

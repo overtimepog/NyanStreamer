@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Surprised():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/surprised/surprised.bmp')).convert('RGBA')
-        font = self.assets.get_font('assets/fonts/robotoregular.ttf', size=36)
+        base = Image.open(('assets/surprised/surprised.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/fonts/robotoregular.ttf', size=36)
         try:
             text1, text2 = text.replace(', ', ',').split(',')
         except ValueError:

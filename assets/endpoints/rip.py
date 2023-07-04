@@ -12,7 +12,7 @@ class Rip():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/rip/rip.bmp')).convert('RGBA').resize((642, 806))
+        base = Image.open(('assets/rip/rip.bmp')).convert('RGBA').resize((642, 806))
         avatar = http.get_image(avatars[0]).resize((300, 300)).convert('RGBA')
 
         base.paste(avatar, (175, 385), avatar)

@@ -12,7 +12,7 @@ class Roblox():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/roblox/roblox.bmp')).convert('RGBA')
+        base = Image.open(('assets/roblox/roblox.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((56, 74)).convert('RGBA')
         base.paste(avatar, (168, 41), avatar)
 

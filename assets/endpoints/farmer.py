@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Farmer():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/farmer/farmer.jpg'))
-        font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
+        base = Image.open(('assets/farmer/farmer.jpg'))
+        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
 
         clouds, farmer = text.replace(', ', ',').split(',', 1)

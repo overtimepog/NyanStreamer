@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Presentation():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/presentation/presentation.bmp'))
-        font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
+        base = Image.open(('assets/presentation/presentation.bmp'))
+        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 330)
         render_text_with_emoji(base, canv, (150, 80), text, font=font, fill='Black')

@@ -12,7 +12,7 @@ class Delete():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/delete/delete.bmp')).convert('RGBA')
+        base = Image.open(('assets/delete/delete.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((195, 195)).convert('RGBA')
 
         base.paste(avatar, (120, 135), avatar)

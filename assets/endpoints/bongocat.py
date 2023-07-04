@@ -12,7 +12,7 @@ class BongoCat():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/bongocat/bongocat.bmp')).convert('RGBA')
+        base = Image.open(('assets/bongocat/bongocat.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((750, 750)).convert('RGBA')
 
         avatar.paste(base, (0, 0), base)

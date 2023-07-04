@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Balloon():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/balloon/balloon.bmp')).convert('RGBA')
-        font = self.assets.get_font('assets/fonts/sans.ttf')
+        base = Image.open(('assets/balloon/balloon.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/fonts/sans.ttf')
         canv = ImageDraw.Draw(base)
 
         text = text.split(', ')

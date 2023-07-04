@@ -16,7 +16,7 @@ class Salty():
         avatar = http.get_image(avatars[0]).convert('RGBA').resize((256, 256))
 
         salt = (
-            Image.open(self.assets.get('assets/salty/salt.bmp'))
+            Image.open(('assets/salty/salt.bmp'))
             .convert('RGBA')
             .resize((256, 256))
             .rotate(-130, resample=Image.BICUBIC)

@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,9 +12,9 @@ class Walking():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/walking/walking.bmp'))
+        base = Image.open(('assets/walking/walking.bmp'))
 
-        font = self.assets.get_font('assets/fonts/sans.ttf', size=50)
+        font = ImageFont.truetype('assets/fonts/sans.ttf', size=50)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 1000)
         render_text_with_emoji(base, canv, (35, 35), text, font=font, fill='black')

@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Cry():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/cry/cry.bmp'))
-        font = self.assets.get_font('assets/fonts/tahoma.ttf', size=20)
+        base = Image.open(('assets/cry/cry.bmp'))
+        font = ImageFont.truetype('assets/fonts/tahoma.ttf', size=20)
         canv = ImageDraw.Draw(base)
 
         text = wrap(font, text, 180)

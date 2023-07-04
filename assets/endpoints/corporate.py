@@ -13,7 +13,7 @@ class Corporate():
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/corporate/corporate.jpg'))
+        base = Image.open(('assets/corporate/corporate.jpg'))
         img1 = http.get_image(avatars[0]).convert('RGBA').resize((512, 512), Image.LANCZOS)
         try:
             img2 = http.get_image(avatars[1]).convert('RGBA').resize((512, 512), Image.LANCZOS)

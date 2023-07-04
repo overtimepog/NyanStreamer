@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,9 +12,9 @@ class ExcuseMe():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/excuseme/excuseme.bmp'))
+        base = Image.open(('assets/excuseme/excuseme.bmp'))
 
-        font = self.assets.get_font('assets/fonts/sans.ttf', size=40)
+        font = ImageFont.truetype('assets/fonts/sans.ttf', size=40)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 787)
         render_text_with_emoji(base, canv, (20, 15), text, font=font, fill='Black')

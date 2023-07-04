@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,10 +12,10 @@ class Facts():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/facts/facts.bmp'))
+        base = Image.open(('assets/facts/facts.bmp'))
         # We need to create an image layer here for the rotation
         text_layer = Image.new('RGBA', base.size)
-        font = self.assets.get_font('assets/fonts/verdana.ttf', size=25)
+        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=25)
         canv = ImageDraw.Draw(text_layer)
 
         text = wrap(font, text, 400)

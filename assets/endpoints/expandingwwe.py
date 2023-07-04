@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class ExpandingWWE():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/expandingwwe/expandingwwe.jpg'))
-        font = self.assets.get_font('assets/fonts/verdana.ttf', size=30)
+        base = Image.open(('assets/expandingwwe/expandingwwe.jpg'))
+        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=30)
 
         text = text.replace(', ', ',')
 

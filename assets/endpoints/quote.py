@@ -1,7 +1,7 @@
 from datetime import datetime
 from io import BytesIO
 
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from flask import send_file
 
 from assets.utils import http
@@ -16,9 +16,9 @@ class Quote():
     def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((150, 150))
         base = Image.new('RGBA', (1500, 300))
-        font_med = self.assets.get_font('assets/fonts/medium.woff', size=60)
-        font_time = self.assets.get_font('assets/fonts/medium.woff', size=40)
-        font_sb = self.assets.get_font('assets/fonts/semibold.woff', size=55)
+        font_med = ImageFont.truetype('assets/fonts/medium.woff', size=60)
+        font_time = ImageFont.truetype('assets/fonts/medium.woff', size=40)
+        font_sb = ImageFont.truetype('assets/fonts/semibold.woff', size=55)
 
         poly = Image.new('RGBA', avatar.size)
         pdraw = ImageDraw.Draw(poly)

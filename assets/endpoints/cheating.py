@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Cheating():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/cheating/cheating.bmp'))
-        font = self.assets.get_font('assets/fonts/medium.woff', size=26)
+        base = Image.open(('assets/cheating/cheating.bmp'))
+        font = ImageFont.truetype('assets/fonts/medium.woff', size=26)
         canv = ImageDraw.Draw(base)
         try:
             me, classmate = text.replace(' ,', ',', 1).split(',', 1)

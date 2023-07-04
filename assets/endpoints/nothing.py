@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Nothing():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/nothing/nothing.bmp'))
-        font = self.assets.get_font('assets/fonts/medium.woff', size=33)
+        base = Image.open(('assets/nothing/nothing.bmp'))
+        font = ImageFont.truetype('assets/fonts/medium.woff', size=33)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 200)
         render_text_with_emoji(base, canv, (340, 5), text[:120], font=font, fill='Black')

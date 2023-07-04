@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -13,8 +13,8 @@ class Obama():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/obama/obama.jpg'))
-        font = self.assets.get_font('assets/fonts/arimobold.ttf', size=36)
+        base = Image.open(('assets/obama/obama.jpg'))
+        font = ImageFont.truetype('assets/fonts/arimobold.ttf', size=36)
         canv = ImageDraw.Draw(base)
 
         avatar = http.get_image(avatars[0]).resize((200, 200), Image.LANCZOS).convert('RGBA')

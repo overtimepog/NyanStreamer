@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class KeepUrDistance():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/keepurdistance/keepurdistance.png'))
-        font = self.assets.get_font('assets/fonts/MontserratBold.ttf', size=24)
+        base = Image.open(('assets/keepurdistance/keepurdistance.png'))
+        font = ImageFont.truetype('assets/fonts/MontserratBold.ttf', size=24)
         canv = ImageDraw.Draw(base)
 
         text = text.upper()

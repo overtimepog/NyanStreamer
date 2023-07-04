@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 from assets.utils import http
@@ -13,13 +13,13 @@ class Byemom():
     params = ['avatar0', 'username0', 'text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/byemom/mom.bmp'))
+        base = Image.open(('assets/byemom/mom.bmp'))
         avatar = http.get_image(avatars[0]).convert('RGBA').resize((70, 70), resample=Image.BICUBIC)
         avatar2 = avatar.copy().resize((125, 125), resample=Image.BICUBIC)
         text_layer = Image.new('RGBA', (350, 25))
         bye_layer = Image.new('RGBA', (180, 51), (255, 255, 255))
-        font = self.assets.get_font('assets/fonts/arial.ttf', size=20)
-        bye_font = self.assets.get_font('assets/fonts/arimobold.ttf', size=14)
+        font = ImageFont.truetype('assets/fonts/arial.ttf', size=20)
+        bye_font = ImageFont.truetype('assets/fonts/arimobold.ttf', size=14)
         canv = ImageDraw.Draw(text_layer)
         bye = ImageDraw.Draw(bye_layer)
         username = usernames[0] or 'Tommy'

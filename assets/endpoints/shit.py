@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Shit():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/shit/shit.bmp'))
-        font = self.assets.get_font('assets/fonts/segoeuireg.ttf', size=30)
+        base = Image.open(('assets/shit/shit.bmp'))
+        font = ImageFont.truetype('assets/fonts/segoeuireg.ttf', size=30)
 
         # We need a text layer here for the rotation
         text_layer = Image.new('RGBA', base.size)

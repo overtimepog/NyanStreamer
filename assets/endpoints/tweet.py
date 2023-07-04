@@ -3,7 +3,7 @@ from io import BytesIO
 from random import randint
 
 from flask import send_file
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from assets.utils import http
 
@@ -18,12 +18,12 @@ class Tweet():
     params = ['avatar0', 'username0', 'text', 'username1', 'altstyle']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/tweet/trump.bmp'))
+        base = Image.open(('assets/tweet/trump.bmp'))
         avatar = http.get_image(avatars[0]).resize((98, 98)).convert('RGBA')
-        font = self.assets.get_font('assets/fonts/segoeuireg.ttf', size=50, )
-        font2 = self.assets.get_font('assets/fonts/robotomedium.ttf', size=40)
-        font3 = self.assets.get_font('assets/fonts/robotoregular.ttf', size=29)
-        font4 = self.assets.get_font('assets/fonts/robotoregular.ttf', size=35)
+        font = ImageFont.truetype('assets/fonts/segoeuireg.ttf', size=50, )
+        font2 = ImageFont.truetype('assets/fonts/robotomedium.ttf', size=40)
+        font3 = ImageFont.truetype('assets/fonts/robotoregular.ttf', size=29)
+        font4 = ImageFont.truetype('assets/fonts/robotoregular.ttf', size=35)
 
         circle = Image.new('L', (20, 20), 0)
         draw = ImageDraw.Draw(circle)

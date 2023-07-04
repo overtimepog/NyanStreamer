@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class SneakyFox():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/sneakyfox/sneakyfox.bmp'))
-        font = self.assets.get_font('assets/fonts/arimobold.ttf', size=36)
+        base = Image.open(('assets/sneakyfox/sneakyfox.bmp'))
+        font = ImageFont.truetype('assets/fonts/arimobold.ttf', size=36)
         canv = ImageDraw.Draw(base)
         try:
             fox, otherthing = text.replace(' ,', ',', 1).split(',', 1)

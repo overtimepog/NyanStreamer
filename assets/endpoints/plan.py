@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class Plan():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/plan/plan.bmp')).convert('RGBA')
-        font = self.assets.get_font('assets/fonts/sans.ttf', size=16)
+        base = Image.open(('assets/plan/plan.bmp')).convert('RGBA')
+        font = ImageFont.truetype('assets/fonts/sans.ttf', size=16)
         canv = ImageDraw.Draw(base)
 
         words = text.split(', ')

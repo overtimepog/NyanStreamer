@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class DogLemon():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/doglemon/doglemon.bmp'))
-        font = self.assets.get_font('assets/fonts/medium.woff', size=30)
+        base = Image.open(('assets/doglemon/doglemon.bmp'))
+        font = ImageFont.truetype('assets/fonts/medium.woff', size=30)
         canv = ImageDraw.Draw(base)
         try:
             lemon, dog = text.replace(' ,', ',', 1).split(',', 1)

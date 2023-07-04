@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 
@@ -12,8 +12,8 @@ class SlapsRoof():
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/slapsroof/slapsroof.bmp'))
-        font = self.assets.get_font('assets/fonts/medium.woff', size=33)
+        base = Image.open(('assets/slapsroof/slapsroof.bmp'))
+        font = ImageFont.truetype('assets/fonts/medium.woff', size=33)
         canv = ImageDraw.Draw(base)
         suffix = ' in it'
         text = wrap(font, text + suffix, 1150)
