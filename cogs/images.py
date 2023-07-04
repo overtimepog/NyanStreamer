@@ -29,6 +29,7 @@ import os
 
 def format_text(text):
     replacements = {
+        " ": "_",
         "_": "__",
         "-": "--",
         "\n": "~n",
@@ -175,19 +176,7 @@ class Images(commands.Cog, name="images"):
         text3 = format_text(text3)
         text4 = format_text(text4)
         url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
-
-        async with self.session.get(url) as resp:
-            if resp.status != 200:
-                print("Could not download file...")
-                return
-            data = await resp.read()
-
-        with open("plan.png", "wb") as f:
-            f.write(data)
-
-        await ctx.send(file=discord.File("plan.png"))
-
-        os.remove("plan.png")
+        ctx.send(url)
 
     @image.command(
         name="buzz",
@@ -197,19 +186,7 @@ class Images(commands.Cog, name="images"):
         top = format_text(top)
         bottom = format_text(bottom)
         url = f"https://api.memegen.link/images/buzz/{top}/{bottom}.gif?api_key=nu449chc96&watermark=nyanstreamer.lol"
-
-        async with self.session.get(url) as resp:
-            if resp.status != 200:
-                print("Could not download file...")
-                return
-            data = await resp.read()
-
-        with open("buzz.gif", "wb") as f:
-            f.write(data)
-
-        await ctx.send(file=discord.File("buzz.gif"))
-
-        os.remove("buzz.gif")
+        ctx.send(url)
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
