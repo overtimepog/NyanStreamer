@@ -171,22 +171,38 @@ class Images(commands.Cog, name="images"):
         description="I have a plan",
     )
     async def gru(self, ctx: Context, text1: str, text2: str, text3: str, text4: str):
+        # Defer the interaction
+        await ctx.defer()
+
         text1 = format_text(text1)
         text2 = format_text(text2)
         text3 = format_text(text3)
         text4 = format_text(text4)
         url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
-        await ctx.send(url)
+
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'gru.png'))
 
     @image.command(
         name="buzz",
         description="To infinity and beyond!",
     )
     async def buzz(self, ctx: Context, top: str, bottom: str):
+        # Defer the interaction
+        await ctx.defer()
+
         top = format_text(top)
         bottom = format_text(bottom)
         url = f"https://api.memegen.link/images/buzz/{top}/{bottom}.gif?api_key=nu449chc96&watermark=nyanstreamer.lol"
-        await ctx.send(url)
+
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'buzz.gif'))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
