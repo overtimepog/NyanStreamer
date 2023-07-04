@@ -178,11 +178,12 @@ class Images(commands.Cog, name="images"):
         headers = {"X-API-KEY": "nu449chc96"}
 
         async with self.session.get(url, headers=headers) as resp:
-            if resp.status != 200:
-                return await ctx.send('Could not download file...')
-            data = io.BytesIO(await resp.read())
-            await ctx.send(file=discord.File(data, 'cool_image.png'))
+            data = await resp.read()
 
+        with open("plan.png", "wb") as f:
+            f.write(data)
+
+        await ctx.send(file=discord.File("plan.png"))
 
 
 async def setup(bot):
