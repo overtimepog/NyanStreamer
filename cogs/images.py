@@ -38,7 +38,7 @@ class Images(commands.Cog, name="images"):
     invoke_without_command=True,
     aliases=["images", "meme", "memes"],
     )
-    async def image(self, ctx):
+    async def image(self, ctx: Context):
         if ctx.invoked_subcommand is None:
             #send an embed with the job commands
             await ctx.send_help(ctx.command)
