@@ -38,7 +38,7 @@ class Images(commands.Cog, name="images"):
         avatar2 = await self.get_avatar(str(user2.avatar.url))
 
         bed_instance = bed.Bed()
-        image = await bed_instance.generate([user1.avatar.url, user2.avatar.url], "Penis", [user1.name, user2.name], "Gamin")
+        image = bed_instance.generate([user1.avatar.url, user2.avatar.url], "Penis", [user1.name, user2.name], "Gamin")
 
         # send the image
         await ctx.send(file=File(fp=image, filename="image.png"))
