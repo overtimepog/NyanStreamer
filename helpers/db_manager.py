@@ -3291,6 +3291,15 @@ async def add_streamer(streamer_channel: str, user_id: int, emotePrefix: str, tw
         async with rows as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
+        
+#check if a discord user id is a mod for a streamer
+async def check_mod(streamer_channel: str, mod_user_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `streamer_mods` WHERE streamer_channel = ? AND mod_user_id = ?", (streamer_channel, mod_user_id,), fetch="one")
+    if data is not None:
+        return 1
+    else:
+        return 0
 
 async def add_streamer_to_guild(streamer_channel: str, discord_channel_id: str, discord_guild_id: str) -> None:
     """
