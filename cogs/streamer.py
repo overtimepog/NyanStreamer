@@ -131,6 +131,7 @@ class Streamer(commands.Cog, name="streamer"):
         :param argument: The user's current input for the item name.
         """
         streamers = await db_manager.get_user_mod_channels(ctx.user.id)
+        print(streamers)
         user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
     
         # Add the user's channel to the list
@@ -139,6 +140,7 @@ class Streamer(commands.Cog, name="streamer"):
         choices = []
 
         for streamer in streamers:
+            print(streamer)
             if argument.lower() in streamer.lower():
                 choices.append(app_commands.Choice(name=streamer, value=streamer))
         return choices[:25]
