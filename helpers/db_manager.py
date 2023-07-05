@@ -3498,21 +3498,16 @@ async def remove_streamer_items(user_id: int):
         await db.execute("DELETE FROM streamer_item_inventory WHERE channel = ?", (channel,))
         await db.commit()
 
-async def view_user_streamer_made_items(user_id: int) -> list:
+async def view_user_streamer_made_items(channel: str) -> list:
     """
     This function will view all streamer items in the database based on user_id.
 
     :param user_id: The ID of the user that the streamer items should be gotten from.
     :return: A list of all streamer items in the database for the specified user.
     """
-    # Get the streamer channel from the user_id
-    streamer_channel = await get_streamer_channel_from_user_id(user_id)
-    if not streamer_channel:
-        return []
 
     #get the streamerPrefix from the streamer table using the streamers channel
-    streamerChannel = str(streamer_channel)
-    streamerPrefix = await get_streamerPrefix_with_channel(streamerChannel)
+    streamerPrefix = await get_streamerPrefix_with_channel(channel)
     
     async with aiosqlite.connect("database/database.db") as db:
         async with db.execute("SELECT * FROM streamer_items WHERE streamer_prefix=?", (streamerPrefix,)) as cursor:
