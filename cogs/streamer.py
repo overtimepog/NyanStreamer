@@ -139,7 +139,8 @@ class Streamer(commands.Cog, name="streamer"):
         choices = []
 
         for streamer in streamers:
-            if argument.lower() in streamer[0].lower():
+            print(streamer[0])
+            if argument.lower() in streamer.lower():
                 choices.append(app_commands.Choice(name=streamer[0], value=streamer[0]))
         return choices[:25]
 
