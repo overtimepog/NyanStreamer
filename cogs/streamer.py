@@ -286,6 +286,114 @@ class Streamer(commands.Cog, name="streamer"):
 
         # Return the first 25 matches
         return choices[:25]
+    
+
+    #add mod command to add a mod for a streamer
+    @streamer.command(
+        name="addmod",
+        description="add a mod for your channel!",
+        aliases=["am", "add_mod"],
+    )
+    @checks.is_streamer()
+    async def add_mod(self, ctx: Context, user: discord.Member):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
+        """
+        This command will add a mod for a streamer in the database.
+
+        :param ctx: The context in which the command was called.
+        :param user_id: The id of the user that should be added as a mod.
+        """
+        user_id = ctx.message.author.id
+        #get the streamer prefix
+        streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
+        #get streamer broadcast type
+        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
+        #get the streamer's mods
+        mods = await db_manager.get_channel_mods(channel)
+        #check if the user is already a mod
+        for i in mods:
+            if user.id in i:
+                await ctx.send(f"{user.mention} is already a mod for your channel!")
+                return
+        #add the mod
+        #get the mods twitch name and id
+        twitch_name = await db_manager.get_twitch_name(user.id)
+        twitch_id = await db_manager.get_twitch_id(user.id)
+        if twitch_name == None or twitch_name == False or twitch_name == [] or twitch_name == "None" or twitch_name == 0:
+            await ctx.send(f"{user.mention} is not connected to a twitch account!")
+            return
+        await db_manager.add_mod_to_channel(channel, user.id, twitch_id, twitch_name)
+        await ctx.send(f"Added {user.mention} as a mod for your channel!")
+
+    #remove mod command to remove a mod for a streamer
+    @streamer.command(
+        name="removemod",
+        description="remove a mod for your channel!",
+        aliases=["rm", "remove_mod"],
+    )
+    @checks.is_streamer()
+    async def remove_mod(self, ctx: Context, user: discord.Member):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            return
+        """
+        This command will remove a mod for a streamer in the database.
+
+        :param ctx: The context in which the command was called.
+        :param user_id: The id of the user that should be removed as a mod.
+        """
+        user_id = ctx.message.author.id
+        #get the streamer prefix
+        streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
+        #get streamer broadcast type
+        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
+        #get the streamer's mods
+        mods = await db_manager.get_channel_mods(channel)
+        #check if the user is already a mod
+        for i in mods:
+            if user.id in i:
+                #remove the mod
+                await db_manager.remove_mod_from_channel(channel, user.id)
+                await ctx.send(f"Removed {user.mention} as a mod for your channel!")
+                return
+        await ctx.send(f"{user.mention} is not a mod for your channel!")
+
+    
+    #command to view all the mods for a streamer
+    @streamer.command(
+        name="mods",
+        description="see all the mods for your channel!",
+        aliases=["m", "mod"],
+    )
+    @checks.is_streamer()
+    async def mods(self, ctx: Context):
+        """
+        This command will view all the mods for a streamer in the database.
+
+        :param ctx: The context in which the command was called.
+        """
+        user_id = ctx.message.author.id
+        #get the streamer prefix
+        streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
+        #get streamer broadcast type
+        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
+        #get the streamer's mods
+        mods = await db_manager.get_channel_mods(channel)
+        #create a string with all the mods
+        mod_string = ""
+        for i in range(len(mods)):
+            if i == len(mods) - 1:  # If it's the last mod
+                mod_string += f"{reply} <@{mods[i][0]}>\n"
+            else:
+                mod_string += f"{replycont} <@{mods[i][0]}>\n"
+        #create an embed with all the mods
+        embed = discord.Embed(title=f"{streamer_prefix}'s Mods", description=mod_string)
+        await ctx.send(embed=embed)
+
 
 
 

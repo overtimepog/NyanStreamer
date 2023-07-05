@@ -623,6 +623,26 @@ async def connect_twitch_name(user_id: int, twitch_name: str) -> None:
         await db.execute(f"UPDATE `users` SET `twitch_name` = ? WHERE `user_id` = ?", (twitch_name, user_id))
     else:
         return None
+
+#get the twitch id of a user
+async def get_twitch_id(user_id: int) -> int:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="all")
+    if data is not None:
+        users = await db.execute(f"SELECT `twitch_id` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users[0]
+    else:
+        return None
+    
+#get the twitch name of a user
+async def get_twitch_name(user_id: int) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="all")
+    if data is not None:
+        users = await db.execute(f"SELECT `twitch_name` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users[0]
+    else:
+        return None
     
 #clear the enimies table
 async def clear_enemies() -> None:
@@ -3271,6 +3291,69 @@ async def add_streamer(streamer_channel: str, user_id: int, emotePrefix: str, tw
         async with rows as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
+
+async def add_streamer_to_guild(streamer_channel: str, discord_channel_id: str, discord_guild_id: str) -> None:
+    """
+    This function will add a Discord channel and guild to an existing streamer in the database.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :param discord_channel_id: The ID of the Discord channel where the streamer should be added.
+    :param discord_guild_id: The ID of the Discord guild where the streamer should be added.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_channel_id = ?, discord_guild_id = ? WHERE streamer_channel = ?", (discord_channel_id, discord_guild_id, streamer_channel))
+        await db.commit()
+
+async def remove_streamer_from_guild(streamer_channel: str) -> None:
+    """
+    This function will remove a Discord channel and guild from an existing streamer in the database.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_channel_id = NULL, discord_guild_id = NULL WHERE streamer_channel = ?", (streamer_channel,))
+        await db.commit()
+
+async def add_mod_to_channel(streamer_channel: str, mod_user_id: str, twitch_id: str, twitch_name: str) -> None:
+    """
+    This function will add a mod to a given streamer's channel.
+
+    :param streamer_channel: The channel of the streamer.
+    :param mod_user_id: The user ID of the mod.
+    :param twitch_id: The Twitch ID of the mod.
+    :param twitch_name: The Twitch name of the mod.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        streamer_id = await db.execute("SELECT user_id FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        await db.execute("INSERT INTO `streamer_mods` (streamer_id, mod_user_id, twitch_id, twitch_name) VALUES (?, ?, ?, ?)", (streamer_id, mod_user_id, twitch_id, twitch_name))
+        await db.commit()
+
+async def remove_mod_from_channel(streamer_channel: str, mod_user_id: str) -> None:
+    """
+    This function will remove a mod from a given streamer's channel.
+
+    :param streamer_channel: The channel of the streamer.
+    :param mod_user_id: The user ID of the mod.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        streamer_id = await db.execute("SELECT user_id FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        await db.execute("DELETE FROM `streamer_mods` WHERE streamer_id = ? AND mod_user_id = ?", (streamer_id, mod_user_id))
+        await db.commit()
+
+async def get_channel_mods(streamer_channel: str) -> list:
+    """
+    This function will return the mods for a given streamer's channel.
+
+    :param streamer_channel: The channel of the streamer.
+    :return: A list of mods for the streamer's channel.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        streamer_id = await db.execute("SELECT user_id FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        rows = await db.execute("SELECT mod_user_id, twitch_id, twitch_name FROM `streamer_mods` WHERE streamer_id = ?", (streamer_id,))
+        async with rows as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+
         
 #get_twitch_id_of_channel
 async def get_twitch_id_of_channel(streamer_channel: str) -> int:
@@ -4158,20 +4241,7 @@ async def get_streamerPrefix_with_channel(streamer_channel: str) -> str:
         async with db.execute("SELECT * FROM streamer WHERE streamer_channel=?", (streamer_channel,)) as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else 0
-        
-#get twitchID from the streamer table using the streamers user ID
-async def get_twitchID(user_id: int) -> str:
-    """
-    This function will get the twitchID from the streamer table.
 
-    :param user_id: The ID of the user that the twitchID should be gotten from.
-    :return: The twitchID of the user.
-    """
-    async with aiosqlite.connect("database/database.db") as db:
-        async with db.execute("SELECT * FROM streamer WHERE user_id=?", (user_id,)) as cursor:
-            result = await cursor.fetchone()
-            return result[3] if result is not None else 0
-        
 #get an streamer items name via its id
 async def get_streamer_item_name(item_id: str) -> str:
     """

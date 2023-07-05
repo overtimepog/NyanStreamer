@@ -8,7 +8,16 @@ CREATE TABLE IF NOT EXISTS `streamer` (
   `streamer_channel` varchar NOT NULL,
   `user_id` varchar NOT NULL,
   `twitch_id` varchar NOT NULL,
-  `broadcaster_type` varchar NOT NULL
+  `broadcaster_type` varchar NOT NULL,
+  `discord_channel_id` varchar,
+  `discord_guild_id` varchar
+);
+
+CREATE TABLE IF NOT EXISTS `streamer_mods` (
+  `streamer_id` varchar NOT NULL,
+  `mod_user_id` varchar NOT NULL,
+  `twitch_id` varchar(255),
+  `twitch_name` varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS `streamer_items` (
