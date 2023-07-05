@@ -131,18 +131,16 @@ class Streamer(commands.Cog, name="streamer"):
         :param argument: The user's current input for the item name.
         """
         streamers = await db_manager.get_user_mod_channels(ctx.user.id)
-        print(streamers)
         user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
-    
+
         # Add the user's channel to the list
         if user_channel is not None:
-            streamers.append((user_channel))
+            streamers.append((user_channel,))
         choices = []
 
         for streamer in streamers:
-            print(streamer)
-            if argument.lower() in streamer.lower():
-                choices.append(app_commands.Choice(name=streamer, value=streamer))
+            if argument.lower() in streamer[0].lower():
+                choices.append(app_commands.Choice(name=streamer[0], value=streamer[0]))
         return choices[:25]
 
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
