@@ -3333,7 +3333,7 @@ async def add_mod_to_channel(streamer_channel: str, mod_user_id: str, twitch_id:
     :param twitch_name: The Twitch name of the mod.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        streamer_id = await db.execute("SELECT user_id FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        streamer_id = await get_user_id_from_streamer_channel(streamer_channel)
         await db.execute("INSERT INTO `streamer_mods` (streamer_id, mod_user_id, twitch_id, twitch_name) VALUES (?, ?, ?, ?)", (streamer_id, mod_user_id, twitch_id, twitch_name))
         await db.commit()
 
@@ -3345,7 +3345,7 @@ async def remove_mod_from_channel(streamer_channel: str, mod_user_id: str) -> No
     :param mod_user_id: The user ID of the mod.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        streamer_id = await db.execute("SELECT user_id FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        streamer_id = await get_user_id_from_streamer_channel(streamer_channel)
         await db.execute("DELETE FROM `streamer_mods` WHERE streamer_id = ? AND mod_user_id = ?", (streamer_id, mod_user_id))
         await db.commit()
 
@@ -3357,7 +3357,7 @@ async def get_channel_mods(streamer_channel: str) -> list:
     :return: A list of mods for the streamer's channel.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        streamer_id = await db.execute("SELECT user_id FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        streamer_id = await get_user_id_from_streamer_channel(streamer_channel)
         rows = await db.execute("SELECT mod_user_id, twitch_id, twitch_name FROM `streamer_mods` WHERE streamer_id = ?", (streamer_id,))
         async with rows as cursor:
             result = await cursor.fetchall()
@@ -4212,6 +4212,18 @@ async def get_streamer_channel_from_user_id(user_id: int) -> str:
         async with db.execute("SELECT * FROM streamer WHERE user_id=?", (user_id,)) as cursor:
             result = await cursor.fetchone()
             return result[1] if result is not None else 0
+        
+#get user id from streamer channel
+async def get_user_id_from_streamer_channel(streamer_channel: str) -> int:
+    """
+    This function will get the user ID from the streamer table.
+
+    :param streamer_channel: The channel of the streamer that the user ID should be gotten from.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        async with db.execute("SELECT * FROM streamer WHERE streamer_channel=?", (streamer_channel,)) as cursor:
+            result = await cursor.fetchone()
+            return result[2] if result is not None else 0
         
 #get the broadcaster type
 async def get_broadcaster_type_from_user_id(user_id: int) -> str:
