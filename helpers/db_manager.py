@@ -4239,7 +4239,7 @@ async def get_streamer_channel_from_user_id(user_id: int) -> str:
     async with aiosqlite.connect("database/database.db") as db:
         async with db.execute("SELECT * FROM streamer WHERE user_id=?", (user_id,)) as cursor:
             result = await cursor.fetchone()
-            return result[1] if result is not None else 0
+            return result[1] if result is not None else None
         
 #get user id from streamer channel
 async def get_user_id_from_streamer_channel(streamer_channel: str) -> int:
