@@ -193,6 +193,10 @@ class Streamer(commands.Cog, name="streamer"):
             #if the only streamer is the user's channel, make it a string
             #make it a string
             streamer = str(streamer)
+            #remove the ( and ) and , from the string
+            streamer = streamer.replace("(", "")
+            streamer = streamer.replace(")", "")
+            streamer = streamer.replace(",", "")
             if argument.lower() in streamer.lower():
                 choices.append(app_commands.Choice(name=streamer, value=streamer))
         return choices[:25]
