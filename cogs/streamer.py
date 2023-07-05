@@ -149,7 +149,7 @@ class Streamer(commands.Cog, name="streamer"):
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
     @streamer.command(
         name="removeitem",
-        description="delete an item from your channel! (only works for items you created)",
+        description="delete an item from your channel! (only works for items you or your mods created)",
         aliases=["ri", "remove_item"],
     )
     @checks.is_streamer()
