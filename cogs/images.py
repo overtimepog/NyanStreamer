@@ -444,6 +444,31 @@ class Images(commands.Cog, name="images"):
             await ctx.send(file=discord.File(data, 'genius.gif'))
 
     @commands.hybrid_command(
+        name="bongo_cat",
+        description="bongo catify an image or user",
+    )
+    async def bongo_cat(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+        await ctx.defer()
+        bongo_cat_instance = bongocat.BongoCat()
+
+        # Check the type of the image parameter
+        if user is not None:
+            # If a User is provided, use their avatar URL
+            image_url = str(user.avatar.url)
+        elif image is not None:
+            # If an Attachment is provided, use its URL
+            image_url = image.url
+        else:
+            # If neither is provided, raise an error
+            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+
+        # Generate the deep fried image
+        image = await self.bot.loop.run_in_executor(self.executor, bongo_cat_instance.generate, [image_url], "", [], "")
+
+        await ctx.send(file=discord.File(fp=image, filename="bongocat.png"))
+
+
+    @commands.hybrid_command(
         name="tweet",
         description="tweet something",
     )
