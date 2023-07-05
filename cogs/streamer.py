@@ -139,7 +139,6 @@ class Streamer(commands.Cog, name="streamer"):
         choices = []
 
         for streamer in streamers:
-            print(streamer[0])
             streamer = streamer[0]
             #make it a string
             streamer = str(streamer)
@@ -191,7 +190,6 @@ class Streamer(commands.Cog, name="streamer"):
 
         choices = []
         for streamer in streamers:
-            print(streamer[0])
             streamer = streamer[0]
             #make it a string
             streamer = str(streamer)
