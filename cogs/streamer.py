@@ -123,7 +123,7 @@ class Streamer(commands.Cog, name="streamer"):
 
     #autocommplete for the createitem command
     @create_item.autocomplete("channel")
-    async def create_item_channel_autocomplete(self, ctx: discord.Interaction, argument):
+    async def create_item_channel_autocomplete(self, ctx: discord.Interaction, argument: str):
         """
         This function provides autocomplete choices for the create_item command.
 
@@ -140,8 +140,11 @@ class Streamer(commands.Cog, name="streamer"):
 
         for streamer in streamers:
             print(streamer[0])
+            streamer = streamer[0]
+            #make it a string
+            streamer = str(streamer)
             if argument.lower() in streamer.lower():
-                choices.append(app_commands.Choice(name=streamer[0], value=streamer[0]))
+                choices.append(app_commands.Choice(name=streamer, value=streamer))
         return choices[:25]
 
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
@@ -172,7 +175,7 @@ class Streamer(commands.Cog, name="streamer"):
 
     #autocommplete for the removeitem command
     @removeitem.autocomplete("channel")
-    async def remove_item_channel_autocomplete(self, ctx: discord.Interaction, argument):
+    async def remove_item_channel_autocomplete(self, ctx: discord.Interaction, argument: str):
         """
         This function provides autocomplete choices for the remove_item command.
 
@@ -188,6 +191,10 @@ class Streamer(commands.Cog, name="streamer"):
 
         choices = []
         for streamer in streamers:
+            print(streamer[0])
+            streamer = streamer[0]
+            #make it a string
+            streamer = str(streamer)
             if argument.lower() in streamer.lower():
                 choices.append(app_commands.Choice(name=streamer, value=streamer))
         return choices[:25]
