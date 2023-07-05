@@ -183,20 +183,16 @@ class Streamer(commands.Cog, name="streamer"):
         """
         streamers = await db_manager.get_user_mod_channels(ctx.user.id)
         user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
-    
+
         # Add the user's channel to the list
         if user_channel is not None:
-            streamers.append(user_channel)
-
+            streamers.append((user_channel,))
         choices = []
+
         for streamer in streamers:
-            #if the only streamer is the user's channel, make it a string
+            streamer = streamer[0]
             #make it a string
             streamer = str(streamer)
-            #remove the ( and ) and , from the string
-            streamer = streamer.replace("(", "")
-            streamer = streamer.replace(")", "")
-            streamer = streamer.replace(",", "")
             if argument.lower() in streamer.lower():
                 choices.append(app_commands.Choice(name=streamer, value=streamer))
         return choices[:25]
