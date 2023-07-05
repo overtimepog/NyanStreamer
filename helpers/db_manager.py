@@ -3334,7 +3334,7 @@ async def add_mod_to_channel(streamer_channel: str, mod_user_id: str, twitch_id:
     """
     async with aiosqlite.connect("database/database.db") as db:
         streamer_id = await get_user_id_from_streamer_channel(streamer_channel)
-        await db.execute("INSERT INTO `streamer_mods` (streamer_id, mod_user_id, twitch_id, twitch_name) VALUES (?, ?, ?, ?)", (streamer_id, mod_user_id, twitch_id, twitch_name))
+        await db.execute("INSERT INTO `streamer_mods` (streamer_id, streamer_channel, mod_user_id, twitch_id, twitch_name) VALUES (?, ?, ?, ?, ?)", (streamer_id, streamer_channel, mod_user_id, twitch_id, twitch_name))
         await db.commit()
 
 async def remove_mod_from_channel(streamer_channel: str, mod_user_id: str) -> None:
@@ -3362,6 +3362,34 @@ async def get_channel_mods(streamer_channel: str) -> list:
         async with rows as cursor:
             result = await cursor.fetchall()
             return result if result is not None else []
+        
+#get the channels that a user is a mod for
+async def get_user_mod_channels(mod_user_id: str) -> list:
+    """
+    This function will return the channels that a user is a mod for.
+
+    :param mod_user_id: The user ID of the mod.
+    :return: A list of channels that the user is a mod for.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        rows = await db.execute("SELECT streamer_channel FROM `streamer_mods` WHERE mod_user_id = ?", (mod_user_id,))
+        async with rows as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+        
+#true or false if a user is a mod for any channel
+async def is_mod(mod_user_id: str) -> bool:
+    """
+    This function will return whether or not a user is a mod for any channel.
+
+    :param mod_user_id: The user ID of the mod.
+    :return: True or False.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        rows = await db.execute("SELECT COUNT(*) FROM `streamer_mods` WHERE mod_user_id = ?", (mod_user_id,))
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] > 0 if result is not None else False
 
         
 #get_twitch_id_of_channel

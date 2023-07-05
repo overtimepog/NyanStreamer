@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `streamer` (
 
 CREATE TABLE IF NOT EXISTS `streamer_mods` (
   `streamer_id` varchar NOT NULL,
+  `streamer_channel` varchar NOT NULL,
   `mod_user_id` varchar NOT NULL,
   `twitch_id` varchar(255),
   `twitch_name` varchar(255)

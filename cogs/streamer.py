@@ -73,7 +73,7 @@ class Streamer(commands.Cog, name="streamer"):
         aliases=["ci", "create_item"],
     )
     @checks.is_streamer()
-    async def create_item(self, ctx: Context, name: str, emoji: str):
+    async def create_item(self, ctx: Context, channel: str, name: str, emoji: str):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
@@ -87,15 +87,12 @@ class Streamer(commands.Cog, name="streamer"):
         :param item_emoji: The emoji of the item that should be created.
         :param item_rarity: The rarity of the item that should be created.
         """
-        user_id = ctx.message.author.id
+
+        #get the user id from the twitch channel name 
+        user_id = await db_manager.get_user_id_from_streamer_channel(channel)
         #get the streamer prefix
         streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
-        print(streamer_prefix)
-        #print(streamer_prefix)
         #get streamer broadcast type
-        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
-        print(channel)
-        #print(channel)
         broadcast_type = await db_manager.get_broadcaster_type_from_user_id(user_id)
         print(broadcast_type)
         #check if the item exists in the database
@@ -124,6 +121,28 @@ class Streamer(commands.Cog, name="streamer"):
             embed.set_footer(text="ID: " + item_id)
             await ctx.send(embed=embed)
 
+    #autocommplete for the createitem command
+    @create_item.autocomplete("channel")
+    async def create_item_channel_autocomplete(self, ctx: discord.Interaction, argument):
+        """
+        This function provides autocomplete choices for the create_item command.
+
+        :param ctx: The context in which the command was called.
+        :param argument: The user's current input for the item name.
+        """
+        streamers = await db_manager.get_user_mod_channels(ctx.user.id)
+        user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
+    
+        # Add the user's channel to the list
+        if user_channel is not None:
+            streamers.append((None, user_channel))
+        choices = []
+
+        for streamer in streamers:
+            if argument.lower() in streamer[1].lower():
+                choices.append(app_commands.Choice(name=streamer[1], value=streamer[1]))
+        return choices[:25]
+
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
     @streamer.command(
         name="removeitem",
@@ -131,7 +150,7 @@ class Streamer(commands.Cog, name="streamer"):
         aliases=["ri", "remove_item"],
     )
     @checks.is_streamer()
-    async def removeitem(self, ctx: Context, item: str):
+    async def removeitem(self, ctx: Context, channel: str, item: str):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
@@ -142,9 +161,6 @@ class Streamer(commands.Cog, name="streamer"):
         :param ctx: The context in which the command was called.
         :param item_id: The id of the item that should be removed.
         """
-        user_id = ctx.message.author.id
-        #check if the item exists in the database
-        channel = await db_manager.get_streamer_channel_from_user_id(user_id)
         items = await db_manager.view_streamer_items(channel)
         for i in items:
             if item in i:
@@ -154,6 +170,27 @@ class Streamer(commands.Cog, name="streamer"):
         await ctx.send(f"Item with the ID `{item}` does not exist in the database or you are not the streamer that owns this item.")
 
     #autocommplete for the removeitem command
+    @removeitem.autocomplete("channel")
+    async def remove_item_channel_autocomplete(self, ctx: discord.Interaction, argument):
+        """
+        This function provides autocomplete choices for the remove_item command.
+
+        :param ctx: The context in which the command was called.
+        :param argument: The user's current input for the item name.
+        """
+        streamers = await db_manager.get_user_mod_channels(ctx.user.id)
+        user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
+    
+        # Add the user's channel to the list
+        if user_channel is not None:
+            streamers.append((None, user_channel))
+
+        choices = []
+        for streamer in streamers:
+            if argument.lower() in streamer[1].lower():
+                choices.append(app_commands.Choice(name=streamer[1], value=streamer[1]))
+        return choices[:25]
+    
     @removeitem.autocomplete("item")
     async def remove_item_autocomplete(self, ctx: discord.Interaction, argument):
         """
@@ -311,6 +348,11 @@ class Streamer(commands.Cog, name="streamer"):
         streamer_prefix = await db_manager.get_streamerPrefix_with_user_id(user_id)
         #get streamer broadcast type
         channel = await db_manager.get_streamer_channel_from_user_id(user_id)
+
+        #prevent the streamer from adding themselves as a mod
+        if user.id == user_id:
+            await ctx.send("You cannot add yourself as a mod!")
+            return
         #get the streamer's mods
         mods = await db_manager.get_channel_mods(channel)
         #check if the user is already a mod
@@ -367,7 +409,6 @@ class Streamer(commands.Cog, name="streamer"):
     @streamer.command(
         name="mods",
         description="see all the mods for your channel!",
-        aliases=["m", "mod"],
     )
     @checks.is_streamer()
     async def mods(self, ctx: Context):
@@ -390,11 +431,12 @@ class Streamer(commands.Cog, name="streamer"):
                 mod_string += f"{reply} <@{mods[i][0]}>\n"
             else:
                 mod_string += f"{replycont} <@{mods[i][0]}>\n"
+        else:
+            if mod_string == "":
+                mod_string = "No mods for this channel, Yet!"
         #create an embed with all the mods
-        embed = discord.Embed(title=f"{streamer_prefix}'s Mods", description=mod_string)
+        embed = discord.Embed(title=f"{channel}'s Mods", description=mod_string)
         await ctx.send(embed=embed)
-
-
 
 
     @commands.hybrid_command(

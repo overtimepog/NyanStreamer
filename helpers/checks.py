@@ -52,6 +52,8 @@ def is_streamer() -> Callable[[T], T]:
         userID = int(userID)
         if await db_manager.is_streamer(userID):
             return True
+        elif await db_manager.is_mod(userID):
+            return True
         raise UserNotStreamer
 
     return commands.check(predicate)
