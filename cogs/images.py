@@ -316,7 +316,7 @@ class Images(commands.Cog, name="images"):
         name="gru",
         description="I have a plan (Uses API)",
     )
-    async def gru(self, ctx: Context, text1: str, text2: str, text3: str, text4: str = None):
+    async def gru(self, ctx: Context, text1: str, text2: str, text3: str, text4: str = None, format: str = "png"):
         # Defer the interaction
         await ctx.defer()
 
@@ -327,13 +327,21 @@ class Images(commands.Cog, name="images"):
         if text4 is None:
             text4 = text3
 
-        url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.png?api_key=nu449chc96&watermark=nyanstreamer.lol"
+        url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.{format}?api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
                 return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
-            await ctx.send(file=discord.File(data, 'gru.png'))
+            await ctx.send(file=discord.File(data, f'gru.{format}'))
+
+    @gru.autocomplete("format")
+    async def gru_format(self, ctx: Context, argument):
+        choices = []
+        for format in ["png", "jpeg", "gif", "webp"]:
+            if format.startswith(argument.lower()):
+                choices.append(app_commands.Choice(name=format, value=format))
+        return choices[:25]
 
     @commands.hybrid_command(
         name="buzz",
@@ -466,6 +474,8 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, bongo_cat_instance.generate, [image_url], "", [], "")
 
         await ctx.send(file=discord.File(fp=image, filename="bongocat.png"))
+
+    
 
 
     @commands.hybrid_command(
