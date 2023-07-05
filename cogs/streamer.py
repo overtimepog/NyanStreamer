@@ -167,8 +167,12 @@ class Streamer(commands.Cog, name="streamer"):
         items = await db_manager.view_streamer_items(channel)
         for i in items:
             if item in i:
+                emoji = await db_manager.get_streamer_item_emote(item)
+                name = await db_manager.get_streamer_item_name(item)
+                embed = discord.Embed(title="Item Removal", description=f"Removed the item {emoji} **{name}** from the channel {channel}",)
+                embed.set_footer(text="ID: " + item)
+                await ctx.send(embed=embed)
                 await db_manager.remove_item(item)
-                await ctx.send(f"Removed item with the ID `{item}` from your items.")
                 return
         await ctx.send(f"Item with the ID `{item}` does not exist in the database or you are not the streamer that owns this item.")
 
