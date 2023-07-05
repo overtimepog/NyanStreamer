@@ -205,8 +205,9 @@ class Streamer(commands.Cog, name="streamer"):
         :param ctx: The context in which the command was called.
         :param argument: The user's current input for the item name.
         """
-        print(ctx.data)
-        streamer_items = await db_manager.view_user_streamer_made_items(channel=ctx.data["options"][0]["value"])
+        channel_value = ctx.data["options"][0]["options"][0]["value"]
+        print(channel_value)
+        streamer_items = await db_manager.view_user_streamer_made_items(channel_value)
         choices = []
         for item in streamer_items:
             if argument.lower() in item[3].lower():  # Assuming item[1] is the item's name
