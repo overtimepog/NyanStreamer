@@ -139,8 +139,8 @@ class Streamer(commands.Cog, name="streamer"):
         choices = []
 
         for streamer in streamers:
-            if argument.lower() in streamer[0].lower():
-                choices.append(app_commands.Choice(name=streamer[0], value=streamer[0]))
+            if argument.lower() in streamer.lower():
+                choices.append(app_commands.Choice(name=streamer, value=streamer))
         return choices[:25]
 
     #command to remove an item from the database item table, using the remove_item function from helpers\db_manager.py, make sure only streamers can remove their own items
@@ -183,12 +183,12 @@ class Streamer(commands.Cog, name="streamer"):
     
         # Add the user's channel to the list
         if user_channel is not None:
-            streamers.append((user_channel))
+            streamers.append(user_channel)
 
         choices = []
         for streamer in streamers:
-            if argument.lower() in streamer[0].lower():
-                choices.append(app_commands.Choice(name=streamer[0], value=streamer[0]))
+            if argument.lower() in streamer.lower():
+                choices.append(app_commands.Choice(name=streamer, value=streamer))
         return choices[:25]
     
     @removeitem.autocomplete("item")
