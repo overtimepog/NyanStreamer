@@ -190,7 +190,7 @@ class Streamer(commands.Cog, name="streamer"):
 
         choices = []
         for streamer in streamers:
-            streamer = streamer[0]
+            #if the only streamer is the user's channel, make it a string
             #make it a string
             streamer = str(streamer)
             if argument.lower() in streamer.lower():
