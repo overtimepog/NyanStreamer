@@ -386,6 +386,14 @@ async def on_ready() -> None:
     # Run twitch bot file
     subprocess.Popen([sys.executable, r'twitch.py'])
     #wait 5 seconds
+    # Get the last modification time of the file
+    last_modified = os.path.getmtime('joined_channels.json')
+
+    # Wait until the file is finished being written to
+    while os.path.getmtime('joined_channels.json') == last_modified:
+        time.sleep(1)  # Wait for 1 second
+        
+    #wait 5 seconds
     time.sleep(5)
     subprocess.Popen([sys.executable, r'startTwis.py'])
 
