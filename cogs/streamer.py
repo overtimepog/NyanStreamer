@@ -45,7 +45,7 @@ twitch_client_secret = config["CLIENT_SECRET"]
 scopes = [AuthScope.USER_READ_EMAIL]
 
 #app authorization for twitch
-twitch = Twitch(twitch_client_id, twitch_client_secret, authenticate_app=True, target_app_auth_scope=scopes, force_verify=False, scopes=scopes)
+twitch = Twitch(twitch_client_id, twitch_client_secret, authenticate_app=True, target_app_auth_scope=scopes)
 
 
 global i
