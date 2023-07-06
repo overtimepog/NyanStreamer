@@ -42,17 +42,8 @@ else:
 twitch_client_id = config["CLIENT_ID"]
 twitch_client_secret = config["CLIENT_SECRET"]
 twitch = Twitch(twitch_client_id, twitch_client_secret)
-scopes = [AuthScope.USER_READ_EMAIL]
-
-# Create an authenticator
-auth = UserAuthenticator(twitch, scopes, force_verify=False)
-
-# Get the token
-token, refresh_token = auth.authenticate()  # This will open a web page asking the user to authenticate
-
-# Set the token
-twitch.set_user_authentication(token, scopes, refresh_token)
-
+scopes = [AuthScope.USER_READ_EMAIL, AuthScope.CHANNEL_READ_SUBSCRIPTIONS, AuthScope.CHAT_READ, AuthScope.USER_READ_BROADCAST]
+twitch.authenticate_app(scopes)
 
 
 global i
@@ -644,16 +635,15 @@ class Streamer(commands.Cog, name="streamer"):
                 # Check if the streamers are live
                 for stream in stream_info['data']:
                     stream_id = stream['id']
-                    if stream_id not in self.live_streams:
+                    if stream_id not in self.live_streams and stream['type'] == 'live':
                         print(f"{stream['user_name']} is live!")
                         print(f"Stream Title: {stream['title']}")
-                        # Here you can add the code to send a notification or whatever you want to do when the streamer is live
 
                         # Add the stream to the set of live streams
                         self.live_streams.add(stream_id)
 
         # Remove streams that are no longer live from the set
-        self.live_streams = {stream_id for stream_id in self.live_streams if twitch.get_streams(stream_id)['data']}
+        self.live_streams = {stream_id for stream_id in self.live_streams if twitch.get_streams(user_ids=[stream_id])['data'] and twitch.get_streams(user_ids=[stream_id])['data'][0]['type'] == 'live'}
 
     @streamer_check_task.before_loop
     async def before_streamer_check_task(self):
