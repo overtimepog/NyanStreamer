@@ -37,9 +37,14 @@ async def webhook(request: Request):
 
 @app.get("/callback")
 async def callback(request: Request):
+    if not os.path.isfile("config.json"):
+        sys.exit("'config.json' not found! Please add it and try again.")
+    else:
+        with open("config.json") as file:
+            config = json.load(file)
     code = request.query_params.get("code")
-    client_id = "xulcmh65kzbfefzuvfuulnh7hzrfhj"
-    client_secret = "fsbndw0gusm5lzvqnz7v5d59x34n94"
+    client_id = config["CLIENT_ID"]
+    client_secret = config["CLIENT_SECRET"]
     response = requests.post("https://id.twitch.tv/oauth2/token", data={
         "client_id": client_id,
         "client_secret": client_secret,

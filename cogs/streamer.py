@@ -625,6 +625,7 @@ class Streamer(commands.Cog, name="streamer"):
 
                 # Check if the streamers are live
                 for stream in stream_info['data']:
+                    print(stream)
                     print(f"{stream['user_name']} is live!")
                     print(f"Stream Title: {stream['title']}")
                     # Here you can add the code to send a notification or whatever you want to do when the streamer is live
