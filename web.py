@@ -48,6 +48,7 @@ async def callback(request: Request):
         "redirect_uri": "https://nyanstreamer.lol/callback"
     })
 
+    print(response.json())
     access_token = response.json()["access_token"]
 
     response = requests.get("https://api.twitch.tv/helix/users", headers={
