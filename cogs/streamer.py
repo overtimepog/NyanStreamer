@@ -616,7 +616,7 @@ class Streamer(commands.Cog, name="streamer"):
         # Fetch user information in batches of 100
         for i in range(0, len(streamer_channels), 100):
             batch = streamer_channels[i:i+100]
-            user_info = await twitch.get_users(logins=batch)
+            user_info = twitch.get_users(logins=batch)
             user_ids = [user['id'] for user in user_info['data']]
 
             # Fetch stream information in batches of 100
