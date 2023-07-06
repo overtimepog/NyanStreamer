@@ -33,11 +33,12 @@ class TwiscordTwitch(twitch_commands.Bot):
             self.channel = self.get_channel(channel)
             print(f"Twiscord Enabled for Twitch Channel | {self.channel.name}")
         if self.discord_bot._is_ready_:
-            content = "[Twiscord] Both bots are set up."
-            #await self.channel.send(content)
-            #await self.discord_bot.channel.send(content)
-            print(content)
-
+            #content = "[Twiscord] Both bots are set up."
+            ##await self.channel.send(content)
+            ##await self.discord_bot.channel.send(content)
+            #print(content)
+            pass
+ 
     async def event_message(self, message):
         if message.author is None or message.author.name == self.nick.lower():
             return

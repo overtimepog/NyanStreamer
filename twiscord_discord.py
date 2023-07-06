@@ -33,11 +33,12 @@ class TwiscordDiscord(discord_commands.Bot):
     self.channels = [self.get_channel(id) for id in self.channel_ids]
     self._is_ready_ = True
     if self.twitch_bot._is_ready_: # If both bots are ready/set up, send message to discord and twitch channel
-        content = "[Twiscord] Both bots are set up."
-        #for channel in self.channels:
-        #    await channel.send(content)
-        #await self.twitch_bot.channel.send(content)
-        print(content)
+        #content = "[Twiscord] Both bots are set up."
+        ##for channel in self.channels:
+        ##    await channel.send(content)
+        ##await self.twitch_bot.channel.send(content)
+        #print(content)
+        pass
   
   async def on_message(self, message):
     if message.author == self.user:
