@@ -11,6 +11,7 @@ import sys
 import aiosqlite
 import aiohttp
 from helpers import db_manager
+from startTwis import main
 
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
@@ -65,6 +66,8 @@ class TwitchBot(commands.Bot):
                 # Save the joined channels to the JSON file
                 with open('joined_channels.json', 'w') as f:
                     json.dump(joined_channels, f)
+                #setup twis from here
+                main()
             await asyncio.sleep(600)
     
     #when command on cooldown

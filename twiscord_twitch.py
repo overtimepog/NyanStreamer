@@ -8,7 +8,7 @@ class TwitchBot(twitch_commands.Bot):
     def __init__(self):
         with open("config.json") as file:
             config = json.load(file)
-    
+
         irc_token = config['TMI_TOKEN']
         self.client_id = config['CLIENT_ID']
         nick = config['BOT_NICK'].lower()
@@ -27,8 +27,8 @@ class TwitchBot(twitch_commands.Bot):
         self.channel = self.get_channel(self.initial_channel)
         if self.discord_bot._is_ready_:
             content = "[Twiscord] Discord and Twitch bots are set up."
-            await self.channel.send(content)
-            await self.discord_bot.channel.send(content)
+            #await self.channel.send(content)
+            #await self.discord_bot.channel.send(content)
             print(content)
 
     async def event_message(self, message):
@@ -37,7 +37,7 @@ class TwitchBot(twitch_commands.Bot):
 
         if not self.discord_bot._is_ready_:
             print("[Twiscord] Discord not initialized.")
-            await message.channel.send("[Twiscord] Discord not initialized.")
+            #await message.channel.send("[Twiscord] Discord not initialized.")
             return
 
         sender_name = message.author.tags['display-name'] if 'display-name' in message.author.tags.keys() else message.author.name

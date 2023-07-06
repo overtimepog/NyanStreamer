@@ -364,7 +364,6 @@ async def setup() -> None:
 
 @bot.event
 async def on_ready() -> None:
-    subprocess.Popen([sys.executable, r'twitch.py'])
     await setup()
     print(f"Logged in as {bot.user.name}")
     print(f"discord.py API version: {discord.__version__}")
@@ -385,13 +384,7 @@ async def on_ready() -> None:
     #print("-------------------")
     # Run setup function
     # Run twitch bot file
-    #wait 5 seconds
-    # Get the last modification time of the file
-    last_modified = os.path.getmtime('joined_channels.json')
-    # Wait until the file is finished being written to
-    while os.path.getmtime('joined_channels.json') == last_modified:
-        await asyncio.sleep(1)  # Wait for 1 second
-    subprocess.Popen([sys.executable, r'startTwis.py'])
+    subprocess.Popen([sys.executable, r'twitch.py'])
 
 #when the bot joins a server, add all the members to the database
 @bot.event
@@ -400,6 +393,16 @@ async def on_guild_join(guild: discord.Guild) -> None:
     for member in guild.members:
         if member.bot:
             continue
+        await db_manager.get_user(member.id)
+
+#when a user joins a server, add them to the database
+@bot.event
+async def on_member_join(member: discord.Member) -> None:
+    if member.bot:
+        return
+    #if the user is not in the database, add them
+    checkUser = await db_manager.check_user(member.id)
+    if checkUser == None:
         await db_manager.get_user(member.id)
 
 bot.run(config["token"])

@@ -32,9 +32,9 @@ class DiscordBot(discord_commands.Bot):
     self._is_ready_ = True
     if self.twitch_bot._is_ready_: # If both bots are ready/set up, send message to discord and twitch channel
         content = "[Twiscord] Discord and Twitch bots are set up."
-        for channel in self.channels:
-            await channel.send(content)
-        await self.twitch_bot.channel.send(content)
+        #for channel in self.channels:
+        #    await channel.send(content)
+        #await self.twitch_bot.channel.send(content)
         print(content)
   
   async def on_message(self, message):
@@ -42,13 +42,13 @@ class DiscordBot(discord_commands.Bot):
       return # Don't respond to messages from yourself
     
     if not self.twitch_bot._is_ready_: # Make sure that the twitch bot is up and running
-      await message.channel.send("[Twiscord] Twitch not initialized.")
+      #await message.channel.send("[Twiscord] Twitch not initialized.")
       print("[Twiscord] Twitch not initialized.")
       return
     
     
     
-    if message.channel.id == self.channel_id:
+    if message.channel.id in self.channel_ids:
       content = f"{'[' + str(message.author.top_role) + '] ' if message.author.top_role else ''}{message.author} » {message.clean_content}"[:300] # Only take the first 300 characters, 500 is officially the max but 300 should be all you need
       if self.should_print: print(f"[discord] {content}")
       if message.clean_content.startswith(self.command_prefix): await self.handle_commands(message) # If the message starts with the prefix, then send the message to self.handle_commands 
