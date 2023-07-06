@@ -1,13 +1,13 @@
 import asyncio # Required for running both bots at the same time
 
 # Import both bot classes from twitch_bot.py and discord_bot.py
-from twiscord_twitch import TwitchBot 
-from twiscord_discord import DiscordBot
+from twiscord_twitch import TwiscordTwitch 
+from twiscord_discord import TwiscordDiscord
 
 async def main():
     # Instantiate each class
-    twitch_bot = TwitchBot()
-    discord_bot = DiscordBot()
+    twitch_bot = TwiscordTwitch()
+    discord_bot = TwiscordDiscord()
     
     # Add a reference to the other bot to each bot
     twitch_bot.discord_bot = discord_bot

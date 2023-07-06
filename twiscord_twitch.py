@@ -5,7 +5,7 @@ import asyncio
 from twitchio.ext import commands as twitch_commands
 from helpers import db_manager
 
-class TwitchBot(twitch_commands.Bot):
+class TwiscordTwitch(twitch_commands.Bot):
     def __init__(self):
         with open("config.json") as file:
             config = json.load(file)
