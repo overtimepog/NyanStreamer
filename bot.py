@@ -385,6 +385,8 @@ async def on_ready() -> None:
     # Run setup function
     # Run twitch bot file
     subprocess.Popen([sys.executable, r'twitch.py'])
+    #wait 5 seconds
+    time.sleep(5)
     subprocess.Popen([sys.executable, r'startTwis.py'])
 
 #when the bot joins a server, add all the members to the database
