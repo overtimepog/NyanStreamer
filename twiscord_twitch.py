@@ -55,6 +55,11 @@ class TwitchBot(twitch_commands.Bot):
             role = "Subscriber"
 
         content = f"{'**' + role + '** ' if role else ''}{sender_name} » {message.content}"
+        #if the content contains @everyone or @here, replace it with @ everyone or @ here
+        if "@everyone" in content:
+            content = content.replace("@everyone", "@ everyone")
+        if "@here" in content:
+            content = content.replace("@here", "@ here")
         print(f"[twitch ] {content}")
 
         if message.content.startswith(self.prefix):
