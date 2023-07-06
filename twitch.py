@@ -67,11 +67,11 @@ class TwitchBot(commands.Bot):
                     #setup twis from here
                     #print whats happening
                     print("Setting up Twis...")
-                    await main()
+                    await asyncio.create_task(main())
             except Exception as e:
                 print(f"An error occurred: {e}")
             finally:
-                await asyncio.sleep(20)
+                await asyncio.sleep(600)
                 print("looping...")
 
     
