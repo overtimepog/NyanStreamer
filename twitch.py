@@ -31,7 +31,7 @@ class TwitchBot(commands.Bot):
         print(f'User id is | {self.user_id}')
         join_message = f"Hello! I'm NyanStreamer and I'm here to help you with your adventure! Type !help for a list of commands."
         self.join_message = join_message
-        await asyncio.run(main())
+        await asyncio.create_task(main())
         #check if new streamers have been added to the database
         while True:
             try:
