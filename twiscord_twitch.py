@@ -27,13 +27,13 @@ class TwiscordTwitch(twitch_commands.Bot):
         super().__init__(token=token, irc_token=irc_token, client_id=self.client_id, nick=nick, prefix=self.prefix, initial_channels=self.initial_channels)
 
     async def event_ready(self):
-        print(f"Twitch Ready | {self.nick}")
+        #print(f"Twitch Ready | {self.nick}")
         self._is_ready_ = True
         for channel in self.initial_channels:
             self.channel = self.get_channel(channel)
             print(f"Twiscord Enabled for Twitch Channel | {self.channel.name}")
         if self.discord_bot._is_ready_:
-            content = "[Twiscord] Discord and Twitch bots are set up."
+            content = "[Twiscord] Both bots are set up."
             #await self.channel.send(content)
             #await self.discord_bot.channel.send(content)
             print(content)
