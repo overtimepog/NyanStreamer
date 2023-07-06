@@ -36,7 +36,7 @@ class TwitchBot(twitch_commands.Bot):
             print(content)
 
     async def event_message(self, message):
-        if message.author.name == self.nick.lower():
+        if message.author is None or message.author.name == self.nick.lower():
             return
 
         if not self.discord_bot._is_ready_:
