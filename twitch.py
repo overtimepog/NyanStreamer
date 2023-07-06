@@ -69,7 +69,7 @@ class TwitchBot(commands.Bot):
                 #setup twis from here
                 #print whats happening
                 print("Setting up Twis...")
-                main()
+                await main()
             await asyncio.sleep(600)
     
     #when command on cooldown
