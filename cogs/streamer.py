@@ -42,8 +42,8 @@ else:
 twitch_client_id = config["CLIENT_ID"]
 twitch_client_secret = config["CLIENT_SECRET"]
 twitch = Twitch(twitch_client_id, twitch_client_secret)
-scopes = [AuthScope.USER_READ_EMAIL, AuthScope.CHANNEL_READ_SUBSCRIPTIONS, AuthScope.CHAT_READ, AuthScope.USER_READ_BROADCAST]
-twitch.authenticate_app(scopes)
+scopes = [AuthScope.USER_READ_EMAIL]
+twitch.authenticate_app(scope=scopes)
 
 
 global i
