@@ -71,8 +71,8 @@ class TwitchBot(commands.Bot):
             except Exception as e:
                 print(f"An error occurred: {e}")
             finally:
-                await asyncio.sleep(600)
                 print("looping...")
+                await asyncio.sleep(600)
 
     
     #when command on cooldown
