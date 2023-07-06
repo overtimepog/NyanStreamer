@@ -70,12 +70,15 @@ class TwitchBot(twitch_commands.Bot):
             #get the discord channel id from the database
             discord_channel_id = await db_manager.get_discord_channel_id_chat(channel_name)
             #print(f"discord_channel_id: {discord_channel_id}")
-            discord_channel_id = int(discord_channel_id)
-            #get the discord channel object from the id
-            discord_channel = self.discord_bot.get_channel(discord_channel_id)
-            #print(f"discord_channel: {discord_channel}")
-            #send the message to the discord channel
-            await discord_channel.send(content)
+            try:
+                discord_channel_id = int(discord_channel_id)
+                #get the discord channel object from the id
+                discord_channel = self.discord_bot.get_channel(discord_channel_id)
+                #print(f"discord_channel: {discord_channel}")
+                #send the message to the discord channel
+                await discord_channel.send(content)
+            except ValueError or TypeError:
+                return
 
     @twitch_commands.command(name="discord")
     async def discord(self, ctx):

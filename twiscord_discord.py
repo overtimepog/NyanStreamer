@@ -48,8 +48,8 @@ class DiscordBot(discord_commands.Bot):
     
     #print("Channel ID: " + str(message.channel.id))
     #print("Channel IDs: " + str(self.channel_ids))
-    
-    if message.channel.id in self.channel_ids:
+    channel_ids = await db_manager.get_all_twiscord_discord_channels()
+    if message.channel.id in channel_ids:
       content = f"{'[' + str(message.author.top_role) + '] ' if message.author.top_role else ''}{message.author} » {message.clean_content}"[:300] # Only take the first 300 characters, 500 is officially the max but 300 should be all you need
       print(f"[discord] {content}")
       if message.clean_content.startswith(self.command_prefix): await self.handle_commands(message) # If the message starts with the prefix, then send the message to self.handle_commands 
