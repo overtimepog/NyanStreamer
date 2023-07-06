@@ -364,6 +364,7 @@ async def setup() -> None:
 
 @bot.event
 async def on_ready() -> None:
+    subprocess.Popen([sys.executable, r'twitch.py'])
     await setup()
     print(f"Logged in as {bot.user.name}")
     print(f"discord.py API version: {discord.__version__}")
@@ -384,7 +385,6 @@ async def on_ready() -> None:
     #print("-------------------")
     # Run setup function
     # Run twitch bot file
-    subprocess.Popen([sys.executable, r'twitch.py'])
     #wait 5 seconds
     # Get the last modification time of the file
     last_modified = os.path.getmtime('joined_channels.json')
@@ -392,7 +392,7 @@ async def on_ready() -> None:
     # Wait until the file is finished being written to
     while os.path.getmtime('joined_channels.json') == last_modified:
         time.sleep(1)  # Wait for 1 second
-        
+
     #wait 5 seconds
     time.sleep(5)
     subprocess.Popen([sys.executable, r'startTwis.py'])
