@@ -46,7 +46,7 @@ class TwitchBot(twitch_commands.Bot):
         sender_name = message.author.display_name if message.author.display_name else message.author.name
 
         role = None
-        if message.author.name == self.initial_channel:
+        if message.author.name in self.initial_channels:
             role = "Streamer"
         elif message.author.is_mod:
             role = "Moderator"
