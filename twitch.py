@@ -67,6 +67,8 @@ class TwitchBot(commands.Bot):
                 with open('joined_channels.json', 'w') as f:
                     json.dump(joined_channels, f)
                 #setup twis from here
+                #print whats happening
+                print("Setting up Twis...")
                 main()
             await asyncio.sleep(600)
     
