@@ -3324,7 +3324,7 @@ async def get_all_twiscord_discord_channels() -> list:
         rows = await db.execute("SELECT discord_channel_id_chat FROM `streamer`")
         async with rows as cursor:
             result = await cursor.fetchall()
-            return result if result is not None else []
+            return [row[0] for row in result] if result else []
 
 #set the discord_channel_id_chat to a channel ID for a streamer
 async def set_discord_channel_id_chat(streamer_channel: str, discord_channel_id_chat: str) -> None:
