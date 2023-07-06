@@ -46,7 +46,6 @@ class TwitchBot(commands.Bot):
                 def remove_prefix(text, prefix):
                     if text.startswith(prefix):
                         return text[len(prefix):]
-                    return text
                 streamer_channel_name = remove_prefix(streamer_channel, "https://www.twitch.tv/")
                 # Skip joining if already joined
                 if streamer_channel_name not in joined_channels:
