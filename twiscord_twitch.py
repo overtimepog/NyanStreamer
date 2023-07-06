@@ -18,8 +18,11 @@ class TwiscordTwitch(twitch_commands.Bot):
 
 
         # Load joined channels from JSON file
-        with open('joined_channels.json', 'r') as f:
-            self.initial_channels = json.load(f)
+        try:
+            with open('joined_channels.json', 'r') as f:
+                self.initial_channels = json.load(f)
+        except FileNotFoundError:
+            self.initial_channels = []
 
         super().__init__(token=token, irc_token=irc_token, client_id=self.client_id, nick=nick, prefix=self.prefix, initial_channels=self.initial_channels)
 
