@@ -18,7 +18,7 @@ def main():
   loop = asyncio.get_event_loop()
   task1 = loop.create_task(twitch_bot.start())
   task2 = loop.create_task(discord_bot.start())
-  gathered = asyncio.gather(task1, task2, loop=loop)
+  gathered = asyncio.gather(task1, task2)
   loop.run_until_complete(gathered)
 
 if __name__ == "__main__":
