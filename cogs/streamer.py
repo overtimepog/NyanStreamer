@@ -450,6 +450,41 @@ class Streamer(commands.Cog, name="streamer"):
         embed = discord.Embed(title=f"{channel}'s Mods", description=mod_string)
         await ctx.send(embed=embed)
 
+    #chat setup command
+    @streamer.command(
+        name="chatsetup",
+        description="setup the chat for your channel!",
+    )
+    @checks.is_streamer()
+    async def chatsetup(self, ctx: Context, streamer: str, channel: discord.TextChannel):
+        """
+        This command will setup the chat for a streamer in the database.
+
+        :param ctx: The context in which the command was called.
+        """
+        mods = await db_manager.get_channel_mods(streamer)
+        await db_manager.set_discord_channel_id_chat(streamer, channel.id)
+        await ctx.send(f"Chat setup for {streamer} in {channel.mention}!")
+
+    #auto complete for the chatsetup command for the streamer
+    @chatsetup.autocomplete("streamer")
+    async def chatsetup_streamer_autocomplete(self, ctx: Context, argument):
+        streamers = await db_manager.get_user_mod_channels(ctx.user.id)
+        user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
+
+        # Add the user's channel to the list
+        if user_channel is not None:
+            streamers.append((user_channel,))
+        choices = []
+
+        for streamer in streamers:
+            streamer = streamer[0]
+            #make it a string
+            streamer = str(streamer)
+            if argument.lower() in streamer.lower():
+                choices.append(app_commands.Choice(name=streamer, value=streamer))
+        return choices[:25]
+
 
     @commands.hybrid_command(
         name="connect",

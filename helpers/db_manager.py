@@ -3301,16 +3301,41 @@ async def check_mod(streamer_channel: str, mod_user_id: int) -> int:
     else:
         return 0
 
-async def add_streamer_to_guild(streamer_channel: str, discord_channel_id: str, discord_guild_id: str) -> None:
+async def add_streamer_to_guild(streamer_channel: str, discord_channel_id_live_announce: str, discord_guild_id: str) -> None:
     """
     This function will add a Discord channel and guild to an existing streamer in the database.
 
     :param streamer_channel: The channel of the streamer that should be updated.
-    :param discord_channel_id: The ID of the Discord channel where the streamer should be added.
+    :param discord_channel_id_live_announce: The ID of the Discord channel where the streamer should be added.
     :param discord_guild_id: The ID of the Discord guild where the streamer should be added.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("UPDATE `streamer` SET discord_channel_id = ?, discord_guild_id = ? WHERE streamer_channel = ?", (discord_channel_id, discord_guild_id, streamer_channel))
+        await db.execute("UPDATE `streamer` SET discord_channel_id_live_announce = ?, discord_guild_id = ? WHERE streamer_channel = ?", (discord_channel_id_live_announce, discord_guild_id, streamer_channel))
+        await db.commit()
+
+#get all the discord_channel_id_chat from the streamer table
+async def get_all_twiscord_discord_channels() -> list:
+    """
+    This function will return all the Discord channels from the streamer table.
+
+    :return: A list of Discord channels.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        rows = await db.execute("SELECT discord_channel_id_chat FROM `streamer`")
+        async with rows as cursor:
+            result = await cursor.fetchall()
+            return result if result is not None else []
+
+#set the discord_channel_id_chat to a channel ID for a streamer
+async def set_discord_channel_id_chat(streamer_channel: str, discord_channel_id_chat: str) -> None:
+    """
+    This function will set the Discord channel ID for a streamer.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :param discord_channel_id_chat: The ID of the Discord channel where the streamer should be added.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_channel_id_chat = ? WHERE streamer_channel = ?", (discord_channel_id_chat, streamer_channel))
         await db.commit()
 
 async def remove_streamer_from_guild(streamer_channel: str) -> None:

@@ -9,8 +9,10 @@ CREATE TABLE IF NOT EXISTS `streamer` (
   `user_id` varchar NOT NULL,
   `twitch_id` varchar NOT NULL,
   `broadcaster_type` varchar NOT NULL,
-  `discord_channel_id` varchar,
-  `discord_guild_id` varchar
+  `discord_channel_id_live_announce` varchar,
+  `discord_guild_id` varchar,
+  `discord_channel_id_chat` varchar,
+  `enable_live_chat` boolean
 );
 
 CREATE TABLE IF NOT EXISTS `streamer_mods` (
