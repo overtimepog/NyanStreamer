@@ -48,7 +48,10 @@ class TwiscordDiscord(discord_commands.Bot):
     
     #print("Channel ID: " + str(message.channel.id))
     #print("Channel IDs: " + str(self.channel_ids))
-    channel_ids = await db_manager.get_all_twiscord_discord_channels()
+    try:
+      channel_ids = await db_manager.get_all_twiscord_discord_channels()
+    except:
+      channel_ids = []
     if message.channel.id in channel_ids:
       content = f"{'[' + str(message.author.top_role) + '] ' if message.author.top_role else ''}{message.author} » {message.clean_content}"[:300] # Only take the first 300 characters, 500 is officially the max but 300 should be all you need
       print(f"[discord] {content}")

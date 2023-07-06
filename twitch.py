@@ -34,6 +34,7 @@ class TwitchBot(commands.Bot):
         self.join_message = join_message
         #start a sub process to run the main function in startTwis.py
         #check if new streamers have been added to the database
+        twis = subprocess.Popen([sys.executable, r'startTwis.py'])
         while True:
             try:
                 streamerList = await db_manager.view_streamers()
@@ -71,7 +72,9 @@ class TwitchBot(commands.Bot):
             except Exception as e:
                 print(f"An error occurred: {e}")
             finally:
-                subprocess.Popen([sys.executable, r'startTwis.py'])
+                #restart twis
+                twis.terminate()
+                twis = subprocess.Popen([sys.executable, r'startTwis.py'])
                 print("looping...")
                 await asyncio.sleep(10)
         
