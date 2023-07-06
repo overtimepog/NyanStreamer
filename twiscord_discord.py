@@ -45,7 +45,8 @@ class DiscordBot(discord_commands.Bot):
       print("[Twiscord] Twitch not initialized.")
       return
     
-    
+    print("Channel ID: " + str(message.channel.id))
+    print("Channel IDs: " + str(self.channel_ids))
     
     if message.channel.id in self.channel_ids:
       content = f"{'[' + str(message.author.top_role) + '] ' if message.author.top_role else ''}{message.author} » {message.clean_content}"[:300] # Only take the first 300 characters, 500 is officially the max but 300 should be all you need

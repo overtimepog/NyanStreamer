@@ -43,7 +43,7 @@ class TwitchBot(twitch_commands.Bot):
             #await message.channel.send("[Twiscord] Discord not initialized.")
             return
 
-        sender_name = message.author.tags['display-name'] if 'display-name' in message.author.tags.keys() else message.author.name
+        sender_name = message.author.display_name if message.author.display_name else message.author.name
 
         role = None
         if message.author.name == self.initial_channel:
