@@ -31,6 +31,37 @@ class TwitchBot(commands.Bot):
         print(f'User id is | {self.user_id}')
         join_message = f"Hello! I'm NyanStreamer and I'm here to help you with your adventure! Type !help for a list of commands."
         self.join_message = join_message
+        #run this once first 
+        streamerList = await db_manager.view_streamers()
+        channels = []
+        joined_channels = []
+        # If the JSON file already exists, read it
+        if os.path.isfile('joined_channels.json'):
+            with open('joined_channels.json', 'r') as f:
+                joined_channels = json.load(f)
+        for i in streamerList:
+            streamer_channel = i[1]
+            def remove_prefix(text, prefix):
+                if text.startswith(prefix):
+                    return text[len(prefix):]
+                return text
+            streamer_channel_name = remove_prefix(streamer_channel, "https://www.twitch.tv/")
+            # Skip joining if already joined
+            if streamer_channel_name and streamer_channel_name not in joined_channels:
+                #add each channel a list of channels to join
+                channels.append(streamer_channel_name)
+                print(f"Joining {streamer_channel_name}...")
+        try:
+            await TwitchBot.join_channels(self, channels)
+            # Add the newly joined channels to our list of joined channels
+            joined_channels.extend(channels)
+        except KeyError or asyncio.exceptions.CancelledError:
+            pass
+        if len(channels) != 0:
+            print(f"Joined {len(channels)} channels.")
+            # Save the joined channels to the JSON file
+            with open('joined_channels.json', 'w') as f:
+                json.dump(joined_channels, f)
         await asyncio.create_task(main())
         #check if new streamers have been added to the database
         while True:
