@@ -11,7 +11,6 @@ import sys
 import aiosqlite
 import aiohttp
 from helpers import db_manager
-from discord.ext import commands, tasks
 from startTwis import main
 
 if not os.path.isfile("config.json"):
