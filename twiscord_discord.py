@@ -15,7 +15,7 @@ class DiscordBot(discord_commands.Bot):
 
     command_prefix = config['prefix']
     
-    super().__init__(command_prefix=command_prefix)
+    super().__init__(command_prefix=command_prefix, intents=discord.Intents.all())
     
   def start(self):
     # This function overrides the default `start` function
