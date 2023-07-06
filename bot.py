@@ -14,6 +14,7 @@ import platform
 import random
 import sys
 import subprocess
+import traceback
 import requests
 import time
 
@@ -318,8 +319,8 @@ async def load_cogs() -> None:
                 await bot.load_extension(f"cogs.{extension}")
                 print(f"Loaded extension '{extension}'")
             except Exception as e:
-                exception = f"{type(e).__name__}: {e}"
-                print(f"Failed to load extension {extension}\n{exception}")
+                print(f"Failed to load extension {extension}")
+                traceback.print_exception(type(e), e, e.__traceback__)
 
 async def setup() -> None:
     await init_db()
