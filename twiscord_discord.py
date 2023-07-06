@@ -27,7 +27,7 @@ class DiscordBot(discord_commands.Bot):
   async def on_ready(self):
     print(f"Discord Ready | {self.user}")
     self.channel_ids = await db_manager.get_all_twiscord_discord_channels()
-    print(f"Twiscord Enabled for Channels | {self.channel_ids}")
+    print(f"Twiscord Enabled for Discord Channels | {self.channel_ids}")
     self.channels = [self.get_channel(id) for id in self.channel_ids]
     self._is_ready_ = True
     if self.twitch_bot._is_ready_: # If both bots are ready/set up, send message to discord and twitch channel

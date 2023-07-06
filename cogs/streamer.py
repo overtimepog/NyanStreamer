@@ -451,9 +451,24 @@ class Streamer(commands.Cog, name="streamer"):
         await ctx.send(embed=embed)
 
     #chat setup command
-    @streamer.command(
-        name="chatsetup",
+    @streamer.group(
+        name="chat",
+        description="chat commands for streamers!",
+    )
+    async def chat(self, ctx: Context):
+        """
+        The base command for all chat commands.
+
+        :param ctx: The context in which the command was called.
+        """
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help("chat")
+
+    #command to setup the chat for a streamer
+    @chat.command(
+        name="setup",
         description="setup the chat for your channel!",
+        aliases=["s", "set_up"],
     )
     @checks.is_streamer()
     async def chatsetup(self, ctx: Context, streamer: str, channel: discord.TextChannel):
@@ -464,7 +479,7 @@ class Streamer(commands.Cog, name="streamer"):
         """
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.set_discord_channel_id_chat(streamer, channel.id)
-        await ctx.send(f"Chat setup for {streamer} in {channel.mention}!")
+        await ctx.send(f"Twitch to Discord Chat setup for **{streamer}** in {channel.mention}!")
 
     #auto complete for the chatsetup command for the streamer
     @chatsetup.autocomplete("streamer")
@@ -484,7 +499,43 @@ class Streamer(commands.Cog, name="streamer"):
             if argument.lower() in streamer.lower():
                 choices.append(app_commands.Choice(name=streamer, value=streamer))
         return choices[:25]
+    
+    #remove the chat setup for a streamer
+    @chat.command(
+        name="remove",
+        description="remove the chat setup for your channel!",
+        aliases=["r", "remove_setup"],
+    )
+    @checks.is_streamer()
+    async def chatremove(self, ctx: Context, streamer: str):
+        """
+        This command will remove the chat setup for a streamer in the database.
 
+        :param ctx: The context in which the command was called.
+        """
+        mods = await db_manager.get_channel_mods(streamer)
+        await db_manager.remove_discord_channel_id_chat(streamer)
+        await ctx.send(f"Twitch to Discord Chat removed for **{streamer}**!")
+
+
+    #auto complete for the chatremove command for the streamer
+    @chatremove.autocomplete("streamer")
+    async def chatremove_streamer_autocomplete(self, ctx: Context, argument):
+        streamers = await db_manager.get_user_mod_channels(ctx.user.id)
+        user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
+
+        # Add the user's channel to the list
+        if user_channel is not None:
+            streamers.append((user_channel,))
+        choices = []
+
+        for streamer in streamers:
+            streamer = streamer[0]
+            #make it a string
+            streamer = str(streamer)
+            if argument.lower() in streamer.lower():
+                choices.append(app_commands.Choice(name=streamer, value=streamer))
+        return choices[:25]
 
     @commands.hybrid_command(
         name="connect",

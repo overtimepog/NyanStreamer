@@ -3338,6 +3338,17 @@ async def set_discord_channel_id_chat(streamer_channel: str, discord_channel_id_
         await db.execute("UPDATE `streamer` SET discord_channel_id_chat = ? WHERE streamer_channel = ?", (discord_channel_id_chat, streamer_channel))
         await db.commit()
 
+#remove it
+async def remove_discord_channel_id_chat(streamer_channel: str) -> None:
+    """
+    This function will remove a Discord channel and guild from an existing streamer in the database.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_channel_id_chat = NULL WHERE streamer_channel = ?", (streamer_channel,))
+        await db.commit()
+
 #get a streamers discord_channel_id_chat from the streamer table
 async def get_discord_channel_id_chat(streamer_channel: str) -> int:
     """

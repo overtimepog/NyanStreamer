@@ -28,7 +28,7 @@ class TwitchBot(twitch_commands.Bot):
         self._is_ready_ = True
         for channel in self.initial_channels:
             self.channel = self.get_channel(channel)
-            print(f"Twiscord Enabled for Channel | {self.channel.name}")
+            print(f"Twiscord Enabled for Twitch Channel | {self.channel.name}")
         if self.discord_bot._is_ready_:
             content = "[Twiscord] Discord and Twitch bots are set up."
             #await self.channel.send(content)
