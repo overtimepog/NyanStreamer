@@ -11,6 +11,7 @@ import sys
 import aiosqlite
 import aiohttp
 from helpers import db_manager
+from discord.ext import commands, tasks
 from startTwis import main
 
 if not os.path.isfile("config.json"):
@@ -40,7 +41,6 @@ class TwitchBot(commands.Bot):
             if os.path.isfile('joined_channels.json'):
                 with open('joined_channels.json', 'r') as f:
                     joined_channels = json.load(f)
-    
             for i in streamerList:
                 streamer_channel = i[1]
                 def remove_prefix(text, prefix):
@@ -70,7 +70,7 @@ class TwitchBot(commands.Bot):
                 #print whats happening
                 print("Setting up Twis...")
                 await main()
-            await asyncio.sleep(600)
+            await asyncio.sleep(20)
     
     #when command on cooldown
     async def event_command_error(self, ctx, error):
