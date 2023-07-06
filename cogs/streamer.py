@@ -28,6 +28,7 @@ from num2words import num2words
 from startTwis import main
 from twitchAPI.twitch import Twitch
 from twitchAPI.types import AuthScope
+from twitchAPI.oauth import UserAuthenticator
 import os
 import sys
 
@@ -41,7 +42,18 @@ else:
 twitch_client_id = config["CLIENT_ID"]
 twitch_client_secret = config["CLIENT_SECRET"]
 twitch = Twitch(twitch_client_id, twitch_client_secret)
-twitch.authenticate_app([])
+scopes = [AuthScope.USER_READ_EMAIL]
+
+# Create an authenticator
+auth = UserAuthenticator(twitch, scopes, force_verify=False)
+
+# Get the token
+token, refresh_token = auth.authenticate()  # This will open a web page asking the user to authenticate
+
+# Set the token
+twitch.set_user_authentication(token, scopes, refresh_token)
+
+
 
 global i
 i = 0
