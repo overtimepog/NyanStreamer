@@ -479,7 +479,7 @@ class Streamer(commands.Cog, name="streamer"):
         """
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.set_discord_channel_id_chat(streamer, channel.id)
-        await ctx.send(f"Twitch to Discord Chat setup for **{streamer}** in {channel.mention}! (It may take a few minutes for the chat to start working)")
+        await ctx.send(f"Twitch to Discord Chat setup for **{streamer}** in {channel.mention}! (It will take a few minutes for the chat to start working)")
 
     #auto complete for the chatsetup command for the streamer
     @chatsetup.autocomplete("streamer")
