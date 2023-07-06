@@ -73,8 +73,8 @@ rarity_colors = {
 class Streamer(commands.Cog, name="streamer"):
     def __init__(self, bot):
         self.bot = bot
-        self.live_streams = set()
         self.streamer_check_task.start()
+        self.live_streams = set()
 
     @commands.hybrid_group(
         name="streamer",
