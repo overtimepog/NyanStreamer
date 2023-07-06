@@ -75,7 +75,7 @@ class TwitchBot(commands.Bot):
                 #restart twis
                 twis.terminate()
                 twis = subprocess.Popen([sys.executable, r'startTwis.py'])
-                await asyncio.sleep(600)
+                await asyncio.sleep(300)
         
 
     

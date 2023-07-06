@@ -26,6 +26,22 @@ from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from num2words import num2words
 from startTwis import main
+from twitchAPI.twitch import Twitch
+from twitchAPI.types import AuthScope
+import os
+import sys
+
+
+if not os.path.isfile("config.json"):
+    sys.exit("'config.json' not found! Please add it and try again.")
+else:
+    with open("config.json") as file:
+        config = json.load(file)
+
+twitch_client_id = config["CLIENT_ID"]
+twitch_client_secret = config["CLIENT_SECRET"]
+twitch = Twitch(twitch_client_id, twitch_client_secret)
+twitch.authenticate_app([])
 
 global i
 i = 0
@@ -45,6 +61,7 @@ rarity_colors = {
 class Streamer(commands.Cog, name="streamer"):
     def __init__(self, bot):
         self.bot = bot
+        self.streamer_check_task.start()
 
     @commands.hybrid_group(
         name="streamer",
@@ -587,6 +604,34 @@ class Streamer(commands.Cog, name="streamer"):
         await db_manager.remove_streamer_items(ctx.author.id)
         await db_manager.remove_streamer(ctx.author.id)
         await ctx.send("Your twitch account has been disconnected from your discord account!")
+
+
+    #every 5 minutes check if the streamers are live
+    @tasks.loop(minutes=5.0)
+    async def streamer_check_task(self) -> None:
+        streamers = await db_manager.view_streamers()
+        streamer_channels = [streamer[1] for streamer in streamers]
+
+        # Fetch user information in batches of 100
+        for i in range(0, len(streamer_channels), 100):
+            batch = streamer_channels[i:i+100]
+            user_info = twitch.get_users(logins=batch)
+            user_ids = [user['id'] for user in user_info['data']]
+
+            # Fetch stream information in batches of 100
+            for j in range(0, len(user_ids), 100):
+                batch_ids = user_ids[j:j+100]
+                stream_info = twitch.get_streams(user_ids=batch_ids)
+
+                # Check if the streamers are live
+                for stream in stream_info['data']:
+                    print(f"{stream['user_name']} is live!")
+                    print(f"Stream Title: {stream['title']}")
+                    # Here you can add the code to send a notification or whatever you want to do when the streamer is live
+
+    @streamer_check_task.before_loop
+    async def before_streamer_check_task(self):
+        await self.bot.wait_until_ready()
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

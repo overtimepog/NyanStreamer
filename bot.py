@@ -29,6 +29,8 @@ from assets import endpoints
 import exceptions
 from helpers import db_manager
 import twitch
+from twitchAPI.twitch import Twitch
+from twitchAPI.types import AuthScope
 
 cash = "⌬"
 if not os.path.isfile("config.json"):
@@ -36,6 +38,11 @@ if not os.path.isfile("config.json"):
 else:
     with open("config.json") as file:
         config = json.load(file)
+
+twitch_client_id = config["CLIENT_ID"]
+twitch_client_secret = config["CLIENT_SECRET"]
+twitch = Twitch(twitch_client_id, twitch_client_secret)
+twitch.authenticate_app([])
 
 """	
 Setup bot intents (events restrictions)
@@ -185,8 +192,6 @@ async def status_task() -> None:
     server_count = len(bot.guilds)
     statuses = [f"With {streamer_count} Streamers!", "nya help", 'UwU', f"to {server_count} Servers!"]
     await bot.change_presence(activity=discord.Streaming(name=random.choice(statuses), url="https://www.twitch.tv/overtimepog", twitch_name="overtimepog"))
-    
-#create a task to regenerate the twitch credentials and save them to the database, every 5 days
 
 @bot.event
 async def on_message(message: discord.Message) -> None:
