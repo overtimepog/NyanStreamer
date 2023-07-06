@@ -25,6 +25,7 @@ from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from num2words import num2words
+from startTwis import main
 
 global i
 i = 0
@@ -479,6 +480,7 @@ class Streamer(commands.Cog, name="streamer"):
         """
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.set_discord_channel_id_chat(streamer, channel.id)
+        await main()
         await ctx.send(f"Twitch to Discord Chat setup for **{streamer}** in {channel.mention}! (It will take a few minutes for the chat to start working)")
 
     #auto complete for the chatsetup command for the streamer
@@ -515,6 +517,7 @@ class Streamer(commands.Cog, name="streamer"):
         """
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.remove_discord_channel_id_chat(streamer)
+        await main()
         await ctx.send(f"Twitch to Discord Chat removed for **{streamer}**!")
 
 

@@ -66,8 +66,6 @@ class TwitchBot(commands.Bot):
                         json.dump(joined_channels, f)
                     #setup twis from here
                     #print whats happening
-                    print("Setting up Twis...")
-                    await asyncio.create_task(main())
             except Exception as e:
                 print(f"An error occurred: {e}")
             finally:
