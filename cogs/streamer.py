@@ -74,10 +74,11 @@ class Streamer(commands.Cog, name="streamer"):
     def __init__(self, bot):
         self.bot = bot
         try:
+            self.live_streams = set()
             self.streamer_check_task.start()
-        except RuntimeError or TypeError:
-            print("Streamer check task failed to start. This is probably because the bot is already running in another instance.")
-        self.live_streams = set()
+        except Exception as e:
+            print(e)
+            pass
 
     @commands.hybrid_group(
         name="streamer",
