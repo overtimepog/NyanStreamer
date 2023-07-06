@@ -52,7 +52,7 @@ class TwitchBot(twitch_commands.Bot):
             role = "Subscriber"
 
         content = f"{'**' + role + '** ' if role else ''}{sender_name} » {message.content}"
-        if self.should_print: print(f"[twitch ] {content}")
+        print(f"[twitch ] {content}")
 
         if message.content.startswith(self.prefix):
             await self.handle_commands(message)

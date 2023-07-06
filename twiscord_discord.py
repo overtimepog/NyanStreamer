@@ -12,7 +12,6 @@ class DiscordBot(discord_commands.Bot):
     self.token = config['token']
     self.channel = None  # Will be set later
     self._is_ready_ = False
-    self.should_print = config['print_messages_to_console'].lower() in ("yes", "true", "t", "1")  # Assuming 'print_messages_to_console' is a key in your config file
 
     command_prefix = config['prefix']
     
@@ -50,7 +49,7 @@ class DiscordBot(discord_commands.Bot):
     
     if message.channel.id in self.channel_ids:
       content = f"{'[' + str(message.author.top_role) + '] ' if message.author.top_role else ''}{message.author} » {message.clean_content}"[:300] # Only take the first 300 characters, 500 is officially the max but 300 should be all you need
-      if self.should_print: print(f"[discord] {content}")
+      print(f"[discord] {content}")
       if message.clean_content.startswith(self.command_prefix): await self.handle_commands(message) # If the message starts with the prefix, then send the message to self.handle_commands 
       else: await self.twitch_bot.channel.send(content) # If it's not a command, then send the message to the twitch chat
       
