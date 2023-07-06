@@ -3,6 +3,7 @@ import json
 import random
 import asyncio
 from twitchio.ext import commands as twitch_commands
+from helpers import db_manager
 
 class TwitchBot(twitch_commands.Bot):
     def __init__(self):
@@ -59,7 +60,14 @@ class TwitchBot(twitch_commands.Bot):
         if message.content.startswith(self.prefix):
             await self.handle_commands(message)
         else:
-            await self.discord_bot.channel.send(content)
+            #get the channel name its sending to
+            channel_name = message.channel.name
+            #get the discord channel id from the database
+            discord_channel_id = await db_manager.get_discord_channel_id_chat(channel_name)
+            #get the discord channel object from the id
+            discord_channel = self.discord_bot.get_channel(discord_channel_id)
+            #send the message to the discord channel
+            await discord_channel.send(content)
 
     @twitch_commands.command(name="discord")
     async def discord(self, ctx):

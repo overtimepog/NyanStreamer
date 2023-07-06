@@ -3324,7 +3324,7 @@ async def get_all_twiscord_discord_channels() -> list:
         rows = await db.execute("SELECT discord_channel_id_chat FROM `streamer`")
         async with rows as cursor:
             result = await cursor.fetchall()
-            return [row[0] for row in result] if result else []
+            return [int(row[0]) for row in result] if result else []
 
 #set the discord_channel_id_chat to a channel ID for a streamer
 async def set_discord_channel_id_chat(streamer_channel: str, discord_channel_id_chat: str) -> None:
@@ -3337,6 +3337,21 @@ async def set_discord_channel_id_chat(streamer_channel: str, discord_channel_id_
     async with aiosqlite.connect("database/database.db") as db:
         await db.execute("UPDATE `streamer` SET discord_channel_id_chat = ? WHERE streamer_channel = ?", (discord_channel_id_chat, streamer_channel))
         await db.commit()
+
+#get a streamers discord_channel_id_chat from the streamer table
+async def get_discord_channel_id_chat(streamer_channel: str) -> int:
+    """
+    This function will return the Discord channel ID for a streamer.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :return: The Discord channel ID for the streamer.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        rows = await db.execute("SELECT discord_channel_id_chat FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else None
+
 
 async def remove_streamer_from_guild(streamer_channel: str) -> None:
     """
