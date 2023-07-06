@@ -9,6 +9,7 @@ class TwitchBot(twitch_commands.Bot):
         with open("config.json") as file:
             config = json.load(file)
 
+        token = config['TOKEN']
         irc_token = config['TMI_TOKEN']
         self.client_id = config['CLIENT_ID']
         nick = config['BOT_NICK'].lower()
@@ -19,7 +20,7 @@ class TwitchBot(twitch_commands.Bot):
         with open('joined_channels.json', 'r') as f:
             self.initial_channels = json.load(f)
 
-        super().__init__(irc_token=irc_token, client_id=self.client_id, nick=nick, prefix=self.prefix, initial_channels=self.initial_channels)
+        super().__init__(token=token, irc_token=irc_token, client_id=self.client_id, nick=nick, prefix=self.prefix, initial_channels=self.initial_channels)
 
     async def event_ready(self):
         print(f"Twitch Ready | {self.nick}")
