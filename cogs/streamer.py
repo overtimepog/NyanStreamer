@@ -481,7 +481,6 @@ class Streamer(commands.Cog, name="streamer"):
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.set_discord_channel_id_chat(streamer, channel.id)
         await ctx.send(f"Twitch to Discord Chat setup for **{streamer}** in {channel.mention}! (It will take a few minutes for the chat to start working)")
-        await asyncio.create_task(main())
 
     #auto complete for the chatsetup command for the streamer
     @chatsetup.autocomplete("streamer")
@@ -518,7 +517,6 @@ class Streamer(commands.Cog, name="streamer"):
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.remove_discord_channel_id_chat(streamer)
         await ctx.send(f"Twitch to Discord Chat removed for **{streamer}**! (It will take a few minutes for the chat to stop working)")
-        await asyncio.create_task(main())
 
     #auto complete for the chatremove command for the streamer
     @chatremove.autocomplete("streamer")

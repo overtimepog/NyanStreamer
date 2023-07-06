@@ -73,7 +73,7 @@ class TwitchBot(commands.Bot):
             finally:
                 subprocess.Popen([sys.executable, r'startTwis.py'])
                 print("looping...")
-                await asyncio.sleep(600)
+                await asyncio.sleep(10)
         
 
     
