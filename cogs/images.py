@@ -323,10 +323,9 @@ class Images(commands.Cog, name="images"):
         text1 = format_text(text1)
         text2 = format_text(text2)
         text3 = format_text(text3)
-        text4 = format_text(text4)
         if text4 is None:
             text4 = text3
-
+        text4 = format_text(text4)
         url = f"https://api.memegen.link/images/gru/{text1}/{text2}/{text3}/{text4}.{format}?api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         async with self.session.get(url) as resp:
