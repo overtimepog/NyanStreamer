@@ -365,6 +365,7 @@ async def setup() -> None:
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
                 await db_manager.get_user(member.id)
+                print("Added " + member.name + " to the database")
     print("Setup Complete")
     print("-----------------------------")
 
