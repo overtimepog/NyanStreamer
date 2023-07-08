@@ -109,6 +109,10 @@ class Streamer(commands.Cog, name="streamer"):
         else:
             print("No streamers are live")
 
+    @check_streams.before_loop
+    async def before_check_streams(self):
+        await self.bot.wait_until_ready()
+
 
 
     @commands.hybrid_group(
