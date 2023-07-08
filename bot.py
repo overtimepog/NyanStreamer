@@ -342,11 +342,10 @@ async def setup() -> None:
             if checkUser == None:
                 await db_manager.get_user(member.id)
         print()  # Print a newline at the end of each server's member check
-    
+
     total_guilds = len(bot.guilds)
-    loop = asyncio.get_event_loop()
-    tasks = [loop.create_task(check_server(i, bot_guild, total_guilds)) for i, bot_guild in enumerate(bot.guilds, start=1)]
-    loop.run_until_complete(asyncio.gather(*tasks))
+    tasks = [check_server(i, bot_guild, total_guilds) for i, bot_guild in enumerate(bot.guilds, start=1)]
+    await asyncio.gather(*tasks)
 
     #print("\n" + "---------Enemies----------")
     #await db_manager.add_enemies()
