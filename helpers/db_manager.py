@@ -802,6 +802,8 @@ async def get_revival_timestamp(user_id: int) -> int:
     data = await db.execute(f"SELECT `time_of_revival` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
         revival_time = data[0]
+        # Convert the string to a datetime object
+        revival_time = datetime.datetime.fromisoformat(revival_time)
         timestamp = revival_time.timestamp()
         return int(timestamp)
     else:
