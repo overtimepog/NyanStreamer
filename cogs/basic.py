@@ -1018,10 +1018,10 @@ class Basic(commands.Cog, name="basic"):
             if isalive == True:
                 #if they are, mark them as dead
                 await db_manager.set_dead(user_id)
-            revivetimestamp = await db_manager.get_revival_timestamp()
+            revivetimestamp = await db_manager.get_revival_timestamp(user_id)
             embed.add_field(name="Health", value=f"0 (Dead) Revive: <t:{revivetimestamp}:R>", inline=True)
         elif isalive == False:
-            revivetimestamp = await db_manager.get_revival_timestamp()
+            revivetimestamp = await db_manager.get_revival_timestamp(user_id)
             embed.add_field(name="Health", value=f"0 (Dead) Revive: <t:{revivetimestamp}:R>", inline=True)
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
