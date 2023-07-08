@@ -787,6 +787,8 @@ async def get_revival_time(user_id: int) -> int:
     if data is not None:
         revival_time = data[0]
         current_time = datetime.datetime.now()
+        #convert the string to a datetime object
+        revival_time = datetime.datetime.fromisoformat(revival_time)
         remaining_time = revival_time - current_time
         if remaining_time.total_seconds() <= 0:
             # The user's revival time has passed, so set them as alive
@@ -805,6 +807,8 @@ async def revive_users() -> None:
         for user in data:
             user_id = user[0]
             revival_time = user[37]
+            #convert it to a datetime object
+            revival_time = datetime.datetime.fromisoformat(revival_time)
             current_time = datetime.datetime.now()
             remaining_time = revival_time - current_time
             if remaining_time.total_seconds() <= 0:
