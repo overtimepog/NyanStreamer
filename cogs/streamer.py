@@ -106,6 +106,8 @@ class Streamer(commands.Cog, name="streamer"):
             for i in self.live_streams:
                 message += f"{i} is live! https://www.twitch.tv/{i}\n"
             await channel.send(message)
+        else:
+            print("No streamers are live")
 
 
 
