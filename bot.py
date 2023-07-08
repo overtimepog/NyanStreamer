@@ -359,7 +359,9 @@ async def setup() -> None:
     print("\n" + "-----------------------------")
     #look through all the guilds the bot is in, and add all the members to the database if they are not already in it
     for bot_guild in bot.guilds:
+        print("Checking " + bot_guild.name + "ID: " + str(bot_guild.id) + "With " + str(len(bot_guild.members)) + " members")
         for member in bot_guild.members:
+            #print the number of members in the guild
             if member.bot:
                 continue
             checkUser = await db_manager.check_user(member.id)
