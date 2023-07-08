@@ -358,14 +358,17 @@ async def setup() -> None:
     await load_cogs()
     #look through all the guilds the bot is in, and add all the members to the database if they are not already in it
     total_guilds = len(bot.guilds)
-    for i, bot_guild in enumerate(bot.guilds, start=0):
+    for i, bot_guild in enumerate(bot.guilds, start=1):
         total_members = len([member for member in bot_guild.members if not member.bot])
+        if total_members > 10000:
+            print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
+            continue
         member_counter = 0
         for member in bot_guild.members:
             if member.bot:
                 continue
             member_counter += 1
-            print(f"\nChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
+            print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
                 await db_manager.get_user(member.id)
