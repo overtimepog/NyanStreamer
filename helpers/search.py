@@ -61,17 +61,14 @@ class SearchButton(discord.ui.Button['SearchButton']):
                 total = -negative_outcome['penalty']  # Negative because it's a penalty
 
         print("Chosen Comment Type: " + comment_type + "\nChosen Comment: " + comment)
-        
+
         # Change the embed based on the comment type
         if comment_type == "positive_comments":
             bonus = await db_manager.get_percent_bonus(self.user.id)
             bonus_money = total * (int(bonus) / 100)
             total += int(bonus_money)
             await db_manager.add_money(self.user.id, total)
-            comment = comment.replace("{thing}", f"**{cash}{total}**")
-            embed = discord.Embed(description=comment)
-            embed.set_footer(text=f'Bonus +{bonus}% ({cash}{bonus_money})')
-            
+
             # Add item finding mechanism here
             item_find_chance = random.random()  # Generates a random float between 0.0 and 1.0
 
@@ -102,10 +99,18 @@ class SearchButton(discord.ui.Button['SearchButton']):
                     await db_manager.add_item_to_inventory(interaction.user.id, item, amount)
                     item_id = item
                     item_id = str(item_id)
-                    
+
                     item_emoji = await db_manager.get_basic_item_emoji(item_id)
                     item_name = await db_manager.get_basic_item_name(item_id)
-                    embed.description += f"\n also check this out, you found **x{amount} {item_emoji}{item_name}**!"
+                    thing = f"**{cash}{total}** and **x{amount} {item_emoji}{item_name}**"
+                else:
+                    thing = f"**{cash}{total}**"
+            else:
+                thing = f"**{cash}{total}**"
+
+            comment = comment.replace("{thing}", thing)
+            embed = discord.Embed(description=comment)
+            embed.set_footer(text=f'Bonus +{bonus}% ({cash}{bonus_money})')
 
         elif comment_type == "negative_comments":
             await db_manager.remove_money(self.user.id, abs(total))  # Use abs() to ensure the amount is positive
