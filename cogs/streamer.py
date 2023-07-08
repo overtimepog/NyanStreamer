@@ -25,10 +25,6 @@ from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from num2words import num2words
-from startTwis import main
-from twitchAPI.twitch import Twitch
-from twitchAPI.types import AuthScope
-from twitchAPI.oauth import UserAuthenticator
 import os
 import sys
 
@@ -41,11 +37,6 @@ else:
 
 twitch_client_id = config["CLIENT_ID"]
 twitch_client_secret = config["CLIENT_SECRET"]
-#make a list of scopes
-scopes = [AuthScope.USER_READ_EMAIL]
-
-#app authorization for twitch
-twitch = Twitch(twitch_client_id, twitch_client_secret, authenticate_app=True, target_app_auth_scope=scopes)
 
 
 global i
@@ -68,7 +59,6 @@ class Streamer(commands.Cog, name="streamer"):
         self.bot = bot
         try:
             self.live_streams = set()
-            self.streamer_check_task.start()
         except Exception as e:
             print(e)
             pass
@@ -617,39 +607,6 @@ class Streamer(commands.Cog, name="streamer"):
 
 
     #every 5 minutes check if the streamers are live
-    @tasks.loop(minutes=5.0)
-    async def streamer_check_task(self) -> None:
-        streamers = await db_manager.view_streamers()
-        streamer_channels = [streamer[1] for streamer in streamers]
-
-        # Fetch user information in batches of 100
-        for i in range(0, len(streamer_channels), 100):
-            batch = streamer_channels[i:i+100]
-            user_ids = []
-            async for user in twitch.get_users(logins=batch):
-                user_ids.append(user['id'])
-
-            # Fetch stream information in batches of 100
-            for j in range(0, len(user_ids), 100):
-                batch_ids = user_ids[j:j+100]
-                stream_info = twitch.get_streams(user_ids=batch_ids)
-
-                # Check if the streamers are live
-                for stream in stream_info['data']:
-                    stream_id = stream['id']
-                    if stream_id not in self.live_streams and stream['type'] == 'live':
-                        print(f"{stream['user_name']} is live!")
-                        print(f"Stream Title: {stream['title']}")
-
-                        # Add the stream to the set of live streams
-                        self.live_streams.add(stream_id)
-
-        # Remove streams that are no longer live from the set
-        self.live_streams = {stream_id for stream_id in self.live_streams if twitch.get_streams(user_ids=[stream_id])['data'] and twitch.get_streams(user_ids=[stream_id])['data'][0]['type'] == 'live'}
-
-    @streamer_check_task.before_loop
-    async def before_streamer_check_task(self):
-        await self.bot.wait_until_ready()
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
