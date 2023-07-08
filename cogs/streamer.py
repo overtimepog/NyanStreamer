@@ -56,6 +56,24 @@ def checkUser(user_id, oauth_token):
     else:
         print(f"Error checking user: {response.json()}")
         return False
+    
+def refresh_token_func(refresh_token):
+    url = "https://id.twitch.tv/oauth2/token"
+    payload = {
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
+        "client_id": twitch_client_id,
+        "client_secret": twitch_client_secret
+    }
+
+    response = requests.post(url, data=payload)
+
+    if response.status_code == 200:
+        new_tokens = response.json()
+        return new_tokens["access_token"], new_tokens["refresh_token"]
+    else:
+        print(f"Error refreshing token: {response.json()}")
+        return None, None
 
 global i
 i = 0
@@ -78,6 +96,7 @@ class Streamer(commands.Cog, name="streamer"):
         try:
             self.live_streams = set()
             self.check_streams.start()
+            self.refresh_tokens.start()
         except Exception as e:
             print(e)
             pass
@@ -111,6 +130,30 @@ class Streamer(commands.Cog, name="streamer"):
 
     @check_streams.before_loop
     async def before_check_streams(self):
+        await self.bot.wait_until_ready()
+
+    @tasks.loop(hours=4)  # Adjust the interval as needed
+    async def refresh_tokens(self):
+        # Get all streamers from the database
+        streamers = await db_manager.view_streamers()
+
+        for i in streamers:
+            user_id = i[2]
+            refresh_token = await db_manager.get_twitch_refresh_token(user_id)  # Get the refresh token
+            if not refresh_token:
+                continue
+
+            # Refresh the token
+            new_access_token, new_refresh_token = refresh_token_func(refresh_token)
+
+            if new_access_token and new_refresh_token:
+                # Store the new tokens
+                await db_manager.set_twitch_oauth_token(user_id, new_access_token)
+                await db_manager.set_twitch_refresh_token(user_id, new_refresh_token)
+                print(f"Refreshed tokens for {i[1]}")
+
+    @refresh_tokens.before_loop
+    async def before_refresh_tokens(self):
         await self.bot.wait_until_ready()
 
 

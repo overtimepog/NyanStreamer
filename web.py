@@ -55,6 +55,7 @@ async def callback(request: Request):
 
     print(response.json())
     access_token = response.json()["access_token"]
+    refresh_token = response.json()["refresh_token"]
 
     response = requests.get("https://api.twitch.tv/helix/users", headers={
         "Client-ID": client_id,
@@ -64,8 +65,10 @@ async def callback(request: Request):
     user = response.json()["data"][0]
     discord_id = request.session["discord_user_id"]
     broadcaster_type = user["broadcaster_type"]
+    
 
     await db_manager.set_twitch_oauth_token(discord_id, access_token)
+    await db_manager.set_twitch_refresh_token(discord_id, refresh_token)
     await db_manager.connect_twitch_id(discord_id, user['id'])  
     print("connected twitch id")
     await db_manager.connect_twitch_name(discord_id, user['login'])

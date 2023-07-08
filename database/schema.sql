@@ -196,7 +196,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `streak` int(11),
   `time_of_death` DATETIME,
   `time_of_revival` DATETIME,
-  `twitch_oauth_token` varchar(255)
+  `twitch_oauth_token` varchar(255),
+  `twitch_refresh_token` varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS `bank`(
