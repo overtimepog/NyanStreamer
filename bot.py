@@ -368,11 +368,12 @@ async def setup() -> None:
             if member.bot:
                 continue
             member_counter += 1
+            print('\r' + ' ' * 100, end='')  # Clear the line
             print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
                 await db_manager.get_user(member.id)
-        print()  
+        print()
     print("Setup Complete")
     print("-----------------------------")
 
