@@ -358,16 +358,20 @@ async def setup() -> None:
     await load_cogs()
     print("\n" + "-----------------------------")
     #look through all the guilds the bot is in, and add all the members to the database if they are not already in it
-    for bot_guild in bot.guilds:
-        print("Checking " + bot_guild.name + " ID: " + str(bot_guild.id) + " With " + str(len(bot_guild.members)) + " members")
+    total_guilds = len(bot.guilds)
+    for i, bot_guild in enumerate(bot.guilds, start=1):
+        print(f"\nChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} With {len(bot_guild.members)} members")
+        total_members = len([member for member in bot_guild.members if not member.bot])
+        member_counter = 0
         for member in bot_guild.members:
-            #print the number of members in the guild
             if member.bot:
                 continue
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
                 await db_manager.get_user(member.id)
-                print("Added " + member.name + " to the database")
+                member_counter += 1
+                print(f"\rChecking {bot_guild.name} members: {member_counter}/{total_members}", end='')
+        print()
     print("Setup Complete")
     print("-----------------------------")
 
