@@ -329,20 +329,29 @@ async def setup() -> None:
     if os.path.isfile('joined_channels.json'):
         os.remove('joined_channels.json')
     print("---------Users----------")
+    total_guilds = len(bot.guilds)
+    print_lock = asyncio.Lock()
+    
     async def check_server(i, bot_guild, total_guilds):
         total_members = len([member for member in bot_guild.members if not member.bot])
+        if total_members > 10000:
+            async with print_lock:
+                print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
+            return
         member_counter = 0
         for member in bot_guild.members:
             if member.bot:
                 continue
             member_counter += 1
-            print('\r' + ' ' * 100, end='')  # Clear the line
-            print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
+            async with print_lock:
+                print('\r' + ' ' * 100, end='')  # Clear the line
+                print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
                 await db_manager.get_user(member.id)
-        print()  # Print a newline at the end of each server's member check
-
+        async with print_lock:
+            print()  # Print a newline at the end of each server's member check
+    
     total_guilds = len(bot.guilds)
     tasks = [check_server(i, bot_guild, total_guilds) for i, bot_guild in enumerate(bot.guilds, start=1)]
     await asyncio.gather(*tasks)
