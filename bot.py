@@ -356,7 +356,6 @@ async def setup() -> None:
     await db_manager.clean_inventory()
     print("\n" + "---------Loading Cogs----------")
     await load_cogs()
-    print("\n" + "-----------------------------")
     #look through all the guilds the bot is in, and add all the members to the database if they are not already in it
     total_guilds = len(bot.guilds)
     for i, bot_guild in enumerate(bot.guilds, start=1):
@@ -366,12 +365,12 @@ async def setup() -> None:
         for member in bot_guild.members:
             if member.bot:
                 continue
+            member_counter += 1
+            print(f"\rChecking {bot_guild.name} members: {member_counter}/{total_members}", end='')
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
                 await db_manager.get_user(member.id)
-                member_counter += 1
-                print(f"\rChecking {bot_guild.name} members: {member_counter}/{total_members}", end='')
-        print()
+    print()  
     print("Setup Complete")
     print("-----------------------------")
 
