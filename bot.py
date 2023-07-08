@@ -328,6 +328,24 @@ async def setup() -> None:
     #delete the joined_channels.json file
     if os.path.isfile('joined_channels.json'):
         os.remove('joined_channels.json')
+    print("---------Users----------")
+    total_guilds = len(bot.guilds)
+    for i, bot_guild in enumerate(bot.guilds, start=1):
+        total_members = len([member for member in bot_guild.members if not member.bot])
+        #if total_members > 10000:
+        #    print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
+        #    continue
+        member_counter = 0
+        for member in bot_guild.members:
+            if member.bot:
+                continue
+            member_counter += 1
+            print('\r' + ' ' * 100, end='')  # Clear the line
+            print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
+            checkUser = await db_manager.check_user(member.id)
+            if checkUser == None:
+                await db_manager.get_user(member.id)
+        print()
     #print("\n" + "---------Enemies----------")
     #await db_manager.add_enemies()
     #print("\n" + "---------Quests----------")
@@ -357,23 +375,6 @@ async def setup() -> None:
     print("\n" + "---------Loading Cogs----------")
     await load_cogs()
     #look through all the guilds the bot is in, and add all the members to the database if they are not already in it
-    total_guilds = len(bot.guilds)
-    for i, bot_guild in enumerate(bot.guilds, start=1):
-        total_members = len([member for member in bot_guild.members if not member.bot])
-        if total_members > 10000:
-            print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
-            continue
-        member_counter = 0
-        for member in bot_guild.members:
-            if member.bot:
-                continue
-            member_counter += 1
-            print('\r' + ' ' * 100, end='')  # Clear the line
-            print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
-            checkUser = await db_manager.check_user(member.id)
-            if checkUser == None:
-                await db_manager.get_user(member.id)
-        print()
     print("Setup Complete")
     print("-----------------------------")
 
