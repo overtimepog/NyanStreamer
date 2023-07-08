@@ -65,7 +65,7 @@ async def callback(request: Request):
     discord_id = request.session["discord_user_id"]
     broadcaster_type = user["broadcaster_type"]
 
-    await db_manager.edit_twitchCreds(access_token)  
+    await db_manager.set_twitch_oauth_token(discord_id, access_token)
     await db_manager.connect_twitch_id(discord_id, user['id'])  
     print("connected twitch id")
     await db_manager.connect_twitch_name(discord_id, user['login'])

@@ -195,7 +195,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `percent_bonus` varchar(255),
   `streak` int(11),
   `time_of_death` DATETIME,
-  `time_of_revival` DATETIME
+  `time_of_revival` DATETIME,
+  `twitch_oauth_token` varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS `bank`(

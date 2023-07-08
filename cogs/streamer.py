@@ -38,6 +38,24 @@ else:
 twitch_client_id = config["CLIENT_ID"]
 twitch_client_secret = config["CLIENT_SECRET"]
 
+def checkUser(user_id, oauth_token):
+    url = "https://api.twitch.tv/helix/streams"
+    headers = {
+        "Authorization": f"Bearer {oauth_token}",
+        "Client-ID": f"{twitch_client_id}"
+    }
+    params = {
+        "user_id": user_id
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        data = response.json()
+        return len(data["data"]) > 0  # If the 'data' array is not empty, the user is streaming
+    else:
+        print(f"Error checking user: {response.json()}")
+        return False
 
 global i
 i = 0
@@ -59,9 +77,37 @@ class Streamer(commands.Cog, name="streamer"):
         self.bot = bot
         try:
             self.live_streams = set()
+            self.check_streams.start()
         except Exception as e:
             print(e)
             pass
+
+    #check every 5 minutes if any streamers are live
+    @tasks.loop(minutes=5)
+    async def check_streams(self):
+        # Get all streamers from the database
+        streamers = await db_manager.view_streamers()
+        #check if the streamer is live
+        for i in streamers:
+            user_id = i[2]
+            twitch_id_of_streamer = i[3]
+            oauth = await db_manager.get_twitch_oauth_token(user_id)
+            if oauth == None or oauth == False or oauth == [] or oauth == "None" or oauth == 0:
+                continue
+            is_live = checkUser(twitch_id_of_streamer, oauth)
+            if is_live:
+                self.live_streams.add(i[1])
+            else:
+                self.live_streams.discard(i[1])
+        #send a message to the discord channel if a streamer is live
+        if len(self.live_streams) > 0:
+            channel = self.bot.get_channel(887439772495859978)
+            message = ""
+            for i in self.live_streams:
+                message += f"{i} is live! https://www.twitch.tv/{i}\n"
+            await channel.send(message)
+
+
 
     @commands.hybrid_group(
         name="streamer",

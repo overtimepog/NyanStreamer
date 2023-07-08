@@ -614,6 +614,25 @@ async def connect_twitch_id(user_id: int, twitch_id: int) -> None:
         await db.execute(f"UPDATE `users` SET `twitch_id` = ? WHERE `user_id` = ?", (twitch_id, user_id))
     else:
         return None
+    
+#set the twitch_oauth_token in the users table
+async def set_twitch_oauth_token(user_id: int, twitch_oauth_token: str) -> None:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="all")
+    if data is not None:
+        await db.execute(f"UPDATE `users` SET `twitch_oauth_token` = ? WHERE `user_id` = ?", (twitch_oauth_token, user_id))
+    else:
+        return None
+    
+#get the twitch_oauth_token from the users table
+async def get_twitch_oauth_token(user_id: int) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="all")
+    if data is not None:
+        users = await db.execute(f"SELECT `twitch_oauth_token` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users[0]
+    else:
+        return None
         
 #add a twitch name to a discord account
 async def connect_twitch_name(user_id: int, twitch_name: str) -> None:
