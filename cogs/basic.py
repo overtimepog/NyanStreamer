@@ -155,6 +155,7 @@ class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
         self.bot = bot
         self.shop_reset.start()
+        self.revive_users.start()
 
     #every 8 hours the shop will reset
     @tasks.loop(hours=8)
@@ -165,6 +166,21 @@ class Basic(commands.Cog, name="basic"):
         await db_manager.add_shop_items()
         print("Done Resetting Shop...")
         print("-----------------------------")
+    
+    @shop_reset.before_loop
+    async def before_shop_reset(self):
+        await self.bot.wait_until_ready()
+
+    #task to check and revive users every minute
+    @tasks.loop(minutes=1)
+    async def revive_users(self):
+        await db_manager.revive_users()
+
+    @revive_users.before_loop
+    async def before_revive_users(self):
+        await self.bot.wait_until_ready()
+
+    
 
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
     #registering a streamer will also add them to the database user table

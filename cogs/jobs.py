@@ -362,7 +362,7 @@ class Jobs(commands.Cog, name="jobs"):
             else:
                 print("Unknown game type")
                 return
-        except HybridCommandError:
+        except Exception as e:
             #tell the user there was an error, some jobs dont work in dms
             await ctx.send("There was an error, please the work command again in a server!")
             ctx.command.reset_cooldown(ctx)
