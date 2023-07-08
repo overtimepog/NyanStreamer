@@ -33,7 +33,7 @@ async def thanks(request: Request):
 async def webhook(request: Request):
     discord_user_id = request.query_params.get("discord_id")
     request.session["discord_user_id"] = discord_user_id
-    return RedirectResponse(url="https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://nyanstreamer.lol/callback&response_type=code&scope=user:read:email")
+    return RedirectResponse(url="https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://nyanstreamer.lol/callback&response_type=code&scope=user:read:email%20chat:read%20user:read:broadcast")
 
 @app.get("/callback")
 async def callback(request: Request):
