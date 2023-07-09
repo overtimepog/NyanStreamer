@@ -144,6 +144,7 @@ class Streamer(commands.Cog, name="streamer"):
 
     @tasks.loop(hours=2)  # Adjust the interval as needed
     async def refresh_tokens(self):
+        print("Refreshing tokens...")
         # Get all streamers from the database
         streamers = await db_manager.view_streamers()
 
