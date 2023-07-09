@@ -142,7 +142,7 @@ class Streamer(commands.Cog, name="streamer"):
     async def before_check_streams(self):
         await self.bot.wait_until_ready()
 
-    @tasks.loop(hours=4)  # Adjust the interval as needed
+    @tasks.loop(hours=2)  # Adjust the interval as needed
     async def refresh_tokens(self):
         # Get all streamers from the database
         streamers = await db_manager.view_streamers()
