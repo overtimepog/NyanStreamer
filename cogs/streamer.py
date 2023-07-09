@@ -69,8 +69,6 @@ def refresh_token_func(refresh_token):
         "client_id": twitch_client_id,
         "client_secret": twitch_client_secret
     }
-    print("Refreshing token... 2")
-
     response = requests.post(url, data=payload)
 
     if response.status_code == 200:
@@ -150,9 +148,11 @@ class Streamer(commands.Cog, name="streamer"):
         streamers = await db_manager.view_streamers()
 
         for i in streamers:
+            print(i[1])
             user_id = i[2]
             refresh_token = await db_manager.get_twitch_refresh_token(user_id)  # Get the refresh token
             if not refresh_token:
+                print(f"No refresh token found for {i[1]}")
                 continue
 
             # Refresh the token
