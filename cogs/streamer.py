@@ -69,6 +69,7 @@ def refresh_token_func(refresh_token):
         "client_id": twitch_client_id,
         "client_secret": twitch_client_secret
     }
+    print("Refreshing token... 2")
 
     response = requests.post(url, data=payload)
 
