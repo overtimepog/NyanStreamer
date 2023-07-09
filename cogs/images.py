@@ -198,13 +198,13 @@ class Images(commands.Cog, name="images"):
         else:
             #get the format from the url, just check if its a png, jpeg, gif or webp, if not, default to png
             if url is not None:
-                if url.endswith(".png"):
+                if url.__contains__(".png"):
                     format = "png"
-                elif url.endswith(".jpeg"):
+                elif url.__contains__(".jpeg"):
                     format = "jpeg"
                 elif url.__contains__(".gif"):
                     format = "gif"
-                elif url.endswith(".webp"):
+                elif url.__contains__(".webp"):
                     format = "webp"
                 else:
                     format = "png"
