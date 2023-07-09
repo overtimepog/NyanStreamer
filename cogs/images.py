@@ -314,7 +314,7 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, communism_instance.generate, [user.avatar.url], "", [], "")
 
         # send the image
-        await ctx.send(file=File(fp=image, filename="communism.png"))
+        await ctx.send(file=File(fp=image, filename="communism.gif"))
 
     @commands.hybrid_command(
         name="delete",
