@@ -57,6 +57,9 @@ async def callback(request: Request):
     access_token = response.json()["access_token"]
     refresh_token = response.json()["refresh_token"]
 
+    print("Access Token: " + access_token)
+    print("Refresh Token: " + refresh_token)
+
     response = requests.get("https://api.twitch.tv/helix/users", headers={
         "Client-ID": client_id,
         "Authorization": f"Bearer {access_token}"
