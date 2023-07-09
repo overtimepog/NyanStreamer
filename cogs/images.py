@@ -191,10 +191,23 @@ class Images(commands.Cog, name="images"):
         name="custom",
         description="give top and bottom text to a user or image (Uses API)",
     )
-    async def custom(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None, top: str = None, bottom: str = None, format: str = "png"):
+    async def custom(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None, url: str = None, top: str = None, bottom: str = None, format: str = None):
         await ctx.defer()
-        custom_instance = meme.Meme()
-
+        if format is None and image is not None:
+            format = image.content_type
+        else:
+            #get the format from the url, just check if its a png, jpeg, gif or webp, if not, default to png
+            if url is not None:
+                if url.endswith(".png"):
+                    format = "png"
+                elif url.endswith(".jpeg"):
+                    format = "jpeg"
+                elif url.__contains__(".gif"):
+                    format = "gif"
+                elif url.endswith(".webp"):
+                    format = "webp"
+                else:
+                    format = "png"
         if top is None:
             top = "_"
         if bottom is None:
@@ -206,6 +219,9 @@ class Images(commands.Cog, name="images"):
         elif image is not None:
             # If an Attachment is provided, use its URL
             image_url = image.url
+        elif url is not None:
+            # If a URL is provided, use it
+            image_url = url
         else:
             # If neither is provided, raise an error
             raise commands.BadArgument("You must provide a user mention or an image attachment.")
