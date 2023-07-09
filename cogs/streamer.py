@@ -141,7 +141,7 @@ class Streamer(commands.Cog, name="streamer"):
     async def before_check_streams(self):
         await self.bot.wait_until_ready()
 
-    @tasks.loop(hours=1.5)  # Adjust the interval as needed
+    @tasks.loop(hours=2)  # Adjust the interval as needed
     async def refresh_tokens(self):
         print("Refreshing tokens...")
         # Get all streamers from the database
