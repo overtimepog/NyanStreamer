@@ -305,6 +305,18 @@ class Images(commands.Cog, name="images"):
         await ctx.send(file=discord.File(fp=image, filename="changemymind.png"))
 
     @commands.hybrid_command(
+        name="communism",
+        description="I serve the soviet union",
+    )
+    async def communism(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        communism_instance = communism.Communism()
+        image = await self.bot.loop.run_in_executor(self.executor, communism_instance.generate, [user.avatar.url], "", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="communism.png"))
+
+    @commands.hybrid_command(
         name="delete",
         description="delete an image or user",
     )
