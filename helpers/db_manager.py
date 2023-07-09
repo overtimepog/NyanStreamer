@@ -3424,6 +3424,79 @@ async def get_discord_channel_id_chat(streamer_channel: str) -> int:
         async with rows as cursor:
             result = await cursor.fetchone()
             return result[0] if result is not None else None
+        
+
+#set and get the discord_channel_id_live_announce from the streamer table
+async def set_discord_channel_id_live_announce(streamer_channel: str, discord_channel_id_live_announce: str) -> None:
+    """
+    This function will set the Discord channel ID for a streamer.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :param discord_channel_id_live_announce: The ID of the Discord channel where the streamer should be added.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_channel_id_live_announce = ? WHERE streamer_channel = ?", (discord_channel_id_live_announce, streamer_channel))
+        await db.commit()
+
+#remove it
+async def remove_discord_channel_id_live_announce(streamer_channel: str) -> None:
+    """
+    This function will remove a Discord channel and guild from an existing streamer in the database.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_channel_id_live_announce = NULL WHERE streamer_channel = ?", (streamer_channel,))
+        await db.commit()
+
+async def get_discord_channel_id_live_announce(streamer_channel: str) -> int:
+    """
+    This function will return the Discord channel ID for a streamer.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :return: The Discord channel ID for the streamer.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        rows = await db.execute("SELECT discord_channel_id_live_announce FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else None
+        
+#set and get the get_discord_role_id_live_announce
+async def set_discord_role_id_live_announce(streamer_channel: str, discord_role_id_live_announce: str) -> None:
+    """
+    This function will set the Discord role ID for a streamer.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :param discord_role_id_live_announce: The ID of the Discord role where the streamer should be added.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_role_id_live_announce = ? WHERE streamer_channel = ?", (discord_role_id_live_announce, streamer_channel))
+        await db.commit()
+
+#remove it
+async def remove_discord_role_id_live_announce(streamer_channel: str) -> None:
+    """
+    This function will remove a Discord role and guild from an existing streamer in the database.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_role_id_live_announce = NULL WHERE streamer_channel = ?", (streamer_channel,))
+        await db.commit()
+
+async def get_discord_role_id_live_announce(streamer_channel: str) -> int:
+    """
+    This function will return the Discord role ID for a streamer.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :return: The Discord role ID for the streamer.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        rows = await db.execute("SELECT discord_role_id_live_announce FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else None
 
 
 async def remove_streamer_from_guild(streamer_channel: str) -> None:

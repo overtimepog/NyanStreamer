@@ -52,10 +52,14 @@ def checkUser(user_id, oauth_token):
 
     if response.status_code == 200:
         data = response.json()
-        return len(data["data"]) > 0  # If the 'data' array is not empty, the user is streaming
+        if len(data["data"]) > 0:  # If the 'data' array is not empty, the user is streaming
+            return True, data["data"][0]["title"]  # Return True and the stream title
+        else:
+            return False, None  # If the user is not streaming, return False and None
     else:
         print(f"Error checking user: {response.json()}")
-        return False
+        return False, None
+
     
 def refresh_token_func(refresh_token):
     url = "https://id.twitch.tv/oauth2/token"
@@ -113,20 +117,26 @@ class Streamer(commands.Cog, name="streamer"):
             oauth = await db_manager.get_twitch_oauth_token(user_id)
             if oauth == None or oauth == False or oauth == [] or oauth == "None" or oauth == 0:
                 continue
-            is_live = checkUser(twitch_id_of_streamer, oauth)
+            is_live, title = checkUser(twitch_id_of_streamer, oauth)
             if is_live:
-                self.live_streams.add(i[1])
+                self.live_streams.add((i[1], i[2], title))  # Include the title in the tuple
             else:
-                self.live_streams.discard(i[1])
+                self.live_streams.discard((i[1], i[2]))
         #send a message to the discord channel if a streamer is live
         if len(self.live_streams) > 0:
-            channel = self.bot.get_channel(887439772495859978)
-            message = ""
-            for i in self.live_streams:
-                message += f"{i} is live! https://www.twitch.tv/{i}\n"
-            await channel.send(message)
+            for twitch_channel, user_id, title in self.live_streams:  # Unpack the tuple to get the title
+                channelID = await db_manager.get_discord_channel_id_live_announce(user_id)
+                if channelID == None or channelID == False or channelID == [] or channelID == "None" or channelID == 0:
+                    continue
+                roleID = await db_manager.get_discord_role_id_live_announce(user_id)
+                if roleID == None or roleID == False or roleID == [] or roleID == "None" or roleID == 0:
+                    continue
+                role = self.bot.get_role(roleID)
+                channel = self.bot.get_channel(channelID)
+                await channel.send(f"{twitch_channel} is live! Title: {title} https://twitch.tv/{twitch_channel} ||{role}||")  # Include the title in the message
         else:
             print("No streamers are live")
+
 
     @check_streams.before_loop
     async def before_check_streams(self):
@@ -581,7 +591,6 @@ class Streamer(commands.Cog, name="streamer"):
     @chat.command(
         name="setup",
         description="setup the chat for your channel!",
-        aliases=["s", "set_up"],
     )
     @checks.is_streamer()
     async def chatsetup(self, ctx: Context, streamer: str, channel: discord.TextChannel):
@@ -617,7 +626,6 @@ class Streamer(commands.Cog, name="streamer"):
     @chat.command(
         name="remove",
         description="remove the chat setup for your channel!",
-        aliases=["r", "remove_setup"],
     )
     @checks.is_streamer()
     async def chatremove(self, ctx: Context, streamer: str):
@@ -633,6 +641,93 @@ class Streamer(commands.Cog, name="streamer"):
     #auto complete for the chatremove command for the streamer
     @chatremove.autocomplete("streamer")
     async def chatremove_streamer_autocomplete(self, ctx: Context, argument):
+        streamers = await db_manager.get_user_mod_channels(ctx.user.id)
+        user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
+
+        # Add the user's channel to the list
+        if user_channel is not None:
+            streamers.append((user_channel,))
+        choices = []
+
+        for streamer in streamers:
+            streamer = streamer[0]
+            #make it a string
+            streamer = str(streamer)
+            if argument.lower() in streamer.lower():
+                choices.append(app_commands.Choice(name=streamer, value=streamer))
+        return choices[:25]
+    
+    #annouce stuff
+    @streamer.group(
+        name="announce",
+        description="announce stuff for streamers!",
+    )
+    async def announce(self, ctx: Context):
+        """
+        The base command for all announce commands.
+
+        :param ctx: The context in which the command was called.
+        """
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help("announce")
+
+    #command to setup the live announce for a streamer
+    @announce.command(
+        name="setup",
+        description="setup the live announce for your channel!",
+    )
+    @checks.is_streamer()
+    async def announcesetup(self, ctx: Context, streamer: str, channel: discord.TextChannel, role: discord.Role):
+        """
+        This command will setup the live announce for a streamer in the database.
+
+        :param ctx: The context in which the command was called.
+        :param role: The role that should be mentioned when the streamer goes live.
+        """
+        mods = await db_manager.get_channel_mods(streamer)
+        await db_manager.set_discord_channel_id_live_announce(streamer, channel.id)
+        await db_manager.set_discord_role_id_live_announce(streamer, role.id)
+        await ctx.send(f"When {streamer} goes live, It'll ping {role.name} in {channel.mention}!")
+
+    #auto complete for the announcesetup command for the streamer
+    @announcesetup.autocomplete("streamer")
+    async def announcesetup_streamer_autocomplete(self, ctx: Context, argument):
+        streamers = await db_manager.get_user_mod_channels(ctx.user.id)
+        user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
+
+        # Add the user's channel to the list
+        if user_channel is not None:
+            streamers.append((user_channel,))
+        choices = []
+
+        for streamer in streamers:
+            streamer = streamer[0]
+            #make it a string
+            streamer = str(streamer)
+            if argument.lower() in streamer.lower():
+                choices.append(app_commands.Choice(name=streamer, value=streamer))
+        return choices[:25]
+    
+    #remove the live announce for a streamer
+    @announce.command(
+        name="remove",
+        description="remove the live announce for your channel!",
+    )
+    @checks.is_streamer()
+    async def announceremove(self, ctx: Context, streamer: str):
+        """
+        This command will remove the live announce for a streamer in the database.
+
+        :param ctx: The context in which the command was called.
+        """
+        mods = await db_manager.get_channel_mods(streamer)
+        await db_manager.remove_discord_channel_id_live_announce(streamer)
+        await db_manager.remove_discord_role_id_live_announce(streamer)
+        await ctx.send(f"Live Announce removed for **{streamer}**!")
+
+    #auto complete for the announceremove command for the streamer
+    @announceremove.autocomplete("streamer")
+    async def announceremove_streamer_autocomplete(self, ctx: Context, argument):
         streamers = await db_manager.get_user_mod_channels(ctx.user.id)
         user_channel = await db_manager.get_streamer_channel_from_user_id(ctx.user.id)
 
