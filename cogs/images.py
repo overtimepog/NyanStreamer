@@ -369,6 +369,30 @@ class Images(commands.Cog, name="images"):
             if format.startswith(argument.lower()):
                 choices.append(app_commands.Choice(name=format, value=format))
         return choices[:25]
+    
+    @commands.hybrid_command(
+        name="jail",
+        description="go to jail",
+    )
+    async def jail(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        jail_instance = jail.Jail()
+        image = await self.bot.loop.run_in_executor(self.executor, jail_instance.generate, [user.avatar.url], "", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="jail.png"))
+
+    @commands.hybrid_command(
+        name="gay",
+        description="lit",
+    )
+    async def gay(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        gay_instance = gay.Gay()
+        image = await self.bot.loop.run_in_executor(self.executor, gay_instance.generate, [user.avatar.url], "", [], "")
+
+        # send the image
+        await ctx.send(file=File(fp=image, filename="gay.png"))
 
     @commands.hybrid_command(
         name="buzz",

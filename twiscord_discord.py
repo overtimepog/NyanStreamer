@@ -30,7 +30,7 @@ class TwiscordDiscord(discord_commands.Bot):
     #if there arent any channels, just dont print anything
     if self.channel_ids:
       print(f"Twiscord Enabled for Discord Channels | {self.channel_ids}")
-    self.channels = [self.get_channel(id) for id in self.channel_ids]
+      self.channels = [self.get_channel(id) for id in self.channel_ids]
     self._is_ready_ = True
     if self.twitch_bot._is_ready_: # If both bots are ready/set up, send message to discord and twitch channel
         #content = "[Twiscord] Both bots are set up."
