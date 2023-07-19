@@ -53,7 +53,7 @@ class General(commands.Cog, name="general"):
             command_or_group = self.bot.get_command(command.lower())
             if command_or_group and command_or_group.cog_name != 'owner':
                 if isinstance(command_or_group, commands.Group):
-                    group_commands = "\n".join([f'`{prefix}{command_or_group.name} {command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner'])
+                    group_commands = "\n".join(sorted([f'`{prefix}{command_or_group.name} {command.name}`: {command.description}' for command in command_or_group.commands if command.cog_name != 'owner']))
                     embed = discord.Embed(title=f'**{command_or_group.name}**', description=group_commands, color=0x9C84EF)
                     await context.send(embed=embed)
                 else:
@@ -61,10 +61,10 @@ class General(commands.Cog, name="general"):
                     embed.add_field(name="Usage", value=f'`{prefix}{command_or_group.name}`', inline=False)
                     await context.send(embed=embed)
                 return
-
+    
             cog = self.bot.get_cog(command.lower())
             if cog:
-                commands = cog.get_commands()
+                commands = sorted(cog.get_commands(), key=lambda cmd: cmd.name)
                 if commands:
                     command_list = [f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'owner']
                     command_list_chunks = []
@@ -77,7 +77,7 @@ class General(commands.Cog, name="general"):
                             current_chunk += "\n" + command
                     if current_chunk:
                         command_list_chunks.append(current_chunk)
-
+    
                     for i, command_list_chunk in enumerate(command_list_chunks):
                         title = f'**{cog.qualified_name}** commands'
                         if len(command_list_chunks) > 1:
@@ -90,29 +90,29 @@ class General(commands.Cog, name="general"):
 
             await context.send(f'No command or category named "{command}" was found.')
             return
-
+    
         else:
             # If no command or cog was provided, create a page for each cog except the 'owner' cog
             cogs = self.bot.cogs
             cog_embeds = []
-
+    
             for cog_name in cogs:
                 # Skip the 'owner' cog
                 if cog_name.lower() == 'owner':
                     continue
-
+                
                 cog = self.bot.get_cog(cog_name)
-                cmd_list = cog.get_commands()
+                cmd_list = sorted(cog.get_commands(), key=lambda cmd: cmd.name)
                 if cmd_list:
                     command_list = []
                     for command in cmd_list:
                         if command.cog_name != 'owner':
                             if isinstance(command, commands.Group):
-                                group_commands = "\n".join([f'`{prefix}{command.name} {subcommand.name}`: {subcommand.description}' for subcommand in command.commands])
+                                group_commands = "\n".join(sorted([f'`{prefix}{command.name} {subcommand.name}`: {subcommand.description}' for subcommand in command.commands]))
                                 command_list.append(group_commands)
                             else:
                                 command_list.append(f'`{prefix}{command.name}`: {command.description}')
-
+    
                     command_list_chunks = []
                     current_chunk = ""
                     for command in command_list:
@@ -123,7 +123,7 @@ class General(commands.Cog, name="general"):
                             current_chunk += "\n" + command
                     if current_chunk:
                         command_list_chunks.append(current_chunk)
-
+    
                     for i, command_list_chunk in enumerate(command_list_chunks):
                         title = f'**{cog.qualified_name}** commands'
                         if len(command_list_chunks) > 1:
