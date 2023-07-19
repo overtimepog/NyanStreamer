@@ -59,7 +59,7 @@ class General(commands.Cog, name="general"):
                     await context.send(embed=embed)
                 return
 
-            cog = self.bot.get_cog(command.title())
+            cog = self.bot.get_cog(command.lower())
             if cog:
                 commands = cog.get_commands()
                 if commands:
@@ -132,7 +132,7 @@ class General(commands.Cog, name="general"):
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
             view = HelpButton(current_page=0, embeds=cog_embeds)
-            await context.send(embed=cog_embeds[0], view=view, ephemeral=True)
+            await context.send(embed=cog_embeds[0], view=view)
 
     @commands.hybrid_command(
         name="botinfo",
