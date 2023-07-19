@@ -526,9 +526,6 @@ class Images(commands.Cog, name="images"):
 
         await ctx.send(file=discord.File(fp=image, filename="bongocat.png"))
 
-    
-
-
     @commands.hybrid_command(
         name="tweet",
         description="tweet something",
