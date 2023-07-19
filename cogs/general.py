@@ -28,6 +28,9 @@ from discord.ext import commands
 from discord.ext.commands import Context, has_permissions
 from helpers import db_manager
 from helpers import checks
+import math
+
+EMBED_DESCRIPTION_LIMIT = 2048
 
 class General(commands.Cog, name="general"):
     def __init__(self, bot):
@@ -63,9 +66,24 @@ class General(commands.Cog, name="general"):
             if cog:
                 commands = cog.get_commands()
                 if commands:
-                    command_list = "\n".join([f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'owner'])
-                    embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
-                    await context.send(embed=embed)
+                    command_list = [f'`{prefix}{command.name}`: {command.description}' for command in commands if command.cog_name != 'owner']
+                    command_list_chunks = []
+                    current_chunk = ""
+                    for command in command_list:
+                        if len(current_chunk) + len(command) > EMBED_DESCRIPTION_LIMIT:
+                            command_list_chunks.append(current_chunk)
+                            current_chunk = command
+                        else:
+                            current_chunk += "\n" + command
+                    if current_chunk:
+                        command_list_chunks.append(current_chunk)
+
+                    for i, command_list_chunk in enumerate(command_list_chunks):
+                        title = f'**{cog.qualified_name}** commands'
+                        if len(command_list_chunks) > 1:
+                            title += f' {i+1}'
+                        embed = discord.Embed(title=title, description=command_list_chunk, color=0x9C84EF)
+                        await context.send(embed=embed)
                 else:
                     await context.send(f'The {cog.qualified_name} category has no commands.')
                 return
@@ -77,12 +95,12 @@ class General(commands.Cog, name="general"):
             # If no command or cog was provided, create a page for each cog except the 'owner' cog
             cogs = self.bot.cogs
             cog_embeds = []
-        
+
             for cog_name in cogs:
                 # Skip the 'owner' cog
                 if cog_name.lower() == 'owner':
                     continue
-                
+
                 cog = self.bot.get_cog(cog_name)
                 cmd_list = cog.get_commands()
                 if cmd_list:
@@ -94,9 +112,26 @@ class General(commands.Cog, name="general"):
                                 command_list.append(group_commands)
                             else:
                                 command_list.append(f'`{prefix}{command.name}`: {command.description}')
-                    command_list = "\n".join(command_list)
-                    embed = discord.Embed(title=f'**{cog.qualified_name}** commands', description=command_list, color=0x9C84EF)
-                    cog_embeds.append(embed)
+
+                    command_list_chunks = []
+                    current_chunk = ""
+                    for command in command_list:
+                        if len(current_chunk) + len(command) > EMBED_DESCRIPTION_LIMIT:
+                            command_list_chunks.append(current_chunk)
+                            current_chunk = command
+                        else:
+                            current_chunk += "\n" + command
+                    if current_chunk:
+                        command_list_chunks.append(current_chunk)
+
+                    for i, command_list_chunk in enumerate(command_list_chunks):
+                        title = f'**{cog.qualified_name}** commands'
+                        if len(command_list_chunks) > 1:
+                            title += f' {i+1}'
+                        embed = discord.Embed(title=title, description=command_list_chunk, color=0x9C84EF)
+                        cog_embeds.append(embed)
+                else:
+                    await context.send(f'The {cog.qualified_name} category has no commands.')
 
             class HelpButton(discord.ui.View):
                 def __init__(self, current_page, embeds, **kwargs):
@@ -131,6 +166,7 @@ class General(commands.Cog, name="general"):
                     self.current_page = len(self.embeds) - 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
+
             view = HelpButton(current_page=0, embeds=cog_embeds)
             await context.send(embed=cog_embeds[0], view=view)
 
