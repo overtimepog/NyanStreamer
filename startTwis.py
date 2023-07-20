@@ -14,8 +14,8 @@ async def main():
     discord_bot.twitch_bot = twitch_bot
     
     # Start both bots
-    task1 = twitch_bot.start()
     task2 = discord_bot.start()
+    task1 = twitch_bot.start()
     
     # Run both tasks concurrently
     await asyncio.gather(task1, task2)
