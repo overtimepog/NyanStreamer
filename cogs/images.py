@@ -604,6 +604,17 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="trigger.gif"))
 
+    #tweet
+    @commands.hybrid_command(
+        name="tweet",
+        description="tweet something from a user",
+    )
+    async def tweet(self, ctx: Context, user: discord.User, text: str):
+        await ctx.defer()
+        tweet_instance = tweet.Tweet()
+        image = await self.bot.loop.run_in_executor(self.executor, tweet_instance.generate, [user.avatar.url], f"{text}", [user.name], "")
+        # send the image
+        await ctx.send(file=File(fp=image, filename="tweet.png"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
