@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `streamer` (
   `discord_guild_id` varchar,
   `discord_channel_id_chat` varchar,
   `enable_live_chat` boolean,
-  `get_discord_role_id_live_announce` varchar
+  `discord_role_id_live_announce` varchar
 );
 
 CREATE TABLE IF NOT EXISTS `streamer_mods` (
