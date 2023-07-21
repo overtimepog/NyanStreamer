@@ -14,7 +14,12 @@ class TwiscordDiscord(discord_commands.Bot):
     self._is_ready_ = False
 
     command_prefix = config['prefix']
-    self.enabled_channels = set()  # Add this line
+    self.enabled_channels_file = 'enabled_channels.json'
+    if os.path.exists(self.enabled_channels_file):
+      with open(self.enabled_channels_file, 'r') as file:
+        self.enabled_channels = set(json.load(file))
+    else:
+      self.enabled_channels = set()
     
     super().__init__(command_prefix=command_prefix, intents=discord.Intents.all())
     
@@ -42,7 +47,9 @@ class TwiscordDiscord(discord_commands.Bot):
 
       # Update the set of enabled channels
       self.enabled_channels = current_channels
-
+      # Save the set of enabled channels to a file
+      with open(self.enabled_channels_file, 'w') as file:
+        json.dump(list(self.enabled_channels), file)
       self.channels = [self.get_channel(id) for id in self.channel_ids]
 
     self._is_ready_ = True
