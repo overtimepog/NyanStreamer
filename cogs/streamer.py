@@ -130,9 +130,10 @@ class Streamer(commands.Cog, name="streamer"):
                 roleID = await db_manager.get_discord_role_id_live_announce(user_id)
                 if roleID == None or roleID == False or roleID == [] or roleID == "None" or roleID == 0:
                     continue
-                role = self.bot.get_role(roleID)
-                channel = self.bot.get_channel(channelID)
-                await channel.send(f"{twitch_channel} is live! Title: {title} https://twitch.tv/{twitch_channel} ||{role}||")  # Include the title in the message
+                role = await self.bot.get_role(roleID)
+                channel = await self.bot.get_channel(channelID)
+                print(f"{twitch_channel} is live! Title: {title}")
+                await channel.send(f"**{twitch_channel}** is live! Title: {title} https://twitch.tv/{twitch_channel} ||{role.mention}||")  # Include the title in the message
         else:
             print("No streamers are live")
 
@@ -688,7 +689,7 @@ class Streamer(commands.Cog, name="streamer"):
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.set_discord_channel_id_live_announce(streamer, channel.id)
         await db_manager.set_discord_role_id_live_announce(streamer, role.id)
-        await ctx.send(f"When {streamer} goes live, It'll ping {role.name} in {channel.mention}!")
+        await ctx.send(f"When {streamer} goes live, I'll ping {role.name} in {channel.mention}!")
 
     #auto complete for the announcesetup command for the streamer
     @announcesetup.autocomplete("streamer")
