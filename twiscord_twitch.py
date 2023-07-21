@@ -55,6 +55,8 @@ class TwiscordTwitch(twitch_commands.Bot):
             role = "Streamer"
         elif message.author.is_mod:
             role = "Moderator"
+        elif message.author.is_vip:
+            role = "VIP"
         elif message.author.is_subscriber:
             role = "Subscriber"
 

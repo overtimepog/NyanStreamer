@@ -3485,6 +3485,9 @@ async def remove_discord_role_id_live_announce(streamer_channel: str) -> None:
         await db.execute("UPDATE `streamer` SET discord_role_id_live_announce = NULL WHERE streamer_channel = ?", (streamer_channel,))
         await db.commit()
 
+#do stuff with the has_seen_start_message bool
+
+
 async def get_discord_role_id_live_announce(streamer_channel: str) -> int:
     """
     This function will return the Discord role ID for a streamer.
