@@ -14,6 +14,7 @@ class TwiscordDiscord(discord_commands.Bot):
     self._is_ready_ = False
 
     command_prefix = config['prefix']
+    self.enabled_channels = set()  # Add this line
     
     super().__init__(command_prefix=command_prefix, intents=discord.Intents.all())
     
@@ -25,25 +26,27 @@ class TwiscordDiscord(discord_commands.Bot):
     return super().start(self.token)
   
   async def on_ready(self):
-    #print(f"Discord Ready | {self.user}")
     self.channel_ids = await db_manager.get_all_twiscord_discord_channels()
-    #if there arent any channels, just dont print anything
     if self.channel_ids:
       print(f"Twiscord Enabled for Discord Channels | {self.channel_ids}")
-      #send a start message to each channel
-      for channel in self.channel_ids:
-        #send a start message to each channel
+
+      # Check for new or removed channels
+      current_channels = set(self.channel_ids)
+      new_channels = current_channels - self.enabled_channels
+      removed_channels = self.enabled_channels - current_channels
+
+      # Send a start message to each new channel
+      for channel in new_channels:
         self.channel = self.get_channel(channel)
         await self.channel.send("Twiscord is now enabled for this channel!")
-        #now add that channels 
+
+      # Update the set of enabled channels
+      self.enabled_channels = current_channels
+
       self.channels = [self.get_channel(id) for id in self.channel_ids]
+
     self._is_ready_ = True
-    if self.twitch_bot._is_ready_: # If both bots are ready/set up, send message to discord and twitch channel
-        #content = "[Twiscord] Both bots are set up."
-        ##for channel in self.channels:
-        ##    await channel.send(content)
-        ##await self.twitch_bot.channel.send(content)
-        #print(content)
+    if self.twitch_bot._is_ready_:
         pass
   
   async def on_message(self, message):
