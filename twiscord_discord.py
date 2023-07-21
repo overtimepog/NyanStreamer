@@ -15,7 +15,7 @@ class TwiscordDiscord(discord_commands.Bot):
 
     command_prefix = config['prefix']
     self.enabled_channels_file = 'enabled_channels.json'
-    if os.path.exists(self.enabled_channels_file):
+    if os.path.exists(self.enabled_channels_file) and os.path.getsize(self.enabled_channels_file) > 0:
       with open(self.enabled_channels_file, 'r') as file:
         self.enabled_channels = set(json.load(file))
     else:
