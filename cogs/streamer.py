@@ -132,7 +132,7 @@ class Streamer(commands.Cog, name="streamer"):
                     continue
                 role = await self.bot.get_role(roleID)
                 channel = await self.bot.get_channel(channelID)
-                print(f"{twitch_channel} is live! Title: {title}")
+                print(f"{twitch_channel} is live!")
                 await channel.send(f"**{twitch_channel}** is live! Title: {title} https://twitch.tv/{twitch_channel} ||{role.mention}||")  # Include the title in the message
         else:
             print("No streamers are live")
