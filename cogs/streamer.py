@@ -53,12 +53,16 @@ def checkUser(user_id, oauth_token):
     if response.status_code == 200:
         data = response.json()
         if len(data["data"]) > 0:  # If the 'data' array is not empty, the user is streaming
-            return True, data["data"][0]["title"]  # Return True and the stream title
+            # Get the stream's thumbnail
+            thumbnail_url_template = data["data"][0]["thumbnail_url"]
+            thumbnail_url = thumbnail_url_template.format(width="1920", height="1080")  # Replace the width and height in the template URL
+
+            return True, data["data"][0]["title"], thumbnail_url  # Return True, the stream title, and the thumbnail URL
         else:
-            return False, None  # If the user is not streaming, return False and None
+            return False, None, None  # If the user is not streaming, return False, None, and None
     else:
         print(f"Error checking user: {response.json()}")
-        return False, None
+        return False, None, None
 
     
 def refresh_token_func(refresh_token):
@@ -116,14 +120,14 @@ class Streamer(commands.Cog, name="streamer"):
             oauth = await db_manager.get_twitch_oauth_token(user_id)
             if oauth == None or oauth == False or oauth == [] or oauth == "None" or oauth == 0:
                 continue
-            is_live, title = checkUser(twitch_id_of_streamer, oauth)
+            is_live, title, thumbnail_url = checkUser(twitch_id_of_streamer, oauth)  # Get the thumbnail URL
             if is_live:
-                self.live_streams.add((i[1], i[2], title))  # Include the title in the tuple
+                self.live_streams.add((i[1], i[2], title, thumbnail_url))  # Include the title and thumbnail URL in the tuple
             else:
                 self.live_streams.discard((i[1], i[2]))
         #send a message to the discord channel if a streamer is live
         if len(self.live_streams) > 0:
-            for twitch_channel, user_id, title in self.live_streams:  # Unpack the tuple to get the title
+            for twitch_channel, user_id, title, thumbnail_url in self.live_streams:  # Unpack the tuple to get the title and thumbnail URL
                 channelID = await db_manager.get_discord_channel_id_live_announce(user_id)
                 if channelID == None or channelID == False or channelID == [] or channelID == "None" or channelID == 0:
                     continue
@@ -133,9 +137,27 @@ class Streamer(commands.Cog, name="streamer"):
                 role = await self.bot.get_role(roleID)
                 channel = await self.bot.get_channel(channelID)
                 print(f"{twitch_channel} is live!")
-                await channel.send(f"**{twitch_channel}** is live! Title: {title} https://twitch.tv/{twitch_channel} ||{role.mention}||")  # Include the title in the message
+                #get the message 
+                message = await db_manager.get_discord_announce_message(user_id)
+
+                # Create an embed message
+                embed = discord.Embed(
+                    title=title,
+                    description=f"[{title}](https://twitch.tv/{twitch_channel})",
+                    color=discord.Color.from_rgb(100, 65, 165),
+                )
+                embed.set_author(name=f"{twitch_channel} is live", icon_url=thumbnail_url)  # Set the author to the streamer
+                embed.set_thumbnail(url=thumbnail_url)  # Set the thumbnail to the stream's thumbnail
+                #get the unix timestamp of it and format it like so <t:{unix_timestamp}:R>
+                unix_timestamp = datetime.datetime.now().timestamp()
+                unix_timestamp = int(unix_timestamp)
+                #replace the {twitch_channel} with the twitch channel name
+                embed.set_footer(text=f"nyanstreamer.lol" )  # Add a footer
+                embed.timestamp = datetime.datetime.utcnow()  # Add a timestamp
+                await channel.send(content=f"{role.mention} {message}", embed=embed)  # Include the title in the message
         else:
             print("No streamers are live")
+
 
 
     @check_streams.before_loop
@@ -679,7 +701,7 @@ class Streamer(commands.Cog, name="streamer"):
         description="setup the live announce for your channel!",
     )
     @checks.is_streamer()
-    async def announcesetup(self, ctx: Context, streamer: str, channel: discord.TextChannel, role: discord.Role):
+    async def announcesetup(self, ctx: Context, streamer: str, message: str, channel: discord.TextChannel, role: discord.Role):
         """
         This command will setup the live announce for a streamer in the database.
 
@@ -689,7 +711,8 @@ class Streamer(commands.Cog, name="streamer"):
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.set_discord_channel_id_live_announce(streamer, channel.id)
         await db_manager.set_discord_role_id_live_announce(streamer, role.id)
-        await ctx.send(f"When **{streamer}** goes live, I'll ping {role.name} in {channel.mention}!")
+        await db_manager.set_discord_announce_message(streamer, message)
+        await ctx.send(f"Gotcha :), I'll announce when **{streamer}** goes live in {channel.mention} with the message: {role.name} {message}!")
 
     #auto complete for the announcesetup command for the streamer
     @announcesetup.autocomplete("streamer")
@@ -725,6 +748,7 @@ class Streamer(commands.Cog, name="streamer"):
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.remove_discord_channel_id_live_announce(streamer)
         await db_manager.remove_discord_role_id_live_announce(streamer)
+        await db_manager.remove_discord_announce_message(streamer)
         await ctx.send(f"Live Announce removed for **{streamer}**!")
 
     #auto complete for the announceremove command for the streamer

@@ -3485,7 +3485,41 @@ async def remove_discord_role_id_live_announce(streamer_channel: str) -> None:
         await db.execute("UPDATE `streamer` SET discord_role_id_live_announce = NULL WHERE streamer_channel = ?", (streamer_channel,))
         await db.commit()
 
-#do stuff with the has_seen_start_message bool
+#set the discord_announce_message 
+async def set_discord_announce_message(streamer_channel: str, discord_announce_message: str) -> None:
+    """
+    This function will set the Discord announce message for a streamer.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :param discord_announce_message: The message that should be sent when the streamer goes live.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_announce_message = ? WHERE streamer_channel = ?", (discord_announce_message, streamer_channel))
+        await db.commit()
+
+#remove it
+async def remove_discord_announce_message(streamer_channel: str) -> None:
+    """
+    This function will remove a Discord announce message from an existing streamer in the database.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE `streamer` SET discord_announce_message = NULL WHERE streamer_channel = ?", (streamer_channel,))
+        await db.commit()
+
+async def get_discord_announce_message(streamer_channel: str) -> str:
+    """
+    This function will return the Discord announce message for a streamer.
+
+    :param streamer_channel: The channel of the streamer that should be updated.
+    :return: The Discord announce message for the streamer.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        rows = await db.execute("SELECT discord_announce_message FROM `streamer` WHERE streamer_channel = ?", (streamer_channel,))
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else None
 
 
 async def get_discord_role_id_live_announce(streamer_channel: str) -> int:
