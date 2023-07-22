@@ -145,3 +145,4 @@ cython_debug/
 NyanStreamerWEB/node_modules
 config.json
 enabled_channels.json
+enabled_channels.json
