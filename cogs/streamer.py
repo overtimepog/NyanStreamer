@@ -122,6 +122,9 @@ class Streamer(commands.Cog, name="streamer"):
                 continue
             is_live, title, thumbnail_url = checkUser(twitch_id_of_streamer, oauth)  # Get the thumbnail URL
             if is_live:
+                # Check if the streamer is already in the set
+                if any(twitch_channel == i[1] for twitch_channel, _, _, _ in self.live_streams):
+                    continue  # Skip to the next iteration of the loop without sending the announcement
                 self.live_streams.add((i[1], i[2], title, thumbnail_url))  # Include the title and thumbnail URL in the tuple
             else:
                 self.live_streams.discard((i[1], i[2]))
@@ -139,7 +142,7 @@ class Streamer(commands.Cog, name="streamer"):
                 print(f"{twitch_channel} is live!")
                 #get the message 
                 message = await db_manager.get_discord_announce_message(user_id)
-
+    
                 # Create an embed message
                 embed = discord.Embed(
                     title=title,
@@ -157,6 +160,7 @@ class Streamer(commands.Cog, name="streamer"):
                 await channel.send(content=f"{role.mention} {message}", embed=embed)  # Include the title in the message
         else:
             print("No streamers are live")
+
 
 
 
