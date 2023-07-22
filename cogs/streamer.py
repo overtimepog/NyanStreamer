@@ -689,7 +689,7 @@ class Streamer(commands.Cog, name="streamer"):
         mods = await db_manager.get_channel_mods(streamer)
         await db_manager.set_discord_channel_id_live_announce(streamer, channel.id)
         await db_manager.set_discord_role_id_live_announce(streamer, role.id)
-        await ctx.send(f"When **{streamer}** goes live, I'll ping {role.name} in {channel.mention}!")
+        await ctx.send(f"When **{streamer}** goes live, I'll ping {role.name} in {channel.mention}! :)")
 
     #auto complete for the announcesetup command for the streamer
     @announcesetup.autocomplete("streamer")
