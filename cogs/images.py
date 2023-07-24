@@ -455,9 +455,8 @@ class Images(commands.Cog, name="images"):
     )
     async def butterfly(self, ctx: Context, text: str, butterfly: discord.User, person: discord.User = None):
         await ctx.defer()
-        location_x = 0.333
-        location_y = 0.3
-        scale = 0.45
+        location_x = 0.5  # Adjust as needed
+        location_y = 0.6
 
         if person is None:
             person = ctx.author
@@ -491,18 +490,14 @@ class Images(commands.Cog, name="images"):
             async with session.get(butterfly.avatar.url) as resp:
                 butterfly_image = Image.open(io.BytesIO(await resp.read()))
 
-        # Resize the avatar image to the desired size
-        avatar_size = (int(butterfly_image.width * scale), int(butterfly_image.height * scale))
-        avatar_image = butterfly_image.resize(avatar_size)
+        if butterfly_image.mode != 'RGBA':
+            butterfly_image = butterfly_image.convert('RGBA')
 
         # Calculate the position to overlay the avatar onto the meme
         position = (int(image1.width * location_x), int(image1.height * location_y))
 
         # Overlay the avatar onto the meme
-        if avatar_image.mode == 'RGBA':
-            image1.paste(avatar_image, position, avatar_image)
-        else:
-            image1.paste(avatar_image, position)
+        image1.paste(butterfly_image, position, butterfly_image)
 
         # Save the resulting image to a BytesIO object
         final_image = io.BytesIO()
