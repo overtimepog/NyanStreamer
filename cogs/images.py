@@ -450,24 +450,19 @@ class Images(commands.Cog, name="images"):
         name="butterfly",
         description="Is this a butterfly? (Uses API)",
     )
-    async def butterfly(self, ctx: Context, person: str, text: str, butterfly: Optional[Union[discord.Attachment, str]]):
+    async def butterfly(self, ctx: Context, text: str, butterfly: discord.User, person: discord.User = None, ):
         await ctx.defer()
+        location_x = "0.333"
+        location_y = "0.3"
+        scale = "0.5"
 
+        if person is None:
+            person = ctx.author
         # Check the type of the butterfly parameter
         if butterfly is not None:
-            #if its a string, its a url
-            if isinstance(butterfly, str):
-                butterfly_content = butterfly
-            
             # If a User is provided, use their avatar URL
-            elif isinstance(butterfly, discord.User):
-                butterfly_content = "_"
-                style = butterfly.avatar.url
-
-            # If an Attachment is provided, use its URL
-            elif isinstance(butterfly, discord.Attachment):
-                butterfly_content = "_"
-                style = butterfly.url
+            butterfly_content = "_"
+            style = str(butterfly.avatar.url)
         
         else:
             # If neither is provided, raise an error
@@ -478,15 +473,18 @@ class Images(commands.Cog, name="images"):
         person = format_text(person)
         text = format_text(text)
 
-        # Generate the image URL
-        url = f"https://api.memegen.link/images/pigeon/{person}/{butterfly_content}/{text}.png"
+        # Generate the image URL for the first part
+        url = f"https://api.memegen.link/images/pigeon/_/{butterfly_content}/{text}.png"
         if style is not None:
             url += f"?style={style}"
 
-        url += "&api_key=nu449chc96&watermark=nyanstreamer.lol"
-
+        #now generate the second part where the user avatar is layered ontop of the first part
+        url_full = f"https://api.memegen.link/images/custom/_.png?background={url}&style={person.avatar.url}&center={location_x},{location_y}&scale={scale}"
+        
+        #then we add the api and the watermark
+        url_full += "&api_key=nu449chc96&watermark=nyanstreamer.lol"
         # Send the image
-        async with self.session.get(url) as resp:
+        async with self.session.get(url_full) as resp:
             if resp.status != 200:
                 return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
