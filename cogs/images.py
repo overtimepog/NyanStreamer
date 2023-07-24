@@ -478,11 +478,14 @@ class Images(commands.Cog, name="images"):
         if style is not None:
             url += f"?style={style}"
 
+        print("Starting Url: " + url)
+
         #now generate the second part where the user avatar is layered ontop of the first part
         url_full = f"https://api.memegen.link/images/custom/_.png?background={url}&style={person.avatar.url}&center={location_x},{location_y}&scale={scale}"
         
         #then we add the api and the watermark
         url_full += "&api_key=nu449chc96&watermark=nyanstreamer.lol"
+        print("Final Url: " + url_full)
         # Send the image
         async with self.session.get(url_full) as resp:
             if resp.status != 200:
