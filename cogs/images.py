@@ -121,7 +121,7 @@ class Images(commands.Cog, name="images"):
         aliases=["headpat"],
         description="give a user some head scratches",
     )
-    async def pet(self, ctx: Context, user: discord.User):
+    async def pat(self, ctx: Context, user: discord.User):
         async with aiohttp.ClientSession() as session:
             async with session.get(user.avatar.url) as resp:
                 image = await resp.read()
