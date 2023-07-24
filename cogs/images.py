@@ -26,6 +26,7 @@ from io import BytesIO
 import concurrent.futures
 from typing import Union
 import os
+from petpetgif import petpet
 
 def format_text(text):
     replacements = {
@@ -114,6 +115,20 @@ class Images(commands.Cog, name="images"):
 
         # send the image
         await ctx.send(file=File(fp=image, filename="airpods.gif"))
+
+    @commands.hybrid_command(
+        name="pet",
+        description="pet a user",
+    )
+    async def pet(self, ctx: Context, user: discord.User):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(user.avatar.url) as resp:
+                image = await resp.read()
+        source = BytesIO(image)  # file-like container to hold the emoji in memory
+        dest = BytesIO()  # container to store the petpet gif in memory
+        petpet.make(source, dest)
+        dest.seek(0)  # set the file pointer back to the beginning so it doesn't upload a blank file.
+        await ctx.send(file=discord.File(dest, filename=f"{user.name}Pet.gif"))
 
     @commands.hybrid_command(
         name="america",
