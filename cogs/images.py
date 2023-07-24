@@ -480,6 +480,8 @@ class Images(commands.Cog, name="images"):
         url = f"https://api.memegen.link/images/pigeon/_/{quote(butterfly_content)}/{text}.png"
         if style is not None:
             url += f"?style={quote(style)}"
+        #add the watermark
+        url += "&api_key=nu449chc96&watermark=nyanstreamer.lol"
 
         # Download the meme image
         async with aiohttp.ClientSession() as session:
