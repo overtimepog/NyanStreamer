@@ -455,8 +455,8 @@ class Images(commands.Cog, name="images"):
     )
     async def butterfly(self, ctx: Context, text: str, butterfly: discord.User, person: discord.User = None):
         await ctx.defer()
-        location_x = 0.5  # Adjust as needed
-        location_y = 0.8  # Adjust as needed
+        location_x = 0.76  # Adjust as needed
+        location_y = 0.2 # Adjust as needed
         avatar_size = (128, 128)  # Resize to 128x128 pixels
 
         if person is None:
