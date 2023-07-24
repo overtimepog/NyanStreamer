@@ -27,6 +27,8 @@ import concurrent.futures
 from typing import Union, Optional
 import os
 from petpetgif import petpet
+from PIL import Image
+from urllib.parse import quote
 
 def format_text(text):
     replacements = {
@@ -451,20 +453,20 @@ class Images(commands.Cog, name="images"):
         name="butterfly",
         description="Is this a butterfly? (Uses API)",
     )
-    async def butterfly(self, ctx: Context, text: str, butterfly: discord.User, person: discord.User = None, ):
+    async def butterfly(self, ctx: Context, text: str, butterfly: discord.User, person: discord.User = None):
         await ctx.defer()
-        location_x = "0.333"
-        location_y = "0.3"
-        scale = "0.45"
+        location_x = 0.333
+        location_y = 0.3
+        scale = 0.45
 
         if person is None:
             person = ctx.author
+
         # Check the type of the butterfly parameter
         if butterfly is not None:
             # If a User is provided, use their avatar URL
             butterfly_content = "_"
             style = str(butterfly.avatar.url)
-        
         else:
             # If neither is provided, raise an error
             await ctx.send("You must provide text, a user mention or an image attachment for the butterfly.")
@@ -472,26 +474,44 @@ class Images(commands.Cog, name="images"):
 
         # Format the person and text parameters
         text = format_text(text)
+        text = quote(text)
 
         # Generate the image URL for the first part
-        url = f"https://api.memegen.link/images/pigeon/_/{butterfly_content}/{text}.png"
+        url = f"https://api.memegen.link/images/pigeon/_/{quote(butterfly_content)}/{text}.png"
         if style is not None:
-            url += f"?style={style}"
+            url += f"?style={quote(style)}"
 
-        print("Starting Url: " + url)
+        # Download the meme image
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                image1 = Image.open(io.BytesIO(await resp.read()))
 
-        #now generate the second part where the user avatar is layered ontop of the first part
-        url_full = f"https://api.memegen.link/images/custom/_.png?background={url}&style={person.avatar.url}&center={location_x},{location_y}&scale={scale}"
-        
-        #then we add the api and the watermark
-        url_full += "&api_key=nu449chc96&watermark=nyanstreamer.lol"
-        print("Final Url: " + url_full)
-        # Send the image
-        async with self.session.get(url_full) as resp:
-            if resp.status != 200:
-                return await ctx.send('Could not download file... The Api is down :(')
-            data = io.BytesIO(await resp.read())
-            await ctx.send(file=discord.File(data, 'butterfly.png'))
+        # Download the butterfly avatar
+        async with aiohttp.ClientSession() as session:
+            async with session.get(butterfly.avatar.url) as resp:
+                butterfly_image = Image.open(io.BytesIO(await resp.read()))
+
+        # Resize the avatar image to the desired size
+        avatar_size = (int(butterfly_image.width * scale), int(butterfly_image.height * scale))
+        avatar_image = butterfly_image.resize(avatar_size)
+
+        # Calculate the position to overlay the avatar onto the meme
+        position = (int(image1.width * location_x), int(image1.height * location_y))
+
+        # Overlay the avatar onto the meme
+        if avatar_image.mode == 'RGBA':
+            image1.paste(avatar_image, position, avatar_image)
+        else:
+            image1.paste(avatar_image, position)
+
+        # Save the resulting image to a BytesIO object
+        final_image = io.BytesIO()
+        image1.save(final_image, format='PNG')
+        final_image.seek(0)
+
+        # Send the final image
+        await ctx.send(file=discord.File(final_image, 'butterfly.png'))
+
 
     @commands.hybrid_command(
         name="expand_dong",
