@@ -273,8 +273,7 @@ class Images(commands.Cog, name="images"):
             character = "custom"
         if user is None:
             user = ctx.author
-
-        text = format_text(text)
+            
         text = quote(text)
         url = f"https://www.demirramon.com/gen/undertale_text_box.gif?animate=true&character={character}&url={user.avatar.url}&message={text}"
 
