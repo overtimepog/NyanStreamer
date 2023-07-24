@@ -471,7 +471,6 @@ class Images(commands.Cog, name="images"):
             raise commands.BadArgument("You must provide a text, user mention or an image attachment for the butterfly.")
 
         # Format the person and text parameters
-        person = format_text(person)
         text = format_text(text)
 
         # Generate the image URL for the first part
