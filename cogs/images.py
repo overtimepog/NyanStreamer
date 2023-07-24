@@ -455,7 +455,7 @@ class Images(commands.Cog, name="images"):
     )
     async def butterfly(self, ctx: Context, text: str, butterfly: discord.User, person: discord.User = None):
         await ctx.defer()
-        location_x = 0.8  # Adjust as needed
+        location_x = 0.785  # Adjust as needed
         location_y = 0.2 # Adjust as needed
         avatar_size = (128, 128)  # Resize to 128x128 pixels
 
@@ -466,7 +466,7 @@ class Images(commands.Cog, name="images"):
         if butterfly is not None:
             # If a User is provided, use their avatar URL
             butterfly_content = "_"
-            style = str(butterfly.avatar.url)
+            style = str(person.avatar.url)
         else:
             # If neither is provided, raise an error
             await ctx.send("You must provide text, a user mention or an image attachment for the butterfly.")
