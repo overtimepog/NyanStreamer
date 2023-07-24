@@ -24,7 +24,7 @@ from discord import User, File
 from aiohttp import ClientSession
 from io import BytesIO
 import concurrent.futures
-from typing import Union
+from typing import Union, Optional
 import os
 from petpetgif import petpet
 
@@ -450,22 +450,25 @@ class Images(commands.Cog, name="images"):
         name="butterfly",
         description="Is this a butterfly? (Uses API)",
     )
-    async def butterfly(self, ctx: Context, person: str, text: str, butterfly_text: str = None, butterfly_user: discord.User = None, butterfly_image: discord.Attachment = None):
+    async def butterfly(self, ctx: Context, person: str, text: str, butterfly: Optional[Union[str, discord.User, discord.Attachment]]):
         await ctx.defer()
 
         # Check the type of the butterfly parameter
-        if butterfly_user is not None:
+        if butterfly is not None:
+            #if its a string, its a url
+            if isinstance(butterfly, str):
+                butterfly_content = butterfly
+            
             # If a User is provided, use their avatar URL
-            butterfly_content = "_"
-            style = str(butterfly_user.avatar.url)
-        elif butterfly_image is not None:
+            elif isinstance(butterfly, discord.User):
+                butterfly_content = "_"
+                style = butterfly.avatar.url
+
             # If an Attachment is provided, use its URL
-            butterfly_content = "_"
-            style = butterfly_image.url
-        elif butterfly_text is not None:
-            # If a text is provided, use it
-            butterfly_content = butterfly_text
-            style = None
+            elif isinstance(butterfly, discord.Attachment):
+                butterfly_content = "_"
+                style = butterfly.url
+        
         else:
             # If neither is provided, raise an error
             await ctx.send("You must provide text, a user mention or an image attachment for the butterfly.")
