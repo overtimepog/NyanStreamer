@@ -454,7 +454,7 @@ class Images(commands.Cog, name="images"):
         await ctx.defer()
         location_x = "0.333"
         location_y = "0.3"
-        scale = "0.5"
+        scale = "0.45"
 
         if person is None:
             person = ctx.author
