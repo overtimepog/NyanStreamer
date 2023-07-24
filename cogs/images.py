@@ -117,8 +117,9 @@ class Images(commands.Cog, name="images"):
         await ctx.send(file=File(fp=image, filename="airpods.gif"))
 
     @commands.hybrid_command(
-        name="pet",
-        description="pet a user",
+        name="pat",
+        aliases=["headpat"],
+        description="give a user some head scratches",
     )
     async def pet(self, ctx: Context, user: discord.User):
         async with aiohttp.ClientSession() as session:
