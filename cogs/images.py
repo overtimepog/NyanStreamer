@@ -176,7 +176,7 @@ class Images(commands.Cog, name="images"):
     async def balloon(self, ctx: Context, text1: str, text2: str):
         await ctx.defer()
         balloon_instance = balloon.Balloon()
-        image = await self.bot.loop.run_in_executor(self.executor, balloon_instance.generate, [], f"{text1},{text2}", [], "")
+        image = await self.bot.loop.run_in_executor(self.executor, balloon_instance.generate, [], f"{text1}, {text2}", [], "")
 
         # send the image
         await ctx.send(file=File(fp=image, filename="balloon.png"))
@@ -261,6 +261,28 @@ class Images(commands.Cog, name="images"):
             if format.startswith(argument.lower()):
                 choices.append(app_commands.Choice(name=format, value=format))
         return choices[:25]
+
+    @commands.hybrid_command(
+        name="undertale",
+        description="generate an undertale text box",
+    )
+    async def undertale(self, ctx: Context, text: str, user: discord.User = None, character: str = None):
+        #https://www.demirramon.com/gen/undertale_text_box.gif?animate=true&character=custom&url=https://cdn.discordapp.com/attachments/1113231948027003011/1133155741407121508/balloon.png&message=omg%20I%20love%20nuts
+        await ctx.defer()
+        if character is None:
+            character = "custom"
+        if user is None:
+            user = ctx.author
+
+        text = format_text(text)
+        text = quote(text)
+        url = f"https://www.demirramon.com/gen/undertale_text_box.gif?animate=true&character={character}&url={user.avatar.url}&message={text}"
+
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not Generate Image... the Character you provided is not valid')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'undertale.gif'))
 
 
     @commands.hybrid_command(
