@@ -211,6 +211,8 @@ class Images(commands.Cog, name="images"):
     )
     async def custom(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None, url: str = None, top: str = None, bottom: str = None, format: str = None):
         await ctx.defer()
+        if format is None:
+            format = "png"
         if format is None and image is not None:
             format = image.content_type
         else:
