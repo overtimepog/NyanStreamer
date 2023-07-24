@@ -450,7 +450,7 @@ class Images(commands.Cog, name="images"):
         name="butterfly",
         description="Is this a butterfly? (Uses API)",
     )
-    async def butterfly(self, ctx: Context, person: str, text: str, butterfly: Optional[Union[discord.User, discord.Attachment]]):
+    async def butterfly(self, ctx: Context, person: str, text: str, butterfly: Optional[Union[discord.Attachment, str]]):
         await ctx.defer()
 
         # Check the type of the butterfly parameter
