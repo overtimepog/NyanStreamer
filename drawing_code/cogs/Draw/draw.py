@@ -1686,9 +1686,8 @@ class DrawView(discord.ui.View):
         await interaction.followup.send(embed=embed, file=file)
 
 
-class Draw(commands.Cog):
+class Draw(commands.Cog, name="Draw"):
     """Make pixel art on discord!"""
-
     def __init__(self, bot: Bot):
         self.bot = bot
 
@@ -1714,7 +1713,7 @@ class Draw(commands.Cog):
         help="Start drawing using the default settings.",
         description="Start drawing",
     )
-    async def draw(
+    async def start(
         self,
         ctx: CustomContext,
         height: Optional[int] = 9,
