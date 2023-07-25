@@ -107,7 +107,7 @@ class Bot(commands.Bot):
 
         #sync slash commands
         print("Syncing Slash commands....")
-        all_commands = await bot.tree._get_all_commands()
+        all_commands = bot.tree._get_all_commands()
         for command in all_commands:
             await bot.tree.add_command(command)
             print(f"Added {command.name} to Slash commands")
