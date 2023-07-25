@@ -10,7 +10,7 @@ from utils.constants import CURSOR
 from utils.colour import Colour
 
 if typing.TYPE_CHECKING:
-    from bot import Bot
+    from main import Bot
     from cogs.draw import Board, DrawView
 
 

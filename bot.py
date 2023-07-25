@@ -15,6 +15,7 @@ import random
 import sys
 import subprocess
 import traceback
+from typing import Any
 import requests
 import time
 
@@ -430,5 +431,35 @@ async def on_member_join(member: discord.Member) -> None:
     checkUser = await db_manager.check_user(member.id)
     if checkUser == None:
         await db_manager.get_user(member.id)
+
+class Embed(discord.Embed):
+    COLOUR = 0x9BFFD6
+    def __init__(self, **kwargs):
+        if kwargs.get("color", None) is None:
+            kwargs["color"] = self.COLOUR
+        super().__init__(**kwargs)
+    def add_field(self, *, name: Any, value: Any, inline: bool = False):
+        """Adds a field to the embed object.
+        This function returns the class instance to allow for fluent-style
+        chaining. Can only be up to 25 fields.
+        Parameters
+        -----------
+        name: :class:`str`
+            The name of the field. Can only be up to 256 characters.
+        value: :class:`str`
+            The value of the field. Can only be up to 1024 characters.
+        inline: :class:`bool`
+            Whether the field should be displayed inline.
+        """
+        field = {
+            "inline": inline,
+            "name": str(name),
+            "value": str(value),
+        }
+        try:
+            self._fields.append(field)
+        except AttributeError:
+            self._fields = [field]
+        return self
 
 bot.run(config["token"])

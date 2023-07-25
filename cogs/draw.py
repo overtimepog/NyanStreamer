@@ -68,7 +68,7 @@ from utils.errors import InvalidDrawMessageError
 from utils.colour import Colour
 
 if typing.TYPE_CHECKING:
-    from bot import Bot
+    from main import Bot
 
 
 @dataclass
@@ -1695,7 +1695,7 @@ class Draw(commands.Cog):
     display_emoji = "🖌️"
 
     @commands.bot_has_permissions(external_emojis=True)
-    @commands.group(
+    @commands.hybrid_group(
         name="draw",
         aliases=("paint", "pixelart"),
         case_insensitive=True,
