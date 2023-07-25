@@ -161,14 +161,14 @@ class Streamer(commands.Cog, name="streamer"):
         else:
             print("No streamers are live")
 
-
-
-
     @check_streams.before_loop
     async def before_check_streams(self):
         await self.bot.wait_until_ready()
 
-    @tasks.loop(hours=2)  # Adjust the interval as needed
+    #every second, check if any giveaways are over (check the chatgpt page behind this to get started, kk love you -past Truen )
+    
+
+    @tasks.loop(hours=2)  # Adjust the interval as needed 
     async def refresh_tokens(self):
         print("Refreshing tokens...")
         # Get all streamers from the database
@@ -224,7 +224,7 @@ class Streamer(commands.Cog, name="streamer"):
         aliases=["ci", "create_item"],
     )
     @checks.is_streamer()
-    async def create_item(self, ctx: Context, channel: str, name: str, emoji: str):
+    async def create_item(self, ctx: Context, channel: str, name: str, emoji: discord.Emoji):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
@@ -262,13 +262,15 @@ class Streamer(commands.Cog, name="streamer"):
             await ctx.send("You have reached the maximum amount of custom items for a partner.")
             return
         else:
-            await db_manager.create_streamer_item(streamer_prefix, channel, name, emoji)
+            #do stuff with the emoji to get into this format <a:AspenRave:1064715986852393030> or <:AspenRave:1064715986852393030>
+            emojistr = str(emoji)
+            await db_manager.create_streamer_item(streamer_prefix, channel, name, emojistr)
             #give the user the item 
             item_id = str(streamer_prefix) + "_" + name
             #convert all spaces in the item name to underscores
             item_id = item_id.replace(" ", "_")
             #send more info
-            embed = discord.Embed(title="Item Creation", description=f"Created item {emoji} **{name}** for the channel {channel}",)
+            embed = discord.Embed(title="Item Creation", description=f"Created item {emojistr} **{name}** for the channel {channel}",)
             embed.set_footer(text="ID: " + item_id)
             await ctx.send(embed=embed)
 
@@ -326,6 +328,24 @@ class Streamer(commands.Cog, name="streamer"):
                 await db_manager.remove_item(item)
                 return
         await ctx.send(f"Item with the ID `{item}` does not exist in the database or you are not the streamer that owns this item.")
+
+
+    #giveaway command
+    @commands.hybrid_group(
+        name="giveaway",
+        description="The base command for all giveaway commands.",
+        aliases=["ga"],
+    )
+    async def giveaway(self, ctx: Context):
+        """
+        The base command for all giveaway commands.
+
+        :param ctx: The context in which the command was called.
+        """
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help("giveaway")
+
+    #command to create a new giveaway in the database giveaway table, using the create_giveaway function from helpers\db_manager.py
 
     #autocommplete for the removeitem command
     @removeitem.autocomplete("channel")
