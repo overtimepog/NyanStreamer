@@ -398,10 +398,10 @@ async def on_ready() -> None:
     print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
     print("-----------------------------")
     status_task.start()
-    #if config["sync_commands_globally"]:
-    #    print("Syncing commands globally...")
-    #    await bot.tree.sync()
-    #    print("Done syncing commands globally!")
+    if config["sync_commands_globally"]:
+        print("Syncing commands globally...")
+        await bot.tree.sync()
+        print("Done syncing commands globally!")
     print("-----------------------------")
     #print("Structure Spawn Task Started")
     #structure_spawn_task.start()
