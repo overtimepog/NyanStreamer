@@ -1771,12 +1771,12 @@ class Draw(commands.Cog, name="Draw"):
     async def copy(
         self,
         ctx: CustomContext,
-        message_link: Optional[discord.Message] = None,
+        message_link: discord.Message = None,
     ):
         message = message_link
         if ref := ctx.message.reference:
             message = ref.resolved
-        elif message_link is None or not isinstance(message_link, discord.Message):
+        elif message_link is None:
             return await ctx.send_help(ctx.command)
 
         board, tool_options, colour_options = await self.board_from_message(
@@ -1800,13 +1800,13 @@ class Draw(commands.Cog, name="Draw"):
         help="Quickly save/export a drawing by replying to a drawing message or using message link.",
     )
     async def save(
-        self, ctx: CustomContext, message_link: Optional[discord.Message] = None
+        self, ctx: CustomContext, message_link: discord.Message = None
     ):
         await ctx.typing()
         message = message_link
         if ref := ctx.message.reference:
             message = ref.resolved
-        elif message_link is None or not isinstance(message_link, discord.Message):
+        elif message_link is None:
             return await ctx.send_help(ctx.command)
 
         board, _, _ = await self.board_from_message(ctx, message=message)
