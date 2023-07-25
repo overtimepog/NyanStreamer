@@ -8,10 +8,7 @@ from typing import Optional, Union, List, Tuple
 import numpy as np
 import discord
 from PIL import Image
-
-
-from emoji import draw_emoji
-
+from utils.emoji import draw_emoji
 from regexes import HEX_REGEX
 
 
