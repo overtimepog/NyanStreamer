@@ -1695,7 +1695,7 @@ class Draw(commands.Cog):
     display_emoji = "🖌️"
 
     @commands.bot_has_permissions(external_emojis=True)
-    @commands.group(
+    @commands.hybrid_group(
         name="draw",
         aliases=("paint", "pixelart"),
         case_insensitive=True,
@@ -1703,6 +1703,16 @@ class Draw(commands.Cog):
         help="WIP",
         description="Create pixel art using buttons and dropdown menus",
         invoke_without_command=True,
+    )
+    async def draw(self, ctx: CustomContext):
+        await ctx.send_help(ctx.command)
+    
+    @draw.command(
+        name="start",
+        aliases=["begin", "create", "new"],
+        brief="Start drawing!",
+        help="Start drawing using the default settings.",
+        description="Start drawing",
     )
     async def draw(
         self,
