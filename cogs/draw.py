@@ -1762,7 +1762,7 @@ class Draw(commands.Cog):
     async def copy(
         self,
         ctx: CustomContext,
-        message_link: Optional[discord.Message] = None,
+        message_link: discord.Message = None,
     ):
         message = message_link
         if ref := ctx.message.reference:
@@ -1791,7 +1791,7 @@ class Draw(commands.Cog):
         help="Quickly save/export a drawing by replying to a drawing message or using message link.",
     )
     async def save(
-        self, ctx: CustomContext, message_link: Optional[discord.Message] = None
+        self, ctx: CustomContext, message_link: discord.Message = None
     ):
         await ctx.typing()
         message = message_link
