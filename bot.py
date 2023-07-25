@@ -27,14 +27,12 @@ from discord.ext.commands import Context, has_permissions
 
 from helpers import battle, checks, db_manager, hunt, mine
 from assets import endpoints
-from helpers.context import CustomContext
 
 import exceptions
 from helpers import db_manager
 import twitch
 from twitchAPI.twitch import Twitch
 from twitchAPI.types import AuthScope
-from utils.emoji_cache import EmojiCache
 
 cash = "⌬"
 if not os.path.isfile("config.json"):
@@ -109,51 +107,7 @@ The config is available using the following code:
 - bot.config # In this file
 - self.bot.config # In cogs
 """
-bot.config = config # type: ignore
-
-class Drawing():
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
-            self.start_time: float
-            self.emoji_cache: EmojiCache = EmojiCache(bot=self)
-
-        class Embed(discord.Embed):
-                COLOUR = 0x9BFFD6
-
-                def __init__(self, **kwargs):
-                    if kwargs.get("color", None) is None:
-                        kwargs["color"] = self.COLOUR
-                    super().__init__(**kwargs)
-
-                def add_field(self, *, name: Any, value: Any, inline: bool = False):
-                    """Adds a field to the embed object.
-
-                    This function returns the class instance to allow for fluent-style
-                    chaining. Can only be up to 25 fields.
-
-                    Parameters
-                    -----------
-                    name: :class:`str`
-                        The name of the field. Can only be up to 256 characters.
-                    value: :class:`str`
-                        The value of the field. Can only be up to 1024 characters.
-                    inline: :class:`bool`
-                        Whether the field should be displayed inline.
-                    """
-
-                    field = {
-                        "inline": inline,
-                        "name": str(name),
-                        "value": str(value),
-                    }
-
-                    try:
-                        self._fields.append(field)
-                    except AttributeError:
-                        self._fields = [field]
-
-                    return self
-        
+bot.config = config # type: ignore   
     
 
 #every 12 hours the shop will reset, create a task to do this
@@ -457,6 +411,8 @@ async def on_ready() -> None:
     #print("-------------------")
     # Run setup function
     # Run twitch bot file
+    #run the drawing file 
+    subprocess.Popen([sys.executable, r'drawing_code\main.py'])
     subprocess.Popen([sys.executable, r'twitch.py'])
 
 #when the bot joins a server, add all the members to the database

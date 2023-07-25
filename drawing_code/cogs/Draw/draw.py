@@ -16,14 +16,10 @@ from discord.ext import commands
 from PIL import Image
 from helpers.context import CustomContext
 from pilmoji import Pilmoji
-from utils.emoji_cache import EmojiCache
-from bot import Bot
-from discord.ext import tasks
-from helpers.upload_emoji import upload_emoji as upload_emoji
 
-from utils.utils import emoji_to_option_dict, image_to_file, value_to_option_dict
+from ..utils.utils import emoji_to_option_dict, image_to_file, value_to_option_dict
 from helpers.constants import EMBED_DESC_CHAR_LIMIT, EMBED_FIELD_CHAR_LIMIT, u200b, NL
-from utils.constants import (
+from .utils.constants import (
     FONT,
     ROW_ICONS_DICT,
     ROW_ICONS,
@@ -41,7 +37,7 @@ from utils.constants import (
     MIN_HEIGHT_OR_WIDTH,
     MAX_HEIGHT_OR_WIDTH,
 )
-from utils.emoji import (
+from .utils.emoji import (
     ADD_EMOJIS_EMOJI,
     SAVE_EMOJI,
     SET_CURSOR_EMOJI,
@@ -52,7 +48,7 @@ from utils.emoji import (
     SentEmoji,
     AddedEmoji,
 )
-from utils.tools import (
+from .utils.tools import (
     Tool,
     BrushTool,
     EraseTool,
@@ -62,17 +58,17 @@ from utils.tools import (
     DarkenTool,
     LightenTool,
 )
-from utils.regexes import (
+from .utils.regexes import (
     FLAG_EMOJI_REGEX,
     HEX_REGEX,
     RGB_A_REGEX,
     CUSTOM_EMOJI_REGEX,
 )
-from utils.errors import InvalidDrawMessageError
-from utils.colour import Colour
+from .utils.errors import InvalidDrawMessageError
+from .utils.colour import Colour
 
 if typing.TYPE_CHECKING:
-    from bot import Drawing
+    from main import Bot
 
 
 @dataclass
@@ -105,7 +101,6 @@ class StartView(discord.ui.View):
         super().__init__(timeout=60)
         self.ctx = ctx
         self.bot: Bot = self.ctx.bot
-        self.drawing: Drawing = self.drawing
 
         self._board = board
         if isinstance(self._board, Board):
@@ -160,7 +155,7 @@ class StartView(discord.ui.View):
     async def start(self):
         if len(str(self.board)) > EMBED_DESC_CHAR_LIMIT:
             return await self.ctx.send(TRANSPARENT_ERROR_MSG)
-        embed = self.drawing.Embed(description=str(self.board))
+        embed = self.bot.Embed(description=str(self.board))
         embed.set_footer(
             text="Custom emojis may not appear here due to a discord limitation, but will render once you create the board."
         )
@@ -194,7 +189,7 @@ class StartView(discord.ui.View):
         self.update_buttons()
         await interaction.edit_original_response(
             content=self.initial_message,
-            embed=self.drawing.Embed(description=str(self.board)),
+            embed=self.bot.Embed(description=str(self.board)),
             view=self,
         )
 
@@ -915,7 +910,6 @@ class ColourMenu(discord.ui.Select):
         # These need to be defined here because the class does not have a view when initiated
         self.ctx = self.view.ctx
         self.bot = self.view.bot
-        self.bot.upload_emoji = upload_emoji
         self.board = self.view.board
 
         # Set max values to 1 everytime the menu is used
@@ -1101,7 +1095,6 @@ class DrawView(discord.ui.View):
 
         self.ctx: commands.Context = ctx
         self.bot: Bot = self.ctx.bot
-        self.drawing: Drawing = self.bot.drawing
 
         self.tool_menu: ToolMenu = ToolMenu(self, options=tool_options)
         self.colour_menu: ColourMenu = ColourMenu(
@@ -1124,7 +1117,7 @@ class DrawView(discord.ui.View):
 
     @property
     def embed(self):
-        embed = self.drawing.Embed(title=f"{self.ctx.author}'s drawing board.")
+        embed = self.bot.Embed(title=f"{self.ctx.author}'s drawing board.")
 
         # Render the cursors on a board copy
         board = copy.deepcopy(self.board)
@@ -1688,7 +1681,7 @@ class DrawView(discord.ui.View):
         filename = "image"
         file = image_to_file(image, filename=filename)
 
-        embed = self.drawing.Embed(title=f"{interaction.user}'s masterpiece ✨")
+        embed = self.bot.Embed(title=f"{interaction.user}'s masterpiece ✨")
         embed.set_image(url=f"attachment://{filename}.png")
         await interaction.followup.send(embed=embed, file=file)
 
@@ -1696,14 +1689,13 @@ class DrawView(discord.ui.View):
 class Draw(commands.Cog):
     """Make pixel art on discord!"""
 
-    def __init__(self, bot: Bot, drawing: Drawing):
+    def __init__(self, bot: Bot):
         self.bot = bot
-        self.drawing = drawing
 
     display_emoji = "🖌️"
 
     @commands.bot_has_permissions(external_emojis=True)
-    @commands.hybrid_group(
+    @commands.group(
         name="draw",
         aliases=("paint", "pixelart"),
         case_insensitive=True,
@@ -1712,17 +1704,7 @@ class Draw(commands.Cog):
         description="Create pixel art using buttons and dropdown menus",
         invoke_without_command=True,
     )
-    async def draw(self, ctx: CustomContext):
-        await ctx.send_help(ctx.command)
-
-    @draw.command(
-        name="new",
-        aliases=("start", "create"),
-        brief="Create a new drawing",
-        help="Create a new drawing by specifying the height, width and background.",
-        description="Create a new drawing by specifying the height, width and background",
-    )
-    async def new(
+    async def draw(
         self,
         ctx: CustomContext,
         height: Optional[int] = 9,
@@ -1775,12 +1757,12 @@ class Draw(commands.Cog):
         name="copy",
         brief="Copy a drawing.",
         help="Copy a drawing from an embed by replying to the message or using message link.",
-        description="Use draw copy to duplicate a drawing and its palette by replying or providing the message link/ID.",
+        description="Allows you to copy a drawing that was done with the `draw` command. This will also copy the palette! You can copy by replying to such a message or by providing the message link (or ID).",
     )
     async def copy(
         self,
         ctx: CustomContext,
-        message_link: discord.Message = None,
+        message_link: Optional[discord.Message] = None,
     ):
         message = message_link
         if ref := ctx.message.reference:
@@ -1809,7 +1791,7 @@ class Draw(commands.Cog):
         help="Quickly save/export a drawing by replying to a drawing message or using message link.",
     )
     async def save(
-        self, ctx: CustomContext, message_link: discord.Message = None
+        self, ctx: CustomContext, message_link: Optional[discord.Message] = None
     ):
         await ctx.typing()
         message = message_link
@@ -1826,7 +1808,7 @@ class Draw(commands.Cog):
         filename = "image"
         file = image_to_file(image, filename=filename)
 
-        embed = self.drawing.Embed(
+        embed = self.bot.Embed(
             title=message.embeds[0].title.replace("drawing board.", "masterpiece ✨")
         )
         embed.set_image(url=f"attachment://{filename}.png")

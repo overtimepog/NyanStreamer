@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional
 
 import discord
-from utils.paginator import (
+from cogs.RDanny.utils.paginator import (
     FIRST_PAGE_SYMBOL,
     LAST_PAGE_SYMBOL,
     NEXT_PAGE_SYMBOL,

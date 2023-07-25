@@ -6,12 +6,12 @@ from typing import Optional, Tuple
 import discord
 import numpy as np
 
-from utils.constants import CURSOR
-from utils.colour import Colour
+from .constants import CURSOR
+from .colour import Colour
 
 if typing.TYPE_CHECKING:
     from main import Bot
-    from cogs.draw import Board, DrawView
+    from ..draw import Board, DrawView
 
 
 class Tool(discord.ui.Button):

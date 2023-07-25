@@ -1,0 +1,20 @@
+aiohttp==3.8.3
+aiowiki @ git+https://github.com/Gelbpunkt/aiowiki@34f24bdcaedfd5da96cb6125714505945211287c
+black==23.1.0
+discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus@fbb8803779373357e274e1540b368365fd9d8074
+discord.py==2.3.0
+emoji==2.1.0
+Flask==2.2.2
+-e git+https://github.com/WitherredAway/gists.py#egg=gists.py
+gspread_asyncio==1.8.1
+humanize==4.4.0
+jishaku==2.5.1
+lxml==4.9.1
+numpy==1.23.3
+pandas==1.5.0
+parsedatetime==2.6
+Pillow==9.2.0
+pilmoji @ git+https://github.com/jay3332/pilmoji/
+protobuf==4.23.1
+python-dateutil==2.8.2
+simpleeval==0.9.12

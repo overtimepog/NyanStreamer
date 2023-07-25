@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 
 import time
 
@@ -19,15 +20,20 @@ from discord.ext import commands
 import pandas as pd
 
 from helpers.context import CustomContext
-from utils.colour import Colour
-from cogs.draw import DrawView
-from utils.emoji_cache import EmojiCache
+from cogs.Draw.utils.colour import Colour
+from cogs.Draw.draw import DrawView
+from cogs.Draw.utils.emoji_cache import EmojiCache
 from helpers.constants import LOG_BORDER, NL
 from helpers.keep_alive import keep_alive
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
+if not os.path.isfile("config.json"):
+    sys.exit("'config.json' not found! Please add it and try again.")
+else:
+    with open("config.json") as file:
+        config = json.load(file)
 
 def get_prefix(bot, message):
     prefixes = bot.PREFIXES
@@ -37,57 +43,18 @@ def get_prefix(bot, message):
 
 
 class Bot(commands.Bot):
-    TEST_BOT_ID = 561963276792102912
-    MAIN_BOT_ID = 634409171114262538
-    BUG_CHANNEL_ID = 1116056244503978114
-    PREFIXES = os.getenv("PREFIXES").split(", ")
-    PREFIX = PREFIXES[0]
+    PREFIX = "nya "
 
     COGS = {
-        "poketwo": "Poketwo.poketwo",
-        "p2": "Poketwo.poketwo",
-        "docs": "RDanny.docs",
-        "help": "RDanny.help",
-        "admin": "admin",
-        "bot": "bot",
-        "channel": "channel",
-        "define": "define",
         "draw": "Draw.draw",
-        "gist": "gist",
-        "jishaku": "jishaku",
-        "jsk": "jishaku",
-        "math": "math",
-        "image": "Image.image",
-        "afd": "AFD.afd",
-        "test": "test",
     }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.start_time: float
-
-        self.uptime = datetime.datetime.utcnow()
-        self.activity = discord.Game(f"{self.PREFIXES[0]}help")
-        self.status = discord.Status.online
-
         self.emoji_cache: EmojiCache = EmojiCache(bot=self)
 
         self.lock = asyncio.Lock()
-
-        self.pokemon_csv = (
-            # "https://raw.githubusercontent.com/poketwo/data/master/csv/pokemon.csv"
-            os.getenv("POKEMON_CSV")
-        )
-
-    @cached_property
-    def original_pk(self):
-        original_pk = pd.read_csv(self.pokemon_csv)
-        return original_pk
-
-    @cached_property
-    def pk(self):
-        pk = self.original_pk[self.original_pk["catchable"] > 0]
-        return pk
 
     @cached_property
     def invite_url(self) -> str:
@@ -130,17 +97,6 @@ class Bot(commands.Bot):
             await self.fetch_guild(_id) for _id in self.EMOJI_SERVER_IDS
         ]
 
-        self.status_channel = await self.fetch_channel(os.getenv("statusCHANNEL"))
-        self.log_channel = await self.fetch_channel(os.getenv("logCHANNEL"))
-        self.bug_channel = await self.fetch_channel(self.BUG_CHANNEL_ID)
-
-        self.session = aiohttp.ClientSession(loop=self.loop)
-
-        self.gists_client = gists.Client()
-        await self.gists_client.authorize(os.getenv("githubTOKEN"))
-        self.wgists_client = gists.Client()
-        await self.wgists_client.authorize(os.getenv("WgithubTOKEN"))
-
         ext_start = time.time()
         log.info("Started loading extensions" + NL + LOG_BORDER)
         for filename in set(self.COGS.values()):
@@ -164,8 +120,7 @@ class Bot(commands.Bot):
         time_taken = time.time() - self.start_time
         m, s = divmod(time_taken, 60)
         msg = f"\033[32;1m{self.user}\033[0;32m connected in \033[33;1m{round(m)}m{round(s)}s\033[0;32m.\033[0m"
-        await self.status_channel.send(f"```ansi\n{msg}\n```")
-        log.info(msg)
+        print(msg)
 
     class Embed(discord.Embed):
         COLOUR = 0x9BFFD6
@@ -245,7 +200,8 @@ class Bot(commands.Bot):
                 )  # Run again
 
 
-TOKEN = os.getenv("botTOKEN")
+#get the token from the .json config file
+TOKEN = config.get("token")
 
 if __name__ == "__main__":
     bot = Bot(
