@@ -6,8 +6,8 @@ from typing import Optional, Tuple
 import discord
 import numpy as np
 
-from .constants import CURSOR
-from .colour import Colour
+from utils.constants import CURSOR
+from utils.colour import Colour
 
 if typing.TYPE_CHECKING:
     from bot import Bot
