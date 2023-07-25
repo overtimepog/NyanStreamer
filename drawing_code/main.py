@@ -103,6 +103,7 @@ class Bot(commands.Bot):
         self.tree = app_commands.CommandTree(self)
         self.tree.add_command(self.get_command("draw"))
         await self.tree.sync()
+        print("Synced Slash command for Drawing Code")
 
         for name, cog in self.cogs.items():
             try:
