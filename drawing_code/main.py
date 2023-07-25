@@ -18,6 +18,7 @@ import discord
 import gists
 from discord.ext import commands
 import pandas as pd
+from discord import app_commands
 
 from helpers.context import CustomContext
 from cogs.Draw.utils.colour import Colour
@@ -97,6 +98,11 @@ class Bot(commands.Bot):
             + NL
             + LOG_BORDER
         )
+
+        #sync slash commands
+        self.tree = app_commands.CommandTree(self)
+        self.tree.add_command(self.get_command("draw"))
+        await self.tree.sync()
 
         for name, cog in self.cogs.items():
             try:
