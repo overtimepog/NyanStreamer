@@ -201,6 +201,8 @@ if __name__ == "__main__":
     if os.getenv("REPL_ID") is not None:
         keep_alive()
         try:
+            bot.tree.sync()
+            print("Done syncing commands globally!")
             bot.run(TOKEN)
         except discord.HTTPException as error:
             if error.response.status == 429:
