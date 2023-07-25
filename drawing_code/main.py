@@ -102,12 +102,13 @@ class Bot(commands.Bot):
         for name, cog in self.cogs.items():
             try:
                 await cog.setup()
-                #sync slash commands
-                print("Syncing Slash command for Drawing Code.....")
-                await bot.tree.sync()
-                print("Synced Slash command for Drawing Code")
             except AttributeError:
                 continue
+
+        #sync slash commands
+        print("Syncing Slash command for Drawing Code.....")
+        await bot.tree.sync()
+        print("Synced Slash command for Drawing Code")
 
         time_taken = time.time() - self.start_time
         m, s = divmod(time_taken, 60)
