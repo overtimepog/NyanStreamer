@@ -10,9 +10,9 @@ import discord
 from PIL import Image
 
 
-from .emoji import draw_emoji
+from emoji import draw_emoji
 
-from .regexes import HEX_REGEX
+from regexes import HEX_REGEX
 
 
 class Colour:

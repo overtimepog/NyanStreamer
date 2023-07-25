@@ -37,7 +37,7 @@ from utils.constants import (
     MIN_HEIGHT_OR_WIDTH,
     MAX_HEIGHT_OR_WIDTH,
 )
-from .utils.emoji import (
+from utils.emoji import (
     ADD_EMOJIS_EMOJI,
     SAVE_EMOJI,
     SET_CURSOR_EMOJI,
@@ -48,7 +48,7 @@ from .utils.emoji import (
     SentEmoji,
     AddedEmoji,
 )
-from .utils.tools import (
+from utils.tools import (
     Tool,
     BrushTool,
     EraseTool,
@@ -58,14 +58,14 @@ from .utils.tools import (
     DarkenTool,
     LightenTool,
 )
-from .utils.regexes import (
+from utils.regexes import (
     FLAG_EMOJI_REGEX,
     HEX_REGEX,
     RGB_A_REGEX,
     CUSTOM_EMOJI_REGEX,
 )
-from .utils.errors import InvalidDrawMessageError
-from .utils.colour import Colour
+from utils.errors import InvalidDrawMessageError
+from utils.colour import Colour
 
 if typing.TYPE_CHECKING:
     from bot import Bot

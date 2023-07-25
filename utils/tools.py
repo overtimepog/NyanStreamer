@@ -11,7 +11,7 @@ from .colour import Colour
 
 if typing.TYPE_CHECKING:
     from bot import Bot
-    from ..draw import Board, DrawView
+    from cogs.draw import Board, DrawView
 
 
 class Tool(discord.ui.Button):
