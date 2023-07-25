@@ -99,13 +99,12 @@ class Bot(commands.Bot):
             + LOG_BORDER
         )
 
-        #sync slash commands
-        await self.tree.sync()
-        print("Synced Slash command for Drawing Code")
-
         for name, cog in self.cogs.items():
             try:
                 await cog.setup()
+                #sync slash commands
+                await bot.tree.sync()
+                print("Synced Slash command for Drawing Code")
             except AttributeError:
                 continue
 
