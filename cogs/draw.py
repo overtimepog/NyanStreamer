@@ -16,6 +16,7 @@ from discord.ext import commands
 from PIL import Image
 from helpers.context import CustomContext
 from pilmoji import Pilmoji
+from bot import Bot
 
 from utils.utils import emoji_to_option_dict, image_to_file, value_to_option_dict
 from helpers.constants import EMBED_DESC_CHAR_LIMIT, EMBED_FIELD_CHAR_LIMIT, u200b, NL
@@ -100,7 +101,8 @@ class StartView(discord.ui.View):
     ):
         super().__init__(timeout=60)
         self.ctx = ctx
-        self.bot: Drawing = self.ctx.bot
+        self.bot: Bot = self.ctx.bot
+        self.drawing: Drawing = self.drawing
 
         self._board = board
         if isinstance(self._board, Board):
@@ -155,7 +157,7 @@ class StartView(discord.ui.View):
     async def start(self):
         if len(str(self.board)) > EMBED_DESC_CHAR_LIMIT:
             return await self.ctx.send(TRANSPARENT_ERROR_MSG)
-        embed = self.bot.Embed(description=str(self.board))
+        embed = self.drawing.Embed(description=str(self.board))
         embed.set_footer(
             text="Custom emojis may not appear here due to a discord limitation, but will render once you create the board."
         )
@@ -189,7 +191,7 @@ class StartView(discord.ui.View):
         self.update_buttons()
         await interaction.edit_original_response(
             content=self.initial_message,
-            embed=self.bot.Embed(description=str(self.board)),
+            embed=self.drawing.Embed(description=str(self.board)),
             view=self,
         )
 
@@ -1095,6 +1097,7 @@ class DrawView(discord.ui.View):
 
         self.ctx: commands.Context = ctx
         self.bot: Bot = self.ctx.bot
+        self.drawing: Drawing = self.bot.drawing
 
         self.tool_menu: ToolMenu = ToolMenu(self, options=tool_options)
         self.colour_menu: ColourMenu = ColourMenu(
@@ -1117,7 +1120,7 @@ class DrawView(discord.ui.View):
 
     @property
     def embed(self):
-        embed = self.bot.Embed(title=f"{self.ctx.author}'s drawing board.")
+        embed = self.drawing.Embed(title=f"{self.ctx.author}'s drawing board.")
 
         # Render the cursors on a board copy
         board = copy.deepcopy(self.board)
@@ -1681,7 +1684,7 @@ class DrawView(discord.ui.View):
         filename = "image"
         file = image_to_file(image, filename=filename)
 
-        embed = self.bot.Embed(title=f"{interaction.user}'s masterpiece ✨")
+        embed = self.drawing.Embed(title=f"{interaction.user}'s masterpiece ✨")
         embed.set_image(url=f"attachment://{filename}.png")
         await interaction.followup.send(embed=embed, file=file)
 
@@ -1689,8 +1692,9 @@ class DrawView(discord.ui.View):
 class Draw(commands.Cog):
     """Make pixel art on discord!"""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot, drawing: Drawing):
         self.bot = bot
+        self.drawing = drawing
 
     display_emoji = "🖌️"
 
@@ -1712,7 +1716,7 @@ class Draw(commands.Cog):
         aliases=("start", "create"),
         brief="Create a new drawing",
         help="Create a new drawing by specifying the height, width and background.",
-        description="Create a new drawing by specifying the height, width and background. The default height and width are 9 and the default background is white.",
+        description="Create a new drawing by specifying the height, width and background",
     )
     async def new(
         self,
@@ -1818,7 +1822,7 @@ class Draw(commands.Cog):
         filename = "image"
         file = image_to_file(image, filename=filename)
 
-        embed = self.bot.Embed(
+        embed = self.drawing.Embed(
             title=message.embeds[0].title.replace("drawing board.", "masterpiece ✨")
         )
         embed.set_image(url=f"attachment://{filename}.png")

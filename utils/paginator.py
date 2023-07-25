@@ -268,7 +268,7 @@ class FieldPageSource(menus.ListPageSource):
 
     def __init__(self, entries, *, per_page=12):
         super().__init__(entries, per_page=per_page)
-        self.embed = self.bot.Embed()
+        self.embed = self.drawing.Embed()
 
     async def format_page(self, menu, entries):
         self.embed.clear_fields()
