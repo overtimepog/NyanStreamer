@@ -68,7 +68,7 @@ from utils.errors import InvalidDrawMessageError
 from utils.colour import Colour
 
 if typing.TYPE_CHECKING:
-    from main import Bot
+    from bot import Drawing
 
 
 @dataclass
@@ -100,7 +100,7 @@ class StartView(discord.ui.View):
     ):
         super().__init__(timeout=60)
         self.ctx = ctx
-        self.bot: Bot = self.ctx.bot
+        self.bot: Drawing = self.ctx.bot
 
         self._board = board
         if isinstance(self._board, Board):
@@ -1704,7 +1704,17 @@ class Draw(commands.Cog):
         description="Create pixel art using buttons and dropdown menus",
         invoke_without_command=True,
     )
-    async def draw(
+    async def draw(self, ctx: CustomContext):
+        await ctx.send_help(ctx.command)
+
+    @draw.command(
+        name="new",
+        aliases=("start", "create"),
+        brief="Create a new drawing",
+        help="Create a new drawing by specifying the height, width and background.",
+        description="Create a new drawing by specifying the height, width and background. The default height and width are 9 and the default background is white.",
+    )
+    async def new(
         self,
         ctx: CustomContext,
         height: Optional[int] = 9,
