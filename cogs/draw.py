@@ -17,9 +17,9 @@ from PIL import Image
 from helpers.context import CustomContext
 from pilmoji import Pilmoji
 
-from ..utils.utils import emoji_to_option_dict, image_to_file, value_to_option_dict
+from utils.utils import emoji_to_option_dict, image_to_file, value_to_option_dict
 from helpers.constants import EMBED_DESC_CHAR_LIMIT, EMBED_FIELD_CHAR_LIMIT, u200b, NL
-from .utils.constants import (
+from utils.constants import (
     FONT,
     ROW_ICONS_DICT,
     ROW_ICONS,
