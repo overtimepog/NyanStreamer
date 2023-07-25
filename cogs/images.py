@@ -354,8 +354,7 @@ class Images(commands.Cog, name="images"):
             outcome = "false"
 
         await ctx.defer()
-        #api key : Woe08oFJ2Ree7jPXPyJfY0mheoCp4zOQdy9JtaVSHkr1jdHh95MsJTGi5nRmeQyF
-        url = f"https://some-random-api.com/premium/amongus?avatar={user.avatar.url}&key={sr_api_key}&username={user.name[0:35]}&imposter={outcome}"
+        url = f"https://some-random-api.com/premium/amongus?avatar={user.avatar.url}&key={sr_api_key}&username={user.display_name[0:35]}&imposter={outcome}"
         async with self.session.get(url) as resp:
             if resp.status != 200:
                 return await ctx.send('Could not download file... The Api is down :(')
