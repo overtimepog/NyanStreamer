@@ -35,16 +35,7 @@ else:
     with open("config.json") as file:
         config = json.load(file)
 
-def get_prefix(bot, message):
-    prefixes = "nya "
-    if not message.guild:
-        return bot.PREFIX
-    return commands.when_mentioned_or(*prefixes)(bot, message)
-
-
 class Bot(commands.Bot):
-    PREFIX = "nya "
-
     COGS = {
         "draw": "Draw.draw",
     }
@@ -201,7 +192,7 @@ TOKEN = config.get("token")
 
 if __name__ == "__main__":
     bot = Bot(
-        command_prefix=get_prefix,
+        command_prefix="nya ",
         owner_ids=[267550284979503104, 761944238887272481],
         case_insensitive=True,
         intents=discord.Intents.all(),
