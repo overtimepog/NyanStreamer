@@ -1757,7 +1757,7 @@ class Draw(commands.Cog):
         name="copy",
         brief="Copy a drawing.",
         help="Copy a drawing from an embed by replying to the message or using message link.",
-        description="Copy a drawing with the draw command, including the palette, by replying or providing the message link/ID.",
+        description="Use draw copy to duplicate a drawing and its palette by replying or providing the message link/ID.",
     )
     async def copy(
         self,
