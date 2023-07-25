@@ -412,7 +412,7 @@ async def on_ready() -> None:
     # Run setup function
     # Run twitch bot file
     #run the drawing file 
-    subprocess.Popen([sys.executable, r'drawing_code/main.py'])
+    #subprocess.Popen([sys.executable, r'drawing_code/main.py'])
     subprocess.Popen([sys.executable, r'twitch.py'])
 
 #when the bot joins a server, add all the members to the database
