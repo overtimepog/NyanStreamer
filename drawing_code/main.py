@@ -202,7 +202,7 @@ if __name__ == "__main__":
         keep_alive()
         try:
             bot.tree.sync()
-            print("Done syncing commands globally!")
+            print("Synced Slash command for Drawing Code")
             bot.run(TOKEN)
         except discord.HTTPException as error:
             if error.response.status == 429:
