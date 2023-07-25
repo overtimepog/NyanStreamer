@@ -103,6 +103,7 @@ class Bot(commands.Bot):
             try:
                 await cog.setup()
                 #sync slash commands
+                print("Syncing Slash command for Drawing Code.....")
                 await bot.tree.sync()
                 print("Synced Slash command for Drawing Code")
             except AttributeError:
