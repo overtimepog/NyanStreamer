@@ -107,16 +107,17 @@ class Bot(commands.Bot):
 
         #sync slash commands
         print("Syncing Slash commands....")
+        from bot import bot as nyan_bot
         all_commands = bot.tree._get_all_commands()
         for command in all_commands:
             try:
-                await bot.tree.add_command(command)
+                await nyan_bot.tree.add_command(command)
                 print(f"Added {command.name} to Slash commands")
             except discord.app_commands.errors.CommandAlreadyRegistered:
                 print(f"{command.name} already registered.. skipping")
                 continue
 
-        await bot.tree.sync()
+        await nyan_bot.tree.sync()
         print("Synced Slash commands")
 
         time_taken = time.time() - self.start_time
