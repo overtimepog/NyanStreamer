@@ -273,7 +273,7 @@ class Images(commands.Cog, name="images"):
             character = "custom"
         if user is None:
             user = ctx.author
-            
+
         text = quote(text)
         url = f"https://www.demirramon.com/gen/undertale_text_box.gif?animate=true&character={character}&url={user.avatar.url}&message={text}"
 
@@ -333,6 +333,43 @@ class Images(commands.Cog, name="images"):
         # send the image
         await ctx.send(file=File(fp=image, filename="citation.png"))
 
+    #eject command
+    @commands.hybrid_command(
+        name="eject",
+        description="eject a user if they're sus",
+    )
+    async def eject(self, ctx: Context, user: discord.User, imposter: str = None):
+        #open config .json
+        with open("config.json") as file:
+            data = json.load(file)
+            
+        #get the api key
+        sr_api_key = data["SRA-KEY"]
+
+        if imposter is None:
+            outcome = random.choice(["true", "false"])
+        elif imposter == "True":
+            outcome = "true"
+        elif imposter == "False":
+            outcome = "false"
+
+        await ctx.defer()
+        #api key : Woe08oFJ2Ree7jPXPyJfY0mheoCp4zOQdy9JtaVSHkr1jdHh95MsJTGi5nRmeQyF
+        url = f"https://some-random-api.ml/premium/amongus?avatar={user.avatar.url}&key={sr_api_key}&username={user.name[0:35]}&imposter={outcome}"
+        async with self.session.get(url) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file... The Api is down :(')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'eject.gif'))
+
+    #give imposter autocomplete for eject command of either true or false
+    @eject.autocomplete("imposter")
+    async def eject_imposter(self, ctx: Context, argument):
+        choices = []
+        for imposter in ["True", "False"]:
+            if imposter.startswith(argument.lower()):
+                choices.append(app_commands.Choice(name=imposter, value=imposter))
+        return choices[:25]
 
     @commands.hybrid_command(
         name="change_my_mind",
