@@ -107,10 +107,10 @@ class Bot(commands.Bot):
 
         #sync slash commands
         print("Syncing Slash commands....")
-        from bot import bot as nyan_bot
         all_commands = bot.tree._get_all_commands()
         for command in all_commands:
             try:
+                from bot import bot as nyan_bot
                 await nyan_bot.tree.add_command(command)
                 print(f"Added {command.name} to Slash commands")
             except discord.app_commands.errors.CommandAlreadyRegistered:
@@ -217,8 +217,6 @@ if __name__ == "__main__":
     if os.getenv("REPL_ID") is not None:
         keep_alive()
         try:
-            bot.tree.sync()
-            print("Synced Slash command for Drawing Code")
             bot.run(TOKEN)
         except discord.HTTPException as error:
             if error.response.status == 429:
