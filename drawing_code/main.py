@@ -36,7 +36,7 @@ else:
         config = json.load(file)
 
 def get_prefix(bot, message):
-    prefixes = bot.PREFIXES
+    prefixes = "nya "
     if not message.guild:
         return bot.PREFIX
     return commands.when_mentioned_or(*prefixes)(bot, message)
