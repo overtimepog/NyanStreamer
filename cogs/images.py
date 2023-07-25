@@ -360,7 +360,7 @@ class Images(commands.Cog, name="images"):
             if resp.status != 200:
                 return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
-            await ctx.send(file=discord.File(data, 'eject.gif'))
+            await ctx.send(file=File(fp=data, filename="eject.gif"))
 
     #give imposter autocomplete for eject command of either true or false
     @eject.autocomplete("imposter")
