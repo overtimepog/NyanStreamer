@@ -106,9 +106,12 @@ class Bot(commands.Bot):
                 continue
 
         #sync slash commands
-        print("Syncing Slash command for Drawing Code.....")
+        print("Syncing Slash commands....")
+        all_commands = await bot.tree._get_all_commands()
+        for command in all_commands:
+            await bot.tree.add_command(command)
         await bot.tree.sync()
-        print("Synced Slash command for Drawing Code")
+        print("Synced Slash commands")
 
         time_taken = time.time() - self.start_time
         m, s = divmod(time_taken, 60)
