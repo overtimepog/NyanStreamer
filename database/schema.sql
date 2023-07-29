@@ -22,7 +22,25 @@ CREATE TABLE IF NOT EXISTS `streamer_mods` (
   `streamer_channel` varchar NOT NULL,
   `mod_user_id` varchar NOT NULL,
   `twitch_id` varchar(255),
-  `twitch_name` varchar(255)
+  `twitch_name` varchar(255),
+  FOREIGN KEY (`streamer_id`) REFERENCES `streamer`(`user_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `giveaways` (
+  `giveaway_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `streamer_id` varchar(255) NOT NULL, -- the ID of the streamer who started the giveaway
+  `prize` varchar(255) NOT NULL, -- the prize for the giveaway
+  `start_time` DATETIME NOT NULL, -- the time when the giveaway started
+  `end_time` DATETIME NOT NULL, -- the time when the giveaway should end
+  `winner_id` varchar(255), -- the ID of the user who won the giveaway (NULL if the giveaway is still ongoing)
+  FOREIGN KEY (`streamer_id`) REFERENCES `streamer`(`user_id`) -- assuming the streamer's user_id is stored in the `streamer` table
+);
+
+CREATE TABLE IF NOT EXISTS `giveaway_entries` (
+  `giveaway_id` INT NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  PRIMARY KEY (`giveaway_id`, `user_id`),
+  FOREIGN KEY (`giveaway_id`) REFERENCES `giveaways`(`giveaway_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `streamer_items` (
