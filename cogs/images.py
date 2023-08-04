@@ -29,6 +29,8 @@ import os
 from petpetgif import petpet
 from PIL import Image
 from urllib.parse import quote
+from jeyyapi import JeyyAPIClient
+client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
 
 def format_text(text):
     replacements = {
@@ -716,6 +718,16 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, tweet_instance.generate, [user.avatar.url], f"{text}", [user.name], "")
         # send the image
         await ctx.send(file=File(fp=image, filename="tweet.png"))
+        
+    @commands.hybrid_command(
+        name="polishcow",
+        description="become polish cow (Uses API)",
+        aliases=["polish_cow", "polish-cow"],
+    )
+    async def polishcow(self, ctx: Context, user: discord.User):
+        image = await client.cow(user.avatar.url)
+        await ctx.send(file=File(fp=image, filename="polishcow.gif"))
+        
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
