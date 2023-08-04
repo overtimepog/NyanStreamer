@@ -725,6 +725,7 @@ class Images(commands.Cog, name="images"):
         aliases=["polish_cow", "polish-cow"],
     )
     async def polishcow(self, ctx: Context, user: discord.User):
+        ctx.defer()
         image = await client.cow(user.avatar.url)
         await ctx.send(file=File(fp=image, filename="polishcow.gif"))
         
