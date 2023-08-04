@@ -88,20 +88,10 @@ class Images(commands.Cog, name="images"):
         name="affect",
         description="no this doesnt affect my baby",
     )
-    async def affect(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+    async def affect(self, ctx: Context, user: discord.User):
         await ctx.defer()
         affect_instance = affect.Affect()
-
-        # Check the type of the image parameter
-        if user is not None:
-            # If a User is provided, use their avatar URL
-            image_url = str(user.avatar.url)
-        elif image is not None:
-            # If an Attachment is provided, use its URL
-            image_url = image.url
-        else:
-            # If neither is provided, raise an error
-            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+        image_url = str(user.avatar.url)
 
         # Generate the image
         image = await self.bot.loop.run_in_executor(self.executor, affect_instance.generate, [image_url], "", [], "")
@@ -139,20 +129,10 @@ class Images(commands.Cog, name="images"):
         name="america",
         description="god bless this country",
     )
-    async def america(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+    async def america(self, ctx: Context, user: discord.User):
         await ctx.defer()
         america_instance = america.America()
-
-        # Check the type of the image parameter
-        if user is not None:
-            # If a User is provided, use their avatar URL
-            image_url = str(user.avatar.url)
-        elif image is not None:
-            # If an Attachment is provided, use its URL
-            image_url = image.url
-        else:
-            # If neither is provided, raise an error
-            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+        image_url = str(user.avatar.url)
         
         # Generate the image
         image = await self.bot.loop.run_in_executor(self.executor, america_instance.generate, [image_url], "", [], "")
@@ -303,20 +283,10 @@ class Images(commands.Cog, name="images"):
         name="deepfry",
         description="deepfry an image or user",
     )
-    async def deepfry(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+    async def deepfry(self, ctx: Context, user: discord.User):
         await ctx.defer()
         fry_instance = deepfry.DeepFry()
-
-        # Check the type of the image parameter
-        if user is not None:
-            # If a User is provided, use their avatar URL
-            image_url = str(user.avatar.url)
-        elif image is not None:
-            # If an Attachment is provided, use its URL
-            image_url = image.url
-        else:
-            # If neither is provided, raise an error
-            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+        image_url = str(user.avatar.url)
 
         # Generate the deep fried image
         image = await self.bot.loop.run_in_executor(self.executor, fry_instance.generate, [image_url], "", [], "")
@@ -397,22 +367,12 @@ class Images(commands.Cog, name="images"):
 
     @commands.hybrid_command(
         name="delete",
-        description="delete an image or user",
+        description="delete a user",
     )
-    async def delete(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+    async def delete(self, ctx: Context, user: discord.User):
         await ctx.defer()
         delete_instance = delete.Delete()
-
-        # Check the type of the image parameter
-        if user is not None:
-            # If a User is provided, use their avatar URL
-            image_url = str(user.avatar.url)
-        elif image is not None:
-            # If an Attachment is provided, use its URL
-            image_url = image.url
-        else:
-            # If neither is provided, raise an error
-            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+        image_url = str(user.avatar.url)
 
         # Generate the deep fried image
         image = await self.bot.loop.run_in_executor(self.executor, delete_instance.generate, [image_url], "", [], "")
@@ -609,20 +569,10 @@ class Images(commands.Cog, name="images"):
         name="bongo_cat",
         description="bongo catify an image or user",
     )
-    async def bongo_cat(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None):
+    async def bongo_cat(self, ctx: Context, user: discord.User):
         await ctx.defer()
         bongo_cat_instance = bongocat.BongoCat()
-
-        # Check the type of the image parameter
-        if user is not None:
-            # If a User is provided, use their avatar URL
-            image_url = str(user.avatar.url)
-        elif image is not None:
-            # If an Attachment is provided, use its URL
-            image_url = image.url
-        else:
-            # If neither is provided, raise an error
-            raise commands.BadArgument("You must provide a user mention or an image attachment.")
+        image_url = str(user.avatar.url)
 
         # Generate the deep fried image
         image = await self.bot.loop.run_in_executor(self.executor, bongo_cat_instance.generate, [image_url], "", [], "")
@@ -729,6 +679,29 @@ class Images(commands.Cog, name="images"):
         avatar = user.avatar.url
         image = await client.cow(avatar)
         await ctx.send(file=File(fp=image, filename="polishcow.gif"))
+    
+    @commands.hybrid_command(
+        name="clock",
+        description="what time is it?, become a clock (Uses API)",
+    )
+    async def clock(self, ctx: Context, user: discord.User):
+        ctx.defer()
+        avatar = user.avatar.url
+        image = await client.clock(avatar)
+        await ctx.send(file=File(fp=image, filename="clock.gif"))
+        
+    #emojify
+    @commands.hybrid_command(
+        name="emojify",
+        description="emojify a user or image",
+    )
+    async def emojify(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        image_url = str(user.avatar.url)
+        # Generate the deep fried image
+        image = await client.emojify(image_url)
+
+        await ctx.send(file=discord.File(fp=image, filename="emojify.png"))
         
 
 async def setup(bot):
