@@ -725,7 +725,7 @@ class Images(commands.Cog, name="images"):
         #title the question
         question = question.title()
         embed_gif = Embed(
-            title=f"**{question}**",
+            title=f"**{question}** - {ctx.author.mention}",
         )
         embed_gif.set_image(url=image['gif_wheel'])
 
@@ -737,7 +737,7 @@ class Images(commands.Cog, name="images"):
 
         # Create a Discord embed for the result
         embed_result = Embed(
-            title=f"**{question}**",
+            title=f"**{question}** - {ctx.author.mention}",
             description=f"**{image['result_color_emoji']} {image['result']}**",
         )
         embed_result.set_image(url=image['result_img'])
