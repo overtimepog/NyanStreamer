@@ -765,6 +765,17 @@ class Images(commands.Cog, name="images"):
         embed_result.set_image(url=image['result_img'])
         # Send the result embed to the channel
         await message.edit(embed=embed_result)
+        
+    #matrix
+    @commands.hybrid_command(
+        name="matrix",
+        description="become the matrix",
+    )
+    async def matrix(self, ctx: Context, user: discord.User):
+        ctx.defer()
+        avatar = user.avatar.url
+        image = await client.matrix(avatar)
+        await ctx.send(file=File(fp=image, filename="matrix.gif"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
