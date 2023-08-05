@@ -761,10 +761,9 @@ class Images(commands.Cog, name="images"):
         # Create a Discord embed for the result
         embed_result = Embed(
             title="Wheel Spin",
+            description=f"** {image['result_color_emoji']}{image['result']} **"
         )
         embed_result.set_image(url=image['result_img'])
-        embed_result.add_field(name="Winner", value="**" + image['result'] + "**", inline=False)
-
         # Send the result embed to the channel
         await message.edit(embed=embed_result)
 
