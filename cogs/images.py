@@ -189,7 +189,7 @@ class Images(commands.Cog, name="images"):
 
     @commands.hybrid_command(
         name="custom",
-        description="give top and bottom text to a user or image (Uses API)",
+        description="give top and bottom text to a user or image ",
     )
     async def custom(self, ctx: Context, user: discord.User = None, image: discord.Attachment = None, url: str = None, top: str = None, bottom: str = None, format: str = None):
         await ctx.defer()
@@ -381,7 +381,7 @@ class Images(commands.Cog, name="images"):
 
     @commands.hybrid_command(
         name="gru",
-        description="I have a plan (Uses API)",
+        description="I have a plan ",
     )
     async def gru(self, ctx: Context, text1: str, text2: str, text3: str, text4: str = None, format: str = "png"):
         # Defer the interaction
@@ -435,7 +435,7 @@ class Images(commands.Cog, name="images"):
 
     @commands.hybrid_command(
         name="buzz",
-        description="To infinity and beyond! (Uses API)",
+        description="To infinity and beyond! ",
     )
     async def buzz(self, ctx: Context, top: str, bottom: str):
         # Defer the interaction
@@ -453,7 +453,7 @@ class Images(commands.Cog, name="images"):
 
     @commands.hybrid_command(
         name="buttons",
-        description="I cant Choose! (Uses API)",
+        description="I cant Choose! ",
     )
     async def buttons(self, ctx: Context, button1: str, button2: str):
         # Defer the interaction
@@ -472,7 +472,7 @@ class Images(commands.Cog, name="images"):
 
     @commands.hybrid_command(
         name="butterfly",
-        description="Is this a butterfly? (Uses API)",
+        description="Is this a butterfly? ",
     )
     async def butterfly(self, ctx: Context, text: str, butterfly: discord.User, person: discord.User = None):
         await ctx.defer()
@@ -551,7 +551,7 @@ class Images(commands.Cog, name="images"):
 
     @commands.hybrid_command(
         name="genius",
-        description="smart af (Uses API)",
+        description="smart af ",
     )
     async def genius(self, ctx: Context, text: str):
         await ctx.defer()
@@ -671,8 +671,8 @@ class Images(commands.Cog, name="images"):
         
     @commands.hybrid_command(
         name="polishcow",
-        description="become polish cow (Uses API)",
-        aliases=["polish_cow", "polish-cow"],
+        description="become polish cow ",
+        aliases=["polish_cow", "polish-cow", "cow"],
     )
     async def polishcow(self, ctx: Context, user: discord.User):
         ctx.defer()
@@ -682,7 +682,7 @@ class Images(commands.Cog, name="images"):
     
     @commands.hybrid_command(
         name="clock",
-        description="what time is it?, become a clock (Uses API)",
+        description="what time is it?, become a clock ",
     )
     async def clock(self, ctx: Context, user: discord.User):
         ctx.defer()
@@ -702,6 +702,51 @@ class Images(commands.Cog, name="images"):
         image = await client.emojify(image_url)
 
         await ctx.send(file=discord.File(fp=image, filename="emojify.png"))
+        
+    #heart locket
+    @commands.hybrid_command(
+        name="heartlocket",
+        description="heart locket a user",
+        aliases=["locket"],
+    )
+    async def heartlocket(self, ctx: Context, user: discord.User):
+        ctx.defer()
+        avatar = user.avatar.url
+        image = await client.heart_locket(avatar)
+        await ctx.send(file=File(fp=image, filename="heartlocket.gif"))
+        
+    #globe
+    @commands.hybrid_command(
+        name="globe",
+        description="Mr 305",
+    )
+    async def globe(self, ctx: Context, user: discord.User):
+        ctx.defer()
+        avatar = user.avatar.url
+        image = await client.globe(avatar)
+        await ctx.send(file=File(fp=image, filename="globe.gif"))
+        
+    #wheel, it has a potential 6 args, with 2 needed and 4 optional
+    @commands.hybrid_command(
+        name="wheel",
+        description="spin the wheel",
+    )
+    #label the option option1 through option6
+    async def wheel(self, ctx: Context, option1: str, option2: str, option3: str = None, option4: str = None, option5: str = None, option6: str = None):
+        ctx.defer()
+        #create a list of all the options that are not None
+        options = [option1, option2, option3, option4, option5, option6]
+        options = [i for i in options if i is not None]
+        #if there are less than 2 options, raise an error
+        if len(options) < 2:
+            raise commands.BadArgument("You must provide at least 2 options")
+        #if there are more than 6 options, raise an error
+        if len(options) > 6:
+            raise commands.BadArgument("You can only provide 6 options")
+        
+        image = await client.wheel(options)
+        await ctx.send(file=File(fp=image, filename="wheel.gif"))
+    
         
 
 async def setup(bot):
