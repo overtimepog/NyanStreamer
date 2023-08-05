@@ -5806,10 +5806,10 @@ async def get_starboard_config(server_id: int) -> dict:
         row = await cursor.fetchone()
         if row:
             return {
-                "server_id": row[0],
-                "starboard_channel_id": row[1],
-                "star_threshold": row[2],
-                "star_emoji": row[3]
+                "server_id": row[1],
+                "starboard_channel_id": row[2],
+                "star_threshold": row[3],
+                "star_emoji": row[4]
             }
         return None
     
