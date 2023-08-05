@@ -755,21 +755,18 @@ class Images(commands.Cog, name="images"):
         # Send the GIF wheel embed to the channel
         message = await ctx.send(embed=embed_gif)
 
-        # Wait for the specified time
-        await asyncio.sleep(image['time'])
+        # Wait for the specified time minus 1 second
+        await asyncio.sleep(image['time'] - 1)
 
         # Create a Discord embed for the result
         embed_result = Embed(
             title="Wheel Spin",
         )
         embed_result.set_image(url=image['result_img'])
-        embed_result.add_field(name="Winner", value=image['result'], inline=False)
+        embed_result.add_field(name="Winner", value="**" + image['result'] + "**", inline=False)
 
         # Send the result embed to the channel
         await message.edit(embed=embed_result)
-
-    
-        
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
