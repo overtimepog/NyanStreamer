@@ -650,30 +650,30 @@ class Images(commands.Cog, name="images"):
         if len(options) > 6:
             raise commands.BadArgument("You can only provide 6 options")
         
-        image = await client.wheel(options)
+        wheel = await client.wheel(options)
         #print(image)
             # Create a Discord embed for the GIF wheel
         #title the question
         question = question.title()
-        desc = image['desc'].replace(" :\t\t", " ")
+        desc = wheel['desc'].replace(" :\t\t", " ")
         embed_gif = Embed(
             title=f"**{question}** - {ctx.author.name}",
-            description=f"{desc}"
+            description=f"**{desc}**"
         )
-        embed_gif.set_image(url=image['gif_wheel'])
+        embed_gif.set_image(url=wheel['gif_wheel'])
 
         # Send the GIF wheel embed to the channel
         message = await ctx.send(embed=embed_gif)
 
         # Wait for the specified time minus 0.5 seconds
-        await asyncio.sleep(image['time'] - 0.5)
+        await asyncio.sleep(wheel['time'] - 0.5)
 
         # Create a Discord embed for the result
         embed_result = Embed(
             title=f"**{question}** - {ctx.author.name}",
-            description=f"**{image['result_color_emoji']} {image['result']}**",
+            description=f"**{wheel['result_color_emoji']} {wheel['result']}**",
         )
-        embed_result.set_image(url=image['result_img'])
+        embed_result.set_image(url=wheel['result_img'])
         # Send the result embed to the channel
         await message.edit(embed=embed_result)
         
@@ -742,6 +742,18 @@ class Images(commands.Cog, name="images"):
         avatar = user.avatar.url
         image = await client.zonk(avatar)
         await ctx.send(file=File(fp=image, filename="zonk.gif"))
+
+    #stonks
+    @commands.hybrid_command(
+        name="salty",
+        description="salty fr",
+    )
+    async def stonks(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        avatar = user.avatar.url
+        salty_instance = salty.Salty()
+        image = await self.bot.loop.run_in_executor(self.executor, salty_instance.generate, [avatar], "", [], "")
+        await ctx.send(file=File(fp=image, filename="salt.png"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
