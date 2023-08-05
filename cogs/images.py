@@ -690,18 +690,6 @@ class Images(commands.Cog, name="images"):
         image = await client.clock(avatar)
         await ctx.send(file=File(fp=image, filename="clock.gif"))
         
-    #emojify
-    @commands.hybrid_command(
-        name="emojify",
-        description="emojify a user",
-    )
-    async def emojify(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        image_url = str(user.avatar.url)
-        # Generate the deep fried image
-        image = await client.emojify(image_url)
-        await ctx.send(image['text'])
-        
     #heart locket
     @commands.hybrid_command(
         name="heartlocket",
@@ -711,7 +699,7 @@ class Images(commands.Cog, name="images"):
     async def heartlocket(self, ctx: Context, user: discord.User):
         ctx.defer()
         avatar = user.avatar.url
-        image = await client.heart_locket(avatar)
+        image = await client.heart_locket(avatar, avatar)
         await ctx.send(file=File(fp=image, filename="heartlocket.gif"))
         
     #globe
