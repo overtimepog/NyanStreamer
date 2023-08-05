@@ -748,7 +748,7 @@ class Images(commands.Cog, name="images"):
         #print(image)
             # Create a Discord embed for the GIF wheel
         embed_gif = Embed(
-            title="Wheel Spin",
+            title="Spinning the wheel...",
         )
         embed_gif.set_image(url=image['gif_wheel'])
 
@@ -760,8 +760,7 @@ class Images(commands.Cog, name="images"):
 
         # Create a Discord embed for the result
         embed_result = Embed(
-            title="Wheel Spin",
-            description=f"** {image['result_color_emoji']}{image['result']} **"
+            title=f"** {image['result_color_emoji']} {image['result']} **",
         )
         embed_result.set_image(url=image['result_img'])
         # Send the result embed to the channel
