@@ -61,7 +61,7 @@ async def replace_mentions_with_names(ctx: Context, text: str) -> str:
         # Fetch the user using the ID
         user = await ctx.guild.fetch_member(int(mention))
         # Replace the mention with the user's name
-        text = text.replace(f'<@{mention}>', user.name)
+        text = text.replace(f'<@{mention}>', user.name + ' ').replace('  ', ' ')
     return text
 
 class Images(commands.Cog, name="images"):
