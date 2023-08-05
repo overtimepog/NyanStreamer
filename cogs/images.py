@@ -794,7 +794,7 @@ class Images(commands.Cog, name="images"):
         await ctx.defer()
         avatar = user.avatar.url
         image = await client.pizza(avatar)
-        await ctx.send(file=File(fp=image, filename="pizza.gif"))
+        await ctx.send(file=File(fp=image, filename="pizza.png"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
