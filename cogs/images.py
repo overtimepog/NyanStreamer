@@ -700,6 +700,7 @@ class Images(commands.Cog, name="images"):
         image_url = str(user.avatar.url)
         # Generate the deep fried image
         image = await client.emojify(image_url)
+        print(image)
         #put the text from the image into an embed
         embed = Embed(
             title=f"{user.name} emojified",
@@ -714,11 +715,36 @@ class Images(commands.Cog, name="images"):
         description="heart locket a user",
         aliases=["locket"],
     )
-    async def heartlocket(self, ctx: Context, user: discord.User):
+    async def heartlocket(self, ctx: Context, user: discord.User, text: str):
         ctx.defer()
         avatar = user.avatar.url
-        image = await client.heart_locket(avatar, avatar)
-        await ctx.send(file=File(fp=image, filename="heartlocket.gif"))
+        #this is a bit of a hack, but it works 
+        #send a web request to the api to get the image curl -H "Authorization: key" -XPOST https://api.makesweet.com/make/heart-locket?text=squirrel -F "images[]=@image.jpg" -o animation.gif
+            # Download the user's avatar
+        async with aiohttp.ClientSession() as session:
+            async with session.get(avatar) as resp:
+                avatar_data = await resp.read()
+
+        # Send the request to the MakeSweet API
+        url = f"https://api.makesweet.com/make/heart-locket?text={text}"
+        headers = {"Authorization": "key"}  # Replace "key" with your actual key
+        data = {"images[]": avatar_data}
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, headers=headers, data=data) as resp:
+                if resp.status == 200:
+                    gif_data = await resp.read()
+                    # Save the GIF data to a file
+                    with open("animation.gif", "wb") as f:
+                        f.write(gif_data)
+                else:
+                    await ctx.send('An error occurred.')
+
+        # Send the GIF to the channel
+        await ctx.send(file=discord.File("animation.gif"))
+        #delete the gif
+        await os.remove("animation.gif")
+
         
     #globe
     @commands.hybrid_command(
