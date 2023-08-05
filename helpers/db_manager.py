@@ -5842,3 +5842,44 @@ async def remove_paginated_embed(starboard_message_id: int):
     async with aiosqlite.connect("database/database.db") as db:
         await db.execute("DELETE FROM paginated_embeds WHERE starboard_message_id=?", (starboard_message_id,))
         await db.commit()
+
+
+async def add_starred_message(message_id: int, guild_id: int, channel_id: int, author_id: int, star_count: int, starboard_entry_id: int, message_link: str, message_content: str, attachment_url: str) -> None:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("""
+            INSERT INTO starred_messages (message_id, guild_id, channel_id, author_id, star_count, starboard_entry_id, message_link, message_content, attachment_url) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (message_id, guild_id, channel_id, author_id, star_count, starboard_entry_id, message_link, message_content, attachment_url))
+        await db.commit()
+
+async def get_starred_message_by_id(message_id: int) -> dict:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("SELECT * FROM starred_messages WHERE message_id=?", (message_id,))
+        row = await cursor.fetchone()
+        if row:
+            return {
+                "message_id": row[0],
+                "guild_id": row[1],
+                "channel_id": row[2],
+                "author_id": row[3],
+                "star_count": row[4],
+                "starboard_entry_id": row[5],
+                "message_link": row[6],
+                "message_content": row[7],
+                "attachment_url": row[8]
+            }
+        return None
+
+async def update_star_count(message_id: int, new_star_count: int) -> None:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("UPDATE starred_messages SET star_count = ? WHERE message_id = ?", (new_star_count, message_id))
+        await db.commit()
+
+async def update_starboard_entry_id(message_id: int, starboard_entry_id: int) -> None:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("UPDATE starred_messages SET starboard_entry_id = ? WHERE message_id = ?", (starboard_entry_id, message_id))
+        await db.commit()
