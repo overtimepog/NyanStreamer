@@ -751,6 +751,39 @@ class Images(commands.Cog, name="images"):
         avatar = user.avatar.url
         image = await client.matrix(avatar)
         await ctx.send(file=File(fp=image, filename="matrix.gif"))
+        
+    #balls
+    @commands.hybrid_command(
+        name="balls",
+        description="man I love those",
+    )
+    async def balls(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        avatar = user.avatar.url
+        image = await client.balls(avatar)
+        await ctx.send(file=File(fp=image, filename="balls.gif"))
+        
+    #billboard
+    @commands.hybrid_command(
+        name="billboard",
+        description="become a billboard",
+    )
+    async def billboard(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        avatar = user.avatar.url
+        image = await client.billboard(avatar)
+        await ctx.send(file=File(fp=image, filename="billboard.png"))
+        
+    #heart locket
+    @commands.hybrid_command(
+        name="heartlocket",
+        description="become a heart locket",
+    )
+    async def heartlocket(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        avatar = user.avatar.url
+        image = await client.heart_locket(avatar, avatar)
+        await ctx.send(file=File(fp=image, filename="heartlocket.gif"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
