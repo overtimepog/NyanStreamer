@@ -418,7 +418,7 @@ async def on_ready() -> None:
 #when the bot joins a server, add all the members to the database
 @bot.event
 async def on_guild_join(guild: discord.Guild) -> None:
-    print("Joined " + guild.name + "ID: " + str(guild.id))
+    print("Joined " + guild.name + " ID: " + str(guild.id))
     for member in guild.members:
         if member.bot:
             continue
