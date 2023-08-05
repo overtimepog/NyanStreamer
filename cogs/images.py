@@ -440,7 +440,6 @@ class Images(commands.Cog, name="images"):
     async def buzz(self, ctx: Context, top: str, bottom: str):
         # Defer the interaction
         await ctx.defer()
-
         top = format_text(top)
         bottom = format_text(bottom)
         url = f"https://api.memegen.link/images/buzz/{top}/{bottom}.gif?api_key=nu449chc96&watermark=nyanstreamer.lol"
