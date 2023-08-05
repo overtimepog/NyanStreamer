@@ -690,6 +690,24 @@ class Images(commands.Cog, name="images"):
         image = await client.clock(avatar)
         await ctx.send(file=File(fp=image, filename="clock.gif"))
         
+    #emojify
+    @commands.hybrid_command(
+        name="emojify",
+        description="emojify a user",
+    )
+    async def emojify(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        image_url = str(user.avatar.url)
+        # Generate the deep fried image
+        image = await client.emojify(image_url)
+        #put the text from the image into an embed
+        embed = Embed(
+            title=f"{user.name} emojified",
+            description=f"{image['text']}",
+        )
+        #send the embed
+        await ctx.send(embed=embed)
+        
     #heart locket
     @commands.hybrid_command(
         name="heartlocket",
