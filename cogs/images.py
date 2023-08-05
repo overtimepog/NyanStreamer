@@ -795,6 +795,17 @@ class Images(commands.Cog, name="images"):
         avatar = user.avatar.url
         image = await client.pizza(avatar)
         await ctx.send(file=File(fp=image, filename="pizza.png"))
+        
+    #zonk
+    @commands.hybrid_command(
+        name="zonk",
+        description="zonk",
+    )
+    async def zonk(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        avatar = user.avatar.url
+        image = await client.zonk(avatar)
+        await ctx.send(file=File(fp=image, filename="zonk.gif"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
