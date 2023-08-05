@@ -54,6 +54,16 @@ def format_text(text):
 
     return text
 
+async def replace_mentions_with_names(ctx: Context, text: str) -> str:
+    # Find all mentions in the format <@ID>
+    mentions = re.findall(r'<@(\d+)>', text)
+    for mention in mentions:
+        # Fetch the user using the ID
+        user = await ctx.guild.fetch_member(int(mention))
+        # Replace the mention with the user's name
+        text = text.replace(f'<@{mention}>', user.name)
+    return text
+
 class Images(commands.Cog, name="images"):
     def __init__(self, bot):
         self.bot = bot
@@ -654,7 +664,20 @@ class Images(commands.Cog, name="images"):
         #print(image)
             # Create a Discord embed for the GIF wheel
         #title the question
+        question = await replace_mentions_with_names(ctx, question)
+        option1 = await replace_mentions_with_names(ctx, option1)
+        option2 = await replace_mentions_with_names(ctx, option2)
+        if option3:
+            option3 = await replace_mentions_with_names(ctx, option3)
+        if option4:
+            option4 = await replace_mentions_with_names(ctx, option4)
+        if option5:
+            option5 = await replace_mentions_with_names(ctx, option5)
+        if option6:
+            option6 = await replace_mentions_with_names(ctx, option6)
+
         question = question.title()
+
         desc = wheel['desc'].replace(" :\t\t", " ")
         embed_gif = Embed(
             title=f"**{question}** - {ctx.author.name}",
