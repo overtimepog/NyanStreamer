@@ -5774,3 +5774,90 @@ async def get_pet_items_and_durations(pet_id: str, user_id: str):
             items_and_durations.append({'item_id': item_id, 'expires_at': None})
 
     return items_and_durations
+
+
+#starboard stuff
+#set the starboard channel
+async def set_starboard_channel(server_id: int, channel_id: int) -> None:
+    """
+    This function will set the starboard channel.
+
+    :param server_id: The ID of the server.
+    :param channel_id: The ID of the channel.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("""
+            INSERT OR REPLACE INTO starboard (server_id, starboard_channel_id) 
+            VALUES (?, ?)
+        """, (server_id, channel_id,))
+        await db.commit()
+        
+async def set_star_emoji(server_id: int, emoji: str) -> None:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("""
+            INSERT OR REPLACE INTO starboard (server_id, star_emoji) 
+            VALUES (?, ?)
+        """, (server_id, emoji,))
+        await db.commit()
+        
+#set the star_threshold
+async def set_star_threshold(server_id: int, star_threshold: int) -> None:
+    """
+    This function will set the star_threshold.
+
+    :param server_id: The ID of the server.
+    :param star_threshold: The star_threshold.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("""
+            INSERT OR REPLACE INTO starboard (server_id, star_threshold) 
+            VALUES (?, ?)
+        """, (server_id, star_threshold,))
+        await db.commit()
+
+async def get_starboard_config(server_id: int) -> dict:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("SELECT * FROM starboard WHERE server_id=?", (server_id,))
+        row = await cursor.fetchone()
+        if row:
+            return {
+                "server_id": row[0],
+                "starboard_channel_id": row[1],
+                "star_threshold": row[2],
+                "star_emoji": row[3]
+            }
+        return None
+    
+
+async def add_paginated_embed(starboard_message_id: int, current_index: int, total_attachments: int):
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("INSERT INTO paginated_embeds (starboard_message_id, current_index, total_attachments) VALUES (?, ?, ?)", 
+                         (starboard_message_id, current_index, total_attachments))
+        await db.commit()
+
+async def update_paginated_embed_index(starboard_message_id: int, current_index: int):
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE paginated_embeds SET current_index=? WHERE starboard_message_id=?", 
+                         (current_index, starboard_message_id))
+        await db.commit()
+
+async def get_paginated_embed(starboard_message_id: int) -> dict:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("SELECT current_index, total_attachments FROM paginated_embeds WHERE starboard_message_id=?", (starboard_message_id,))
+        row = await cursor.fetchone()
+        if row:
+            return {
+                "current_index": row[0],
+                "total_attachments": row[1]
+            }
+        return None
+
+async def remove_paginated_embed(starboard_message_id: int):
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("DELETE FROM paginated_embeds WHERE starboard_message_id=?", (starboard_message_id,))
+        await db.commit()

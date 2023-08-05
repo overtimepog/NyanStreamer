@@ -210,7 +210,82 @@ async def on_message(message: discord.Message) -> None:
     #if the channel is the connections channel, two messages will be seen, the first will have the users ID after the word DISCORD ID:, and the second will have the users twitch ID after the word TWITCH ID:, this will be used to connect the twitch account to the discord account, so grab the first message, wait for the second message, and then connect the two accounts
     #if the message was sent from this webhook, run the code below
 
+@bot.event
+async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
+    # Ignore bot reactions
+    if user.bot:
+        return
 
+    # Fetch starboard configuration for the server
+    config = await db_manager.get_starboard_config(reaction.message.guild.id)
+    if not config:
+        return
+
+    # Check if the reaction emoji matches the star emoji set for the server
+    if str(reaction.emoji) == config["star_emoji"]:
+        # Check if the number of reactions meets the threshold
+        if reaction.count >= config["star_threshold"]:
+            # Fetch or construct the message link
+            message_link = f"https://discord.com/channels/{reaction.message.guild.id}/{reaction.message.channel.id}/{reaction.message.id}"
+
+            # Create an embed
+            embed = discord.Embed(
+                title=f"{reaction.emoji} {reaction.count} | Starred Message",
+                description=f"{reaction.message.content}\n\n[Jump to message]({message_link})",
+                color=discord.Color.gold()
+            )
+            embed.set_author(name=reaction.message.author.display_name, icon_url=reaction.message.author.avatar_url)
+
+            # Send the embed to the starboard channel
+            starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
+
+            # Check if there's an attachment and set it as the embed image
+            async def send_paginated_embed(channel, attachments):
+                # Create the initial embed with the first image
+                embed.set_image(url=attachments[0].url)
+                message = await channel.send(embed=embed)
+
+                # Add the message to the paginated_embeds table
+                await db_manager.add_paginated_embed(message.id, 0, len(attachments))
+
+                # Add reactions for pagination
+                await message.add_reaction("⬅️")
+                await message.add_reaction("➡️")
+
+                def check(reaction, user):
+                    return user != message.author and str(reaction.emoji) in ["⬅️", "➡️"]
+
+                index = 0
+                while True:
+                    try:
+                        reaction, user = await bot.wait_for("reaction_add", timeout=60.0, check=check)
+
+                        # Move to the next image or loop back to the start
+                        if str(reaction.emoji) == "➡️" and index < len(attachments) - 1:
+                            index += 1
+                            embed.set_image(url=attachments[index].url)
+                            await message.edit(embed=embed)
+
+                        # Move to the previous image or loop to the end
+                        elif str(reaction.emoji) == "⬅️" and index > 0:
+                            index -= 1
+                            embed.set_image(url=attachments[index].url)
+                            await message.edit(embed=embed)
+
+                        # Update the current index in the paginated_embeds table
+                        await db_manager.update_paginated_embed_index(message.id, index)
+
+                        # Remove the user's reaction
+                        await message.remove_reaction(reaction, user)
+
+                    except asyncio.TimeoutError:
+                        break
+
+            if len(reaction.message.attachments) > 1:
+                await send_paginated_embed(starboard_channel, reaction.message.attachments)
+            else:
+                embed.set_image(url=reaction.message.attachments[0].url)
+                await starboard_channel.send(embed=embed)
 
 @bot.event
 async def on_command_completion(context: Context) -> None:

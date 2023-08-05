@@ -331,6 +331,110 @@ class General(commands.Cog, name="general"):
             await context.send("I sent you a private message!")
         except discord.Forbidden:
             await context.send(embed=embed)
+            
+    #starboard command group
+    @commands.hybrid_group(
+        name="starboard",
+        description="The base command for all starboard commands.",
+    )
+    async def starboard(self, ctx: Context):
+        """
+        The base command for all starboard commands.
+
+        :param ctx: The context in which the command was called.
+        """
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help("starboard")
+            
+    #starboard setup command
+    @starboard.command(
+        name="setup",
+        description="setup the starboard",
+    )
+    @checks.not_blacklisted()
+    @has_permissions(manage_channels=True)
+    async def setup(self, ctx: Context, channel: discord.TextChannel, emoji: discord.Emoji = "⭐", amount: int = 5):
+        """
+        setup the starboard
+
+        :param ctx: The context in which the command was called.
+        :param channel: The channel to setup the starboard in.
+        :param emoji: The emoji to use for the starboard.
+        :param amount: The amount of stars needed to post to the starboard.
+        """
+        emojistr = str(emoji)
+        await db_manager.set_starboard_channel(ctx.guild.id, channel.id)
+        await db_manager.set_star_emoji(ctx.guild.id, emojistr)
+        await db_manager.set_star_threshold(ctx.guild.id, amount)
+        await ctx.send(f"Starboard setup in {channel.mention} with the emoji {emoji} and {amount} stars needed to post to the starboard.")
+        
+    #starboard emoji command
+    @starboard.command(
+        name="emoji",
+        description="set the emoji for the starboard",
+    )
+    @checks.not_blacklisted()
+    @has_permissions(manage_channels=True)
+    async def emoji(self, ctx: Context, emoji: discord.Emoji):
+        """
+        set the emoji for the starboard
+
+        :param ctx: The context in which the command was called.
+        :param emoji: The emoji to use for the starboard.
+        """
+        await db_manager.set_star_emoji(ctx.guild.id, emoji)
+        await ctx.send(f"Starboard emoji set to {emoji}.")
+        
+    #starboard threshold command
+    @starboard.command(
+        name="threshold",
+        description="set the amount of stars needed to post to the starboard",
+    )
+    @checks.not_blacklisted()
+    @has_permissions(manage_channels=True)
+    async def threshold(self, ctx: Context, amount: int):
+        """
+        set the amount of stars needed to post to the starboard
+
+        :param ctx: The context in which the command was called.
+        :param amount: The amount of stars needed to post to the starboard.
+        """
+        await db_manager.set_star_threshold(ctx.guild.id, amount)
+        await ctx.send(f"Starboard threshold set to {amount}.")
+        
+    
+    #starboard config command, shows the current config
+    @starboard.command(
+        name="config",
+        description="shows the current starboard config",
+    )
+    @checks.not_blacklisted()
+    async def config(self, ctx: Context):
+        """
+        shows the current starboard config
+
+        :param ctx: The context in which the command was called.
+        """
+        config = await db_manager.get_starboard_config(ctx.guild.id)
+        if config == None:
+            await ctx.send("Starboard not setup yet.")
+            return
+        #"server_id": row[0],
+        #"starboard_channel_id": row[1],
+        #"star_threshold": row[2],
+        #"star_emoji": row[3]
+        
+        channel = self.bot.get_channel(config["starboard_channel_id"])
+        emoji = config["star_emoji"]
+        threshold = config["star_threshold"]
+        embed = discord.Embed(
+            title="Starboard Config",
+            description=f"Starboard channel: {channel.mention}\nStarboard emoji: {emoji}\nStarboard threshold: {threshold}",
+            color=0x9C84EF
+        )
+        await ctx.send(embed=embed)
+
+        
 
 async def setup(bot):
     await bot.add_cog(General(bot))

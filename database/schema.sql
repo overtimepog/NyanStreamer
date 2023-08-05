@@ -36,6 +36,32 @@ CREATE TABLE IF NOT EXISTS `giveaways` (
   FOREIGN KEY (`streamer_id`) REFERENCES `streamer`(`user_id`) -- assuming the streamer's user_id is stored in the `streamer` table
 );
 
+CREATE TABLE IF NOT EXISTS `starboard` (
+  `starboard_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `server_id` BIGINT NOT NULL,               -- The ID of the guild (server)
+  `starboard_channel_id` BIGINT NOT NULL,   -- The ID of the channel where starred messages will be posted
+  `star_threshold` INT DEFAULT 5,           -- The number of star reactions required for a message to be posted to the starboard
+  `star_emoji` varchar(255) DEFAULT '⭐'     -- The custom emoji ID or the default star emoji
+);
+
+CREATE TABLE IF NOT EXISTS `starred_messages` (
+    `message_id` BIGINT PRIMARY KEY,
+    `guild_id` BIGINT NOT NULL,
+    `channel_id` BIGINT NOT NULL,
+    `author_id` BIGINT NOT NULL,
+    `star_count` INT DEFAULT 0,
+    `starboard_entry_id` BIGINT,
+    `message_link` TEXT,
+    `message_content` TEXT,
+    `attachment_url` TEXT
+);
+
+CREATE TABLE IF NOT EXISTS `paginated_embeds` (
+    `starboard_message_id` BIGINT PRIMARY KEY,   -- The ID of the message in the starboard channel
+    `current_index` INT NOT NULL,                -- The current index of the attachment being displayed
+    `total_attachments` INT NOT NULL             -- Total number of attachments in the original message
+);
+
 CREATE TABLE IF NOT EXISTS `giveaway_entries` (
   `giveaway_id` INT NOT NULL,
   `user_id` varchar(255) NOT NULL,
