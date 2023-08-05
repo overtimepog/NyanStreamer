@@ -5776,34 +5776,24 @@ async def get_pet_items_and_durations(pet_id: str, user_id: str):
     return items_and_durations
 
 
+#starboard stuff
+#set the starboard channel
 async def set_starboard_channel(server_id: int, channel_id: int) -> None:
     async with aiosqlite.connect("database/database.db") as db:
         cursor = await db.cursor()
-        await cursor.execute("""
-            INSERT OR IGNORE INTO starboard (server_id, starboard_channel_id) 
-            VALUES (?, ?);
-            UPDATE starboard SET starboard_channel_id = ? WHERE server_id = ?;
-        """, (server_id, channel_id, channel_id, server_id))
+        await cursor.execute("UPDATE starboard SET starboard_channel_id = ? WHERE server_id = ?", (channel_id, server_id))
         await db.commit()
 
 async def set_star_emoji(server_id: int, emoji: str) -> None:
     async with aiosqlite.connect("database/database.db") as db:
         cursor = await db.cursor()
-        await cursor.execute("""
-            INSERT OR IGNORE INTO starboard (server_id, star_emoji) 
-            VALUES (?, ?);
-            UPDATE starboard SET star_emoji = ? WHERE server_id = ?;
-        """, (server_id, emoji, emoji, server_id))
+        await cursor.execute("UPDATE starboard SET star_emoji = ? WHERE server_id = ?", (emoji, server_id))
         await db.commit()
 
 async def set_star_threshold(server_id: int, star_threshold: int) -> None:
     async with aiosqlite.connect("database/database.db") as db:
         cursor = await db.cursor()
-        await cursor.execute("""
-            INSERT OR IGNORE INTO starboard (server_id, star_threshold) 
-            VALUES (?, ?);
-            UPDATE starboard SET star_threshold = ? WHERE server_id = ?;
-        """, (server_id, star_threshold, star_threshold, server_id))
+        await cursor.execute("UPDATE starboard SET star_threshold = ? WHERE server_id = ?", (star_threshold, server_id))
         await db.commit()
 
 async def get_starboard_config(server_id: int) -> dict:
