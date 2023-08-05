@@ -675,7 +675,7 @@ class Images(commands.Cog, name="images"):
         aliases=["polish_cow", "polish-cow", "cow"],
     )
     async def polishcow(self, ctx: Context, user: discord.User):
-        ctx.defer()
+        await ctx.defer()
         avatar = user.avatar.url
         image = await client.cow(avatar)
         await ctx.send(file=File(fp=image, filename="polishcow.gif"))
@@ -685,7 +685,7 @@ class Images(commands.Cog, name="images"):
         description="what time is it?, become a clock ",
     )
     async def clock(self, ctx: Context, user: discord.User):
-        ctx.defer()
+        await ctx.defer()
         avatar = user.avatar.url
         image = await client.clock(avatar)
         await ctx.send(file=File(fp=image, filename="clock.gif"))
@@ -708,7 +708,7 @@ class Images(commands.Cog, name="images"):
     )
     #label the option option1 through option6
     async def wheel(self, ctx: Context, option1: str, option2: str, option3: str = None, option4: str = None, option5: str = None, option6: str = None):
-        ctx.defer()
+        await ctx.defer()
         #create a list of all the options that are not None
         options = [option1, option2, option3, option4, option5, option6]
         options = [i for i in options if i is not None]
@@ -747,7 +747,7 @@ class Images(commands.Cog, name="images"):
         description="become the matrix",
     )
     async def matrix(self, ctx: Context, user: discord.User):
-        ctx.defer()
+        await ctx.defer()
         avatar = user.avatar.url
         image = await client.matrix(avatar)
         await ctx.send(file=File(fp=image, filename="matrix.gif"))
