@@ -693,15 +693,14 @@ class Images(commands.Cog, name="images"):
     #emojify
     @commands.hybrid_command(
         name="emojify",
-        description="emojify a user or image",
+        description="emojify a user",
     )
     async def emojify(self, ctx: Context, user: discord.User):
         await ctx.defer()
         image_url = str(user.avatar.url)
         # Generate the deep fried image
         image = await client.emojify(image_url)
-
-        await ctx.send(file=discord.File(fp=image, filename="emojify.png"))
+        ctx.send(image)
         
     #heart locket
     @commands.hybrid_command(
