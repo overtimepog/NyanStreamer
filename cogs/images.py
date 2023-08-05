@@ -745,7 +745,7 @@ class Images(commands.Cog, name="images"):
             raise commands.BadArgument("You can only provide 6 options")
         
         image = await client.wheel(options)
-        await ctx.send(file=File(fp=image, filename="wheel.gif"))
+        print(image)
     
         
 
