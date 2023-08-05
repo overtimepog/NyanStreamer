@@ -745,7 +745,29 @@ class Images(commands.Cog, name="images"):
             raise commands.BadArgument("You can only provide 6 options")
         
         image = await client.wheel(options)
-        print(image)
+        #print(image)
+            # Create a Discord embed for the GIF wheel
+        embed_gif = Embed(
+            title="Wheel Spin",
+        )
+        embed_gif.set_image(url=image['gif_wheel'])
+
+        # Send the GIF wheel embed to the channel
+        message = await ctx.send(embed=embed_gif)
+
+        # Wait for the specified time
+        await asyncio.sleep(image['time'])
+
+        # Create a Discord embed for the result
+        embed_result = Embed(
+            title="Wheel Spin",
+        )
+        embed_result.set_image(url=image['result_img'])
+        embed_result.add_field(name="Winner", value=image['result'], inline=False)
+
+        # Send the result embed to the channel
+        await message.edit(embed=embed_result)
+
     
         
 
