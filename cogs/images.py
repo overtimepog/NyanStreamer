@@ -726,6 +726,7 @@ class Images(commands.Cog, name="images"):
         question = question.title()
         embed_gif = Embed(
             title=f"**{question}** - {ctx.author.name}",
+            description=f"{image['desc']}"
         )
         embed_gif.set_image(url=image['gif_wheel'])
 
