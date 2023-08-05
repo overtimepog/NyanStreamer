@@ -366,7 +366,7 @@ class General(commands.Cog, name="general"):
         await db_manager.set_starboard_channel(ctx.guild.id, channel.id)
         await db_manager.set_star_emoji(ctx.guild.id, emojistr)
         await db_manager.set_star_threshold(ctx.guild.id, amount)
-        await ctx.send(f"Starboard setup in {channel.mention} with the emoji {emoji} and {amount} stars needed to post to the starboard.")
+        await ctx.send(f"Starboard setup in {channel.mention} with the emoji {emoji} and {amount} stars needed to post to the starboard.", ephemeral=True)
         
     #starboard emoji command
     @starboard.command(
@@ -383,7 +383,7 @@ class General(commands.Cog, name="general"):
         :param emoji: The emoji to use for the starboard.
         """
         await db_manager.set_star_emoji(ctx.guild.id, emoji)
-        await ctx.send(f"Starboard emoji set to {emoji}.")
+        await ctx.send(f"Starboard emoji set to {emoji}.", ephemeral=True)
         
     #starboard threshold command
     @starboard.command(
@@ -400,7 +400,7 @@ class General(commands.Cog, name="general"):
         :param amount: The amount of stars needed to post to the starboard.
         """
         await db_manager.set_star_threshold(ctx.guild.id, amount)
-        await ctx.send(f"Starboard threshold set to {amount}.")
+        await ctx.send(f"Starboard threshold set to {amount}.", ephemeral=True)
         
     
     #starboard config command, shows the current config
@@ -417,7 +417,7 @@ class General(commands.Cog, name="general"):
         """
         config = await db_manager.get_starboard_config(ctx.guild.id)
         if config == None:
-            await ctx.send("Starboard not setup yet.")
+            await ctx.send("Starboard not setup yet.", ephemeral=True)
             return
         #"server_id": row[0],
         #"starboard_channel_id": row[1],
@@ -432,7 +432,7 @@ class General(commands.Cog, name="general"):
             description=f"Starboard channel: {channel.mention}\nStarboard emoji: {emoji}\nStarboard threshold: {threshold}",
             color=0x9C84EF
         )
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, ephemeral=True)
 
         
 
