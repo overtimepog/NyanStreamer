@@ -325,11 +325,11 @@ async def load_cogs() -> None:
 
 async def setup() -> None:
     await init_db()
-    print("\n" + "-----------------------------")
+    #print("\n" + "-----------------------------")
     #delete the joined_channels.json file
     if os.path.isfile('joined_channels.json'):
         os.remove('joined_channels.json')
-    print("---------Users----------")
+    #print("---------Users----------")
     total_guilds = len(bot.guilds)
     print_lock = asyncio.Lock()
     
