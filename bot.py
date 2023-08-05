@@ -345,7 +345,7 @@ async def setup() -> None:
                 continue
             member_counter += 1
             async with print_lock:
-                print('\r' + ' ' * 100, end='')  # Clear the line
+                print('\r' + ' ' * 150, end='')  # Clear the entire line
                 print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
@@ -353,9 +353,9 @@ async def setup() -> None:
         async with print_lock:
             print()  # Print a newline at the end of each server's member check
     
-    total_guilds = len(bot.guilds)
     tasks = [check_server(i, bot_guild, total_guilds) for i, bot_guild in enumerate(bot.guilds, start=1)]
     await asyncio.gather(*tasks)
+
 
     #print("\n" + "---------Enemies----------")
     #await db_manager.add_enemies()
