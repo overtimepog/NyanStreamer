@@ -722,8 +722,10 @@ class Images(commands.Cog, name="images"):
         image = await client.wheel(options)
         #print(image)
             # Create a Discord embed for the GIF wheel
+        #title the question
+        question = question.title()
         embed_gif = Embed(
-            title=f"**{question.title}**",
+            title=f"**{question}**",
         )
         embed_gif.set_image(url=image['gif_wheel'])
 
@@ -735,7 +737,7 @@ class Images(commands.Cog, name="images"):
 
         # Create a Discord embed for the result
         embed_result = Embed(
-            title=f"**{question.title}**",
+            title=f"**{question}**",
             description=f"**{image['result_color_emoji']} {image['result']}**",
         )
         embed_result.set_image(url=image['result_img'])
