@@ -211,7 +211,7 @@ async def on_message(message: discord.Message) -> None:
     #if the message was sent from this webhook, run the code below
 
 @bot.event
-async def on_raw_reaction_add(reaction: discord.Reaction, user: discord.User):
+async def on_reaction_add(reaction, user):
     print("reaction added")
     # Ignore bot reactions
     if user.bot:
