@@ -54,6 +54,16 @@ def format_text(text):
 
     return text
 
+async def replace_mentions_with_names(ctx: Context, text: str) -> str:
+    # Find all mentions in the format <@ID>
+    mentions = re.findall(r'<@(\d+)>', text)
+    for mention in mentions:
+        # Fetch the user using the ID
+        user = await ctx.guild.fetch_member(int(mention))
+        # Replace the mention with the user's name
+        text = text.replace(f'<@{mention}>', user.name + ' ').replace('  ', ' ')
+    return text
+
 class Images(commands.Cog, name="images"):
     def __init__(self, bot):
         self.bot = bot
@@ -440,7 +450,6 @@ class Images(commands.Cog, name="images"):
     async def buzz(self, ctx: Context, top: str, bottom: str):
         # Defer the interaction
         await ctx.defer()
-
         top = format_text(top)
         bottom = format_text(bottom)
         url = f"https://api.memegen.link/images/buzz/{top}/{bottom}.gif?api_key=nu449chc96&watermark=nyanstreamer.lol"
@@ -468,74 +477,6 @@ class Images(commands.Cog, name="images"):
                 return await ctx.send('Could not download file... The Api is down :(')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'buttons.png'))
-
-
-    @commands.hybrid_command(
-        name="butterfly",
-        description="Is this a butterfly? ",
-    )
-    async def butterfly(self, ctx: Context, text: str, butterfly: discord.User, person: discord.User = None):
-        await ctx.defer()
-        location_x = 0.795  # Adjust as needed
-        location_y = 0.2 # Adjust as needed
-        avatar_size = (128, 128)  # Resize to 128x128 pixels
-
-        if person is None:
-            person = ctx.author
-
-        # Check the type of the butterfly parameter
-        if butterfly is not None:
-            # If a User is provided, use their avatar URL
-            butterfly_content = "_"
-            style = str(person.avatar.url)
-        else:
-            # If neither is provided, raise an error
-            await ctx.send("You must provide text, a user mention or an image attachment for the butterfly.")
-            raise commands.BadArgument("You must provide a text, user mention or an image attachment for the butterfly.")
-
-        # Format the person and text parameters
-        text = format_text(text)
-        text = quote(text)
-
-        # Generate the image URL for the first part
-        url = f"https://api.memegen.link/images/pigeon/_/{quote(butterfly_content)}/{text}.png"
-        if style is not None:
-            url += f"?style={quote(style)}"
-        #add the watermark
-        url += "&api_key=nu449chc96&watermark=nyanstreamer.lol"
-
-        # Download the meme image
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                image1 = Image.open(io.BytesIO(await resp.read()))
-
-        # Download the butterfly avatar
-        async with aiohttp.ClientSession() as session:
-            async with session.get(butterfly.avatar.url) as resp:
-                butterfly_image = Image.open(io.BytesIO(await resp.read()))
-
-        # Convert the avatar image to 'RGBA' if necessary
-        if butterfly_image.mode != 'RGBA':
-            butterfly_image = butterfly_image.convert('RGBA')
-
-        # Resize the avatar image to the desired size
-        avatar_image = butterfly_image.resize(avatar_size)
-
-        # Calculate the position to overlay the avatar onto the meme
-        position = (int(image1.width * location_x - avatar_image.width / 2), int(image1.height * location_y - avatar_image.height / 2))
-
-        # Overlay the avatar onto the meme
-        image1.paste(avatar_image, position, avatar_image)
-
-        # Save the resulting image to a BytesIO object
-        final_image = io.BytesIO()
-        image1.save(final_image, format='PNG')
-        final_image.seek(0)
-
-        # Send the final image
-        await ctx.send(file=discord.File(final_image, 'butterfly.png'))
-
-
 
     @commands.hybrid_command(
         name="expand_dong",
@@ -719,30 +660,43 @@ class Images(commands.Cog, name="images"):
         if len(options) > 6:
             raise commands.BadArgument("You can only provide 6 options")
         
-        image = await client.wheel(options)
+        wheel = await client.wheel(options)
         #print(image)
             # Create a Discord embed for the GIF wheel
         #title the question
+        question = await replace_mentions_with_names(ctx, question)
+        option1 = await replace_mentions_with_names(ctx, option1)
+        option2 = await replace_mentions_with_names(ctx, option2)
+        if option3:
+            option3 = await replace_mentions_with_names(ctx, option3)
+        if option4:
+            option4 = await replace_mentions_with_names(ctx, option4)
+        if option5:
+            option5 = await replace_mentions_with_names(ctx, option5)
+        if option6:
+            option6 = await replace_mentions_with_names(ctx, option6)
+
         question = question.title()
-        desc = image['desc'].replace(" :\t\t", " ")
+
+        desc = wheel['desc'].replace(" :\t\t", " ")
         embed_gif = Embed(
             title=f"**{question}** - {ctx.author.name}",
-            description=f"{desc}"
+            description=f"**{desc}**"
         )
-        embed_gif.set_image(url=image['gif_wheel'])
+        embed_gif.set_image(url=wheel['gif_wheel'])
 
         # Send the GIF wheel embed to the channel
         message = await ctx.send(embed=embed_gif)
 
         # Wait for the specified time minus 0.5 seconds
-        await asyncio.sleep(image['time'] - 0.5)
+        await asyncio.sleep(wheel['time'] - 0.5)
 
         # Create a Discord embed for the result
         embed_result = Embed(
             title=f"**{question}** - {ctx.author.name}",
-            description=f"**{image['result_color_emoji']} {image['result']}**",
+            description=f"**{wheel['result_color_emoji']} {wheel['result']}**",
         )
-        embed_result.set_image(url=image['result_img'])
+        embed_result.set_image(url=wheel['result_img'])
         # Send the result embed to the channel
         await message.edit(embed=embed_result)
         
@@ -811,6 +765,18 @@ class Images(commands.Cog, name="images"):
         avatar = user.avatar.url
         image = await client.zonk(avatar)
         await ctx.send(file=File(fp=image, filename="zonk.gif"))
+
+    #stonks
+    @commands.hybrid_command(
+        name="salty",
+        description="salty fr",
+    )
+    async def stonks(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        avatar = user.avatar.url
+        salty_instance = salty.Salty()
+        image = await self.bot.loop.run_in_executor(self.executor, salty_instance.generate, [avatar], "", [], "")
+        await ctx.send(file=File(fp=image, filename="salt.png"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))

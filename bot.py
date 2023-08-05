@@ -400,11 +400,11 @@ async def load_cogs() -> None:
 
 async def setup() -> None:
     await init_db()
-    print("\n" + "-----------------------------")
+    #print("\n" + "-----------------------------")
     #delete the joined_channels.json file
     if os.path.isfile('joined_channels.json'):
         os.remove('joined_channels.json')
-    print("---------Users----------")
+    #print("---------Users----------")
     total_guilds = len(bot.guilds)
     print_lock = asyncio.Lock()
     
@@ -412,7 +412,8 @@ async def setup() -> None:
         total_members = len([member for member in bot_guild.members if not member.bot])
         if total_members > 10000:
             async with print_lock:
-                print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
+                pass
+                #print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
             return
         member_counter = 0
         for member in bot_guild.members:
@@ -420,15 +421,15 @@ async def setup() -> None:
                 continue
             member_counter += 1
             async with print_lock:
-                print('\r' + ' ' * 100, end='')  # Clear the line
-                print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
+                pass
+                #print('\r' + ' ' * 100, end='')  # Clear the entire line
+                #print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
             checkUser = await db_manager.check_user(member.id)
             if checkUser == None:
                 await db_manager.get_user(member.id)
         async with print_lock:
-            print()  # Print a newline at the end of each server's member check
-    
-    total_guilds = len(bot.guilds)
+            pass  # Print a newline at the end of each server's member check
+
     tasks = [check_server(i, bot_guild, total_guilds) for i, bot_guild in enumerate(bot.guilds, start=1)]
     await asyncio.gather(*tasks)
 
@@ -493,7 +494,7 @@ async def on_ready() -> None:
 #when the bot joins a server, add all the members to the database
 @bot.event
 async def on_guild_join(guild: discord.Guild) -> None:
-    print("Joined " + guild.name + "ID: " + str(guild.id))
+    print("Joined " + guild.name + " ID: " + str(guild.id))
     for member in guild.members:
         if member.bot:
             continue
