@@ -36,6 +36,13 @@ CREATE TABLE IF NOT EXISTS `giveaways` (
   FOREIGN KEY (`streamer_id`) REFERENCES `streamer`(`user_id`) -- assuming the streamer's user_id is stored in the `streamer` table
 );
 
+CREATE TABLE IF NOT EXISTS `giveaway_entries` (
+  `giveaway_id` INT NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  PRIMARY KEY (`giveaway_id`, `user_id`),
+  FOREIGN KEY (`giveaway_id`) REFERENCES `giveaways`(`giveaway_id`)
+);
+
 CREATE TABLE IF NOT EXISTS `starboard` (
   `starboard_id` INT AUTO_INCREMENT PRIMARY KEY,
   `server_id` BIGINT NOT NULL,               -- The ID of the guild (server)
@@ -60,13 +67,6 @@ CREATE TABLE IF NOT EXISTS `paginated_embeds` (
     `starboard_message_id` BIGINT PRIMARY KEY,   -- The ID of the message in the starboard channel
     `current_index` INT NOT NULL,                -- The current index of the attachment being displayed
     `total_attachments` INT NOT NULL             -- Total number of attachments in the original message
-);
-
-CREATE TABLE IF NOT EXISTS `giveaway_entries` (
-  `giveaway_id` INT NOT NULL,
-  `user_id` varchar(255) NOT NULL,
-  PRIMARY KEY (`giveaway_id`, `user_id`),
-  FOREIGN KEY (`giveaway_id`) REFERENCES `giveaways`(`giveaway_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `streamer_items` (
