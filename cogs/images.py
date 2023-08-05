@@ -784,28 +784,17 @@ class Images(commands.Cog, name="images"):
         avatar = user.avatar.url
         image = await client.heart_locket(avatar, avatar)
         await ctx.send(file=File(fp=image, filename="heartlocket.gif"))
-        
-    #kanye
+    
+    #pizza
     @commands.hybrid_command(
-        name="kanye",
-        description="kanye west lol",
+        name="pizza",
+        description="become a pizza",
     )
-    async def kanye(self, ctx: Context, user: discord.User):
+    async def pizza(self, ctx: Context, user: discord.User):
         await ctx.defer()
         avatar = user.avatar.url
-        image = await client.kanye(avatar)
-        await ctx.send(file=File(fp=image, filename="kanye.gif"))
-        
-    #lamp, am lamp
-    @commands.hybrid_command(
-        name="lamp",
-        description="am lamp",
-    )
-    async def lamp(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        avatar = user.avatar.url
-        image = await client.lamp(avatar)
-        await ctx.send(file=File(fp=image, filename="lamp.gif"))
+        image = await client.pizza(avatar)
+        await ctx.send(file=File(fp=image, filename="pizza.gif"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
