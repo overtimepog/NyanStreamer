@@ -696,7 +696,7 @@ class Images(commands.Cog, name="images"):
         description="Mr 305",
     )
     async def globe(self, ctx: Context, user: discord.User):
-        ctx.defer()
+        await ctx.defer()
         avatar = user.avatar.url
         image = await client.globe(avatar)
         await ctx.send(file=File(fp=image, filename="globe.gif"))
@@ -730,8 +730,8 @@ class Images(commands.Cog, name="images"):
         # Send the GIF wheel embed to the channel
         message = await ctx.send(embed=embed_gif)
 
-        # Wait for the specified time minus 1 second
-        await asyncio.sleep(image['time'] - 1)
+        # Wait for the specified time minus 0.5 seconds
+        await asyncio.sleep(image['time'] - 0.5)
 
         # Create a Discord embed for the result
         embed_result = Embed(
