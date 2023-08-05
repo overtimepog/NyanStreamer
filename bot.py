@@ -213,18 +213,22 @@ async def on_message(message: discord.Message) -> None:
 @bot.event
 async def on_reaction_add(reaction, user):
     print("reaction added")
+
     # Ignore bot reactions
     if user.bot:
         return
 
     # Fetch starboard configuration for the server
     config = await db_manager.get_starboard_config(reaction.message.guild.id)
+    print(f"Config fetched: {config}")
     if not config:
         return
 
     # Check if the reaction emoji matches the star emoji set for the server
+    print(f"Reaction Emoji: {reaction.emoji}, Config Star Emoji: {config['star_emoji']}")
     if str(reaction.emoji) == config["star_emoji"]:
         # Check if the number of reactions meets the threshold
+        print(f"Reaction Count: {reaction.count}, Config Star Threshold: {config['star_threshold']}")
         if reaction.count >= config["star_threshold"]:
             # Fetch or construct the message link
             message_link = f"https://discord.com/channels/{reaction.message.guild.id}/{reaction.message.channel.id}/{reaction.message.id}"
@@ -248,6 +252,7 @@ async def on_reaction_add(reaction, user):
 
                 # Add the message to the paginated_embeds table
                 await db_manager.add_paginated_embed(message.id, 0, len(attachments))
+                print(f"Added paginated embed for message ID: {message.id}")
 
                 # Add reactions for pagination
                 await message.add_reaction("⬅️")
@@ -275,11 +280,13 @@ async def on_reaction_add(reaction, user):
 
                         # Update the current index in the paginated_embeds table
                         await db_manager.update_paginated_embed_index(message.id, index)
+                        print(f"Updated paginated embed index for message ID: {message.id} to {index}")
 
                         # Remove the user's reaction
                         await message.remove_reaction(reaction, user)
 
                     except asyncio.TimeoutError:
+                        print("Pagination timeout.")
                         break
 
             if len(reaction.message.attachments) > 1:
