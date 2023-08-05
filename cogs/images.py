@@ -700,7 +700,7 @@ class Images(commands.Cog, name="images"):
         image_url = str(user.avatar.url)
         # Generate the deep fried image
         image = await client.emojify(image_url)
-        await ctx.send(image)
+        await ctx.send(image['text'])
         
     #heart locket
     @commands.hybrid_command(
