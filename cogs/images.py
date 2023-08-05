@@ -707,7 +707,7 @@ class Images(commands.Cog, name="images"):
         description="spin the wheel",
     )
     #label the option option1 through option6
-    async def wheel(self, ctx: Context, option1: str, option2: str, option3: str = None, option4: str = None, option5: str = None, option6: str = None):
+    async def wheel(self, ctx: Context, question: str, option1: str, option2: str, option3: str = None, option4: str = None, option5: str = None, option6: str = None):
         await ctx.defer()
         #create a list of all the options that are not None
         options = [option1, option2, option3, option4, option5, option6]
@@ -723,7 +723,7 @@ class Images(commands.Cog, name="images"):
         #print(image)
             # Create a Discord embed for the GIF wheel
         embed_gif = Embed(
-            title="Spinning the wheel...",
+            title=f"**{question.title}**",
         )
         embed_gif.set_image(url=image['gif_wheel'])
 
@@ -735,7 +735,8 @@ class Images(commands.Cog, name="images"):
 
         # Create a Discord embed for the result
         embed_result = Embed(
-            title=f"** {image['result_color_emoji']} {image['result']} **",
+            title=f"**{question.title}**",
+            description=f"**{image['result_color_emoji']} {image['result']}**",
         )
         embed_result.set_image(url=image['result_img'])
         # Send the result embed to the channel
