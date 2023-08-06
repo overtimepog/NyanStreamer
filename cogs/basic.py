@@ -1932,6 +1932,7 @@ class Basic(commands.Cog, name="basic"):
             await self.search.reset_cooldown(ctx)
             return
         await search.search(ctx)
+        await ctx.defer()
 
     @commands.cooldown(1, 40, commands.BucketType.user)
     @commands.hybrid_command(
