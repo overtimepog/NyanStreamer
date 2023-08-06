@@ -257,7 +257,7 @@ async def send_paginated_embed(channel, attachments):
 
 @bot.event
 async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
-    print("reaction added")
+    #print("reaction added")
 
     # Ignore bot reactions
     if user.bot:
@@ -265,15 +265,15 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
 
     # Fetch starboard configuration for the server
     config = await db_manager.get_starboard_config(reaction.message.guild.id)
-    print(f"Config fetched: {config}")
+    #print(f"Config fetched: {config}")
     if not config:
         return
 
     # Check if the reaction emoji matches the star emoji set for the server
-    print(f"Reaction Emoji: {reaction.emoji}, Config Star Emoji: {config['star_emoji']}")
+    #print(f"Reaction Emoji: {reaction.emoji}, Config Star Emoji: {config['star_emoji']}")
     if str(reaction.emoji) == config["star_emoji"]:
         # Check if the number of reactions meets the threshold
-        print(f"Reaction Count: {reaction.count}, Config Star Threshold: {config['star_threshold']}")
+        #print(f"Reaction Count: {reaction.count}, Config Star Threshold: {config['star_threshold']}")
         if reaction.count >= config["star_threshold"]:
             # Fetch or construct the message link
             message_link = f"https://discord.com/channels/{reaction.message.guild.id}/{reaction.message.channel.id}/{reaction.message.id}"
