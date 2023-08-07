@@ -788,27 +788,34 @@ class Images(commands.Cog, name="images"):
     async def chair(self, ctx: Context, user: discord.User):
         await ctx.defer()
         image_url = user.avatar.url
-        #if the user has a gif avatar, use the first frame
-        if image_url.__contains__(".gif"):
-            image_url = image_url.split("?")[0]
-        frames = 35
+        frames = 36
         filename = f"{user.name}_chair"
-        model_path = "helpers/models/Chair.egg"
+        mac_model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Chair.egg"
+        model_path = "/root/NyanStreamer/assets/models/Chair.egg"
         #check if the model exists
         if not os.path.exists(model_path):
             await ctx.send("The chair model is missing. Please try again later.")
             return
         
-        process = subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
-        process.communicate()  # Wait for the subprocess to finish
-    
+        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
+        timeout = 300  # 5 minutes, adjust as needed
+        check_interval = 1  # check every 5 seconds
+        elapsed_time = 0
+
         gif_path = filename + ".gif"
+
+        while not os.path.exists(gif_path) and elapsed_time < timeout:
+            time.sleep(check_interval)
+            elapsed_time += check_interval
+
         if os.path.exists(gif_path):
             print(f"Sending {gif_path}")
             await ctx.send(file=discord.File(gif_path))
+            #remove it and the download.png after
+            os.remove(gif_path)
+            os.remove("download.png")
         else:
             await ctx.send("Failed to generate the chair GIF. Please try again.")
-
 
 async def setup(bot):
     await bot.add_cog(Images(bot))

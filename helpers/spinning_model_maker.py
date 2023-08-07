@@ -9,13 +9,14 @@ import subprocess
 import os
 from panda3d.core import loadPrcFileData
 from panda3d.core import getModelPath
+from rembg import remove
 
 class ModelViewer(ShowBase):
     def __init__(self, model_path, image_url, save_path, frames, filename,
                  model_pos=(0, 0, 0), model_hpr=(0, 96, 25), 
                  cam_pos=(0, -3, 0)):
 
-        getModelPath().appendDirectory("/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Chair.egg")
+        #getModelPath().appendDirectory("/Users/overtime/Documents/GitHub/NyanStreamer/assets/models")
         loadPrcFileData("", "window-type offscreen")
         ShowBase.__init__(self)
         base.disableMouse()  # Disable mouse-based camera control
@@ -60,8 +61,21 @@ class ModelViewer(ShowBase):
 
         # Open the image using PIL
         image = Image.open(BytesIO(response.content))
-    
-        # Convert and save as PNG
+        # If the image is a GIF, get its first frame
+        # If the image is a GIF, get its first frame
+        if image.is_animated:
+            image = ImageSequence.Iterator(image)[0]
+
+        # Handle transparency by filling with white background
+        if image.mode == 'RGBA':
+            background = Image.new('RGB', image.size, (255, 255, 255))
+            background.paste(image, mask=image.split()[3])  # 3 is the alpha channel
+            image = background
+
+        # Resize the image to 16:9
+        image = image.resize((1920, 1080))
+
+        # Save as PNG
         image.save(save_path, "PNG")
 
         self.texture = self.loader.loadTexture(save_path)
@@ -110,11 +124,21 @@ class ModelViewer(ShowBase):
         win_props = WindowProperties.size(self.win.getXSize(), self.win.getYSize())
         self.buffer = self.graphicsEngine.makeOutput(self.pipe, "offscreen buffer", -2, fb_props, win_props,
                                                      GraphicsPipe.BFRefuseWindow, self.win.getGsg(), self.win)
-        self.buffer.setClearColor((1, 1, 1, 1))  # Transparent background
+        self.buffer.setClearColor((1, 1, 1, 1))
 
         # Set up the display region
         dr = self.buffer.makeDisplayRegion()
         dr.setCamera(self.cam)
+        
+    def remove_background(self, input_path, output_path):
+        """Remove background using ImageMagick."""
+        cmd = [
+            'convert', input_path, 
+            '-fuzz', '10%',  # Adjust this value if needed
+            '-transparent', 'white',  # Change 'white' to the color of the background you want to remove
+            output_path
+        ]
+        subprocess.run(cmd)
 
     def spin_task(self, task):
         self.model.setH(self.model.getH() + self.rotation_speed)
@@ -123,22 +147,18 @@ class ModelViewer(ShowBase):
             img = PNMImage()
             self.buffer.getScreenshot(img)
             img.write(frame_path)
-            self.frames.append(frame_path)
+            
+            # Remove background from the captured frame
+            no_bg_path = os.path.join("assets/frames", f"frame_no_bg_{self.frame_counter}.png")
+            self.remove_background(frame_path, no_bg_path)
+            
+            self.frames.append(no_bg_path)
             self.frame_counter += 1
             print(f"Frame {self.frame_counter} captured.")
             return task.cont
         else:
-            # Skip the first frame
-            frames = [Image.open(f) for f in self.frames[1:]]
-
-            # Convert frames to 'P' mode with a consistent palette
-            # Assuming the top-left pixel is the background color
-            bg_color = frames[0].getpixel((0, 0))
-            paletted_frames = [frame.convert('P', palette=Image.ADAPTIVE, colors=255) for frame in frames]
-            for frame in paletted_frames:
-                frame.putpalette([bg_color[0], bg_color[1], bg_color[2]] + frame.getpalette()[3:])
-
-            paletted_frames[0].save(f'{self.filename}.gif', save_all=True, append_images=paletted_frames[1:], duration=50, loop=0, transparency=0, disposal=2)
+            frames = [Image.open(f) for f in self.frames]
+            frames[1].save(f'{self.filename}.gif', save_all=True, append_images=frames[2:], duration=50, loop=0, disposal=2)
             print(f"GIF created: {self.filename}.gif")
 
 
