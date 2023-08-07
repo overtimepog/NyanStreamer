@@ -9,7 +9,6 @@ import subprocess
 import os
 from panda3d.core import loadPrcFileData
 from panda3d.core import getModelPath
-from rembg import remove
 
 class ModelViewer(ShowBase):
     def __init__(self, model_path, image_url, save_path, frames, filename,
