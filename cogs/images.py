@@ -843,7 +843,7 @@ class Images(commands.Cog, name="images"):
             await ctx.send("The can model is missing. Please try again later.")
             return
         
-        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '-6,-1,1.5', '0,90,0', '0,0,0'])
+        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '-10,-3,-1.5', '0,90,0', '0,0,0'])
         timeout = 300  # 5 minutes, adjust as needed
         check_interval = 1  # check every second
         elapsed_time = 0
