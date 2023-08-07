@@ -79,6 +79,8 @@ class ModelViewer(ShowBase):
 
         # Start the spinning task
         self.taskMgr.add(self.spin_task, "spin_task")
+        #after the task is done, close the window
+        self.destroy()
 
     def setup_lighting(self):
         from panda3d.core import AmbientLight, DirectionalLight
@@ -134,9 +136,6 @@ class ModelViewer(ShowBase):
 
             paletted_frames[0].save(f'{self.filename}.gif', save_all=True, append_images=paletted_frames[1:], duration=50, loop=0, transparency=0, disposal=2)
             print(f"GIF created: {self.filename}.gif")
-            # Exit the program
-            #remove the downloaded image
-            os.remove("download.png")
 
 async def spinning_model(model_path: str, image_url: str, frames: int, filename: str, 
                          model_pos: tuple = (0, 0, 0), 
