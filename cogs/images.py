@@ -793,7 +793,7 @@ class Images(commands.Cog, name="images"):
             image_url = image_url.split("?")[0]
         frames = 35
         filename = f"{user.name}_chair"
-        model_path = "models/Chair.egg"
+        model_path = "helpers/models/Chair.egg"
         #check if the model exists
         if not os.path.exists(model_path):
             await ctx.send("The chair model is missing. Please try again later.")

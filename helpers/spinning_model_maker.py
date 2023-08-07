@@ -8,11 +8,14 @@ import sys
 import subprocess
 import os
 from panda3d.core import loadPrcFileData
+from panda3d.core import getModelPath
 
 class ModelViewer(ShowBase):
     def __init__(self, model_path, image_url, save_path, frames, filename,
                  model_pos=(0, 0, 0), model_hpr=(0, 96, 25), 
                  cam_pos=(0, -3, 0)):
+
+        getModelPath().appendDirectory("/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Chair.egg")
         loadPrcFileData("", "window-type offscreen")
         ShowBase.__init__(self)
         base.disableMouse()  # Disable mouse-based camera control
