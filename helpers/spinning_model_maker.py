@@ -137,7 +137,6 @@ class ModelViewer(ShowBase):
             # Exit the program
             #remove the downloaded image
             os.remove("download.png")
-            sys.exit()
 
 async def spinning_model(model_path: str, image_url: str, frames: int, filename: str, 
                          model_pos: tuple = (0, 0, 0), 

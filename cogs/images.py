@@ -795,7 +795,10 @@ class Images(commands.Cog, name="images"):
                     model_hpr=(0, 96, 25),
                     cam_pos=(0, -3, 0))
         #send the chair.gif
+        print(f"Sending {user.name}_chair.gif")
         await ctx.send(file=discord.File(filename + ".gif"))
+        print(f"Deleting {user.name}_chair.gif")
+        os.remove(filename + ".gif")
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
