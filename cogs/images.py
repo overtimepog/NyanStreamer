@@ -16,6 +16,7 @@ from discord.ext.commands import Context, has_permissions
 import time
 
 from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
+from helpers.spinning_model_maker import spinning_model
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from num2words import num2words
@@ -777,6 +778,24 @@ class Images(commands.Cog, name="images"):
         salty_instance = salty.Salty()
         image = await self.bot.loop.run_in_executor(self.executor, salty_instance.generate, [avatar], "", [], "")
         await ctx.send(file=File(fp=image, filename="salt.png"))
+        
+    #chair command
+    @commands.hybrid_command(
+        name="chair",
+        description="become a chair",
+    )
+    async def chair(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        image_url = user.avatar.url
+        frames = 35
+        filename = f"{user.name}_chair"
+        model_path = "assets/models/Chair.egg"
+        await spinning_model(model_path, image_url, frames, filename,
+                    model_pos=(0, 0, 0), 
+                    model_hpr=(0, 96, 25),
+                    cam_pos=(0, -3, 0))
+        #send the chair.gif
+        await ctx.send(file=discord.File(filename + ".gif"))
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
