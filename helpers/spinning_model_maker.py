@@ -80,7 +80,6 @@ class ModelViewer(ShowBase):
         # Start the spinning task
         self.taskMgr.add(self.spin_task, "spin_task")
         #after the task is done, close the window
-        self.destroy()
 
     def setup_lighting(self):
         from panda3d.core import AmbientLight, DirectionalLight
@@ -137,11 +136,23 @@ class ModelViewer(ShowBase):
             paletted_frames[0].save(f'{self.filename}.gif', save_all=True, append_images=paletted_frames[1:], duration=50, loop=0, transparency=0, disposal=2)
             print(f"GIF created: {self.filename}.gif")
 
-async def spinning_model(model_path: str, image_url: str, frames: int, filename: str, 
-                         model_pos: tuple = (0, 0, 0), 
-                         model_hpr: tuple = (0, 0, 0), 
-                         cam_pos: tuple = (0, -3, 0)):
-    #for the save path, get the url and get the first 10 characters from it, then thats the filename
-    save_path="download.png"
+
+def spinning_chair(model_path: str, image_url: str, frames: int, filename: str, 
+                   model_pos: tuple = (0, 0, 0), 
+                   model_hpr: tuple = (0, 0, 0), 
+                   cam_pos: tuple = (0, -3, 0)):
+    
+    save_path = "download.png"
     app = ModelViewer(model_path, image_url, save_path, frames, filename, model_pos, model_hpr, cam_pos)
     app.run()
+
+if __name__ == "__main__":
+    model_path = sys.argv[1]
+    image_url = sys.argv[2]
+    frames = int(sys.argv[3])
+    filename = sys.argv[4]
+    model_pos = tuple(map(float, sys.argv[5].split(',')))
+    model_hpr = tuple(map(float, sys.argv[6].split(',')))
+    cam_pos = tuple(map(float, sys.argv[7].split(',')))
+
+    spinning_chair(model_path, image_url, frames, filename, model_pos, model_hpr, cam_pos)

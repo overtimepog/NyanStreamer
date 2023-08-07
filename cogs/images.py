@@ -14,9 +14,8 @@ from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 import time
-
+import sys
 from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
-from helpers.spinning_model_maker import spinning_model
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from num2words import num2words
@@ -31,7 +30,9 @@ from petpetgif import petpet
 from PIL import Image
 from urllib.parse import quote
 from jeyyapi import JeyyAPIClient
+import subprocess
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
+    # Define a function that wraps around the spinning_model function
 
 def format_text(text):
     replacements = {
@@ -779,7 +780,7 @@ class Images(commands.Cog, name="images"):
         image = await self.bot.loop.run_in_executor(self.executor, salty_instance.generate, [avatar], "", [], "")
         await ctx.send(file=File(fp=image, filename="salt.png"))
         
-    #chair command
+    # chair command
     @commands.hybrid_command(
         name="chair",
         description="become a chair",
@@ -787,18 +788,27 @@ class Images(commands.Cog, name="images"):
     async def chair(self, ctx: Context, user: discord.User):
         await ctx.defer()
         image_url = user.avatar.url
+        #if the user has a gif avatar, use the first frame
+        if image_url.__contains__(".gif"):
+            image_url = image_url.split("?")[0]
         frames = 35
         filename = f"{user.name}_chair"
         model_path = "assets/models/Chair.egg"
-        await spinning_model(model_path, image_url, frames, filename,
-                    model_pos=(0, 0, 0), 
-                    model_hpr=(0, 96, 25),
-                    cam_pos=(0, -3, 0))
-        #send the chair.gif
-        print(f"Sending {user.name}_chair.gif")
-        await ctx.send(file=discord.File(filename + ".gif"))
-        print(f"Deleting {user.name}_chair.gif")
-        os.remove(filename + ".gif")
+        #check if the model exists
+        if not os.path.exists(model_path):
+            await ctx.send("The chair model is missing. Please try again later.")
+            return
+        
+        process = subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
+        process.communicate()  # Wait for the subprocess to finish
+    
+        gif_path = filename + ".gif"
+        if os.path.exists(gif_path):
+            print(f"Sending {gif_path}")
+            await ctx.send(file=discord.File(gif_path))
+        else:
+            await ctx.send("Failed to generate the chair GIF. Please try again.")
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
