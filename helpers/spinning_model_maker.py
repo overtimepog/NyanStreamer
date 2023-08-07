@@ -157,10 +157,14 @@ class ModelViewer(ShowBase):
             print(f"Frame {self.frame_counter} captured.")
             return task.cont
         else:
+            reference_frame_count = 36
+            reference_duration_per_frame = 50  # 50 milliseconds for 36 frames
+            actual_frame_count = len(frames)
+            desired_duration_per_frame = (reference_frame_count * reference_duration_per_frame) // actual_frame_count
             with open(f'{self.filename}.gif', 'wb') as f:
                 fcntl.flock(f, fcntl.LOCK_EX)  # Acquire an exclusive lock
                 frames = [Image.open(frame_path) for frame_path in self.frames]
-                frames[1].save(f, save_all=True, append_images=frames[2:], duration=75, loop=0, disposal=2)
+                frames[1].save(f, save_all=True, append_images=frames[2:], duration=desired_duration_per_frame, loop=0, disposal=2)
                 fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock
             print(f"GIF created: {self.filename}.gif")
 
