@@ -789,7 +789,7 @@ class Images(commands.Cog, name="images"):
     async def chair(self, ctx: Context, user: discord.User):
         await ctx.defer()
         image_url = user.avatar.url
-        frames = 12
+        frames = 25
         filename = f"{user.name}_chair"
         mac_model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Chair.egg"
         model_path = "/root/NyanStreamer/assets/models/Chair.egg"
