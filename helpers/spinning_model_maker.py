@@ -160,7 +160,7 @@ class ModelViewer(ShowBase):
             with open(f'{self.filename}.gif', 'wb') as f:
                 fcntl.flock(f, fcntl.LOCK_EX)  # Acquire an exclusive lock
                 frames = [Image.open(frame_path) for frame_path in self.frames]
-                frames[1].save(f, save_all=True, append_images=frames[2:], duration=25, loop=0, disposal=2)
+                frames[1].save(f, save_all=True, append_images=frames[2:], duration=100, loop=0, disposal=2)
                 fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock
             print(f"GIF created: {self.filename}.gif")
 
