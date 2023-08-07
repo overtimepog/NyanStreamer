@@ -9,6 +9,7 @@ import subprocess
 import os
 from panda3d.core import loadPrcFileData
 from panda3d.core import getModelPath
+import fcntl
 
 class ModelViewer(ShowBase):
     def __init__(self, model_path, image_url, save_path, frames, filename,
@@ -146,19 +147,23 @@ class ModelViewer(ShowBase):
             img = PNMImage()
             self.buffer.getScreenshot(img)
             img.write(frame_path)
-            
+
             # Remove background from the captured frame
             no_bg_path = os.path.join("assets/frames", f"frame_no_bg_{self.frame_counter}.png")
             self.remove_background(frame_path, no_bg_path)
-            
+
             self.frames.append(no_bg_path)
             self.frame_counter += 1
             print(f"Frame {self.frame_counter} captured.")
             return task.cont
         else:
-            frames = [Image.open(f) for f in self.frames]
-            frames[1].save(f'{self.filename}.gif', save_all=True, append_images=frames[2:], duration=50, loop=0, disposal=2)
+            with open(f'{self.filename}.gif', 'wb') as f:
+                fcntl.flock(f, fcntl.LOCK_EX)  # Acquire an exclusive lock
+                frames = [Image.open(frame_path) for frame_path in self.frames]
+                frames[1].save(f, save_all=True, append_images=frames[2:], duration=50, loop=0, disposal=2)
+                fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock
             print(f"GIF created: {self.filename}.gif")
+
 
 
 def spinning_chair(model_path: str, image_url: str, frames: int, filename: str, 

@@ -31,6 +31,7 @@ from PIL import Image
 from urllib.parse import quote
 from jeyyapi import JeyyAPIClient
 import subprocess
+import fcntl
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
     # Define a function that wraps around the spinning_model function
 
@@ -799,19 +800,26 @@ class Images(commands.Cog, name="images"):
         
         subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
         timeout = 300  # 5 minutes, adjust as needed
-        check_interval = 1  # check every 5 seconds
+        check_interval = 1  # check every second
         elapsed_time = 0
 
         gif_path = filename + ".gif"
 
-        while not os.path.exists(gif_path) and elapsed_time < timeout:
+        while elapsed_time < timeout:
+            if os.path.exists(gif_path):
+                with open(gif_path, 'rb') as f:
+                    try:
+                        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
+                        fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock immediately
+                        break  # If we got here, it means we acquired the lock, so the file is ready
+                    except IOError:
+                        pass  # Couldn't acquire the lock, so the file is still being written
             time.sleep(check_interval)
             elapsed_time += check_interval
 
         if os.path.exists(gif_path):
             print(f"Sending {gif_path}")
             await ctx.send(file=discord.File(gif_path))
-            #remove it and the download.png after
             os.remove(gif_path)
             os.remove("download.png")
         else:
