@@ -88,7 +88,7 @@ class ModelViewer(ShowBase):
 
         # Set up the camera
         self.cam.setPos(*cam_pos)  # Move the camera closer
-        self.cam.lookAt(self.model)
+        #self.cam.lookAt(self.model)
 
         # Set up lighting
         self.setup_lighting()

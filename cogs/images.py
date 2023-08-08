@@ -791,7 +791,7 @@ class Images(commands.Cog, name="images"):
         image_url = user.avatar.url
         frames = 24
         filename = f"{user.name}_chair"
-        mac_model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Chair.egg"
+        #model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Chair.egg"
         model_path = "/root/NyanStreamer/assets/models/Chair.egg"
         #check if the model exists
         if not os.path.exists(model_path):
@@ -830,20 +830,21 @@ class Images(commands.Cog, name="images"):
     @commands.hybrid_command(
         name="can",
         description="Id love a sip of that",
+        aliases=["soda", "soda_can", "energy_drink", "energydrink"]
     )
     async def can(self, ctx: Context, user: discord.User):
         await ctx.defer()
         image_url = user.avatar.url
         frames = 24
         filename = f"{user.name}_can"
-        mac_model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Can.egg"
+        #model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Can.egg"
         model_path = "/root/NyanStreamer/assets/models/Can.egg"
         #check if the model exists
         if not os.path.exists(model_path):
             await ctx.send("The can model is missing. Please try again later.")
             return
         
-        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '-7,0,-3', '0,90,0', '0,6,0'])
+        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,-0.85', '0,100,0', '0,-5,0'])
         timeout = 300  # 5 minutes, adjust as needed
         check_interval = 1  # check every second
         elapsed_time = 0
@@ -868,6 +869,50 @@ class Images(commands.Cog, name="images"):
             os.remove(gif_path)
             os.remove("download.png")
         else:
-            await ctx.send("Failed to generate the chair GIF. Please try again.")
+            await ctx.send("Failed to generate the can GIF. Please try again.")
+            
+    #nuke command
+    @commands.hybrid_command(
+        name="nuke",
+        description="become a nuke",
+    )
+    async def nuke(self, ctx: Context, user: discord.User):
+        await ctx.defer()
+        image_url = user.avatar.url
+        frames = 24
+        filename = f"{user.name}_nuke"
+        #model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Nuke.egg"
+        model_path = "/root/NyanStreamer/assets/models/Nuke.egg"
+        #check if the model exists
+        if not os.path.exists(model_path):
+            await ctx.send("The nuke model is missing. Please try again later.")
+            return
+        
+        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
+        timeout = 300  # 5 minutes, adjust as needed
+        check_interval = 1  # check every second
+        elapsed_time = 0
+
+        gif_path = filename + ".gif"
+
+        while elapsed_time < timeout:
+            if os.path.exists(gif_path):
+                with open(gif_path, 'rb') as f:
+                    try:
+                        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
+                        fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock immediately
+                        break  # If we got here, it means we acquired the lock, so the file is ready
+                    except IOError:
+                        pass  # Couldn't acquire the lock, so the file is still being written
+            time.sleep(check_interval)
+            elapsed_time += check_interval
+
+        if os.path.exists(gif_path):
+            print(f"Sending {gif_path}")
+            await ctx.send(file=discord.File(gif_path))
+            os.remove(gif_path)
+            os.remove("download.png")
+        else:
+            await ctx.send("Failed to generate the nuke GIF. Please try again.")
 async def setup(bot):
     await bot.add_cog(Images(bot))
