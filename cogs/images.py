@@ -874,8 +874,7 @@ class Images(commands.Cog, name="images"):
         name="nuke",
         description="become a nuke",
     )
-    async def nuke(ctx: Context, user: discord.User = None):
-        user = user or ctx.author
+    async def nuke(ctx: Context, user: discord.User):
         avatar_url = str(user.avatar.url)
 
         async with aiohttp.ClientSession() as session:
