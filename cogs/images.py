@@ -821,7 +821,6 @@ class Images(commands.Cog, name="images"):
             print(f"Sending {gif_path}")
             await ctx.send(file=discord.File(gif_path))
             os.remove(gif_path)
-            os.remove("download.png")
         else:
             await ctx.send("Failed to generate the chair GIF. Please try again.")
 
@@ -867,7 +866,6 @@ class Images(commands.Cog, name="images"):
             print(f"Sending {gif_path}")
             await ctx.send(file=discord.File(gif_path))
             os.remove(gif_path)
-            os.remove("download.png")
         else:
             await ctx.send("Failed to generate the can GIF. Please try again.")
             
@@ -876,43 +874,57 @@ class Images(commands.Cog, name="images"):
         name="nuke",
         description="become a nuke",
     )
-    async def nuke(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        image_url = user.avatar.url
-        frames = 24
-        filename = f"{user.name}_nuke"
-        #model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Nuke.egg"
-        model_path = "/root/NyanStreamer/assets/models/Nuke.egg"
-        #check if the model exists
-        if not os.path.exists(model_path):
-            await ctx.send("The nuke model is missing. Please try again later.")
-            return
-        
-        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
-        timeout = 300  # 5 minutes, adjust as needed
-        check_interval = 1  # check every second
-        elapsed_time = 0
+    async def nuke(ctx: Context, user: discord.User = None):
+        user = user or ctx.author
+        avatar_url = str(user.avatar.url)
 
-        gif_path = filename + ".gif"
-
-        while elapsed_time < timeout:
-            if os.path.exists(gif_path):
-                with open(gif_path, 'rb') as f:
-                    try:
-                        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
-                        fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock immediately
-                        break  # If we got here, it means we acquired the lock, so the file is ready
-                    except IOError:
-                        pass  # Couldn't acquire the lock, so the file is still being written
-            time.sleep(check_interval)
-            elapsed_time += check_interval
-
-        if os.path.exists(gif_path):
-            print(f"Sending {gif_path}")
-            await ctx.send(file=discord.File(gif_path))
-            os.remove(gif_path)
-            os.remove("download.png")
-        else:
-            await ctx.send("Failed to generate the nuke GIF. Please try again.")
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/api/3d/nuke?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    gif_data = await response.read()
+                    with open("temp_nuke.gif", "wb") as f:
+                        f.write(gif_data)
+                    await ctx.send(file=discord.File("temp_nuke.gif"))
+                    os.remove("temp_nuke.gif")
+                else:
+                    error_data = await response.json()
+                    await ctx.send(error_data["error"])
+    #async def nuke(self, ctx: Context, user: discord.User):
+    #    await ctx.defer()
+    #    image_url = user.avatar.url
+    #    frames = 24
+    #    filename = f"{user.name}_nuke"
+    #    #model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Nuke.egg"
+    #    model_path = "/root/NyanStreamer/assets/models/Nuke.egg"
+    #    #check if the model exists
+    #    if not os.path.exists(model_path):
+    #        await ctx.send("The nuke model is missing. Please try again later.")
+    #        return
+    #    
+    #    subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
+    #    timeout = 300  # 5 minutes, adjust as needed
+    #    check_interval = 1  # check every second
+    #    elapsed_time = 0
+#
+    #    gif_path = filename + ".gif"
+#
+    #    while elapsed_time < timeout:
+    #        if os.path.exists(gif_path):
+    #            with open(gif_path, 'rb') as f:
+    #                try:
+    #                    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
+    #                    fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock immediately
+    #                    break  # If we got here, it means we acquired the lock, so the file is ready
+    #                except IOError:
+    #                    pass  # Couldn't acquire the lock, so the file is still being written
+    #        time.sleep(check_interval)
+    #        elapsed_time += check_interval
+#
+    #    if os.path.exists(gif_path):
+    #        print(f"Sending {gif_path}")
+    #        await ctx.send(file=discord.File(gif_path))
+    #        os.remove(gif_path)
+    #    else:
+    #        await ctx.send("Failed to generate the nuke GIF. Please try again.")
 async def setup(bot):
     await bot.add_cog(Images(bot))

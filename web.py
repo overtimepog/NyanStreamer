@@ -1,19 +1,21 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request, BackgroundTasks, Depends
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 import requests
 import discord
-from helpers import db_manager
-from itsdangerous import URLSafeTimedSerializer
-import uvicorn
 import os
 import sys
 import json
-from discord.ext.commands import Bot, Context
-from discord import Intents
-from discord.ext import commands, tasks
+import time
+import subprocess
+import fcntl
 from typing import Any, Dict, List
+from helpers import db_manager
+from itsdangerous import URLSafeTimedSerializer
+import uvicorn
+from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi.responses import FileResponse, JSONResponse
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key='your secret key')  # replace with your secret key
@@ -107,37 +109,52 @@ async def callback(request: Request):
             "prefix": "None"
         })
 
-@app.get("/api/data/items", response_model=Dict[str, Any])
-async def get_all_items():
-    items = await db_manager.get_items()
-    return {"items": items}
+@app.get("/api/3d/nuke")
+async def nuke(avatar_url: str):
+    frames = 24
+    timestamp = int(time.time())
+    filename = f"nuke_image_{timestamp}"  # Unique filename based on timestamp
+    model_path = "/root/NyanStreamer/assets/models/Nuke.egg"
+    
+    if not os.path.exists(model_path):
+        return JSONResponse(content={"error": "The nuke model is missing. Please try again later."}, status_code=500)
+    
+    # Run the image generation synchronously
+    run_nuke_subprocess(model_path, avatar_url, frames, filename)
+    
+    gif_path = filename + ".gif"
+    if os.path.exists(gif_path):
+        response = FileResponse(gif_path, media_type="image/gif")
+        os.remove(gif_path)  # Cleanup: Delete the GIF after serving
+        return response
+    else:
+        return JSONResponse(content={"error": "Failed to generate the nuke GIF. Please try again."}, status_code=500)
 
-@app.get("/api/data/jobs", response_model=Dict[str, Any])
-async def get_all_jobs():
-    jobs = await db_manager.get_jobs()
-    return {"jobs": jobs}
+def run_nuke_subprocess(model_path, avatar_url, frames, filename):
+    try:
+        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
+        timeout = 300  
+        check_interval = 1  
+        elapsed_time = 0
 
-@app.get("/api/data/chests", response_model=Dict[str, Any])
-async def get_all_chests():
-    chests = await db_manager.get_chests()
-    return {"chests": chests}
+        gif_path = filename + ".gif"
 
-@app.get("/api/data/searches", response_model=Dict[str, Any])
-async def get_search():    
-    with open('assets/search.json') as f:
-        data = json.load(f)
-        locations = data['searches']
-        #get the searches from assets\search.json
-    return {"searches": locations}
+        while elapsed_time < timeout:
+            if os.path.exists(gif_path):
+                with open(gif_path, 'rb') as f:
+                    try:
+                        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                        fcntl.flock(f, fcntl.LOCK_UN)
+                        break
+                    except IOError:
+                        pass
+            time.sleep(check_interval)
+            elapsed_time += check_interval
 
-@app.get("/api/data/begs", response_model=Dict[str, Any])
-async def get_beg():        
-    with open('assets/beg.json') as f:
-        data = json.load(f)
-        begs = data['begs']
-        #get the begs from assets\beg.json
-    return {"begs": begs}
-
+        if not os.path.exists(gif_path):
+            raise Exception("Failed to generate GIF")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)

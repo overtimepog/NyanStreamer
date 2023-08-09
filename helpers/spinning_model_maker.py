@@ -10,6 +10,8 @@ import os
 from panda3d.core import loadPrcFileData
 from panda3d.core import getModelPath
 import fcntl
+import hashlib
+import time
 
 class ModelViewer(ShowBase):
     def __init__(self, model_path, image_url, save_path, frames, filename,
@@ -175,9 +177,19 @@ def spinning_chair(model_path: str, image_url: str, frames: int, filename: str,
                    model_hpr: tuple = (0, 0, 0), 
                    cam_pos: tuple = (0, -3, 0)):
     
-    save_path = "download.png"
+    # Generate a hash of the image_url
+    hash_object = hashlib.md5(image_url.encode())
+    hex_dig = hash_object.hexdigest()
+
+    # Combine the hash with the current timestamp to generate a unique filename
+    timestamp = int(time.time())
+    save_path = f"download_{hex_dig}_{timestamp}.png"
     app = ModelViewer(model_path, image_url, save_path, frames, filename, model_pos, model_hpr, cam_pos)
     app.run()
+    
+    if os.path.exists(save_path):
+        os.remove(save_path)
+
 
 if __name__ == "__main__":
     model_path = sys.argv[1]

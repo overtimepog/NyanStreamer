@@ -3,6 +3,18 @@ CREATE TABLE IF NOT EXISTS `blacklist` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS `api_keys` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,  -- Assuming you have a users table and want to link the API key to a specific user
+    `api_key` VARCHAR(255) NOT NULL UNIQUE,
+    `usage_count` INT DEFAULT 0,
+    `usage_limit` INT DEFAULT 1000,  -- This can be adjusted based on your requirements
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `last_used` TIMESTAMP NULL,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)  -- Assuming you have a users table
+);
+
+
 CREATE TABLE IF NOT EXISTS `streamer` (
   `streamer_prefix` varchar NOT NULL,
   `streamer_channel` varchar NOT NULL,
