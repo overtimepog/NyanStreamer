@@ -885,8 +885,10 @@ class Images(commands.Cog, name="images"):
                     await ctx.send(file=discord.File("temp_nuke.gif"))
                     os.remove("temp_nuke.gif")
                 else:
-                    error_data = await response.json()
-                    await ctx.send(error_data["error"])
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}")
+
     #async def nuke(self, ctx: Context, user: discord.User):
     #    await ctx.defer()
     #    image_url = user.avatar.url
