@@ -874,9 +874,8 @@ class Images(commands.Cog, name="images"):
         name="nuke",
         description="become a nuke",
     )
-    async def nuke(ctx: Context, user: discord.User):
+    async def nuke(self, ctx: Context, user: discord.User):
         avatar_url = str(user.avatar.url)
-
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://nyanstreamer.lol/api/3d/nuke?avatar_url={avatar_url}") as response:
                 if response.status == 200:
