@@ -887,7 +887,7 @@ class Images(commands.Cog, name="images"):
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}")
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     #async def nuke(self, ctx: Context, user: discord.User):
     #    await ctx.defer()
