@@ -23,21 +23,21 @@ app.add_middleware(SessionMiddleware, secret_key='your secret key')  # replace w
 templates = Jinja2Templates(directory="templates")
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def index(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
-@app.get("/thanks")
+@app.get("/thanks", include_in_schema=False)
 async def thanks(request: Request):
     return templates.TemplateResponse("thanks.html", {"request": request})
 
-@app.get("/webhook")
+@app.get("/webhook", include_in_schema=False)
 async def webhook(request: Request):
     discord_user_id = request.query_params.get("discord_id")
     request.session["discord_user_id"] = discord_user_id
     return RedirectResponse(url="https://id.twitch.tv/oauth2/authorize?client_id=xulcmh65kzbfefzuvfuulnh7hzrfhj&redirect_uri=https://nyanstreamer.lol/callback&response_type=code&scope=user:read:email%20chat:read%20user:read:broadcast")
 
-@app.get("/callback")
+@app.get("/callback", include_in_schema=False)
 async def callback(request: Request):
     if not os.path.isfile("config.json"):
         sys.exit("'config.json' not found! Please add it and try again.")
