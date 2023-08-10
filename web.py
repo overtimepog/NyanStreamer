@@ -143,12 +143,19 @@ async def nuke(avatar_url: str):
 def run_nuke_subprocess(model_path, avatar_url, frames, filename):
     try:
         logging.info(f"Starting subprocess to generate GIF for avatar: {avatar_url}")
-        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
+        
+        # Use subprocess.run to wait for the process to complete
+        result = subprocess.run([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
+        
+        # Check if the subprocess completed successfully
+        if result.returncode != 0:
+            logging.error(f"Subprocess failed with return code: {result.returncode}")
+            raise Exception("Failed to generate GIF due to subprocess error")
+
+        gif_path = filename + ".gif"
         timeout = 300  
         check_interval = 1  
         elapsed_time = 0
-
-        gif_path = filename + ".gif"
 
         while elapsed_time < timeout:
             if os.path.exists(gif_path):
