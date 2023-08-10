@@ -793,10 +793,7 @@ class Images(commands.Cog, name="images"):
             async with session.get(f"http://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     gif_data = await response.read()
-                    with open("temp_chair.gif", "wb") as f:
-                        f.write(gif_data)
-                    await ctx.send(file=discord.File("temp_chair.gif"))
-                    os.remove("temp_chair.gif")
+                    await ctx.send(file=File(fp=gif_data, filename=f"{user.name}_chair.gif"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
@@ -897,10 +894,7 @@ class Images(commands.Cog, name="images"):
             async with session.get(f"http://nyanstreamer.lol/3d/nuke?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     gif_data = await response.read()
-                    with open("temp_nuke.gif", "wb") as f:
-                        f.write(gif_data)
-                    await ctx.send(file=discord.File("temp_nuke.gif"))
-                    os.remove("temp_nuke.gif")
+                    await ctx.send(file=File(fp=gif_data, filename=f"{user.name}_nuke.gif"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
