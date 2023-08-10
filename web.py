@@ -117,63 +117,46 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 @app.get("/api/3d/nuke")
 async def nuke(avatar_url: str):
     logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
-    
-    frames = 24
+
     timestamp = int(time.time())
-    filename = f"nuke_image_{timestamp}"  # Unique filename based on timestamp
-    model_path = "/root/NyanStreamer/assets/models/Nuke.egg"
-    
-    if not os.path.exists(model_path):
-        logging.error("The nuke model is missing.")
-        return JSONResponse(content={"error": "The nuke model is missing. Please try again later."}, status_code=500)
-    
-    # Run the image generation synchronously
+    filename = f"nuke_image_{timestamp}.gif"  # Unique filename based on timestamp
+
+    # Start the image generation subprocess
     try:
-        run_nuke_subprocess(model_path, avatar_url, frames, filename)
-        gif_path = filename + ".gif"
-        logging.info(f"Successfully generated GIF: {gif_path}")
-        response = FileResponse(gif_path, media_type="image/gif")
-        os.remove(gif_path)  # Cleanup: Delete the GIF after serving
+        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', ...])  # other arguments
+
+        # Wait for GIF creation and lock release
+        wait_for_gif_and_lock_release(filename)
+
+        # Serve the GIF to the user
+        response = FileResponse(filename, media_type="image/gif")
+        os.remove(filename)  # Cleanup: Delete the GIF after serving
         return response
     except Exception as e:
         logging.error(f"Failed to generate GIF: {str(e)}")
         return JSONResponse(content={"error": "Failed to generate the nuke GIF. Please try again."}, status_code=500)
 
-def run_nuke_subprocess(model_path, avatar_url, frames, filename):
-    try:
-        logging.info(f"Starting subprocess to generate GIF for avatar: {avatar_url}")
-        
-        # Use subprocess.run to wait for the process to complete
-        result = subprocess.run([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
-        
-        # Check if the subprocess completed successfully
-        if result.returncode != 0:
-            logging.error(f"Subprocess failed with return code: {result.returncode}")
-            raise Exception("Failed to generate GIF due to subprocess error")
+def wait_for_gif_and_lock_release(filename):
+    timeout = 300  
+    check_interval = 1  
+    elapsed_time = 0
 
-        gif_path = filename + ".gif"
-        timeout = 300  
-        check_interval = 1  
-        elapsed_time = 0
+    while elapsed_time < timeout:
+        if os.path.exists(filename):
+            try:
+                with open(filename, 'rb') as f:
+                    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
+                    fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock
+                    break  # Exit the loop if lock acquisition is successful
+            except IOError:
+                pass  # Continue waiting if lock acquisition fails
+        time.sleep(check_interval)
+        elapsed_time += check_interval
 
-        while elapsed_time < timeout:
-            if os.path.exists(gif_path):
-                with open(gif_path, 'rb') as f:
-                    try:
-                        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                        fcntl.flock(f, fcntl.LOCK_UN)
-                        break
-                    except IOError:
-                        pass
-            time.sleep(check_interval)
-            elapsed_time += check_interval
+    if not os.path.exists(filename):
+        logging.error(f"Timeout reached. Failed to generate GIF: {filename}")
+        raise Exception("Failed to generate GIF")
 
-        if not os.path.exists(gif_path):
-            logging.error(f"Timeout reached. Failed to generate GIF: {gif_path}")
-            raise Exception("Failed to generate GIF")
-    except Exception as e:
-        logging.error(f"Error during GIF generation: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
