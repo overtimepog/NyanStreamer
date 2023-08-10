@@ -20,6 +20,7 @@ class ModelViewer(ShowBase):
 
         #getModelPath().appendDirectory("/Users/overtime/Documents/GitHub/NyanStreamer/assets/models")
         loadPrcFileData("", "window-type offscreen")
+        loadPrcFileData("", "audio-library-name null")
         ShowBase.__init__(self)
         base.disableMouse()  # Disable mouse-based camera control
 

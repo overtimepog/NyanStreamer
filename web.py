@@ -128,16 +128,15 @@ async def nuke(avatar_url: str):
         return JSONResponse(content={"error": "The nuke model is missing. Please try again later."}, status_code=500)
     
     # Run the image generation synchronously
-    run_nuke_subprocess(model_path, avatar_url, frames, filename)
-    
-    gif_path = filename + ".gif"
-    if os.path.exists(gif_path):
+    try:
+        run_nuke_subprocess(model_path, avatar_url, frames, filename)
+        gif_path = filename + ".gif"
         logging.info(f"Successfully generated GIF: {gif_path}")
         response = FileResponse(gif_path, media_type="image/gif")
         os.remove(gif_path)  # Cleanup: Delete the GIF after serving
         return response
-    else:
-        logging.error(f"Failed to generate GIF: {gif_path}")
+    except Exception as e:
+        logging.error(f"Failed to generate GIF: {str(e)}")
         return JSONResponse(content={"error": "Failed to generate the nuke GIF. Please try again."}, status_code=500)
 
 def run_nuke_subprocess(model_path, avatar_url, frames, filename):
