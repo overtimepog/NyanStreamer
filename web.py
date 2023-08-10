@@ -186,7 +186,7 @@ def run_nuke_subprocess(model_path, avatar_url, frames, filename):
 
 
 @app.get("/3d/chair", tags=["3D"])
-async def nuke(avatar_url: str, background_tasks: BackgroundTasks):
+async def chair(avatar_url: str, background_tasks: BackgroundTasks):
     logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
     
     frames = 24
