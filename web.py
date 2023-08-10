@@ -221,7 +221,7 @@ def run_chair_subprocess(model_path, avatar_url, frames, filename):
     logging.info(f"Starting subprocess to generate GIF for avatar: {avatar_url}")
     
     # Use subprocess.Popen to start the process
-    subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
+    subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)

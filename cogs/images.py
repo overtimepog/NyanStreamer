@@ -790,7 +790,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/api/3d/chair?avatar_url={avatar_url}") as response:
+            async with session.get(f"http://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     with open("temp_chair.gif", "wb") as f:
