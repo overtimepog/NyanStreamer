@@ -17,7 +17,13 @@ import uvicorn
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 
-app = FastAPI()
+from fastapi import APIRouter
+router = APIRouter()
+app = FastAPI(
+    title="Nyan Streamer!",
+    description="The Best Meme Gen API",
+    version="0.0.1",
+)
 app.add_middleware(SessionMiddleware, secret_key='your secret key')  # replace with your secret key
 
 templates = Jinja2Templates(directory="templates")
@@ -114,7 +120,7 @@ import logging
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-@app.get("/api/3d/nuke")
+@router.get("/3d/nuke", tags=["3D"])
 async def nuke(avatar_url: str, background_tasks: BackgroundTasks):
     logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
     
