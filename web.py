@@ -120,6 +120,32 @@ import logging
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+def wait_for_unlock(filename):
+    timeout = 300  
+    check_interval = 1  
+    elapsed_time = 0
+
+    while elapsed_time < timeout:
+        try:
+            with open(filename, 'rb') as f:
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
+                fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock
+                return
+        except IOError:
+            pass
+        
+        time.sleep(check_interval)
+        elapsed_time += check_interval
+
+    logging.error(f"Timeout reached. Failed to generate GIF: {filename}")
+    raise Exception("Failed to generate GIF due to timeout")
+
+def delete_file(filename: str):
+    """Delete a file after a delay to ensure it's been sent to the user."""
+    time.sleep(10)  # Wait for 10 seconds to ensure the file has been sent
+    if os.path.exists(filename):
+        os.remove(filename)
+
 @app.get("/3d/nuke", tags=["3D"])
 async def nuke(avatar_url: str, background_tasks: BackgroundTasks):
     logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
@@ -158,31 +184,44 @@ def run_nuke_subprocess(model_path, avatar_url, frames, filename):
     # Use subprocess.Popen to start the process
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
 
-def wait_for_unlock(filename):
-    timeout = 300  
-    check_interval = 1  
-    elapsed_time = 0
 
-    while elapsed_time < timeout:
-        try:
-            with open(filename, 'rb') as f:
-                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
-                fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock
-                return
-        except IOError:
-            pass
+@app.get("/3d/chair", tags=["3D"])
+async def nuke(avatar_url: str, background_tasks: BackgroundTasks):
+    logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
+    
+    frames = 24
+    timestamp = int(time.time())
+    filename = f"chair_image_{timestamp}"  # Unique filename based on timestamp
+    model_path = "/root/NyanStreamer/assets/models/Chair.egg"
+    
+    if not os.path.exists(model_path):
+        logging.error("The chair model is missing.")
+        return JSONResponse(content={"error": "The chair model is missing. Please try again later."}, status_code=500)
+    
+    # Run the image generation synchronously
+    try:
+        run_chair_subprocess(model_path, avatar_url, frames, filename)
         
-        time.sleep(check_interval)
-        elapsed_time += check_interval
+        # Wait for the GIF to be unlocked (i.e., fully generated)
+        gif_path = filename + ".gif"
+        wait_for_unlock(gif_path)
+        
+        logging.info(f"Successfully generated GIF: {gif_path}")
+        response = FileResponse(gif_path, media_type="image/gif")
+        
+        # Schedule the cleanup task to run in the background after sending the response
+        background_tasks.add_task(delete_file, gif_path)
+        
+        return response
+    except Exception as e:
+        logging.error(f"Failed to generate GIF: {str(e)}")
+        return JSONResponse(content={"error": "Failed to generate the nuke GIF. Please try again."}, status_code=500)
 
-    logging.error(f"Timeout reached. Failed to generate GIF: {filename}")
-    raise Exception("Failed to generate GIF due to timeout")
-
-def delete_file(filename: str):
-    """Delete a file after a delay to ensure it's been sent to the user."""
-    time.sleep(10)  # Wait for 10 seconds to ensure the file has been sent
-    if os.path.exists(filename):
-        os.remove(filename)
+def run_chair_subprocess(model_path, avatar_url, frames, filename):
+    logging.info(f"Starting subprocess to generate GIF for avatar: {avatar_url}")
+    
+    # Use subprocess.Popen to start the process
+    subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
