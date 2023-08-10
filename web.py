@@ -223,5 +223,44 @@ def run_chair_subprocess(model_path, avatar_url, frames, filename):
     # Use subprocess.Popen to start the process
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
 
+@app.get("/3d/can", tags=["3D"])
+async def chair(avatar_url: str, background_tasks: BackgroundTasks):
+    logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
+    
+    frames = 24
+    timestamp = int(time.time())
+    filename = f"can_image_{timestamp}"  # Unique filename based on timestamp
+    model_path = "/root/NyanStreamer/assets/models/Can.egg"
+    
+    if not os.path.exists(model_path):
+        logging.error("The can model is missing.")
+        return JSONResponse(content={"error": "The chair model is missing. Please try again later."}, status_code=500)
+    
+    # Run the image generation synchronously
+    try:
+        run_can_subprocess(model_path, avatar_url, frames, filename)
+        
+        # Wait for the GIF to be unlocked (i.e., fully generated)
+        gif_path = filename + ".gif"
+        wait_for_unlock(gif_path)
+        
+        logging.info(f"Successfully generated GIF: {gif_path}")
+        response = FileResponse(gif_path, media_type="image/gif")
+        
+        # Schedule the cleanup task to run in the background after sending the response
+        background_tasks.add_task(delete_file, gif_path)
+        
+        return response
+    except Exception as e:
+        logging.error(f"Failed to generate GIF: {str(e)}")
+        return JSONResponse(content={"error": "Failed to generate the nuke GIF. Please try again."}, status_code=500)
+
+def run_can_subprocess(model_path, avatar_url, frames, filename):
+    logging.info(f"Starting subprocess to generate GIF for avatar: {avatar_url}")
+    
+    # Use subprocess.Popen to start the process
+    subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,-0.85', '0,100,0', '0,-5,0'])
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)

@@ -845,42 +845,54 @@ class Images(commands.Cog, name="images"):
         aliases=["soda", "soda_can", "energy_drink", "energydrink"]
     )
     async def can(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        image_url = user.avatar.url
-        frames = 24
-        filename = f"{user.name}_can"
-        #model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Can.egg"
-        model_path = "/root/NyanStreamer/assets/models/Can.egg"
-        #check if the model exists
-        if not os.path.exists(model_path):
-            await ctx.send("The can model is missing. Please try again later.")
-            return
-        
-        subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,-0.85', '0,100,0', '0,-5,0'])
-        timeout = 300  # 5 minutes, adjust as needed
-        check_interval = 1  # check every second
-        elapsed_time = 0
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/3d/can?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    gif_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_can.gif"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
-        gif_path = filename + ".gif"
-
-        while elapsed_time < timeout:
-            if os.path.exists(gif_path):
-                with open(gif_path, 'rb') as f:
-                    try:
-                        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
-                        fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock immediately
-                        break  # If we got here, it means we acquired the lock, so the file is ready
-                    except IOError:
-                        pass  # Couldn't acquire the lock, so the file is still being written
-            time.sleep(check_interval)
-            elapsed_time += check_interval
-
-        if os.path.exists(gif_path):
-            print(f"Sending {gif_path}")
-            await ctx.send(file=discord.File(gif_path))
-            os.remove(gif_path)
-        else:
-            await ctx.send("Failed to generate the can GIF. Please try again.")
+        #await ctx.defer()
+        #image_url = user.avatar.url
+        #frames = 24
+        #filename = f"{user.name}_can"
+        ##model_path = "/Users/overtime/Documents/GitHub/NyanStreamer/assets/models/Can.egg"
+        #model_path = "/root/NyanStreamer/assets/models/Can.egg"
+        ##check if the model exists
+        #if not os.path.exists(model_path):
+        #    await ctx.send("The can model is missing. Please try again later.")
+        #    return
+        #
+        #subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, image_url, str(frames), filename, '0,0,-0.85', '0,100,0', '0,-5,0'])
+        #timeout = 300  # 5 minutes, adjust as needed
+        #check_interval = 1  # check every second
+        #elapsed_time = 0
+#
+        #gif_path = filename + ".gif"
+#
+        #while elapsed_time < timeout:
+        #    if os.path.exists(gif_path):
+        #        with open(gif_path, 'rb') as f:
+        #            try:
+        #                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Try to acquire an exclusive lock
+        #                fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock immediately
+        #                break  # If we got here, it means we acquired the lock, so the file is ready
+        #            except IOError:
+        #                pass  # Couldn't acquire the lock, so the file is still being written
+        #    time.sleep(check_interval)
+        #    elapsed_time += check_interval
+#
+        #if os.path.exists(gif_path):
+        #    print(f"Sending {gif_path}")
+        #    await ctx.send(file=discord.File(gif_path))
+        #    os.remove(gif_path)
+        #else:
+        #    await ctx.send("Failed to generate the can GIF. Please try again.")
             
     #nuke command
     @commands.hybrid_command(
