@@ -11,9 +11,8 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
     `usage_limit` INT DEFAULT 1000,  -- This can be adjusted based on your requirements
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `last_used` TIMESTAMP NULL,
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)  -- Assuming you have a users table
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)  -- Assuming you have a users table
 );
-
 
 CREATE TABLE IF NOT EXISTS `streamer` (
   `streamer_prefix` varchar NOT NULL,

@@ -34,6 +34,8 @@ import subprocess
 import fcntl
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
     # Define a function that wraps around the spinning_model function
+Nyan_Api_Key = 'Nyan_Api_Key'
+
 
 def format_text(text):
     replacements = {
@@ -789,8 +791,11 @@ class Images(commands.Cog, name="images"):
     async def chair(self, ctx: Context, user: discord.User):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
+        headers = {
+            "Authorization": f"Bearer {Nyan_Api_Key}"
+        }
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}") as response:
+            async with session.get(f"http://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}", headers=headers) as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_chair.gif"))
@@ -847,8 +852,11 @@ class Images(commands.Cog, name="images"):
     async def can(self, ctx: Context, user: discord.User):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
+        headers = {
+            "Authorization": f"Bearer {Nyan_Api_Key}"
+        }
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/3d/can?avatar_url={avatar_url}") as response:
+            async with session.get(f"http://nyanstreamer.lol/3d/can?avatar_url={avatar_url}", headers=headers) as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_can.gif"))
@@ -902,8 +910,11 @@ class Images(commands.Cog, name="images"):
     async def nuke(self, ctx: Context, user: discord.User):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
+        headers = {
+            "Authorization": f"Bearer {Nyan_Api_Key}"
+        }
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/3d/nuke?avatar_url={avatar_url}") as response:
+            async with session.get(f"http://nyanstreamer.lol/3d/nuke?avatar_url={avatar_url}", headers=headers) as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_nuke.gif"))

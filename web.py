@@ -16,14 +16,37 @@ from itsdangerous import URLSafeTimedSerializer
 import uvicorn
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.security import HTTPBearer, Security
+
+from jeyyapi import JeyyAPIClient
+client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
+
+from assets.endpoints import abandon, aborted, affect, airpods, america, armor, balloon, bed, bongocat, boo, brain, brazzers, byemom, cancer, changemymind, cheating, citation, communism, confusedcat, corporate, crab, cry, dab, dank, deepfry, delete, disability, doglemon, door, dream, egg, emergencymeeting, excuseme, expanddong, expandingwwe, facts, failure, fakenews, farmer, fedora, floor, fuck, garfield, gay, godwhy, goggles, hitler, humansgood, inator, invert, ipad, jail, justpretending, keepurdistance, kimborder, knowyourlocation, kowalski, laid, letmein, lick, madethis, magik, master, meme, note, nothing, obama, ohno, piccolo, plan, presentation, profile, quote, radialblur, rip, roblox, salty, satan, savehumanity, screams, shit, sickfilth, slap, slapsroof, sneakyfox, spank, stroke, surprised, sword, theoffice, thesearch, trash, trigger, tweet, ugly, unpopular, violence, violentsparks, vr, walking, wanted, warp, whodidthis, whothisis, yomomma, youtube
 
 from fastapi import APIRouter
-router = APIRouter()
 app = FastAPI(
     title="Nyan Streamer!",
     description="The Best Meme Gen API",
     version="0.0.1",
 )
+
+
+# This is a placeholder for your actual API key validation logic
+VALID_API_KEYS = ["your_valid_api_key"]
+
+def get_current_api_key(request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        raise HTTPException(status_code=403, detail="API key required")
+    
+    # Splitting the header value to get the actual API key
+    # Format: "Bearer YOUR_API_KEY"
+    api_key = auth_header.split(" ")[1]
+    
+    if api_key not in VALID_API_KEYS:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+    
+    return api_key
 app.add_middleware(SessionMiddleware, secret_key='your secret key')  # replace with your secret key
 
 templates = Jinja2Templates(directory="templates")
@@ -224,7 +247,7 @@ def run_chair_subprocess(model_path, avatar_url, frames, filename):
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
 
 @app.get("/3d/can", tags=["3D"])
-async def chair(avatar_url: str, background_tasks: BackgroundTasks):
+async def chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
     
     frames = 24
