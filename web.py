@@ -109,14 +109,22 @@ async def callback(request: Request):
             "prefix": "None"
         })
 
+import logging
+
+# Set up logging configuration
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 @app.get("/api/3d/nuke")
 async def nuke(avatar_url: str):
+    logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
+    
     frames = 24
     timestamp = int(time.time())
     filename = f"nuke_image_{timestamp}"  # Unique filename based on timestamp
     model_path = "/root/NyanStreamer/assets/models/Nuke.egg"
     
     if not os.path.exists(model_path):
+        logging.error("The nuke model is missing.")
         return JSONResponse(content={"error": "The nuke model is missing. Please try again later."}, status_code=500)
     
     # Run the image generation synchronously
@@ -124,14 +132,17 @@ async def nuke(avatar_url: str):
     
     gif_path = filename + ".gif"
     if os.path.exists(gif_path):
+        logging.info(f"Successfully generated GIF: {gif_path}")
         response = FileResponse(gif_path, media_type="image/gif")
         os.remove(gif_path)  # Cleanup: Delete the GIF after serving
         return response
     else:
+        logging.error(f"Failed to generate GIF: {gif_path}")
         return JSONResponse(content={"error": "Failed to generate the nuke GIF. Please try again."}, status_code=500)
 
 def run_nuke_subprocess(model_path, avatar_url, frames, filename):
     try:
+        logging.info(f"Starting subprocess to generate GIF for avatar: {avatar_url}")
         subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
         timeout = 300  
         check_interval = 1  
@@ -152,8 +163,10 @@ def run_nuke_subprocess(model_path, avatar_url, frames, filename):
             elapsed_time += check_interval
 
         if not os.path.exists(gif_path):
+            logging.error(f"Timeout reached. Failed to generate GIF: {gif_path}")
             raise Exception("Failed to generate GIF")
     except Exception as e:
+        logging.error(f"Error during GIF generation: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
