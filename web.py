@@ -120,7 +120,7 @@ import logging
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-@router.get("/3d/nuke", tags=["3D"])
+@app.get("/3d/nuke", tags=["3D"])
 async def nuke(avatar_url: str, background_tasks: BackgroundTasks):
     logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
     
