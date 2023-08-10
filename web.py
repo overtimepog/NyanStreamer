@@ -115,7 +115,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 @app.get("/api/3d/nuke")
-async def nuke(avatar_url: str):
+async def nuke(avatar_url: str, background_tasks: BackgroundTasks):
     logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
     
     frames = 24
@@ -137,7 +137,10 @@ async def nuke(avatar_url: str):
         
         logging.info(f"Successfully generated GIF: {gif_path}")
         response = FileResponse(gif_path, media_type="image/gif")
-        os.remove(gif_path)  # Cleanup: Delete the GIF after serving
+        
+        # Schedule the cleanup task to run in the background after sending the response
+        background_tasks.add_task(delete_file, gif_path)
+        
         return response
     except Exception as e:
         logging.error(f"Failed to generate GIF: {str(e)}")
@@ -168,6 +171,12 @@ def wait_for_unlock(filename):
 
     logging.error(f"Timeout reached. Failed to generate GIF: {filename}")
     raise Exception("Failed to generate GIF due to timeout")
+
+def delete_file(filename: str):
+    """Delete a file after a delay to ensure it's been sent to the user."""
+    time.sleep(10)  # Wait for 10 seconds to ensure the file has been sent
+    if os.path.exists(filename):
+        os.remove(filename)
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
