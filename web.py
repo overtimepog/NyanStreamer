@@ -304,5 +304,14 @@ def run_can_subprocess(model_path, avatar_url, frames, filename):
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,-0.85', '0,100,0', '0,-5,0'])
 
 
+@app.get("/image/salty", tags=["image"])
+async def saltygen(self, ctx, user: discord.Member):
+    await ctx.defer()
+    avatar = user.avatar.url
+    salty_instance = salty.Salty()
+    image = await self.bot.loop.run_in_executor(self.executor, salty_instance.generate, [avatar], "", [], "")
+    #return the image data
+    return image
+
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)

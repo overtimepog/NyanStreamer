@@ -776,12 +776,18 @@ class Images(commands.Cog, name="images"):
         name="salty",
         description="salty fr",
     )
-    async def stonks(self, ctx: Context, user: discord.User):
+    async def salty(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        avatar = user.avatar.url
-        salty_instance = salty.Salty()
-        image = await self.bot.loop.run_in_executor(self.executor, salty_instance.generate, [avatar], "", [], "")
-        await ctx.send(file=File(fp=image, filename="salt.png"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/salty?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image = await response.read()
+                    await ctx.send(file=File(fp=image, filename="salt.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
         
     # chair command
     @commands.hybrid_command(
