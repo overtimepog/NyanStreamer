@@ -34,7 +34,7 @@ import subprocess
 import fcntl
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
     # Define a function that wraps around the spinning_model function
-Nyan_Api_Key = 'Nyan_Api_Key'
+Nyan_Api_Key = '3zLKu_KwvMI0dHO8DidAYqhx5Wbj6exFiI-Vu1Gd79g'
 
 
 def format_text(text):
