@@ -530,12 +530,17 @@ class Images(commands.Cog, name="images"):
         description="tweet something",
     )
     async def tweet(self, ctx: Context, user: discord.User, text: str):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        tweet_instance = tweet.Tweet()
-        image = await self.bot.loop.run_in_executor(self.executor, tweet_instance.generate, [user.avatar.url], text, [user.name], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="tweet.png"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/tweet?avatar_url={avatar_url}&text={quote(text)}&username={user.name}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="tweet.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     @commands.hybrid_command(
         name="wanted",
