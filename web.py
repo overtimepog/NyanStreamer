@@ -320,5 +320,19 @@ async def saltygen(avatar_url: str):
     return StreamingResponse(image_data, media_type="image/png")
 
 
+@app.get("/image/trigger", tags=["image"])
+async def triggeredgen(avatar_url: str):
+    triggered_instance = trigger.Trigger()
+    image_data = triggered_instance.generate([avatar_url], "", [], "")
+    
+    # Ensure the image data is in bytes format
+    if not isinstance(image_data, bytes):
+        # Handle the error or convert to bytes
+        pass
+
+    # Return the image data with the correct content type
+    return StreamingResponse(image_data, media_type="image/png")
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)

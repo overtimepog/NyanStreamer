@@ -597,11 +597,17 @@ class Images(commands.Cog, name="images"):
         description="triggered",
     )
     async def trigger(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        trigger_instance = trigger.Trigger()
-        image = await self.bot.loop.run_in_executor(self.executor, trigger_instance.generate, [user.avatar.url], "", [], "")
-        # send the image
-        await ctx.send(file=File(fp=image, filename="trigger.gif"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/trigger?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="triggered.gif"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     #tweet
     @commands.hybrid_command(
