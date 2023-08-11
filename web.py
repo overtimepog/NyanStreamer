@@ -174,7 +174,7 @@ def delete_file(filename: str):
     if os.path.exists(filename):
         os.remove(filename)
 
-@app.get("/3d/nuke", tags=["3D"])
+@app.get("/3d/nuke", tags=["3D (Requires API Key)"])
 async def nuke(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
     
@@ -213,7 +213,7 @@ def run_nuke_subprocess(model_path, avatar_url, frames, filename):
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,0,45', '0,-4,0'])
 
 
-@app.get("/3d/chair", tags=["3D"])
+@app.get("/3d/chair", tags=["3D (Requires API Key)"])
 async def chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
     
@@ -251,7 +251,7 @@ def run_chair_subprocess(model_path, avatar_url, frames, filename):
     # Use subprocess.Popen to start the process
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
 
-@app.get("/3d/can", tags=["3D"])
+@app.get("/3d/can", tags=["3D (Requires API Key)"])
 async def chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
     
