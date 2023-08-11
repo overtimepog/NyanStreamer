@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
     `user_id` varchar(20) NOT NULL,  -- Assuming you have a users table and want to link the API key to a specific user
     `api_key` VARCHAR(255) NOT NULL UNIQUE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `last_used` TIMESTAMP NULL,
+    `last_used` TIMESTAMP NULL
 );
 
 CREATE TABLE IF NOT EXISTS `streamer` (
