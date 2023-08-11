@@ -148,6 +148,17 @@ import logging
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+import glob
+
+def delete_all_download_files():
+    """Delete all files in the current directory that start with 'download_'."""
+    for file in glob.glob("download_*"):
+        try:
+            os.remove(file)
+            logging.info(f"Deleted file: {file}")
+        except Exception as e:
+            logging.error(f"Error deleting file {file}: {e}")
+
 def wait_for_unlock(filename):
     timeout = 300  
     check_interval = 1  
@@ -200,6 +211,7 @@ async def nuke(avatar_url: str, background_tasks: BackgroundTasks, api_key: str 
         
         # Schedule the cleanup task to run in the background after sending the response
         background_tasks.add_task(delete_file, gif_path)
+        background_tasks.add_task(delete_all_download_files)
         
         return response
     except Exception as e:
@@ -239,6 +251,7 @@ async def chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str
         
         # Schedule the cleanup task to run in the background after sending the response
         background_tasks.add_task(delete_file, gif_path)
+        background_tasks.add_task(delete_all_download_files)
         
         return response
     except Exception as e:
@@ -277,6 +290,7 @@ async def chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str
         
         # Schedule the cleanup task to run in the background after sending the response
         background_tasks.add_task(delete_file, gif_path)
+        background_tasks.add_task(delete_all_download_files)
         
         return response
     except Exception as e:
