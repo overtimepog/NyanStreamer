@@ -16,7 +16,7 @@ from itsdangerous import URLSafeTimedSerializer
 import uvicorn
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
-from fastapi.security import HTTPBearer, Security
+from fastapi.security import HTTPBearer
 
 from jeyyapi import JeyyAPIClient
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
