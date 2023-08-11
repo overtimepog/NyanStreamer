@@ -1,3 +1,4 @@
+import io
 from fastapi import FastAPI, Request, BackgroundTasks, Depends
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -17,6 +18,7 @@ import uvicorn
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import HTTPBearer
+from starlette.responses import StreamingResponse
 
 from jeyyapi import JeyyAPIClient
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
@@ -307,9 +309,16 @@ def run_can_subprocess(model_path, avatar_url, frames, filename):
 @app.get("/image/salty", tags=["image"])
 async def saltygen(avatar_url: str):
     salty_instance = salty.Salty()
-    image = salty_instance.generate([avatar_url], "", [], "")
-    #return the image data
-    return image
+    image_data = salty_instance.generate([avatar_url], "", [], "")
+    
+    # Ensure the image data is in bytes format
+    if not isinstance(image_data, bytes):
+        # Handle the error or convert to bytes
+        pass
+
+    # Return the image data with the correct content type
+    return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=5000)
