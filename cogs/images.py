@@ -782,8 +782,9 @@ class Images(commands.Cog, name="images"):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://nyanstreamer.lol/image/salty?avatar_url={avatar_url}") as response:
                 if response.status == 200:
-                    image = await response.read()
-                    await ctx.send(file=File(fp=image, filename="salt.png"))
+                    image_data = await response.read()
+                    image_file = io.BytesIO(image_data)
+                    await ctx.send(file=discord.File(fp=image_file, filename="salt.png"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
