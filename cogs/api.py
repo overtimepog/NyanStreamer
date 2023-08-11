@@ -36,8 +36,7 @@ class API(commands.Cog, name="api"):
             await ctx.send_help(ctx.command)
             return
 
-
-    @api.hybrid_command(
+    @api.command(
         name="claim",
         description="Claim an api key",
     )
@@ -83,7 +82,7 @@ class API(commands.Cog, name="api"):
             )
             await ctx.author.send(embed=embed)
 
-    @api.hybrid_command(
+    @api.command(
         name="revoke",
         description="Revoke a users api key",
     )
