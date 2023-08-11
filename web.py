@@ -305,11 +305,9 @@ def run_can_subprocess(model_path, avatar_url, frames, filename):
 
 
 @app.get("/image/salty", tags=["image"])
-async def saltygen(self, ctx, user: discord.Member):
-    await ctx.defer()
-    avatar = user.avatar.url
+async def saltygen(avatar_url: str):
     salty_instance = salty.Salty()
-    image = await self.bot.loop.run_in_executor(self.executor, salty_instance.generate, [avatar], "", [], "")
+    image = await salty_instance.generate([avatar_url], "", [], "")
     #return the image data
     return image
 
