@@ -7,11 +7,9 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL,  -- Assuming you have a users table and want to link the API key to a specific user
     `api_key` VARCHAR(255) NOT NULL UNIQUE,
-    `usage_count` INT DEFAULT 0,
-    `usage_limit` INT DEFAULT 1000,  -- This can be adjusted based on your requirements
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `last_used` TIMESTAMP NULL,
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)  -- Assuming you have a users table
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)  -- Assuming you have a users
 );
 
 CREATE TABLE IF NOT EXISTS `streamer` (

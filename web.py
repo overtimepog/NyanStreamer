@@ -26,27 +26,32 @@ from assets.endpoints import abandon, aborted, affect, airpods, america, armor, 
 from fastapi import APIRouter
 app = FastAPI(
     title="Nyan Streamer!",
-    description="The Best Meme Gen API",
+    description="The Best and Biggest Meme Gen API",
     version="0.0.1",
 )
 
 
 # This is a placeholder for your actual API key validation logic
-VALID_API_KEYS = ["your_valid_api_key"]
 
-def get_current_api_key(request: Request):
+async def get_current_api_key(request: Request):
     auth_header = request.headers.get("Authorization")
     if not auth_header:
         raise HTTPException(status_code=403, detail="API key required")
     
     # Splitting the header value to get the actual API key
     # Format: "Bearer YOUR_API_KEY"
-    api_key = auth_header.split(" ")[1]
+    parts = auth_header.split(" ")
+    if len(parts) != 2 or parts[0].lower() != "Bearer":
+        raise HTTPException(status_code=403, detail="Invalid authorization header format")
     
-    if api_key not in VALID_API_KEYS:
+    api_key = parts[1]
+    
+    # Check if the API key exists in the database
+    if not await db_manager.api_key_value_exists(api_key):
         raise HTTPException(status_code=403, detail="Invalid API key")
     
     return api_key
+
 app.add_middleware(SessionMiddleware, secret_key='your secret key')  # replace with your secret key
 
 templates = Jinja2Templates(directory="templates")
@@ -170,7 +175,7 @@ def delete_file(filename: str):
         os.remove(filename)
 
 @app.get("/3d/nuke", tags=["3D"])
-async def nuke(avatar_url: str, background_tasks: BackgroundTasks):
+async def nuke(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
     
     frames = 24
@@ -209,7 +214,7 @@ def run_nuke_subprocess(model_path, avatar_url, frames, filename):
 
 
 @app.get("/3d/chair", tags=["3D"])
-async def chair(avatar_url: str, background_tasks: BackgroundTasks):
+async def chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
     
     frames = 24

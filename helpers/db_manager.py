@@ -11,6 +11,7 @@ import datetime
 import json
 import random
 import re
+import secrets
 from typing import Any, Optional, Tuple, Union
 
 import aiohttp
@@ -5883,3 +5884,145 @@ async def update_starboard_entry_id(message_id: int, starboard_entry_id: int) ->
         cursor = await db.cursor()
         await cursor.execute("UPDATE starred_messages SET starboard_entry_id = ? WHERE message_id = ?", (starboard_entry_id, message_id))
         await db.commit()
+
+#generate a api key
+async def generate_api_key(user_id: int) -> str:
+    async with aiosqlite.connect("database/database.db") as db:
+        # Enable foreign key support
+        await db.execute("PRAGMA foreign_keys = ON;")
+        
+        api_key = secrets.token_urlsafe(32)
+        cursor = await db.cursor()
+        
+        try:
+            await cursor.execute("INSERT INTO api_keys (user_id, api_key) VALUES (?, ?)", (user_id, api_key))
+            await db.commit()
+        except aiosqlite.Error as e:
+            print(f"Database error: {e}")
+        finally:
+            await cursor.close()
+        
+        return api_key
+    
+#check if api key is valid
+async def check_api_key(api_key: str) -> bool:
+    async with aiosqlite.connect("database/database.db") as db:
+        # Enable foreign key support
+        await db.execute("PRAGMA foreign_keys = ON;")
+        
+        cursor = await db.cursor()
+        
+        try:
+            await cursor.execute("SELECT * FROM api_keys WHERE api_key=?", (api_key,))
+            row = await cursor.fetchone()
+            
+            if row:
+                return True
+            else:
+                return False
+        except aiosqlite.Error as e:
+            print(f"Database error: {e}")
+            return False
+        finally:
+            await cursor.close()
+
+#list all api keys
+async def list_api_keys() -> list:
+    async with aiosqlite.connect("database/database.db") as db:
+        # Enable foreign key support
+        await db.execute("PRAGMA foreign_keys = ON;")
+        
+        cursor = await db.cursor()
+        
+        try:
+            await cursor.execute("SELECT * FROM api_keys")
+            rows = await cursor.fetchall()
+            return rows
+        except aiosqlite.Error as e:
+            print(f"Database error: {e}")
+            return []
+        finally:
+            await cursor.close()
+
+#revoke a users api key by user id
+async def revoke_api_key(user_id: int) -> None:
+    async with aiosqlite.connect("database/database.db") as db:
+        # Enable foreign key support
+        await db.execute("PRAGMA foreign_keys = ON;")
+        
+        cursor = await db.cursor()
+        
+        try:
+            await cursor.execute("DELETE FROM api_keys WHERE user_id=?", (user_id,))
+            await db.commit()
+        except aiosqlite.Error as e:
+            print(f"Database error: {e}")
+        finally:
+            await cursor.close()
+
+
+    #get a users api key by user id
+async def get_api_key(user_id: int) -> str:
+    async with aiosqlite.connect("database/database.db") as db:
+        # Enable foreign key support
+        await db.execute("PRAGMA foreign_keys = ON;")
+        
+        cursor = await db.cursor()
+        
+        try:
+            await cursor.execute("SELECT api_key FROM api_keys WHERE user_id=?", (user_id,))
+            row = await cursor.fetchone()
+            
+            if row:
+                return row[0]  # Return the api_key
+            else:
+                return None  # No API key found for the given user_id
+        except aiosqlite.Error as e:
+            print(f"Database error: {e}")
+            return None
+        finally:
+            await cursor.close()
+
+    #check if an api key exists
+async def api_key_exists(user_id: int) -> bool:
+    async with aiosqlite.connect("database/database.db") as db:
+        # Enable foreign key support
+        await db.execute("PRAGMA foreign_keys = ON;")
+        
+        cursor = await db.cursor()
+        
+        try:
+            await cursor.execute("SELECT * FROM api_keys WHERE user_id=?", (user_id,))
+            row = await cursor.fetchone()
+            
+            if row:
+                return True
+            else:
+                return False
+        except aiosqlite.Error as e:
+            print(f"Database error: {e}")
+            return False
+        finally:
+            await cursor.close()
+
+
+async def api_key_value_exists(api_key: str) -> bool:
+    async with aiosqlite.connect("database/database.db") as db:
+        # Enable foreign key support
+        await db.execute("PRAGMA foreign_keys = ON;")
+        
+        cursor = await db.cursor()
+        
+        try:
+            await cursor.execute("SELECT 1 FROM api_keys WHERE api_key=?", (api_key,))
+            row = await cursor.fetchone()
+            
+            if row:
+                return True
+            else:
+                return False
+        except aiosqlite.Error as e:
+            print(f"Database error: {e}")
+            return False
+        finally:
+            await cursor.close()
