@@ -267,7 +267,7 @@ def run_chair_subprocess(model_path, avatar_url, frames, filename):
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
 
 @app.get("/3d/can", tags=["3D (Requires API Key)"])
-async def chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
+async def can(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
     
     frames = 24
@@ -306,8 +306,8 @@ def run_can_subprocess(model_path, avatar_url, frames, filename):
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,-0.85', '0,100,0', '0,-5,0'])
 
 
-@app.get("/image/salty", tags=["image"])
-async def saltygen(avatar_url: str):
+@app.get("/image/salty", tags=["Image"])
+async def SaltyGen(avatar_url: str):
     salty_instance = salty.Salty()
     image_data = salty_instance.generate([avatar_url], "", [], "")
     
@@ -320,8 +320,8 @@ async def saltygen(avatar_url: str):
     return StreamingResponse(image_data, media_type="image/png")
 
 
-@app.get("/image/trigger", tags=["image"])
-async def triggeredgen(avatar_url: str):
+@app.get("/image/trigger", tags=["Image"])
+async def TriggeredGen(avatar_url: str):
     triggered_instance = trigger.Trigger()
     image_data = triggered_instance.generate([avatar_url], "", [], "")
     
@@ -334,8 +334,8 @@ async def triggeredgen(avatar_url: str):
     return StreamingResponse(image_data, media_type="image/png")
 
 #tweet image
-@app.get("/image/tweet", tags=["image"])
-async def tweetgen(avatar_url: str, text: str, username: str):
+@app.get("/image/tweet", tags=["Image"])
+async def TweetGen(avatar_url: str, text: str, username: str):
     tweet_instance = tweet.Tweet
     image_data = tweet_instance.generate([avatar_url], f'{text}', [username], "")
     
