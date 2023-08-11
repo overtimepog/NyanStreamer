@@ -72,7 +72,11 @@ class API(commands.Cog, name="api"):
                 description=f"Your new API key is: `{api_key}`",
                 color=discord.Color.green()
             )
-            await ctx.author.send(embed=embed)
+            try:
+                await ctx.author.send(embed=embed)
+                await ctx.send("your api key has been sent to your dms")
+            except discord.Forbidden:
+                await ctx.send("I couldn't send you a DM. Please enable DMs from server members and try again.")
         else:
             # DM the user their existing API key
             embed = discord.Embed(
@@ -80,7 +84,11 @@ class API(commands.Cog, name="api"):
                 description=f"Your API key is: `{api_key}`",
                 color=discord.Color.blue()
             )
-            await ctx.author.send(embed=embed)
+            try:
+                await ctx.author.send(embed=embed)
+                await ctx.send("your api key has been sent to your dms")
+            except discord.Forbidden:
+                await ctx.send("I couldn't send you a DM. Please enable DMs from server members and try again.")
 
     @api.command(
         name="revoke",
