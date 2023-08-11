@@ -25,9 +25,9 @@ from assets.endpoints import abandon, aborted, affect, airpods, america, armor, 
 
 from fastapi import APIRouter
 app = FastAPI(
-    title="Nyan Streamer!",
+    title="Nyan Streamer",
     description="The Best and Biggest Meme Gen API",
-    version="0.0.1",
+    version="0.0.2",
 )
 
 
