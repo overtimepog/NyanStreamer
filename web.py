@@ -307,7 +307,7 @@ def run_can_subprocess(model_path, avatar_url, frames, filename):
 @app.get("/image/salty", tags=["image"])
 async def saltygen(avatar_url: str):
     salty_instance = salty.Salty()
-    image = await salty_instance.generate([avatar_url], "", [], "")
+    image = salty_instance.generate([avatar_url], "", [], "")
     #return the image data
     return image
 
