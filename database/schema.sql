@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
     `api_key` VARCHAR(255) NOT NULL UNIQUE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `last_used` TIMESTAMP NULL,
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)  -- Assuming you have a users
 );
 
 CREATE TABLE IF NOT EXISTS `streamer` (
