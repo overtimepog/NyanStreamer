@@ -317,7 +317,7 @@ async def saltygen(avatar_url: str):
         pass
 
     # Return the image data with the correct content type
-    return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
+    return StreamingResponse(image_data, media_type="image/png")
 
 
 if __name__ == "__main__":
