@@ -308,11 +308,6 @@ def run_can_subprocess(model_path, avatar_url, frames, filename):
     # Use subprocess.Popen to start the process
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,-0.85', '0,100,0', '0,-5,0'])
 
-from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
-
-app = FastAPI()
-
 @app.get("/image/abandon", tags=["Image"])
 async def abandon_text(text: str):
     abandon_instance = abandon.Abandon()
