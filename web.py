@@ -48,10 +48,6 @@ async def get_current_api_key(request: Request):
     # Format: "Bearer YOUR_API_KEY"
     parts = auth_header.split(" ")
     print(f"Header parts: {parts}")  # Debug print
-
-    if len(parts) != 2 or parts[0].lower() != "Bearer":
-        print("Invalid header format.")  # Debug print
-        raise HTTPException(status_code=403, detail="Invalid authorization header format")
     
     api_key = parts[1]
     print(f"Extracted API Key: {api_key}")  # Debug print
