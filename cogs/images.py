@@ -81,49 +81,68 @@ class Images(commands.Cog, name="images"):
     )
     async def abandon(self, ctx: Context, text: str):
         await ctx.defer()
-        abandon_instance = abandon.Abandon()
-        image = await self.bot.loop.run_in_executor(self.executor, abandon_instance.generate, [], text, [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="abandon.png"))
-
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/abandon?text={text}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="abandon.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+        
     @commands.hybrid_command(
         name="aborted",
         description="aborted mission",
     )
     async def aborted(self, ctx: Context, user: discord.User):
+        #make an api call to the api
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        aborted_instance = aborted.Aborted()
-        image = await self.bot.loop.run_in_executor(self.executor, aborted_instance.generate, [user.avatar.url], "", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="aborted.png"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/aborted?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="abandon.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)      
 
     @commands.hybrid_command(
         name="affect",
         description="no this doesnt affect my baby",
     )
     async def affect(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
+        
         await ctx.defer()
-        affect_instance = affect.Affect()
-        image_url = str(user.avatar.url)
-
-        # Generate the image
-        image = await self.bot.loop.run_in_executor(self.executor, affect_instance.generate, [image_url], "", [], "")
-
-        await ctx.send(file=discord.File(fp=image, filename="affect.png"))
-
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/affect?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="affect.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+        
     @commands.hybrid_command(
         name="airpods",
         description="wear some airpods",
     )
     async def airpods(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        airpods_instance = airpods.Airpods()
-        image = await self.bot.loop.run_in_executor(self.executor, airpods_instance.generate, [user.avatar.url], "", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="airpods.gif"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/airpods?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="airpods.gif"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     @commands.hybrid_command(
         name="pat",
@@ -145,14 +164,17 @@ class Images(commands.Cog, name="images"):
         description="god bless this country",
     )
     async def america(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        america_instance = america.America()
-        image_url = str(user.avatar.url)
-        
-        # Generate the image
-        image = await self.bot.loop.run_in_executor(self.executor, america_instance.generate, [image_url], "", [], "")
-
-        await ctx.send(file=discord.File(fp=image, filename="america.gif"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/america?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="america.gif"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
         
     @commands.hybrid_command(
     name="armor",
@@ -160,11 +182,16 @@ class Images(commands.Cog, name="images"):
     )
     async def armor(self, ctx: Context, text: str):
         await ctx.defer()
-        armor_instance = armor.Armor()
-        image = await self.bot.loop.run_in_executor(self.executor, armor_instance.generate, [], text, [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="armor.png"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/america?text={text}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="armor.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+        
 
     @commands.hybrid_command(
         name="balloon",
@@ -172,23 +199,32 @@ class Images(commands.Cog, name="images"):
     )
     async def balloon(self, ctx: Context, text1: str, text2: str):
         await ctx.defer()
-        balloon_instance = balloon.Balloon()
-        image = await self.bot.loop.run_in_executor(self.executor, balloon_instance.generate, [], f"{text1}, {text2}", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="balloon.png"))
-
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/balloon?text1={text1}&text2={text2}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="balloon.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+                    
     @commands.hybrid_command(
         name="bed",
         description="why do you hate me brother?",
     )
     async def bed(self, ctx: Context, user1: discord.User, user2: discord.User):
         await ctx.defer()
-        bed_instance = bed.Bed()
-        image = await self.bot.loop.run_in_executor(self.executor, bed_instance.generate, [user1.avatar.url, user2.avatar.url], "", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="bed.png"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/bed?user1_avatar_url={user1.avatar.url}&user2_avatar_url={user2.avatar.url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="bed.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+                    
 
     @commands.hybrid_command(
         name="crab",
@@ -196,11 +232,18 @@ class Images(commands.Cog, name="images"):
     )
     async def crab(self, ctx: Context, text1: str, text2: str):
         await ctx.defer()
-        crab_instance = crab.Crab()
-        # Generate the video in a separate thread
-        video = await self.bot.loop.run_in_executor(self.executor, crab_instance.generate, [], f"{text1},{text2}", [], "")
-        # Send the video
-        await ctx.send(file=discord.File(fp=video, filename="crab.mp4"))
+        headers = {
+            "Authorization": f"Bearer {Nyan_Api_Key}"
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/crab?text1={text1}&text2={text2}", headers=headers) as response:
+                if response.status == 200:
+                    gif_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"crab.mp4"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     @commands.hybrid_command(
         name="custom",
