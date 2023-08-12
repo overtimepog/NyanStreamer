@@ -885,7 +885,7 @@ class Images(commands.Cog, name="images"):
             "Authorization": f"Bearer {Nyan_Api_Key}"
         }
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}", headers=headers) as response:
+            async with session.get(f"http://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}", headers={"Authorization": f"Bearer {Nyan_Api_Key}"}) as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_chair.gif"))
