@@ -945,6 +945,7 @@ class Images(commands.Cog, name="images"):
         headers = {
             "Authorization": f"Bearer {Nyan_Api_Key}"
         }
+        print(headers)
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://nyanstreamer.lol/3d/can?avatar_url={avatar_url}", headers=headers) as response:
                 if response.status == 200:
