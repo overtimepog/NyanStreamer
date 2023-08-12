@@ -326,27 +326,21 @@ class Images(commands.Cog, name="images"):
         description="eject a user if they're sus",
     )
     async def eject(self, ctx: Context, user: discord.User, imposter: str = None):
-        #open config .json
-        with open("config.json") as file:
-            data = json.load(file)
-            
-        #get the api key
-        sr_api_key = data["SRA-KEY"]
-
-        if imposter is None:
-            outcome = random.choice(["true", "false"])
-        elif imposter == "True":
-            outcome = "true"
-        elif imposter == "False":
-            outcome = "false"
-
+        avatar_url = str(user.avatar.url)
+        username = user.display_name[0:35]
+        
         await ctx.defer()
-        url = f"https://some-random-api.com/premium/amongus?avatar={user.avatar.url}&key={sr_api_key}&username={user.display_name[0:35]}&imposter={outcome}"
-        async with self.session.get(url) as resp:
-            if resp.status != 200:
-                return await ctx.send('Could not download file... The Api is down :(')
-            data = io.BytesIO(await resp.read())
-            await ctx.send(file=File(fp=data, filename="eject.gif"))
+        api_url = f"http://your_api_url/image/eject?avatar_url={avatar_url}&username={username}"
+        if imposter:
+            api_url += f"&imposter={imposter}"
+    
+        async with aiohttp.ClientSession() as session:
+            async with session.get(api_url) as resp:
+                if resp.status != 200:
+                    return await ctx.send('Could not download file... The Api is down :(')
+                image_data = io.BytesIO(await resp.read())
+                await ctx.send(file=discord.File(fp=image_data, filename="eject.gif"))
+
 
     #give imposter autocomplete for eject command of either true or false
     @eject.autocomplete("imposter")

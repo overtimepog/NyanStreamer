@@ -19,6 +19,9 @@ from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import HTTPBearer
 from starlette.responses import StreamingResponse
+import aiohttp
+import json
+import random
 
 from jeyyapi import JeyyAPIClient
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
@@ -334,6 +337,31 @@ async def TweetGen(avatar_url: str, text: str, username: str):
     image_data = tweet_instance.generate([avatar_url], f'{text}', [username], "")
     return StreamingResponse(image_data, media_type="image/png")
 
+
+@app.get("/image/eject", tags=["Image"])
+async def eject_user(avatar_url: str, username: str, imposter: str = None):
+    # Open config.json
+    with open("config.json") as file:
+        data = json.load(file)
+
+    # Get the API key
+    sr_api_key = data["SRA-KEY"]
+
+    if imposter is None:
+        outcome = random.choice(["true", "false"])
+    elif imposter == "True":
+        outcome = "true"
+    elif imposter == "False":
+        outcome = "false"
+
+    url = f"https://some-random-api.com/premium/amongus?avatar={avatar_url}&key={sr_api_key}&username={username[0:35]}&imposter={outcome}"
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status != 200:
+                raise HTTPException(status_code=resp.status, detail="Could not download file... The Api is down :(")
+            image_data = await resp.read()
+            return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
 
 
 @app.get("/jeyy/matrix", tags=["Jeyy"])
