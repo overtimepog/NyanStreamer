@@ -328,12 +328,12 @@ class Images(commands.Cog, name="images"):
     async def eject(self, ctx: Context, user: discord.User, imposter: str = None):
         avatar_url = str(user.avatar.url)
         username = user.display_name[0:35]
-        
+
         await ctx.defer()
-        api_url = f"http://your_api_url/image/eject?avatar_url={avatar_url}&username={username}"
+        api_url = f"http://nyanstreamer.lol/image/eject?avatar_url={avatar_url}&username={username}"
         if imposter:
             api_url += f"&imposter={imposter}"
-    
+
         async with aiohttp.ClientSession() as session:
             async with session.get(api_url) as resp:
                 if resp.status != 200:
