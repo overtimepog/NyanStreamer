@@ -349,32 +349,32 @@ async def TweetGen(avatar_url: str, text: str, username: str):
 
 @app.get("/image/matrix", tags=["Image"])
 async def MatrixGen(avatar_url: str):
-    image_data = client.matrix(avatar_url)
+    image_data = await client.matrix(avatar_url)
     return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
 
 @app.get("/image/balls", tags=["Image"])
 async def BallsGen(avatar_url: str):
-    image_data = client.balls(avatar_url)
+    image_data = await client.balls(avatar_url)
     return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
 
 @app.get("/image/billboard", tags=["Image"])
 async def BillboardGen(avatar_url: str):
-    image_data = client.billboard(avatar_url)
+    image_data = await client.billboard(avatar_url)
     return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
 
 @app.get("/image/heartlocket", tags=["Image"])
 async def HeartLocketGen(avatar_url: str):
-    image_data = client.heart_locket(avatar_url, avatar_url)
+    image_data = await client.heart_locket(avatar_url, avatar_url)
     return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
 
 @app.get("/image/pizza", tags=["Image"])
 async def PizzaGen(avatar_url: str):
-    image_data = client.pizza(avatar_url)
+    image_data = await client.pizza(avatar_url)
     return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
 
 @app.get("/image/zonk", tags=["Image"])
 async def ZonkGen(avatar_url: str):
-    image_data = client.zonk(avatar_url)
+    image_data = await client.zonk(avatar_url)
     return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
 
 
