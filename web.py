@@ -191,7 +191,7 @@ def delete_file(filename: str):
         os.remove(filename)
 
 @app.get("/3d/nuke", tags=["3D (Requires API Key)"])
-async def nuke(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
+async def become_a_nuke(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
     
     frames = 24
@@ -231,7 +231,7 @@ def run_nuke_subprocess(model_path, avatar_url, frames, filename):
 
 
 @app.get("/3d/chair", tags=["3D (Requires API Key)"])
-async def chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
+async def become_a_chair(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
     
     frames = 24
@@ -270,7 +270,7 @@ def run_chair_subprocess(model_path, avatar_url, frames, filename):
     subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, '0,0,0', '0,96,25', '0,-3,0'])
 
 @app.get("/3d/can", tags=["3D (Requires API Key)"])
-async def can(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
+async def become_a_can(avatar_url: str, background_tasks: BackgroundTasks, api_key: str = Depends(get_current_api_key)):
     logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
     
     frames = 24
@@ -310,7 +310,7 @@ def run_can_subprocess(model_path, avatar_url, frames, filename):
 
 
 @app.get("/image/salty", tags=["Image"])
-async def SaltyGen(avatar_url: str):
+async def someones_salty(avatar_url: str):
     salty_instance = salty.Salty()
     image_data = salty_instance.generate([avatar_url], "", [], "")
     
@@ -324,7 +324,7 @@ async def SaltyGen(avatar_url: str):
 
 
 @app.get("/image/trigger", tags=["Image"])
-async def TriggeredGen(avatar_url: str):
+async def trigger_a_user(avatar_url: str):
     triggered_instance = trigger.Trigger()
     image_data = triggered_instance.generate([avatar_url], "", [], "")
     # Return the image data with the correct content type
@@ -332,14 +332,14 @@ async def TriggeredGen(avatar_url: str):
 
 #tweet image
 @app.get("/image/tweet", tags=["Image"])
-async def TweetGen(avatar_url: str, text: str, username: str):
+async def make_a_user_tweet_something_funny(avatar_url: str, text: str, username: str):
     tweet_instance = tweet.Tweet
     image_data = tweet_instance.generate([avatar_url], f'{text}', [username], "")
     return StreamingResponse(image_data, media_type="image/png")
 
 
 @app.get("/image/eject", tags=["Image"])
-async def eject_user(avatar_url: str, username: str, imposter: str = None):
+async def eject_a_user(avatar_url: str, username: str, imposter: str = None):
     # Open config.json
     with open("config.json") as file:
         data = json.load(file)
@@ -365,32 +365,32 @@ async def eject_user(avatar_url: str, username: str, imposter: str = None):
 
 
 @app.get("/jeyy/matrix", tags=["Jeyy"])
-async def MatrixGen(avatar_url: str):
+async def put_someone_in_the_matrix(avatar_url: str):
     image_data = await client.matrix(avatar_url)
     return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/jeyy/balls", tags=["Jeyy"])
-async def BallsGen(avatar_url: str):
+async def lol_balls(avatar_url: str):
     image_data = await client.balls(avatar_url)
     return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/jeyy/billboard", tags=["Jeyy"])
-async def BillboardGen(avatar_url: str):
+async def become_a_billboard(avatar_url: str):
     image_data = await client.billboard(avatar_url)
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/jeyy/heartlocket", tags=["Jeyy"])
-async def HeartLocketGen(avatar_url: str):
+async def become_a_heartlocket(avatar_url: str):
     image_data = await client.heart_locket(avatar_url, avatar_url)
     return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/jeyy/pizza", tags=["Jeyy"])
-async def PizzaGen(avatar_url: str):
+async def become_a_pizza(avatar_url: str):
     image_data = await client.pizza(avatar_url)
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/jeyy/zonk", tags=["Jeyy"])
-async def ZonkGen(avatar_url: str):
+async def get_zonked(avatar_url: str):
     image_data = await client.zonk(avatar_url)
     return StreamingResponse(image_data, media_type="image/gif")
 
