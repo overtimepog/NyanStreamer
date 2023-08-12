@@ -36,6 +36,7 @@ app = FastAPI(
 )
 
 async def get_current_api_key(request: Request):
+    print(request.headers)
     auth_header = request.headers.get("Authorization")
     print(f"Received Authorization Header: {auth_header}")  # Debug print
 
