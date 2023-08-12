@@ -338,44 +338,37 @@ async def TriggeredGen(avatar_url: str):
 async def TweetGen(avatar_url: str, text: str, username: str):
     tweet_instance = tweet.Tweet
     image_data = tweet_instance.generate([avatar_url], f'{text}', [username], "")
-    
-    # Ensure the image data is in bytes format
-    if not isinstance(image_data, bytes):
-        # Handle the error or convert to bytes
-        pass
-
-    # Return the image data with the correct content type
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/matrix", tags=["Image"])
 async def MatrixGen(avatar_url: str):
     image_data = await client.matrix(avatar_url)
-    return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
+    return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/image/balls", tags=["Image"])
 async def BallsGen(avatar_url: str):
     image_data = await client.balls(avatar_url)
-    return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
+    return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/image/billboard", tags=["Image"])
 async def BillboardGen(avatar_url: str):
     image_data = await client.billboard(avatar_url)
-    return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
+    return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/heartlocket", tags=["Image"])
 async def HeartLocketGen(avatar_url: str):
     image_data = await client.heart_locket(avatar_url, avatar_url)
-    return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
+    return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/image/pizza", tags=["Image"])
 async def PizzaGen(avatar_url: str):
     image_data = await client.pizza(avatar_url)
-    return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
+    return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/zonk", tags=["Image"])
 async def ZonkGen(avatar_url: str):
     image_data = await client.zonk(avatar_url)
-    return StreamingResponse(io.BytesIO(image_data), media_type="image/gif")
+    return StreamingResponse(image_data, media_type="image/gif")
 
 
 if __name__ == "__main__":
