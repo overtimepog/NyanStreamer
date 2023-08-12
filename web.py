@@ -324,12 +324,6 @@ async def SaltyGen(avatar_url: str):
 async def TriggeredGen(avatar_url: str):
     triggered_instance = trigger.Trigger()
     image_data = triggered_instance.generate([avatar_url], "", [], "")
-    
-    # Ensure the image data is in bytes format
-    if not isinstance(image_data, bytes):
-        # Handle the error or convert to bytes
-        pass
-
     # Return the image data with the correct content type
     return StreamingResponse(image_data, media_type="image/png")
 
@@ -340,32 +334,34 @@ async def TweetGen(avatar_url: str, text: str, username: str):
     image_data = tweet_instance.generate([avatar_url], f'{text}', [username], "")
     return StreamingResponse(image_data, media_type="image/png")
 
-@app.get("/image/matrix", tags=["Image"])
+
+
+@app.get("/jeyy/matrix", tags=["Jeyy"])
 async def MatrixGen(avatar_url: str):
     image_data = await client.matrix(avatar_url)
     return StreamingResponse(image_data, media_type="image/gif")
 
-@app.get("/image/balls", tags=["Image"])
+@app.get("/jeyy/balls", tags=["Jeyy"])
 async def BallsGen(avatar_url: str):
     image_data = await client.balls(avatar_url)
     return StreamingResponse(image_data, media_type="image/gif")
 
-@app.get("/image/billboard", tags=["Image"])
+@app.get("/jeyy/billboard", tags=["Jeyy"])
 async def BillboardGen(avatar_url: str):
     image_data = await client.billboard(avatar_url)
     return StreamingResponse(image_data, media_type="image/png")
 
-@app.get("/image/heartlocket", tags=["Image"])
+@app.get("/jeyy/heartlocket", tags=["Jeyy"])
 async def HeartLocketGen(avatar_url: str):
     image_data = await client.heart_locket(avatar_url, avatar_url)
     return StreamingResponse(image_data, media_type="image/gif")
 
-@app.get("/image/pizza", tags=["Image"])
+@app.get("/jeyy/pizza", tags=["Jeyy"])
 async def PizzaGen(avatar_url: str):
     image_data = await client.pizza(avatar_url)
     return StreamingResponse(image_data, media_type="image/png")
 
-@app.get("/image/zonk", tags=["Image"])
+@app.get("/jeyy/zonk", tags=["Jeyy"])
 async def ZonkGen(avatar_url: str):
     image_data = await client.zonk(avatar_url)
     return StreamingResponse(image_data, media_type="image/gif")
