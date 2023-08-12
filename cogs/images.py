@@ -880,18 +880,19 @@ class Images(commands.Cog, name="images"):
     )
     async def chair(self, ctx: Context, user: discord.User):
         avatar_url = str(user.avatar.url)
+        await ctx.defer()
         headers = {
             "Authorization": f"Bearer {Nyan_Api_Key}"
         }
-        response = requests.get(f"http://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}", headers=headers)
-
-        if response.status_code == 200:
-            gif_data = response.content
-            ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_chair.gif"))
-        else:
-            # Handle non-image responses here
-            text_data = response.text
-            ctx.send(f"Error: {text_data}", ephemeral=True)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}", headers={"Authorization": f"Bearer {Nyan_Api_Key}"}) as response:
+                if response.status == 200:
+                    gif_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_chair.gif"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     #async def chair(self, ctx: Context, user: discord.User):
     #    await ctx.defer()
