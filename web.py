@@ -35,24 +35,32 @@ app = FastAPI(
     version="0.0.2",
 )
 
-
-# This is a placeholder for your actual API key validation logic
-
 async def get_current_api_key(request: Request):
     auth_header = request.headers.get("Authorization")
+    print(f"Received Authorization Header: {auth_header}")  # Debug print
+
     if not auth_header:
+        print("No Authorization header found.")  # Debug print
         raise HTTPException(status_code=403, detail="API key required")
     
     # Splitting the header value to get the actual API key
     # Format: "Bearer YOUR_API_KEY"
     parts = auth_header.split(" ")
+    print(f"Header parts: {parts}")  # Debug print
+
     if len(parts) != 2 or parts[0].lower() != "Bearer":
+        print("Invalid header format.")  # Debug print
         raise HTTPException(status_code=403, detail="Invalid authorization header format")
     
     api_key = parts[1]
+    print(f"Extracted API Key: {api_key}")  # Debug print
     
     # Check if the API key exists in the database
-    if not await db_manager.api_key_value_exists(api_key):
+    key_exists = await db_manager.api_key_value_exists(api_key)
+    print(f"API Key exists in database: {key_exists}")  # Debug print
+
+    if not key_exists:
+        print("API Key not found in database.")  # Debug print
         raise HTTPException(status_code=403, detail="Invalid API key")
     
     return api_key
