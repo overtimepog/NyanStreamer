@@ -82,7 +82,7 @@ class Images(commands.Cog, name="images"):
     async def abandon(self, ctx: Context, text: str):
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/abandon?text={text}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/abandon?text={text}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="abandon.png"))
@@ -100,7 +100,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/aborted?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/aborted?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="abandon.png"))
@@ -118,7 +118,7 @@ class Images(commands.Cog, name="images"):
         
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/affect?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/affect?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="affect.png"))
@@ -135,7 +135,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/airpods?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/airpods?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="airpods.gif"))
@@ -167,7 +167,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/america?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/america?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="america.gif"))
@@ -183,7 +183,7 @@ class Images(commands.Cog, name="images"):
     async def armor(self, ctx: Context, text: str):
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/america?text={text}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/america?text={text}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="armor.png"))
@@ -200,7 +200,7 @@ class Images(commands.Cog, name="images"):
     async def balloon(self, ctx: Context, text1: str, text2: str):
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/balloon?text1={text1}&text2={text2}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/balloon?text1={text1}&text2={text2}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="balloon.png"))
@@ -216,7 +216,7 @@ class Images(commands.Cog, name="images"):
     async def bed(self, ctx: Context, user1: discord.User, user2: discord.User):
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/bed?user1_avatar_url={user1.avatar.url}&user2_avatar_url={user2.avatar.url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/bed?user1_avatar_url={user1.avatar.url}&user2_avatar_url={user2.avatar.url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="bed.png"))
@@ -236,7 +236,7 @@ class Images(commands.Cog, name="images"):
             "Authorization": f"Bearer {Nyan_Api_Key}"
         }
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/crab?text1={text1}&text2={text2}", headers=headers) as response:
+            async with session.get(f"https://nyanstreamer.lol/image/crab?text1={text1}&text2={text2}", headers=headers) as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"crab.mp4"))
@@ -373,7 +373,7 @@ class Images(commands.Cog, name="images"):
         username = user.display_name[0:35]
 
         await ctx.defer()
-        api_url = f"http://nyanstreamer.lol/image/eject?avatar_url={avatar_url}&username={username}"
+        api_url = f"https://nyanstreamer.lol/image/eject?avatar_url={avatar_url}&username={username}"
         if imposter:
             api_url += f"&imposter={imposter}"
 
@@ -570,7 +570,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/tweet?avatar_url={avatar_url}&text={quote(text)}&username={user.name}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/tweet?avatar_url={avatar_url}&text={quote(text)}&username={user.name}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="tweet.png"))
@@ -642,7 +642,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/trigger?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/trigger?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="triggered.gif"))
@@ -762,7 +762,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/jeyy/matrix?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/jeyy/matrix?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="matrix.gif"))
@@ -778,7 +778,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/jeyy/balls?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/jeyy/balls?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="balls.gif"))
@@ -794,7 +794,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/jeyy/billboard?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/jeyy/billboard?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="billboard.png"))
@@ -811,7 +811,7 @@ class Images(commands.Cog, name="images"):
         await ctx.defer()
         avatar_url = str(user.avatar.url)
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/jeyy/heartlocket?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/jeyy/heartlocket?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="billboard.png"))
@@ -829,7 +829,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/jeyy/pizza?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/jeyy/pizza?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="pizza.png"))
@@ -846,7 +846,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/jeyy/zonk?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/jeyy/zonk?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="zonk.gif"))
@@ -864,7 +864,7 @@ class Images(commands.Cog, name="images"):
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/image/salty?avatar_url={avatar_url}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/salty?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(image_data), filename="salt.png"))
@@ -885,7 +885,7 @@ class Images(commands.Cog, name="images"):
             "Authorization": f"Bearer {Nyan_Api_Key}"
         }
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}", headers={"Authorization": f"Bearer {Nyan_Api_Key}"}) as response:
+            async with session.get(f"https://nyanstreamer.lol/3d/chair?avatar_url={avatar_url}", headers=headers) as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_chair.gif"))
@@ -947,7 +947,7 @@ class Images(commands.Cog, name="images"):
         }
         print(headers)
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/3d/can?avatar_url={avatar_url}", headers=headers) as response:
+            async with session.get(f"https://nyanstreamer.lol/3d/can?avatar_url={avatar_url}", headers=headers) as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_can.gif"))
@@ -1005,7 +1005,7 @@ class Images(commands.Cog, name="images"):
             "Authorization": f"Bearer {Nyan_Api_Key}"
         }
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://nyanstreamer.lol/3d/nuke?avatar_url={avatar_url}", headers=headers) as response:
+            async with session.get(f"https://nyanstreamer.lol/3d/nuke?avatar_url={avatar_url}", headers=headers) as response:
                 if response.status == 200:
                     gif_data = await response.read()
                     await ctx.send(file=discord.File(io.BytesIO(gif_data), filename=f"{user.name}_nuke.gif"))
