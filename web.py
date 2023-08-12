@@ -316,55 +316,55 @@ def run_can_subprocess(model_path, avatar_url, frames, filename):
 @app.get("/image/abandon", tags=["Image"])
 async def abandon_text(text: str):
     abandon_instance = abandon.Abandon()
-    image_data = await abandon_instance.generate([], text, [], "")
+    image_data = abandon_instance.generate([], text, [], "")
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/aborted", tags=["Image"])
 async def abort_user(avatar_url: str):
     aborted_instance = aborted.Aborted()
-    image_data = await aborted_instance.generate([avatar_url], "", [], "")
+    image_data = aborted_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/affect", tags=["Image"])
 async def affect_user(avatar_url: str):
     affect_instance = affect.Affect()
-    image_data = await affect_instance.generate([avatar_url], "", [], "")
+    image_data = affect_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/airpods", tags=["Image"])
 async def give_user_airpods(avatar_url: str):
     airpods_instance = airpods.Airpods()
-    image_data = await airpods_instance.generate([avatar_url], "", [], "")
+    image_data = airpods_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/image/armor", tags=["Image"])
 async def armor_text(text: str):
     armor_instance = armor.Armor()
-    image_data = await armor_instance.generate([], text, [], "")
+    image_data = armor_instance.generate([], text, [], "")
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/balloon", tags=["Image"])
 async def balloon_text(text1: str, text2: str):
     balloon_instance = balloon.Balloon()
-    image_data = await balloon_instance.generate([], f"{text1}, {text2}", [], "")
+    image_data = balloon_instance.generate([], f"{text1}, {text2}", [], "")
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/bed", tags=["Image"])
 async def put_users_in_bed(user1_avatar_url: str, user2_avatar_url: str):
     bed_instance = bed.Bed()
-    image_data = await bed_instance.generate([user1_avatar_url, user2_avatar_url], "", [], "")
+    image_data = bed_instance.generate([user1_avatar_url, user2_avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/crab", tags=["Image", "API Key Needed"])
 async def crab_rave(text1: str, text2: str, api_key: str = Depends(get_current_api_key)):
     crab_instance = crab.Crab()
-    video_data = await crab_instance.generate([], f"{text1},{text2}", [], "")
+    video_data = crab_instance.generate([], f"{text1},{text2}", [], "")
     return StreamingResponse(video_data, media_type="video/mp4")
 
 @app.get("/image/america", tags=["Image"])
 async def americanize_user(avatar_url: str):
     america_instance = america.America()
-    image_data = await america_instance.generate([avatar_url], "", [], "")
+    image_data = america_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/image/salty", tags=["Image"])
