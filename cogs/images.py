@@ -718,37 +718,53 @@ class Images(commands.Cog, name="images"):
         
     #matrix
     @commands.hybrid_command(
-        name="matrix",
-        description="become the matrix",
+    name="matrix",
+    description="become the matrix",
     )
     async def matrix(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        avatar = user.avatar.url
-        image = await client.matrix(avatar)
-        await ctx.send(file=File(fp=image, filename="matrix.gif"))
-        
-    #balls
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/matrix?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="matrix.gif"))
+                else:
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+
     @commands.hybrid_command(
         name="balls",
         description="man I love those",
     )
     async def balls(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        avatar = user.avatar.url
-        image = await client.balls(avatar)
-        await ctx.send(file=File(fp=image, filename="balls.gif"))
-        
-    #billboard
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/balls?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="balls.gif"))
+                else:
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+
     @commands.hybrid_command(
         name="billboard",
         description="become a billboard",
     )
     async def billboard(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        avatar = user.avatar.url
-        image = await client.billboard(avatar)
-        await ctx.send(file=File(fp=image, filename="billboard.png"))
-        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/billboard?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="billboard.png"))
+                else:
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+
     #heart locket
     @commands.hybrid_command(
         name="heartlocket",
@@ -777,10 +793,17 @@ class Images(commands.Cog, name="images"):
         description="zonk",
     )
     async def zonk(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        avatar = user.avatar.url
-        image = await client.zonk(avatar)
-        await ctx.send(file=File(fp=image, filename="zonk.gif"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://nyanstreamer.lol/image/zonk?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="zonk.gif"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     #stonks
     @commands.hybrid_command(
