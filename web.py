@@ -22,6 +22,8 @@ from starlette.responses import StreamingResponse
 import aiohttp
 import json
 import random
+from io import BytesIO
+from petpetgif import petpet
 
 from jeyyapi import JeyyAPIClient
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
@@ -442,6 +444,24 @@ async def horny(avatar_url: str):
                 raise HTTPException(status_code=resp.status, detail="Could not download file... The Api is down :(")
             image_data = await resp.read()
             return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
+
+@app.get("/image/pat")
+async def pat(user_avatar_url: str):
+    # Fetch the user's avatar
+    async with aiohttp.ClientSession() as session:
+        async with session.get(user_avatar_url) as resp:
+            if resp.status != 200:
+                raise HTTPException(status_code=resp.status, detail="Failed to fetch avatar")
+            image_content = await resp.read()
+
+    # Process the image
+    source = BytesIO(image_content)
+    dest = BytesIO()
+    petpet.make(source, dest)
+    dest.seek(0)
+    
+    # Return the processed image
+    return StreamingResponse(dest, media_type="image/gif")
 
 
 @app.get("/jeyy/matrix", tags=["Jeyy"])

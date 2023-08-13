@@ -150,14 +150,17 @@ class Images(commands.Cog, name="images"):
         description="give a user some head scratches",
     )
     async def pat(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
+        await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(user.avatar.url) as resp:
-                image = await resp.read()
-        source = BytesIO(image)  # file-like container to hold the emoji in memory
-        dest = BytesIO()  # container to store the petpet gif in memory
-        petpet.make(source, dest)
-        dest.seek(0)  # set the file pointer back to the beginning so it doesn't upload a blank file.
-        await ctx.send(file=discord.File(dest, filename=f"{user.name}Pet.gif"))
+            async with session.get(f"https://nyanstreamer.lol/image/pat?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="petpet.gif"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     @commands.hybrid_command(
         name="america",
