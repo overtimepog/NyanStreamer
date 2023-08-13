@@ -445,7 +445,7 @@ async def horny(avatar_url: str):
             image_data = await resp.read()
             return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
 
-@app.get("/image/pat")
+@app.get("/image/pat", tags=["Image"])
 async def pat(user_avatar_url: str):
     # Fetch the user's avatar
     async with aiohttp.ClientSession() as session:
