@@ -384,7 +384,7 @@ class Images(commands.Cog, name="images"):
             async with session.get(f"https://nyanstreamer.lol/image/citation?title={title}&text={text}&footer={footer}") as response:
                 if response.status == 200:
                     image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="batman.mp4"))
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="citation.png"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
