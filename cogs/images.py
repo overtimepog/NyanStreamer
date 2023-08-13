@@ -378,13 +378,17 @@ class Images(commands.Cog, name="images"):
         name="citation",
         description="citation needed",
     )
-    async def citation(self, ctx: Context, title: str, text: str, footer: str):
+    async def citation(self, ctx: Context, title: str, text: str, footer: str): 
         await ctx.defer()
-        citation_instance = citation.Citation()
-        image = await self.bot.loop.run_in_executor(self.executor, citation_instance.generate, [], f"{title},{text},{footer}", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="citation.png"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/citation?title={title}&text={text}&footer={footer}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="batman.mp4"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
 
     #eject command
     @commands.hybrid_command(

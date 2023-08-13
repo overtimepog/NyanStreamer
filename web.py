@@ -419,12 +419,18 @@ async def make_a_user_tweet_something_funny(avatar_url: str, text: str, username
     image_data = tweet_instance.generate([avatar_url], f'{text}', [username], "")
     return StreamingResponse(image_data, media_type="image/png")
 
-#rate
+#bateman
 @app.get("/image/bateman", tags=["Image"])
 async def fr(avatar_url: str):
     bateman_instance = bateman.Bateman()
     image_data = bateman_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="video/mp4")
+
+@app.get("/image/citation", tags=["Image"])
+async def write_a_citation(title: str, text: str, footer: str):
+    citation_instance = citation.Citation
+    image = citation_instance.generate([], f"{title},{text},{footer}", [], "")
+    return StreamingResponse(image, media_type="image/png")
 
 
 @app.get("/image/eject", tags=["Image", "API Key Needed"])
