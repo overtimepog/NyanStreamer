@@ -376,9 +376,13 @@ class Images(commands.Cog, name="images"):
         api_url = f"https://nyanstreamer.lol/image/eject?avatar_url={avatar_url}&username={username}"
         if imposter:
             api_url += f"&imposter={imposter}"
-
+            
+        headers = {
+            "Authorization": f"Bearer {Nyan_Api_Key}"
+        }
+        
         async with aiohttp.ClientSession() as session:
-            async with session.get(api_url) as resp:
+            async with session.get(api_url, headers=headers) as resp:
                 if resp.status != 200:
                     return await ctx.send('Could not download file... The Api is down :(')
                 image_data = io.BytesIO(await resp.read())
