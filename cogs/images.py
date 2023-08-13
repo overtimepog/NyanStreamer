@@ -355,19 +355,19 @@ class Images(commands.Cog, name="images"):
         await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
 
     @commands.hybrid_command(
-        name="rate",
-        description="5 stars",
+        name="bateman",
+        description="me fr",
     )
     #api call to nyanstreamer 
-    async def rate(self, ctx: Context, user: discord.User, text: str):
+    async def bateman(self, ctx: Context, user: discord.User):
         # make sure the text doesnt exceed the limit of 50
         avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/rate?avatar_url={avatar_url}&text={text}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/bateman?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="rate.png"))
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="batman.mp4"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
