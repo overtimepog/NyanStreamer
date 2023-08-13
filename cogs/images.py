@@ -708,7 +708,6 @@ class Images(commands.Cog, name="images"):
     @commands.hybrid_command(
         "horny",
         description="become a horny person",
-        aliases=["horny"]
     )
     async def horny(self, ctx: Context, user: discord.User):
         avatar_url = user.avatar.url
