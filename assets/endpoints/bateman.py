@@ -33,8 +33,13 @@ class Bateman:
                 for y in range(output_frame.shape[0]):
                     red, green, blue = output_frame[y, x]
                     if green > 100 and red < 75 and blue < 75:
-                        output_frame[y, x] = avatar_np[y, x]  # Use the numpy array directly
+                        # Ensure the avatar pixel has the same number of channels as the frame
+                        avatar_pixel = avatar_np[y, x]
+                        if avatar_pixel.shape == ():
+                            avatar_pixel = [avatar_pixel, avatar_pixel, avatar_pixel]
+                        output_frame[y, x] = avatar_pixel
             return output_frame
+
 
 
         # Apply the replacement function to each frame of the video
