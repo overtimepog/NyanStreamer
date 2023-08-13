@@ -429,7 +429,7 @@ async def fr(avatar_url: str):
 @app.get("/image/citation", tags=["Image"])
 async def write_a_citation(title: str, text: str, footer: str):
     citation_instance = citation.Citation
-    image = citation_instance.generate([], f"{title},{text},{footer}", [], "")
+    image = citation_instance.generate("", "", f"{title},{text},{footer}", [], "")
     return StreamingResponse(image, media_type="image/png")
 
 
