@@ -1,5 +1,5 @@
 from assets.utils import http
-from moviepy.editor import VideoFileClip, ImageClip, CompositeVideoClip
+from moviepy.editor import VideoFileClip
 from PIL import Image
 import uuid
 import os
@@ -25,12 +25,14 @@ class Bateman:
         avatar_np = np.array(avatar_img)  # Convert PIL Image to numpy array
         
         def replace_green_screen(frame):
-            output_frame = frame.copy()  # Create a writable copy
-            for x in range(output_frame.shape[1]):
-                for y in range(output_frame.shape[0]):
-                    red, green, blue = output_frame[y, x]
-                    if green > 100 and red < 75 and blue < 75:
-                        output_frame[y, x] = avatar_np[y, x]  # Now, avatar_np is also a 3D array
+            output_frame = frame.copy()
+
+            # Create a mask where green is dominant
+            green_mask = (frame[:,:,1] > 100) & (frame[:,:,0] < 75) & (frame[:,:,2] < 75)
+
+            # Replace green screen pixels with avatar pixels
+            output_frame[green_mask] = avatar_np[green_mask]
+            
             return output_frame
 
         # Apply the replacement function to each frame of the video
