@@ -4,6 +4,8 @@ from PIL import Image
 import uuid
 import os
 from io import BytesIO
+import numpy as np
+
 
 class Bateman:
     """
@@ -21,7 +23,8 @@ class Bateman:
         
         # Fetch the avatar using http.get_image and convert it to a PIL Image
         avatar_img = http.get_image(avatars[0]).resize(video.size)
-        avatar_clip = ImageClip(avatar_img).set_duration(video.duration)
+        avatar_np = np.array(avatar_img)  # Convert PIL Image to numpy array
+        avatar_clip = ImageClip(avatar_np).set_duration(video.duration)
 
         # Function to replace green screen with avatar
         def replace_green_screen(frame):
