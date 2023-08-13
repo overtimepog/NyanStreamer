@@ -14,7 +14,7 @@ class Rate():
         avatar = http.get_image(avatars[0]).convert('LA').resize((350, 350))
         base.paste(avatar, (285, 82), avatar)
         draw = ImageDraw.Draw(base)
-        font = ImageFont.truetype('assets/fonts/MontserratBold.ttf', 30)  # Adjust font size as needed
+        font = ImageFont.truetype('assets/assets/fonts/MontserratBold.ttf', 30)  # Adjust font size as needed
         draw.text((333, 316), text, font=font, fill="white")
         base = base.convert('RGBA')
         b = BytesIO()
