@@ -20,8 +20,7 @@ class Bateman:
         video = VideoFileClip('assets/assets/patrickBateman/PatrickBateman.mp4')
         
         # Fetch the avatar using http.get_image and convert it to a PIL Image
-        avatar_data = http.get_image(avatars[0])
-        avatar_img = Image.open(BytesIO(avatar_data)).resize(video.size)
+        avatar_img = http.get_image(avatars[0]).resize(video.size)
         avatar_clip = ImageClip(avatar_img).set_duration(video.duration)
 
         # Function to replace green screen with avatar
