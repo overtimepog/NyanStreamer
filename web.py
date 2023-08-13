@@ -393,7 +393,7 @@ async def trigger_a_user(avatar_url: str):
 #tweet image
 @app.get("/image/tweet", tags=["Image"])
 async def make_a_user_tweet_something_funny(avatar_url: str, text: str, username: str):
-    tweet_instance = tweet.Tweet
+    tweet_instance = tweet.Tweet()
     image_data = tweet_instance.generate([avatar_url], f'{text}', [username], "")
     return StreamingResponse(image_data, media_type="image/png")
 
@@ -462,6 +462,12 @@ async def pat(avatar_url: str):
     
     # Return the processed image
     return StreamingResponse(dest, media_type="image/gif")
+
+@app.get("/image/jail", tags=["Image"])
+async def send_a_user_to_jail(avatar_url: str):
+    jail_instance = jail.Jail()
+    image_data = jail_instance.generate([avatar_url], f'', "", "")
+    return StreamingResponse(image_data, media_type="image/png")
 
 
 @app.get("/jeyy/matrix", tags=["Jeyy"])

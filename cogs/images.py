@@ -473,12 +473,18 @@ class Images(commands.Cog, name="images"):
         description="go to jail",
     )
     async def jail(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
-        jail_instance = jail.Jail()
-        image = await self.bot.loop.run_in_executor(self.executor, jail_instance.generate, [user.avatar.url], "", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="jail.png"))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/jail?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="jail.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+        
 
     @commands.hybrid_command(
         name="gay",
