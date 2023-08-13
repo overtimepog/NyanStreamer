@@ -446,10 +446,10 @@ async def horny(avatar_url: str):
             return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
 
 @app.get("/image/pat", tags=["Image"])
-async def pat(user_avatar_url: str):
+async def pat(avatar_url: str):
     # Fetch the user's avatar
     async with aiohttp.ClientSession() as session:
-        async with session.get(user_avatar_url) as resp:
+        async with session.get(avatar_url) as resp:
             if resp.status != 200:
                 raise HTTPException(status_code=resp.status, detail="Failed to fetch avatar")
             image_content = await resp.read()
