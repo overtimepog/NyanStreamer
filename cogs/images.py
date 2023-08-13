@@ -699,11 +699,30 @@ class Images(commands.Cog, name="images"):
             async with session.get(f"https://nyanstreamer.lol/image/simp?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="triggered.gif"))
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="simp.png"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
+
+    @commands.hybrid_command(
+        "horny",
+        description="become a horny person",
+        aliases=["horny"]
+    )
+    async def horny(self, ctx: Context, user: discord.User):
+        avatar_url = user.avatar.url
+        await ctx.defer()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/horny?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="horny.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+
 
     #globe
     @commands.hybrid_command(

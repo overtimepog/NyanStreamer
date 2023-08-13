@@ -432,6 +432,17 @@ async def simp(avatar_url: str):
             image_data = await resp.read()
             return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
 
+@app.get("/image/horny", tags=["Image"])
+async def horny(avatar_url: str):
+    url = f"https://some-random-api.com/canvas/horny?avatar={avatar_url}"
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status != 200:
+                raise HTTPException(status_code=resp.status, detail="Could not download file... The Api is down :(")
+            image_data = await resp.read()
+            return StreamingResponse(io.BytesIO(image_data), media_type="image/png")
+
 
 @app.get("/jeyy/matrix", tags=["Jeyy"])
 async def put_someone_in_the_matrix(avatar_url: str):
