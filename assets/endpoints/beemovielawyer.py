@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont, ImageSequence
 from assets.utils import http
 from io import BytesIO
+import concurrent.futures
 
 class BeeMovieLawyer:
     """
@@ -10,6 +11,17 @@ class BeeMovieLawyer:
     Place text on the GIF at the specified coordinates.
     """
     params = ['text']
+
+    def draw_text_on_frame(self, frame, font, lines, max_width, y_start):
+        frame = frame.convert('RGB')  # Convert frame to RGB mode
+        d = ImageDraw.Draw(frame)
+        y = y_start
+        for line in lines:
+            width, height = d.textsize(line, font=font)
+            # Draw text centered in the specified rectangle
+            d.text(((max_width - width) / 2, y), line, font=font, fill="black")
+            y += height
+        return frame
 
     def generate(self, avatars, text, usernames, kwargs):
         # Load the GIF
@@ -54,16 +66,9 @@ class BeeMovieLawyer:
         # Calculate the starting y-coordinate to center the text vertically
         y_start = (max_height - len(lines) * font.getsize(lines[0])[1]) // 2
 
-        for frame in ImageSequence.Iterator(gif):
-            frame = frame.convert('RGB')  # Convert frame to RGB mode
-            d = ImageDraw.Draw(frame)
-            y = y_start
-            for line in lines:
-                width, height = d.textsize(line, font=font)
-                # Draw text centered in the specified rectangle
-                d.text(((max_width - width) / 2, y), line, font=font, fill="white")
-                y += height
-            frames.append(frame)
+        # Use concurrent futures for parallel processing of frames
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            frames = list(executor.map(lambda frame: self.draw_text_on_frame(frame, font, lines, max_width, y_start), ImageSequence.Iterator(gif)))
 
         # Convert the frames to bytes and return
         b = BytesIO()
