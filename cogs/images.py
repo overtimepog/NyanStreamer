@@ -429,25 +429,23 @@ class Images(commands.Cog, name="images"):
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
                     
-    #beemovielawyer
     @commands.hybrid_command(
-        name="beemovielawyer",
-        description="judgeeeeee",
+        name="underthetable",
+        description="shes got something to show you",
     )
-    async def beemovielawyer(self, ctx: Context, text: str):
+    async def hell(self, ctx: Context, user: discord.User):
         # make sure the text doesnt exceed the limit of 50
+        avatar_url = str(user.avatar.url)
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/beemovielawyer?text={text}") as response:
+            async with session.get(f"https://nyanstreamer.lol/image/underthetable?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="beemovielawyer.gif"))
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="underthetable.mp4"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
-                    
-        
     
     #dominos command, takes in text1 and text2
     @commands.hybrid_command(

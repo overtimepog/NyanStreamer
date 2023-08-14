@@ -28,7 +28,7 @@ from petpetgif import petpet
 from jeyyapi import JeyyAPIClient
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
 
-from assets.endpoints import beemovielawyer, hell, dominos, johnoliver, bateman, abandon, aborted, affect, airpods, america, armor, balloon, bed, bongocat, boo, brain, brazzers, byemom, cancer, changemymind, cheating, citation, communism, confusedcat, corporate, crab, cry, dab, dank, deepfry, delete, disability, doglemon, door, dream, egg, emergencymeeting, excuseme, expanddong, expandingwwe, facts, failure, fakenews, farmer, fedora, floor, fuck, garfield, gay, godwhy, goggles, hitler, humansgood, inator, invert, ipad, jail, justpretending, keepurdistance, kimborder, knowyourlocation, kowalski, laid, letmein, lick, madethis, magik, master, meme, note, nothing, obama, ohno, piccolo, plan, presentation, profile, quote, radialblur, rip, roblox, salty, satan, savehumanity, screams, shit, sickfilth, slap, slapsroof, sneakyfox, spank, stroke, surprised, sword, theoffice, thesearch, trash, trigger, tweet, ugly, unpopular, violence, violentsparks, vr, walking, wanted, warp, whodidthis, whothisis, yomomma, youtube
+from assets.endpoints import underthetable, hell, dominos, johnoliver, bateman, abandon, aborted, affect, airpods, america, armor, balloon, bed, bongocat, boo, brain, brazzers, byemom, cancer, changemymind, cheating, citation, communism, confusedcat, corporate, crab, cry, dab, dank, deepfry, delete, disability, doglemon, door, dream, egg, emergencymeeting, excuseme, expanddong, expandingwwe, facts, failure, fakenews, farmer, fedora, floor, fuck, garfield, gay, godwhy, goggles, hitler, humansgood, inator, invert, ipad, jail, justpretending, keepurdistance, kimborder, knowyourlocation, kowalski, laid, letmein, lick, madethis, magik, master, meme, note, nothing, obama, ohno, piccolo, plan, presentation, profile, quote, radialblur, rip, roblox, salty, satan, savehumanity, screams, shit, sickfilth, slap, slapsroof, sneakyfox, spank, stroke, surprised, sword, theoffice, thesearch, trash, trigger, tweet, ugly, unpopular, violence, violentsparks, vr, walking, wanted, warp, whodidthis, whothisis, yomomma, youtube
 
 from fastapi import APIRouter
 app = FastAPI(
@@ -426,6 +426,12 @@ async def fr(avatar_url: str):
     image_data = bateman_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="video/mp4")
 
+@app.get("/image/underthetable", tags=["Image"])
+async def shes_got_something_to_show_you(avatar_url: str):
+    table_instance = underthetable.UnderTheTable()
+    image_data = table_instance.generate([avatar_url], "", [], "")
+    return StreamingResponse(image_data, media_type="video/mp4")
+
 @app.get("/image/citation", tags=["Image"])
 async def write_a_citation(title: str, text: str, footer: str):
     citation_instance = citation.Citation
@@ -529,13 +535,6 @@ async def would_you_like_to_join(avatar_url: str):
     hell_instance = hell.Hell()
     image_data = hell_instance.generate([avatar_url], "", "", "")
     return StreamingResponse(image_data, media_type="image/png")
-
-#beemovielawyer 
-@app.get("/image/beemovielawyer", tags=["Image"])
-async def omgggg(text: str):
-    bee_instance = beemovielawyer.BeeMovieLawyer()
-    image_data = bee_instance.generate("", f"{text}", "", "")
-    return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/jeyy/matrix", tags=["Jeyy"])
 async def put_someone_in_the_matrix(avatar_url: str):
