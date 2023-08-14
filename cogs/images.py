@@ -367,12 +367,47 @@ class Images(commands.Cog, name="images"):
             async with session.get(f"https://nyanstreamer.lol/image/bateman?avatar_url={avatar_url}") as response:
                 if response.status == 200:
                     image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="batman.mp4"))
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="bateman.mp4"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
-        
+    
+    #john oliver command
+    @commands.hybrid_command(
+        name="johnoliver",
+        description="he wants to show you something",
+    )
+    async def johnoliver(self, ctx: Context, user: discord.User):
+        # make sure the text doesnt exceed the limit of 50
+        avatar_url = str(user.avatar.url)
+        await ctx.defer()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/johnoliver?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="johnoliver.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+    
+    #dominos command, takes in text1 and text2
+    @commands.hybrid_command(
+        name="dominos",
+        description="dominos",
+    )
+    async def dominos(self, ctx: Context, text1: str, text2: str):
+        await ctx.defer()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/dominos?text1={text1}&text2={text2}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="dominos.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
     
     @commands.hybrid_command(
         name="citation",
