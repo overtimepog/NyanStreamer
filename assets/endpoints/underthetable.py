@@ -33,7 +33,7 @@ class UnderTheTable:
 
         # Process frames concurrently
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            frames = list(executor.map(lambda frame: Image.fromarray(self.replace_green_screen(np.array(frame), avatar_np)), video.iter_frames()))
+            frames = list(executor.map(lambda frame: self.replace_green_screen(np.array(frame), avatar_np), video.iter_frames()))
 
         # Convert frames back to video
         final_video = ImageSequenceClip(frames, fps=video.fps)
