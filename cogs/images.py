@@ -428,8 +428,6 @@ class Images(commands.Cog, name="images"):
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
-                    
-    
     
     #dominos command, takes in text1 and text2
     @commands.hybrid_command(

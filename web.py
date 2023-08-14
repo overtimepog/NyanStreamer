@@ -521,13 +521,13 @@ async def send_a_user_to_jail(avatar_url: str):
 @app.get("/image/trash", tags=["Image"])
 async def put_em_in_the_trash(avatar_url: str):
     trash_instance = trash.Trash()
-    image_data = trash_instance.generate(avatar_url, "", "", "")
+    image_data = trash_instance.generate([avatar_url], "", "", "")
     return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/hell", tags=["Image"])
 async def would_you_like_to_join(avatar_url: str):
     hell_instance = hell.Hell()
-    image_data = hell_instance.generate(avatar_url, "", "", "")
+    image_data = hell_instance.generate([avatar_url], "", "", "")
     return StreamingResponse(image_data, media_type="image/png")
 
 
