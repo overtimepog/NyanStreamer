@@ -5,6 +5,7 @@ import numpy as np
 import uuid
 import os
 from io import BytesIO
+import concurrent.futures
 
 class UnderTheTable:
     """
@@ -13,6 +14,12 @@ class UnderTheTable:
     Replace the green screen in the video with a user's avatar.
     """
     params = ['avatar0']
+
+    def replace_green_screen(self, frame, avatar_np):
+        red, green, blue = frame[:,:,0], frame[:,:,1], frame[:,:,2]
+        mask = (green > 100) & (red < 75) & (blue < 75)
+        frame[mask] = avatar_np[mask]
+        return frame
 
     def generate(self, avatars, text, usernames, kwargs):
         name = uuid.uuid4().hex + '.mp4'
@@ -23,18 +30,13 @@ class UnderTheTable:
         # Fetch the avatar using http.get_image and convert it to a PIL Image
         avatar_img = http.get_image(avatars[0]).convert('RGB').resize(video.size)
         avatar_np = np.array(avatar_img)  # Convert PIL Image to numpy array
-        
-        def replace_green_screen(frame):
-            output_frame = frame.copy()  # Create a writable copy
-            for x in range(output_frame.shape[1]):
-                for y in range(output_frame.shape[0]):
-                    red, green, blue = output_frame[y, x]
-                    if green > 100 and red < 75 and blue < 75:
-                        output_frame[y, x] = avatar_np[y, x]  # Now, avatar_np is also a 3D array
-            return output_frame
 
-        # Apply the replacement function to each frame of the video
-        final_video = video.fl_image(replace_green_screen)
+        # Process frames concurrently
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            frames = list(executor.map(lambda frame: self.replace_green_screen(np.array(frame), avatar_np), video.iter_frames()))
+
+        # Convert frames back to video
+        final_video = VideoFileClip(frames, fps=video.fps)
 
         # Write the video to a temporary file
         final_video.write_videofile(name, threads=4, preset='superfast', verbose=False)
