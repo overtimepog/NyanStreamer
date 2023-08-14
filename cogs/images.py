@@ -516,7 +516,23 @@ class Images(commands.Cog, name="images"):
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
-
+                    
+    @commands.hybrid_command(
+        name="fear",
+        description="I fear no man"
+    )
+    async def fear(self, ctx: Context, user: discord.User):
+        avatar_url = user.avatar.url
+        await ctx.defer()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/fear?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="fear.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
     #eject command
     @commands.hybrid_command(
         name="eject",
