@@ -326,7 +326,7 @@ class Images(commands.Cog, name="images"):
     description="Get an image or video based on type"
     )
     async def image(self, ctx: Context, user: discord.User, image_type: str):
-        valid_image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods"]
+        valid_image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail"]
         if image_type not in valid_image_types:
             await ctx.send(f"Invalid image type. Valid options are: {', '.join(valid_image_types)}", ephemeral=True)
             return
@@ -358,7 +358,7 @@ class Images(commands.Cog, name="images"):
     @image.autocomplete("image_type")
     async def image_autocomplete(self, ctx: Context, argument):
         choices = []
-        image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods"]
+        image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail"]
         for img_type in sorted(image_types):
             if img_type.startswith(argument.lower()):
                 choices.append(app_commands.Choice(name=img_type, value=img_type))
@@ -498,25 +498,7 @@ class Images(commands.Cog, name="images"):
             if format.startswith(argument.lower()):
                 choices.append(app_commands.Choice(name=format, value=format))
         return choices[:25]
-    
-    @commands.hybrid_command(
-        name="jail",
-        description="go to jail",
-    )
-    async def jail(self, ctx: Context, user: discord.User):
-        avatar_url = str(user.avatar.url)
-        await ctx.defer()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/jail?avatar_url={avatar_url}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="jail.png"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)
         
-
     @commands.hybrid_command(
         name="gay",
         description="lit",
