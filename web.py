@@ -443,7 +443,7 @@ async def john_oliver_wants_to_show_you_something(avatar_url: str):
 @app.get("/image/dominos", tags=["Image"])
 async def this_is_what_happends(text1: str, text2: str):
     dominos_instance = dominos.Dominoes
-    image_data = dominos_instance.generate("", "", [text1, text2], [], "")
+    image_data = dominos_instance.generate("", "", f"{text1}, {text2}", [], "")
     return StreamingResponse(image_data, media_type="image/png")
         
 @app.get("/image/eject", tags=["Image", "API Key Needed"])
