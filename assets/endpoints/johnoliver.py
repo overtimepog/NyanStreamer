@@ -16,7 +16,7 @@ class JohnOliver:
         main_img = Image.open('assets/assets/johnoliver/johnoliver.png')
         
         # Fetch the user's avatar using http.get_image and convert it to a PIL Image
-        avatar_img = Image.open(http.get_image(avatars[0]))
+        avatar_img = http.get_image(avatars[0]).convert('RGBA')
         
         # Resize the avatar to fit the specified coordinates
         avatar_img = avatar_img.resize((378 - 54, 293 - 50))
