@@ -566,6 +566,12 @@ async def spank_a_user(avatar_url1: str, avatar_url2: str):
     image_data = spank_instance.generate([avatar_url1, avatar_url2], "", "", "")
     return StreamingResponse(image_data, media_type="image/png")
 
+@app.get("/image/fedora", tags=["Image"])
+async def give_a_user_a_fedora(avatar_url: str):
+    fedora_instance = fedora.Fedora()
+    image_data = fedora_instance.generate([avatar_url], "", "", "")
+    return StreamingResponse(image_data, media_type="image/png") 
+
 @app.get("/image/fear", tags=["Image"])
 async def i_fear_no_man(avatar_url: str):
     fear_instance = fear.Fear()
