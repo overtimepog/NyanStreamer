@@ -434,9 +434,9 @@ async def write_a_citation(title: str, text: str, footer: str):
 
 #john oliver
 @app.get("/image/johnoliver", tags=["Image"])
-async def john_oliver_wants_to_show_you_something(avatar_url: str):
+async def john_oliver_wants_to_show_you_something(avatar_url: str, text: str):
     johnoliver_instance = johnoliver.JohnOliver
-    image_data = johnoliver_instance.generate("", [avatar_url], "", [], "")
+    image_data = johnoliver_instance.generate("", [avatar_url], f"{text}", [], "")
     return StreamingResponse(image_data, media_type="image/png")
 
 #dominos
