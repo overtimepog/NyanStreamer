@@ -25,7 +25,9 @@ class BeeMovieLawyer:
 
     def generate(self, avatars, text, usernames, kwargs):
         # Load the GIF
-        gif = [frame.copy() for frame in ImageSequence.Iterator(Image.open('assets/assets/beemovielawyer/beemovielawyer.gif'))]
+        original_gif = Image.open('assets/assets/beemovielawyer/beemovielawyer.gif')
+        duration = original_gif.info['duration']
+        gif = [frame.copy() for frame in ImageSequence.Iterator(original_gif)]
         
         # Create a drawing context
         frames = []
@@ -72,6 +74,6 @@ class BeeMovieLawyer:
 
         # Convert the frames to bytes and return
         b = BytesIO()
-        frames[0].save(b, format='GIF', append_images=frames[1:], save_all=True, duration=gif.info['duration'], loop=0)
+        frames[0].save(b, format='GIF', append_images=frames[1:], save_all=True, duration=duration, loop=0)
         b.seek(0)
         return b
