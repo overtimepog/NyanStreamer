@@ -24,6 +24,7 @@ import json
 import random
 from io import BytesIO
 from petpetgif import petpet
+from fastapi.openapi.utils import get_openapi
 
 from jeyyapi import JeyyAPIClient
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
@@ -36,6 +37,23 @@ app = FastAPI(
     description="The Best and Biggest Meme Gen API",
     version="0.0.2",
 )
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="Nyan Streamer",
+        version="0.0.2",
+        description="The Best and Biggest Meme Gen API",
+        routes=app.routes,
+    )
+    # Sort the paths
+    openapi_schema["paths"] = dict(sorted(openapi_schema["paths"].items()))
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
+
 
 def format_text(text):
     replacements = {
