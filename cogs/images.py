@@ -447,6 +447,25 @@ class Images(commands.Cog, name="images"):
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
     
+    #fraud
+    @commands.hybrid_command(
+        name="fraud",
+        description="im commiting fraud",
+    )
+    async def fraud(self, ctx: Context, user: discord.User):
+        # make sure the text doesnt exceed the limit of 50
+        avatar_url = str(user.avatar.url)
+        await ctx.defer()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/fraud?avatar_url={avatar_url}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="fraud.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+    
     #dominos command, takes in text1 and text2
     @commands.hybrid_command(
         name="dominos",
