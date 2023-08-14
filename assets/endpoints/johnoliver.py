@@ -28,7 +28,7 @@ class JohnOliver:
         draw = ImageDraw.Draw(main_img)
         font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', 30)  # Adjust font size and path as needed
         text_width, text_height = draw.textsize(text, font=font)
-        text_position = ((main_img.width - text_width) // 2, main_img.height - text_height - 30)
+        text_position = ((main_img.width - text_width) // 2, main_img.height - text_height - 20)
         draw.text(text_position, text, font=font, fill="white")
         
         # Convert the image to bytes and return
