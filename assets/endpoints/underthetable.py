@@ -1,5 +1,5 @@
 from assets.utils import http
-from moviepy.editor import VideoFileClip
+from moviepy.editor import VideoFileClip, ImageSequenceClip
 from PIL import Image
 import numpy as np
 import uuid
@@ -33,10 +33,10 @@ class UnderTheTable:
 
         # Process frames concurrently
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            frames = list(executor.map(lambda frame: self.replace_green_screen(np.array(frame), avatar_np), video.iter_frames()))
+            frames = list(executor.map(lambda frame: Image.fromarray(self.replace_green_screen(np.array(frame), avatar_np)), video.iter_frames()))
 
         # Convert frames back to video
-        final_video = VideoFileClip(frames, fps=video.fps)
+        final_video = ImageSequenceClip(frames, fps=video.fps)
 
         # Write the video to a temporary file
         final_video.write_videofile(name, threads=4, preset='superfast', verbose=False)
