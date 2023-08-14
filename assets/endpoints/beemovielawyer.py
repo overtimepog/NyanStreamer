@@ -25,7 +25,7 @@ class BeeMovieLawyer:
 
     def generate(self, avatars, text, usernames, kwargs):
         # Load the GIF
-        gif = Image.open('assets/assets/beemovielawyer/beemovielawyer.gif')
+        gif = [frame.copy() for frame in ImageSequence.Iterator(Image.open('assets/assets/beemovielawyer/beemovielawyer.gif'))]
         
         # Create a drawing context
         frames = []
@@ -68,7 +68,7 @@ class BeeMovieLawyer:
 
         # Use concurrent futures for parallel processing of frames
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            frames = list(executor.map(lambda frame: self.draw_text_on_frame(frame, font, lines, max_width, y_start), ImageSequence.Iterator(gif)))
+            frames = list(executor.map(lambda frame: self.draw_text_on_frame(frame, font, lines, max_width, y_start), gif))
 
         # Convert the frames to bytes and return
         b = BytesIO()
