@@ -465,6 +465,24 @@ class Images(commands.Cog, name="images"):
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
+
+    @commands.hybrid_command(
+        name="spank",
+        description="naughty",
+    )
+    async def spank(self, ctx: Context, user: discord.User):
+        avatar_url1 = ctx.author.avatar.url
+        avatar_url2 = user.avatar.url
+        await ctx.defer()       
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/spank?avatar_url1={avatar_url1}&avatar_url2={avatar_url2}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="spank.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
     
     #dominos command, takes in text1 and text2
     @commands.hybrid_command(

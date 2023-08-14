@@ -560,6 +560,18 @@ async def would_you_like_to_join(avatar_url: str):
     image_data = hell_instance.generate([avatar_url], "", "", "")
     return StreamingResponse(image_data, media_type="image/png")
 
+@app.get("/image/spank", tags=["Image"])
+async def spank_a_user(avatar_url1: str, avatar_url2: str):
+    spank_instance = spank.Spank()
+    image_data = spank_instance.generate([avatar_url1, avatar_url2], "", "", "")
+    return StreamingResponse(image_data, media_type="image/png")
+
+@app.get("/image/master", tags=["Image"])
+async def yes_master(text1: str, text2: str, text3: str):
+    master_instance = master.Master()
+    image_data = master_instance.generate("", f'{text1}, {text2}, {text3}', "", "")
+    return StreamingResponse(image_data, media_type="image/png")
+
 @app.get("/jeyy/matrix", tags=["Jeyy"])
 async def put_someone_in_the_matrix(avatar_url: str):
     image_data = await client.matrix(avatar_url)
