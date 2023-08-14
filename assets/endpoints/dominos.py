@@ -18,14 +18,27 @@ class Dominoes:
         # Create a drawing context
         draw = ImageDraw.Draw(main_img)
         
-        # Define the font for the text using the provided path
-        font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', 30)  # Adjust font size as needed
-        
         # Extract text1 and text2 from the text parameter
         text1, text2 = text.split(',')
         
-        # Place text1 and text2 at the specified coordinates
+        # Define the font for the text using the provided path and adjust its size to fit the area
+        font_size = 30
+        font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', font_size)
+        while draw.textsize(text1, font=font)[0] > (771 - 612) and font_size > 10:
+            font_size -= 1
+            font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', font_size)
+        
+        # Place text1 at the specified coordinates
         draw.text((612, 357), text1, font=font, fill="white")
+        
+        # Adjust font size for text2
+        font_size = 30
+        font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', font_size)
+        while draw.textsize(text2, font=font)[0] > (162 - 30) and font_size > 10:
+            font_size -= 1
+            font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', font_size)
+        
+        # Place text2 at the specified coordinates
         draw.text((30, 41), text2, font=font, fill="white")
         
         # Convert the image to bytes and return
