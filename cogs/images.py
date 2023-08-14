@@ -392,97 +392,47 @@ class Images(commands.Cog, name="images"):
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
                     
-    #trash
     @commands.hybrid_command(
-        name="trash",
-        description="put em in the trash",
+    name="image",
+    description="Get an image or video based on type"
     )
-    async def trash(self, ctx: Context, user: discord.User):
-        # make sure the text doesnt exceed the limit of 50
-        avatar_url = str(user.avatar.url)
+    async def image(self, ctx: Context, user: discord.User, image_type: str):
+        valid_image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash"]
+        if image_type not in valid_image_types:
+            await ctx.send(f"Invalid image type. Valid options are: {', '.join(valid_image_types)}", ephemeral=True)
+            return
+
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/trash?avatar_url={avatar_url}") as response:
+            if image_type == "spank":
+                avatar_url1 = ctx.author.avatar.url
+                avatar_url2 = user.avatar.url
+                url = f"https://nyanstreamer.lol/image/spank?avatar_url1={avatar_url1}&avatar_url2={avatar_url2}"
+            else:
+                avatar_url = str(user.avatar.url) # Ensure the text doesn't exceed the limit of 50
+                url = f"https://nyanstreamer.lol/image/{image_type}?avatar_url={avatar_url}"
+
+            async with session.get(url) as response:
                 if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="trash.png"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)
-                    
-    @commands.hybrid_command(
-        name="hell",
-        description="would you like to join me",
-    )
-    async def hell(self, ctx: Context, user: discord.User):
-        # make sure the text doesnt exceed the limit of 50
-        avatar_url = str(user.avatar.url)
-        await ctx.defer()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/hell?avatar_url={avatar_url}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="hell.png"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)
-                    
-    @commands.hybrid_command(
-        name="underthetable",
-        description="shes got something to show you",
-    )
-    async def hell(self, ctx: Context, user: discord.User):
-        # make sure the text doesnt exceed the limit of 50
-        avatar_url = str(user.avatar.url)
-        await ctx.defer()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/underthetable?avatar_url={avatar_url}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="underthetable.mp4"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)
-    
-    #fraud
-    @commands.hybrid_command(
-        name="fraud",
-        description="im commiting fraud",
-    )
-    async def fraud(self, ctx: Context, user: discord.User):
-        # make sure the text doesnt exceed the limit of 50
-        avatar_url = str(user.avatar.url)
-        await ctx.defer()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/fraud?avatar_url={avatar_url}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="fraud.png"))
+                    data = await response.read()
+                    if image_type == "underthetable":
+                        await ctx.send(file=discord.File(io.BytesIO(data), filename="underthetable.mp4"))
+                    else:
+                        await ctx.send(file=discord.File(io.BytesIO(data), filename=f"{image_type}.png"))
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
 
-    @commands.hybrid_command(
-        name="spank",
-        description="naughty",
-    )
-    async def spank(self, ctx: Context, user: discord.User):
-        avatar_url1 = ctx.author.avatar.url
-        avatar_url2 = user.avatar.url
-        await ctx.defer()       
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/spank?avatar_url1={avatar_url1}&avatar_url2={avatar_url2}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="spank.png"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+    @image.autocomplete("image_type")
+    async def image_autocomplete(self, ctx: Context, argument):
+        choices = []
+        for img_type in ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash"]:
+            if img_type.startswith(argument.lower()):
+                choices.append(app_commands.Choice(name=img_type, value=img_type))
+        return choices[:25]
+
+
     
     #dominos command, takes in text1 and text2
     @commands.hybrid_command(
@@ -516,40 +466,7 @@ class Images(commands.Cog, name="images"):
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
-                    
-    @commands.hybrid_command(
-        name="fear",
-        description="I fear no man"
-    )
-    async def fear(self, ctx: Context, user: discord.User):
-        avatar_url = user.avatar.url
-        await ctx.defer()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/fear?avatar_url={avatar_url}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="fear.png"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)
-                    
-    @commands.hybrid_command(
-        name="fedora",
-        description="I want one"
-    )
-    async def fear(self, ctx: Context, user: discord.User):
-        avatar_url = user.avatar.url
-        await ctx.defer()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/fedora?avatar_url={avatar_url}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="fedora.png"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+
     #eject command
     @commands.hybrid_command(
         name="eject",
