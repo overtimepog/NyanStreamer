@@ -55,6 +55,7 @@ class BeeMovieLawyer:
         y_start = (max_height - len(lines) * font.getsize(lines[0])[1]) // 2
 
         for frame in ImageSequence.Iterator(gif):
+            frame = frame.convert('RGB')  # Convert frame to RGB mode
             d = ImageDraw.Draw(frame)
             y = y_start
             for line in lines:
