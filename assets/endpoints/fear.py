@@ -7,7 +7,7 @@ class Fear:
     This endpoint returns an image with the user's avatar placed at specific coordinates.
     Ensure your application can handle the image format.
     Malformed requests count against your ratelimit for this endpoint.
-    Place the user's avatar on an image at the coordinates 1,272,480,535.
+    Place the user's avatar on an image at the coordinates 0,268,482,539.
     """
     params = ['avatar0']
 
@@ -19,10 +19,10 @@ class Fear:
         avatar_img = http.get_image(avatars[0]).convert('RGBA')
         
         # Resize the avatar to fit the specified coordinates
-        avatar_img = avatar_img.resize((480 - 1, 535 - 272))
+        avatar_img = avatar_img.resize((482, 539 - 268))
         
         # Paste the avatar onto the main image
-        main_img.paste(avatar_img, (1, 272), avatar_img if avatar_img.mode == 'RGBA' else None)
+        main_img.paste(avatar_img, (0, 268), avatar_img if avatar_img.mode == 'RGBA' else None)
         
         # Convert the image to bytes and return
         b = BytesIO()
