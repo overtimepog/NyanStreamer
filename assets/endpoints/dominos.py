@@ -24,22 +24,22 @@ class Dominoes:
         # Define the font for the text using the provided path and adjust its size to fit the area
         font_size = 30
         font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', font_size)
-        while draw.textsize(text1, font=font)[0] > (771 - 612) and font_size > 10:
+        while draw.textsize(text1, font=font)[0] > (779 - 531) and font_size > 10:
             font_size -= 1
             font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', font_size)
         
         # Place text1 at the specified coordinates
-        draw.text((612, 357), text1, font=font, fill="white")
+        draw.text((531, 352), text1, font=font, fill="white")
         
         # Adjust font size for text2
         font_size = 30
         font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', font_size)
-        while draw.textsize(text2, font=font)[0] > (162 - 30) and font_size > 10:
+        while draw.textsize(text2, font=font)[0] > (390 - 22) and font_size > 10:
             font_size -= 1
             font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', font_size)
         
         # Place text2 at the specified coordinates
-        draw.text((30, 41), text2, font=font, fill="white")
+        draw.text((22, 10), text2, font=font, fill="white")
         
         # Convert the image to bytes and return
         b = BytesIO()
