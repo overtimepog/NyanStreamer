@@ -14,10 +14,14 @@ import hashlib
 import time
 import concurrent.futures
 
+print("Imports completed successfully.")
+
 class ModelViewer(ShowBase):
     def __init__(self, model_path, image_url, save_path, frames, filename,
                  model_pos=(0, 0, 0), model_hpr=(0, 96, 25), 
                  cam_pos=(0, -3, 0)):
+
+        print("Initializing ModelViewer...")
 
         loadPrcFileData("", "window-type offscreen")
         loadPrcFileData("", "audio-library-name null")
@@ -31,6 +35,8 @@ class ModelViewer(ShowBase):
         self.rotation_speed = 360.0 / self.total_frames
         self.filename = filename
 
+        print(f"Model path set to: {self.model_path}")
+
         if self.model_path.endswith('.obj'):
             egg_path = self.model_path.replace('.obj', '.egg')
             subprocess.run(['obj2egg', '-o', egg_path, self.model_path])
@@ -43,6 +49,8 @@ class ModelViewer(ShowBase):
         if not self.model:
             print("Failed to load the model.")
             return
+
+        print("Model loaded successfully!")
 
         min_point, max_point = self.model.getTightBounds()
         max_dim = max_point - min_point
@@ -68,11 +76,16 @@ class ModelViewer(ShowBase):
         self.model.reparentTo(self.render)
         self.cam.setPos(*cam_pos)
 
+        print("Texture and model positioning done.")
+
         self.setup_lighting()
         self.setup_offscreen_buffer()
         self.taskMgr.add(self.spin_task, "spin_task")
 
+        print("Initialization of ModelViewer completed.")
+
     def setup_lighting(self):
+        print("Setting up lighting...")
         from panda3d.core import AmbientLight, DirectionalLight
         ambient = AmbientLight("ambient_light")
         ambient.setColor((0.2, 0.2, 0.2, 1))
@@ -83,8 +96,10 @@ class ModelViewer(ShowBase):
         directional.setColor((1, 1, 1, 1))
         directional_np = self.render.attachNewNode(directional)
         self.render.setLight(directional_np)
+        print("Lighting setup completed.")
 
     def setup_offscreen_buffer(self):
+        print("Setting up offscreen buffer...")
         fb_props = FrameBufferProperties()
         fb_props.setRgbaBits(8, 8, 8, 8)
         fb_props.setDepthBits(1)
@@ -94,8 +109,10 @@ class ModelViewer(ShowBase):
         self.buffer.setClearColor((1, 1, 1, 1))
         dr = self.buffer.makeDisplayRegion()
         dr.setCamera(self.cam)
+        print("Offscreen buffer setup completed.")
 
     def remove_background(self, input_path, output_path):
+        print(f"Removing background for {input_path}...")
         cmd = [
             'convert', input_path, 
             '-fuzz', '10%',
@@ -103,8 +120,10 @@ class ModelViewer(ShowBase):
             output_path
         ]
         subprocess.run(cmd)
+        print(f"Background removed for {input_path}.")
 
     def capture_frame(self, rotation_angle):
+        print(f"Capturing frame for rotation angle: {rotation_angle}...")
         self.model.setH(rotation_angle)
         frame_path = os.path.join("assets/frames", f"frame_{rotation_angle}.png")
         img = PNMImage()
@@ -112,9 +131,12 @@ class ModelViewer(ShowBase):
         img.write(frame_path)
         no_bg_path = os.path.join("assets/frames", f"frame_no_bg_{rotation_angle}.png")
         self.remove_background(frame_path, no_bg_path)
+        print(f"Frame {rotation_angle // self.rotation_speed} done.")  # This line is added
         return no_bg_path
 
+
     def spin_task(self, task):
+        print(f"Running spin task. Frame counter: {self.frame_counter}")
         if self.frame_counter < self.total_frames:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 rotation_angles = [i * self.rotation_speed for i in range(self.total_frames)]
@@ -136,6 +158,7 @@ class ModelViewer(ShowBase):
             return task.cont
 
 def spinning_chair(model_path, image_url, frames, filename, model_pos=(0, 0, 0), model_hpr=(0, 0, 0), cam_pos=(0, -3, 0)):
+    print("Starting spinning_chair function...")
     hash_object = hashlib.md5(image_url.encode())
     hex_dig = hash_object.hexdigest()
     timestamp = int(time.time())
@@ -144,8 +167,10 @@ def spinning_chair(model_path, image_url, frames, filename, model_pos=(0, 0, 0),
     app.run()
     if os.path.exists(save_path):
         os.remove(save_path)
+    print("spinning_chair function completed.")
 
 if __name__ == "__main__":
+    print("Script started.")
     model_path = sys.argv[1]
     image_url = sys.argv[2]
     frames = int(sys.argv[3])
@@ -154,3 +179,4 @@ if __name__ == "__main__":
     model_hpr = tuple(map(float, sys.argv[6].split(',')))
     cam_pos = tuple(map(float, sys.argv[7].split(',')))
     spinning_chair(model_path, image_url, frames, filename, model_pos, model_hpr, cam_pos)
+    print("Script completed.")
