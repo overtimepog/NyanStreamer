@@ -262,7 +262,7 @@ class Images(commands.Cog, name="images"):
     description="Get an image or video based on type"
     )
     async def image(self, ctx: Context, user: discord.User, image_type: str):
-        valid_image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "dab", "affect", "aborted", "communism"]
+        valid_image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "dab", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
         if image_type not in valid_image_types:
             await ctx.send(f"Invalid image type. Valid options are: {', '.join(valid_image_types)}", ephemeral=True)
             return
@@ -305,7 +305,7 @@ class Images(commands.Cog, name="images"):
     @image.autocomplete("image_type")
     async def image_autocomplete(self, ctx: Context, argument):
         choices = []
-        image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "affect", "aborted", "communism"]
+        image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
         for img_type in sorted(image_types):
             if img_type.startswith(argument.lower()):
                 choices.append(app_commands.Choice(name=img_type, value=img_type))
@@ -496,20 +496,6 @@ class Images(commands.Cog, name="images"):
             await ctx.send(file=discord.File(data, 'genius.gif'))
 
     @commands.hybrid_command(
-        name="bongo_cat",
-        description="bongo catify an image or user",
-    )
-    async def bongo_cat(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        bongo_cat_instance = bongocat.BongoCat()
-        image_url = str(user.avatar.url)
-
-        # Generate the deep fried image
-        image = await self.bot.loop.run_in_executor(self.executor, bongo_cat_instance.generate, [image_url], "", [], "")
-
-        await ctx.send(file=discord.File(fp=image, filename="bongocat.png"))
-
-    @commands.hybrid_command(
         name="tweet",
         description="tweet something",
     )
@@ -525,28 +511,6 @@ class Images(commands.Cog, name="images"):
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
-
-    @commands.hybrid_command(
-        name="wanted",
-        description="just kidding nobody wants you",
-    )
-    async def wanted(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        wanted_instance = wanted.Wanted()
-        image = await self.bot.loop.run_in_executor(self.executor, wanted_instance.generate, [user.avatar.url], "", [], "")
-        # send the image
-        await ctx.send(file=File(fp=image, filename="wanted.png"))
-
-    @commands.hybrid_command(
-        name="whodidthis",
-        description="who did this",
-    )
-    async def whodidthis(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        whodidthis_instance = whodidthis.Whodidthis()
-        image = await self.bot.loop.run_in_executor(self.executor, whodidthis_instance.generate, [user.avatar.url], "", [], "")
-        # send the image
-        await ctx.send(file=File(fp=image, filename="whodidthis.png"))
 
     @commands.hybrid_command(
         name="whothisis",
