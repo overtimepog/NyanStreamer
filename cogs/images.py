@@ -90,43 +90,7 @@ class Images(commands.Cog, name="images"):
                     # Handle non-image responses here
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
-        
-    @commands.hybrid_command(
-        name="aborted",
-        description="aborted mission",
-    )
-    async def aborted(self, ctx: Context, user: discord.User):
-        #make an api call to the api
-        avatar_url = str(user.avatar.url)
-        await ctx.defer()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/aborted?avatar_url={avatar_url}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="abandon.png"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)      
-
-    @commands.hybrid_command(
-        name="affect",
-        description="no this doesnt affect my baby",
-    )
-    async def affect(self, ctx: Context, user: discord.User):
-        avatar_url = str(user.avatar.url)
-        
-        await ctx.defer()
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://nyanstreamer.lol/image/affect?avatar_url={avatar_url}") as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="affect.png"))
-                else:
-                    # Handle non-image responses here
-                    text_data = await response.text()
-                    await ctx.send(f"Error: {text_data}", ephemeral=True)
-
+    
     @commands.hybrid_command(
     name="armor",
     description="nothing gets through here",
@@ -273,34 +237,6 @@ class Images(commands.Cog, name="images"):
                 return await ctx.send('Could not Generate Image... the Character you provided is not valid')
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'undertale.gif'))
-
-
-    @commands.hybrid_command(
-        name="dab",
-        description="dab on them haters",
-    )
-    async def dab(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        dab_instance = dab.Dab()
-        image = await self.bot.loop.run_in_executor(self.executor, dab_instance.generate, [user.avatar.url], "", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="dab.png"))
-
-
-    @commands.hybrid_command(
-        name="deepfry",
-        description="deepfry an image or user",
-    )
-    async def deepfry(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        fry_instance = deepfry.DeepFry()
-        image_url = str(user.avatar.url)
-
-        # Generate the deep fried image
-        image = await self.bot.loop.run_in_executor(self.executor, fry_instance.generate, [image_url], "", [], "")
-
-        await ctx.send(file=discord.File(fp=image, filename="deepfried.png"))
     
     #john oliver command
     @commands.hybrid_command(
@@ -326,7 +262,7 @@ class Images(commands.Cog, name="images"):
     description="Get an image or video based on type"
     )
     async def image(self, ctx: Context, user: discord.User, image_type: str):
-        valid_image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail"]
+        valid_image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "dab", "affect", "aborted", "communism"]
         if image_type not in valid_image_types:
             await ctx.send(f"Invalid image type. Valid options are: {', '.join(valid_image_types)}", ephemeral=True)
             return
@@ -344,10 +280,20 @@ class Images(commands.Cog, name="images"):
             async with session.get(url) as response:
                 if response.status == 200:
                     data = await response.read()
-                    if image_type == "underthetable":
-                        await ctx.send(file=discord.File(io.BytesIO(data), filename="underthetable.mp4"))
-                    elif image_type == "bateman":
-                        await ctx.send(file=discord.File(io.BytesIO(data), filename="bateman.mp4"))
+
+                    # Check the magic numbers to determine the image type
+                    if data[:3] == b"GIF":
+                        file_extension = "gif"
+                    elif data[:8] == b"\x89PNG\r\n\x1a\n":
+                        file_extension = "png"
+                    elif data[:3] == b"ID3" or data[:4] == b"\x00\x00\x00\x1Cftyp":
+                        file_extension = "mp4"
+                    else:
+                        file_extension = "unknown"
+
+                    # Use the determined file extension or fallback to the provided image_type
+                    if file_extension != "unknown":
+                        await ctx.send(file=discord.File(io.BytesIO(data), filename=f"{image_type}.{file_extension}"))
                     else:
                         await ctx.send(file=discord.File(io.BytesIO(data), filename=f"{image_type}.png"))
                 else:
@@ -355,10 +301,11 @@ class Images(commands.Cog, name="images"):
                     text_data = await response.text()
                     await ctx.send(f"Error: {text_data}", ephemeral=True)
 
+
     @image.autocomplete("image_type")
     async def image_autocomplete(self, ctx: Context, argument):
         choices = []
-        image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail"]
+        image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "affect", "aborted", "communism"]
         for img_type in sorted(image_types):
             if img_type.startswith(argument.lower()):
                 choices.append(app_commands.Choice(name=img_type, value=img_type))
@@ -442,32 +389,6 @@ class Images(commands.Cog, name="images"):
         change_my_mind_instance = changemymind.ChangeMyMind()
         image = await self.bot.loop.run_in_executor(self.executor, change_my_mind_instance.generate, [], text, [], "")
         await ctx.send(file=discord.File(fp=image, filename="changemymind.png"))
-
-    @commands.hybrid_command(
-        name="communism",
-        description="I serve the soviet union",
-    )
-    async def communism(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        communism_instance = communism.Communism()
-        image = await self.bot.loop.run_in_executor(self.executor, communism_instance.generate, [user.avatar.url], "", [], "")
-
-        # send the image
-        await ctx.send(file=File(fp=image, filename="communism.gif"))
-
-    @commands.hybrid_command(
-        name="delete",
-        description="delete a user",
-    )
-    async def delete(self, ctx: Context, user: discord.User):
-        await ctx.defer()
-        delete_instance = delete.Delete()
-        image_url = str(user.avatar.url)
-
-        # Generate the deep fried image
-        image = await self.bot.loop.run_in_executor(self.executor, delete_instance.generate, [image_url], "", [], "")
-
-        await ctx.send(file=discord.File(fp=image, filename="delete.png"))
 
     @commands.hybrid_command(
         name="gru",

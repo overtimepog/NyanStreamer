@@ -379,6 +379,26 @@ async def give_user_airpods(avatar_url: str):
     image_data = airpods_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="image/gif")
 
+@app.get("/image/delete", tags=["Image"])
+async def delete_a_user(avatar_url: str):
+    delete_instance = delete.Delete()
+    image_data = delete_instance.generate([avatar_url], "", [], "")
+    return StreamingResponse(image_data, media_type="image/png")
+
+#deepfry
+@app.get("/image/deepfry", tags=["Image"])
+async def deepfry_a_user(avatar_url: str):
+    deepfry_instance = deepfry.DeepFry()
+    image_data = deepfry_instance.generate([avatar_url], "", [], "")
+    return StreamingResponse(image_data, media_type="image/png")
+
+#dab
+@app.get("/image/dab", tags=["Image"])
+async def deepfry_a_user(avatar_url: str):
+    dab_instance = dab.Dab()
+    image_data = dab_instance.generate([avatar_url], "", [], "")
+    return StreamingResponse(image_data, media_type="image/png")
+
 @app.get("/image/armor", tags=["Image"])
 async def armor_text(text: str):
     armor_instance = armor.Armor()
@@ -455,6 +475,13 @@ async def shes_got_something_to_show_you(avatar_url: str):
     table_instance = underthetable.UnderTheTable()
     image_data = table_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media_type="video/mp4")
+
+#communism
+@app.get("/image/communism", tags=["Image"])
+async def i_serve_the_soviet_union(avatar_url: str):
+    communism_instance = communism.Communism()
+    image_data = communism_instance.generate([avatar_url], "", [], "")
+    return StreamingResponse(image_data, media_type="image/gif")
 
 @app.get("/image/citation", tags=["Image"])
 async def write_a_citation(title: str, text: str, footer: str):
