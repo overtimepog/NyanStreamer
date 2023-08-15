@@ -262,31 +262,28 @@ class Images(commands.Cog, name="images"):
     description="Get an image or video based on type"
     )
     async def image(self, ctx: Context, user: discord.User, image_type: str):
-        valid_image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "dab", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
+        valid_image_types = ["fear", "fedora", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "dab", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
         if image_type not in valid_image_types:
             await ctx.send(f"Invalid image type. Valid options are: {', '.join(valid_image_types)}", ephemeral=True)
             return
 
         await ctx.defer()
         async with aiohttp.ClientSession() as session:
-            if image_type == "spank":
-                avatar_url1 = ctx.author.avatar.url
-                avatar_url2 = user.avatar.url
-                url = f"https://nyanstreamer.lol/image/spank?avatar_url1={avatar_url1}&avatar_url2={avatar_url2}"
-            else:
-                avatar_url = str(user.avatar.url) # Ensure the text doesn't exceed the limit of 50
-                url = f"https://nyanstreamer.lol/image/{image_type}?avatar_url={avatar_url}"
+            avatar_url = str(user.avatar.url) # Ensure the text doesn't exceed the limit of 50
+            url = f"https://nyanstreamer.lol/image/{image_type}?avatar_url={avatar_url}"
 
             async with session.get(url) as response:
                 if response.status == 200:
                     data = await response.read()
 
-                    # Check the magic numbers to determine the image type
-                    if data[:3] == b"GIF":
+                    # Check the Content-Type header to determine the file type
+                    content_type = response.headers.get('Content-Type')
+
+                    if content_type == "image/gif":
                         file_extension = "gif"
-                    elif data[:8] == b"\x89PNG\r\n\x1a\n":
+                    elif content_type == "image/png":
                         file_extension = "png"
-                    elif data[:3] == b"ID3" or data[:4] == b"\x00\x00\x00\x1Cftyp":
+                    elif content_type == "video/mp4":
                         file_extension = "mp4"
                     else:
                         file_extension = "unknown"
@@ -295,7 +292,7 @@ class Images(commands.Cog, name="images"):
                     if file_extension != "unknown":
                         await ctx.send(file=discord.File(io.BytesIO(data), filename=f"{image_type}.{file_extension}"))
                     else:
-                        await ctx.send(file=discord.File(io.BytesIO(data), filename=f"{image_type}.png"))
+                        await ctx.send(f"Unknown file format: {content_type}", ephemeral=True)
                 else:
                     # Handle non-image responses here
                     text_data = await response.text()
@@ -305,7 +302,7 @@ class Images(commands.Cog, name="images"):
     @image.autocomplete("image_type")
     async def image_autocomplete(self, ctx: Context, argument):
         choices = []
-        image_types = ["fear", "fedora", "spank", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
+        image_types = ["fear", "fedora", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
         for img_type in sorted(image_types):
             if img_type.startswith(argument.lower()):
                 choices.append(app_commands.Choice(name=img_type, value=img_type))
