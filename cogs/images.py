@@ -308,6 +308,24 @@ class Images(commands.Cog, name="images"):
                 choices.append(app_commands.Choice(name=img_type, value=img_type))
         return choices[:25]
     
+    #unpopular command takes in a user and text
+    @commands.hybrid_command(
+        name="unpopular",
+        description="Made for Dank Memer cause im better",
+    )
+    async def unpopular(self, ctx: Context, user: discord.User, text: str):
+        await ctx.defer()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://nyanstreamer.lol/image/unpopular?avatar_url={user.avatar.url}&text={text}") as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    await ctx.send(file=discord.File(io.BytesIO(image_data), filename="unpopular.png"))
+                else:
+                    # Handle non-image responses here
+                    text_data = await response.text()
+                    await ctx.send(f"Error: {text_data}", ephemeral=True)
+    
+    
     #dominos command, takes in text1 and text2
     @commands.hybrid_command(
         name="dominos",

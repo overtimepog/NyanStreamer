@@ -490,6 +490,13 @@ async def meow(avatar_url: str):
     image_data = bongocat_instance.generate([avatar_url], "", [], "")
     return StreamingResponse(image_data, media="image/png")
 
+#unpopular
+@app.get("/image/unpopular", tags=["Image"])
+async def are_you_unpopular(avatar_url: str, text: str):
+    unpopular_instance = unpopular.Unpopular()
+    image_data = unpopular_instance.generate([avatar_url], f"{text}", [], "")
+    return StreamingResponse(image_data, media="image/png")
+
 #wanted
 @app.get("/image/wanted", tags=["Image"])
 async def have_you_been_wanted(avatar_url: str):
