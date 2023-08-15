@@ -488,28 +488,28 @@ async def i_serve_the_soviet_union(avatar_url: str):
 async def meow(avatar_url: str):
     bongocat_instance = bongocat.BongoCat()
     image_data = bongocat_instance.generate([avatar_url], "", [], "")
-    return StreamingResponse(image_data, media="image/png")
+    return StreamingResponse(image_data, media_type="image/png")
 
 #unpopular
 @app.get("/image/unpopular", tags=["Image"])
 async def are_you_unpopular(avatar_url: str, text: str):
     unpopular_instance = unpopular.Unpopular()
     image_data = unpopular_instance.generate([avatar_url], f"{text}", [], "")
-    return StreamingResponse(image_data, media="image/png")
+    return StreamingResponse(image_data, media_type="image/png")
 
 #wanted
 @app.get("/image/wanted", tags=["Image"])
 async def have_you_been_wanted(avatar_url: str):
     wanted_instance = wanted.Wanted()
     image_data = wanted_instance.generate([avatar_url], "", [], "")
-    return StreamingResponse(image_data, media="image/png")
+    return StreamingResponse(image_data, media_type="image/png")
 
 #whodidthis
 @app.get("/image/whoisthis", tags=["Image"])
 async def who_did_this(avatar_url: str):
     whodidthis_instance = whodidthis.Whodidthis()
     image_data = whodidthis_instance.generate([avatar_url], "", [], "")
-    return StreamingResponse(image_data, media="image/png")
+    return StreamingResponse(image_data, media_type="image/png")
 
 @app.get("/image/citation", tags=["Image"])
 async def write_a_citation(title: str, text: str, footer: str):
