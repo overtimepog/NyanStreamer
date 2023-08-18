@@ -5853,6 +5853,13 @@ async def add_starred_message(message_id: int, guild_id: int, channel_id: int, a
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (message_id, guild_id, channel_id, author_id, star_count, starboard_entry_id, message_link, message_content, attachment_url))
         await db.commit()
+        
+#remove starred message
+async def remove_starred_message(message_id: int) -> None:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("DELETE FROM starred_messages WHERE message_id=?", (message_id,))
+        await db.commit()
 
 async def get_starred_message_by_id(message_id: int) -> dict:
     async with aiosqlite.connect("database/database.db") as db:

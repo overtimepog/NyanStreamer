@@ -324,6 +324,37 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
                 )
 
 @bot.event
+async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
+    # Ignore bot reactions
+    if user.bot:
+        return
+
+    # Fetch starboard configuration for the server
+    config = await db_manager.get_starboard_config(reaction.message.guild.id)
+    if not config:
+        return
+
+    # Check if the reaction emoji matches the star emoji set for the server
+    if str(reaction.emoji) == config["star_emoji"]:
+        # Check if the message is in the starboard
+        starred_message = await db_manager.get_starred_message_by_id(reaction.message.id)
+        if starred_message:
+            # Update the star count in the database
+            await db_manager.update_star_count(reaction.message.id, reaction.count)
+            
+            # Edit the starboard message to reflect the new star count
+            starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
+            starboard_message = await starboard_channel.fetch_message(starred_message["starboard_entry_id"])
+            new_embed = starboard_message.embeds[0]
+            new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
+            await starboard_message.edit(embed=new_embed)
+            
+            # Optionally, if the count drops below the threshold, you can delete the starboard message
+            if reaction.count < config["star_threshold"]:
+                await starboard_message.delete()
+                await db_manager.remove_starred_message(reaction.message.id)
+
+@bot.event
 async def on_command_completion(context: Context) -> None:
     """
     The code in this event is executed every time a normal command has been *successfully* executed
