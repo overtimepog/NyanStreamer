@@ -205,7 +205,7 @@ class Images(commands.Cog, name="images"):
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file... The Api is down :(')
+                return await ctx.send('Could not download file... The Api is down :(', ephemeral=True)
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, f'custom.{format}'))
 
@@ -264,7 +264,8 @@ class Images(commands.Cog, name="images"):
     async def image(self, ctx: Context, user: discord.User, image_type: str):
         valid_image_types = ["fear", "fedora", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "dab", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
         if image_type not in valid_image_types:
-            await ctx.send(f"Invalid image type. Valid options are: {', '.join(valid_image_types)}", ephemeral=True)
+            sorted_valid_image_types = sorted(valid_image_types)
+            await ctx.send(f"Invalid image type. Valid options are: {', '.join(sorted_valid_image_types)}", ephemeral=True)
             return
 
         await ctx.defer()
@@ -380,7 +381,7 @@ class Images(commands.Cog, name="images"):
         async with aiohttp.ClientSession() as session:
             async with session.get(api_url, headers=headers) as resp:
                 if resp.status != 200:
-                    return await ctx.send('Could not download file... The Api is down :(')
+                    return await ctx.send('Could not download file... The Api is down :(', ephemeral=True)
                 image_data = io.BytesIO(await resp.read())
                 await ctx.send(file=discord.File(fp=image_data, filename="eject.gif"))
 
@@ -423,7 +424,7 @@ class Images(commands.Cog, name="images"):
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file... The Api is down :(')
+                return await ctx.send('Could not download file... The Api is down :(', ephemeral=True)
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, f'gru.{format}'))
 
@@ -460,7 +461,7 @@ class Images(commands.Cog, name="images"):
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file... The Api is down :(')
+                return await ctx.send('Could not download file... The Api is down :(', ephemeral=True)
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'buzz.gif'))
 
@@ -478,7 +479,7 @@ class Images(commands.Cog, name="images"):
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file... The Api is down :(')
+                return await ctx.send('Could not download file... The Api is down :(', ephemeral=True)
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'buttons.png'))
 
@@ -506,7 +507,7 @@ class Images(commands.Cog, name="images"):
 
         async with self.session.get(url) as resp:
             if resp.status != 200:
-                return await ctx.send('Could not download file... The Api is down :(')
+                return await ctx.send('Could not download file... The Api is down :(', ephemeral=True)
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'genius.gif'))
 
