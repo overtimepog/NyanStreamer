@@ -388,7 +388,7 @@ async def on_command_error(context: Context, error) -> None:
             description=f"You can use this command again <t:{retry_time}:R>.",
             color=0xE02B2B
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
     elif isinstance(error, exceptions.UserBlacklisted):
         """
         The code here will only execute if the error is an instance of 'UserBlacklisted', which can occur when using
@@ -399,7 +399,7 @@ async def on_command_error(context: Context, error) -> None:
             description="You are blacklisted from using the bot.",
             color=0xE02B2B
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
     elif isinstance(error, exceptions.UserNotOwner):
         """
         Same as above, just for the @checks.is_owner() check.
@@ -409,7 +409,7 @@ async def on_command_error(context: Context, error) -> None:
             description="You are not the owner of the bot!",
             color=0xE02B2B
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
     elif isinstance(error, commands.MissingPermissions):
         embed = discord.Embed(
             title="Error!",
@@ -417,7 +417,7 @@ async def on_command_error(context: Context, error) -> None:
                 error.missing_permissions) + "` to execute this command!",
             color=0xE02B2B
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
     elif isinstance(error, commands.BotMissingPermissions):
         embed = discord.Embed(
             title="Error!",
@@ -425,7 +425,7 @@ async def on_command_error(context: Context, error) -> None:
                 error.missing_permissions) + "` to fully perform this command!",
             color=0xE02B2B
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
     elif isinstance(error, commands.MissingRequiredArgument):
         embed = discord.Embed(
             title="Error!",
@@ -433,21 +433,21 @@ async def on_command_error(context: Context, error) -> None:
             description=str(error).capitalize(),
             color=0xE02B2B
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
     elif isinstance(error, exceptions.UserNotStreamer):
         embed = discord.Embed(
             title="Error!",
             description="You are not a streamer!",
             color=0xE02B2B
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
     elif isinstance(error, commands.errors.EmojiNotFound):
         embed = discord.Embed(
             title="Error!",
             description="The emoji you provided is not valid!",
             color=0xE02B2B
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
     raise error
 
 
