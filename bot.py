@@ -210,7 +210,7 @@ async def on_message(message: discord.Message) -> None:
     #if the channel is the connections channel, two messages will be seen, the first will have the users ID after the word DISCORD ID:, and the second will have the users twitch ID after the word TWITCH ID:, this will be used to connect the twitch account to the discord account, so grab the first message, wait for the second message, and then connect the two accounts
     #if the message was sent from this webhook, run the code below
 
-async def send_paginated_embed(channel, attachments):
+async def send_paginated_embed(channel: discord.TextChannel, attachments):
     # Create the initial embed with the first image
     embed = discord.Embed(color=discord.Color.gold())
     embed.set_image(url=attachments[0].url)
