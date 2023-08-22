@@ -33,6 +33,7 @@ from helpers import db_manager
 import twitch
 from twitchAPI.twitch import Twitch
 from twitchAPI.types import AuthScope
+import lavalink
 
 cash = "⌬"
 if not os.path.isfile("config.json"):
