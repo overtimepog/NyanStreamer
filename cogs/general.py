@@ -353,7 +353,7 @@ class General(commands.Cog, name="general"):
     )
     @checks.not_blacklisted()
     @has_permissions(manage_channels=True)
-    async def setup(self, ctx: Context, channel: discord.TextChannel, emoji: discord.Emoji, amount: int = 5):
+    async def setup(self, ctx: Context, channel: discord.TextChannel, emoji: discord.Emoji = "⭐", amount: int = 5):
         """
         setup the starboard
 
