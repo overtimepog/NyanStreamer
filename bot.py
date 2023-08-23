@@ -211,14 +211,18 @@ async def on_message(message: discord.Message) -> None:
     #if the channel is the connections channel, two messages will be seen, the first will have the users ID after the word DISCORD ID:, and the second will have the users twitch ID after the word TWITCH ID:, this will be used to connect the twitch account to the discord account, so grab the first message, wait for the second message, and then connect the two accounts
     #if the message was sent from this webhook, run the code below
 
-async def send_paginated_embed(channel: discord.TextChannel, attachments):
-    # Create the initial embed with the first image
-    embed = discord.Embed(color=discord.Color.gold())
-    embed.set_image(url=attachments[0])  # Updated this line
+async def send_paginated_embed(channel: discord.TextChannel, items, reaction, message_link):
+    # Create the initial embed with the first item
+    embed = discord.Embed(
+        title=f"{reaction.emoji} {reaction.count} | Starred Message",
+        description=f"{reaction.message.content}\n\n[Jump to message]({message_link})",
+        color=discord.Color.gold()
+    )
+    embed.set_image(url=items[0])
     message = await channel.send(embed=embed)
 
     # Add the message to the paginated_embeds table
-    await db_manager.add_paginated_embed(message.id, 0, len(attachments))
+    await db_manager.add_paginated_embed(message.id, 0, len(items))
     print(f"Added paginated embed for message ID: {message.id}")
 
     # Add reactions for pagination
@@ -233,16 +237,16 @@ async def send_paginated_embed(channel: discord.TextChannel, attachments):
         try:
             reaction, user = await bot.wait_for("reaction_add", timeout=60.0, check=check)
 
-            # Move to the next image or loop back to the start
-            if str(reaction.emoji) == "➡️" and index < len(attachments) - 1:
+            # Move to the next item or loop back to the start
+            if str(reaction.emoji) == "➡️" and index < len(items) - 1:
                 index += 1
-                embed.set_image(url=attachments[index])  # Updated this line
+                embed.set_image(url=items[index])
                 await message.edit(embed=embed)
 
-            # Move to the previous image or loop to the end
+            # Move to the previous item or loop to the end
             elif str(reaction.emoji) == "⬅️" and index > 0:
                 index -= 1
-                embed.set_image(url=attachments[index])  # Updated this line
+                embed.set_image(url=items[index])
                 await message.edit(embed=embed)
 
             # Update the current index in the paginated_embeds table
@@ -306,7 +310,7 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
             starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
             if len(items) > 1:
                 # If there are multiple items, send paginated embed
-                await send_paginated_embed(starboard_channel, items)
+                await send_paginated_embed(starboard_channel, items, reaction, message_link)
             else:
                 if items:
                     embed.set_image(url=items[0])
@@ -324,7 +328,6 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
                     message_content=reaction.message.content,
                     attachment_url=items[0] if items else None
                 )
-
 @bot.event
 async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
     # Ignore bot reactions
@@ -351,10 +354,19 @@ async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Mem
             new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
             await starboard_message.edit(embed=new_embed)
             
-            # Optionally, if the count drops below the threshold, you can delete the starboard message
-            if reaction.count < config["star_threshold"]:
-                await starboard_message.delete()
-                await db_manager.remove_starred_message(reaction.message.id)
+            # Check if the starboard message is a paginated embed
+            paginated_embed_data = await db_manager.get_paginated_embed(starboard_message.id)
+            if paginated_embed_data:
+                # If the count drops below the threshold, delete the paginated embed entry and the starboard message
+                if reaction.count < config["star_threshold"]:
+                    await starboard_message.delete()
+                    await db_manager.remove_starred_message(reaction.message.id)
+                    await db_manager.remove_paginated_embed(starboard_message.id)
+            else:
+                # Optionally, if the count drops below the threshold, delete the starboard message
+                if reaction.count < config["star_threshold"]:
+                    await starboard_message.delete()
+                    await db_manager.remove_starred_message(reaction.message.id)
 
 @bot.event
 async def on_command_completion(context: Context) -> None:
