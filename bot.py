@@ -292,7 +292,7 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
                 
                 # Edit the starboard message to reflect the new star count
                 starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
-                starboard_message = await starboard_channel.fetch_message(starred_message["starboard_entry_id"])
+                starboard_message = await starboard_channel.fetch_message(starred_message["message_id"])
                 new_embed = starboard_message.embeds[0]
                 new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
                 await starboard_message.edit(embed=new_embed)
@@ -328,8 +328,11 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
                     message_content=reaction.message.content,
                     attachment_url=items[0] if items else None
                 )
+
 @bot.event
 async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
+    print(f"Reaction removed: {reaction.emoji} from message: {reaction.message.id} by user: {user.id}")
+
     # Ignore bot reactions
     if user.bot:
         return
@@ -337,6 +340,7 @@ async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Mem
     # Fetch starboard configuration for the server
     config = await db_manager.get_starboard_config(reaction.message.guild.id)
     if not config:
+        print("Starboard configuration not found.")
         return
 
     # Check if the reaction emoji matches the star emoji set for the server
@@ -349,7 +353,7 @@ async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Mem
             
             # Edit the starboard message to reflect the new star count
             starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
-            starboard_message = await starboard_channel.fetch_message(starred_message["starboard_entry_id"])
+            starboard_message = await starboard_channel.fetch_message(starred_message["message_id"])
             new_embed = starboard_message.embeds[0]
             new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
             await starboard_message.edit(embed=new_embed)
@@ -357,12 +361,14 @@ async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Mem
             # Check if the starboard message is a paginated embed
             paginated_embed_data = await db_manager.get_paginated_embed(starboard_message.id)
             if paginated_embed_data:
+                print(f"Starboard message is a paginated embed. Reaction count: {reaction.count}, Threshold: {config['star_threshold']}")
                 # If the count drops below the threshold, delete the paginated embed entry and the starboard message
                 if reaction.count < config["star_threshold"]:
                     await starboard_message.delete()
                     await db_manager.remove_starred_message(reaction.message.id)
                     await db_manager.remove_paginated_embed(starboard_message.id)
             else:
+                print(f"Starboard message is not a paginated embed. Reaction count: {reaction.count}, Threshold: {config['star_threshold']}")
                 # Optionally, if the count drops below the threshold, delete the starboard message
                 if reaction.count < config["star_threshold"]:
                     await starboard_message.delete()
