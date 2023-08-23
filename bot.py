@@ -292,7 +292,7 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
                 
                 # Edit the starboard message to reflect the new star count
                 starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
-                starboard_message = await starboard_channel.fetch_message(starred_message["message_id"])
+                starboard_message = await starboard_channel.fetch_message(starred_message["starboard_entry_id"])
                 new_embed = starboard_message.embeds[0]
                 new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
                 await starboard_message.edit(embed=new_embed)
@@ -353,7 +353,7 @@ async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Mem
             
             # Edit the starboard message to reflect the new star count
             starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
-            starboard_message = await starboard_channel.fetch_message(starred_message["message_id"])
+            starboard_message = await starboard_channel.fetch_message(starred_message["starboard_entry_id"])
             new_embed = starboard_message.embeds[0]
             new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
             await starboard_message.edit(embed=new_embed)
