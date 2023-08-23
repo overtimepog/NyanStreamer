@@ -331,23 +331,28 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
 
 @bot.event
 async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
-    print(f"Reaction removed: {reaction.emoji} from message: {reaction.message.id} by user: {user.id}")
-
+    print(f"Entered on_reaction_remove for message: {reaction.message.id} with reaction: {reaction.emoji} by user: {user.id}")
+    
     # Ignore bot reactions
     if user.bot:
+        print("Reaction by bot. Ignoring.")
         return
 
     # Fetch starboard configuration for the server
     config = await db_manager.get_starboard_config(reaction.message.guild.id)
     if not config:
-        print("Starboard configuration not found.")
+        print("No starboard configuration found for the server.")
         return
 
     # Check if the reaction emoji matches the star emoji set for the server
     if str(reaction.emoji) == config["star_emoji"]:
+        print("Reaction matches star emoji for the server.")
+        
         # Check if the message is in the starboard
         starred_message = await db_manager.get_starred_message_by_id(reaction.message.id)
         if starred_message:
+            print(f"Message {reaction.message.id} found in starboard.")
+            
             # Update the star count in the database
             await db_manager.update_star_count(reaction.message.id, reaction.count)
             
@@ -361,18 +366,26 @@ async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Mem
             # Check if the starboard message is a paginated embed
             paginated_embed_data = await db_manager.get_paginated_embed(starboard_message.id)
             if paginated_embed_data:
-                print(f"Starboard message is a paginated embed. Reaction count: {reaction.count}, Threshold: {config['star_threshold']}")
+                print(f"Starboard message {starboard_message.id} is a paginated embed.")
+                
                 # If the count drops below the threshold, delete the paginated embed entry and the starboard message
                 if reaction.count < config["star_threshold"]:
+                    print(f"Reaction count {reaction.count} is below threshold {config['star_threshold']}. Deleting paginated embed and starboard message.")
                     await starboard_message.delete()
                     await db_manager.remove_starred_message(reaction.message.id)
                     await db_manager.remove_paginated_embed(starboard_message.id)
             else:
-                print(f"Starboard message is not a paginated embed. Reaction count: {reaction.count}, Threshold: {config['star_threshold']}")
+                print(f"Starboard message {starboard_message.id} is not a paginated embed.")
+                
                 # Optionally, if the count drops below the threshold, delete the starboard message
                 if reaction.count < config["star_threshold"]:
+                    print(f"Reaction count {reaction.count} is below threshold {config['star_threshold']}. Deleting starboard message.")
                     await starboard_message.delete()
                     await db_manager.remove_starred_message(reaction.message.id)
+        else:
+            print(f"Message {reaction.message.id} not found in starboard.")
+    else:
+        print(f"Reaction {reaction.emoji} does not match star emoji for the server.")
 
 @bot.event
 async def on_command_completion(context: Context) -> None:
