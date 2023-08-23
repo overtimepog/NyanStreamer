@@ -258,23 +258,18 @@ async def send_paginated_embed(channel: discord.TextChannel, attachments):
 
 @bot.event
 async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
-    #print("reaction added")
-
     # Ignore bot reactions
     if user.bot:
         return
 
     # Fetch starboard configuration for the server
     config = await db_manager.get_starboard_config(reaction.message.guild.id)
-    #print(f"Config fetched: {config}")
     if not config:
         return
 
     # Check if the reaction emoji matches the star emoji set for the server
-    #print(f"Reaction Emoji: {reaction.emoji}, Config Star Emoji: {config['star_emoji']}")
     if str(reaction.emoji) == config["star_emoji"]:
         # Check if the number of reactions meets the threshold
-        #print(f"Reaction Count: {reaction.count}, Config Star Threshold: {config['star_threshold']}")
         if reaction.count >= config["star_threshold"]:
             # Fetch or construct the message link
             message_link = f"https://discord.com/channels/{reaction.message.guild.id}/{reaction.message.channel.id}/{reaction.message.id}"
@@ -301,28 +296,31 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
             )
             embed.set_author(name=reaction.message.author.display_name, icon_url=reaction.message.author.avatar.url)
 
-            # Send the embed to the starboard channel
             starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
-            if len(reaction.message.attachments) > 1:
-                # If there are multiple attachments, send paginated embed (this part remains unchanged)
-                await send_paginated_embed(starboard_channel, reaction.message.attachments)
+
+            # Check for stickers and attachments
+            if reaction.message.stickers or reaction.message.attachments:
+                items = reaction.message.stickers + reaction.message.attachments
+                if len(items) > 1:
+                    await send_paginated_embed(starboard_channel, items)
+                else:
+                    embed.set_image(url=items[0].url)
+                    starboard_message = await starboard_channel.send(embed=embed)
             else:
-                if reaction.message.attachments:
-                    embed.set_image(url=reaction.message.attachments[0].url)
                 starboard_message = await starboard_channel.send(embed=embed)
                 
-                # Add the new starred message to the database
-                await db_manager.add_starred_message(
-                    message_id=reaction.message.id,
-                    guild_id=reaction.message.guild.id,
-                    channel_id=reaction.message.channel.id,
-                    author_id=reaction.message.author.id,
-                    star_count=reaction.count,
-                    starboard_entry_id=starboard_message.id,
-                    message_link=message_link,
-                    message_content=reaction.message.content,
-                    attachment_url=reaction.message.attachments[0].url if reaction.message.attachments else None
-                )
+            # Add the new starred message to the database
+            await db_manager.add_starred_message(
+                message_id=reaction.message.id,
+                guild_id=reaction.message.guild.id,
+                channel_id=reaction.message.channel.id,
+                author_id=reaction.message.author.id,
+                star_count=reaction.count,
+                starboard_entry_id=starboard_message.id,
+                message_link=message_link,
+                message_content=reaction.message.content,
+                attachment_url=items[0].url if items else None
+            )
 
 @bot.event
 async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
