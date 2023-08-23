@@ -259,6 +259,8 @@ async def send_paginated_embed(channel: discord.TextChannel, items, reaction, me
         except asyncio.TimeoutError:
             print("Pagination timeout.")
             break
+        
+    return message
 
 @bot.event
 async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
@@ -310,24 +312,24 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
             starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
             if len(items) > 1:
                 # If there are multiple items, send paginated embed
-                await send_paginated_embed(starboard_channel, items, reaction, message_link)
+                starboard_message = await send_paginated_embed(starboard_channel, items, reaction, message_link)
             else:
                 if items:
                     embed.set_image(url=items[0])
                 starboard_message = await starboard_channel.send(embed=embed)
-                
-                # Add the new starred message to the database
-                await db_manager.add_starred_message(
-                    message_id=reaction.message.id,
-                    guild_id=reaction.message.guild.id,
-                    channel_id=reaction.message.channel.id,
-                    author_id=reaction.message.author.id,
-                    star_count=reaction.count,
-                    starboard_entry_id=starboard_message.id,
-                    message_link=message_link,
-                    message_content=reaction.message.content,
-                    attachment_url=items[0] if items else None
-                )
+
+            # Add the new starred message to the database
+            await db_manager.add_starred_message(
+                message_id=reaction.message.id,
+                guild_id=reaction.message.guild.id,
+                channel_id=reaction.message.channel.id,
+                author_id=reaction.message.author.id,
+                star_count=reaction.count,
+                starboard_entry_id=starboard_message.id,
+                message_link=message_link,
+                message_content=reaction.message.content,
+                attachment_url=items[0] if items else None
+            )
 
 @bot.event
 async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
