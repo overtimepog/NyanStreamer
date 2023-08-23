@@ -214,7 +214,7 @@ async def on_message(message: discord.Message) -> None:
 async def send_paginated_embed(channel: discord.TextChannel, attachments):
     # Create the initial embed with the first image
     embed = discord.Embed(color=discord.Color.gold())
-    embed.set_image(url=attachments[0].url)
+    embed.set_image(url=attachments[0])  # Updated this line
     message = await channel.send(embed=embed)
 
     # Add the message to the paginated_embeds table
@@ -236,13 +236,13 @@ async def send_paginated_embed(channel: discord.TextChannel, attachments):
             # Move to the next image or loop back to the start
             if str(reaction.emoji) == "➡️" and index < len(attachments) - 1:
                 index += 1
-                embed.set_image(url=attachments[index].url)
+                embed.set_image(url=attachments[index])  # Updated this line
                 await message.edit(embed=embed)
 
             # Move to the previous image or loop to the end
             elif str(reaction.emoji) == "⬅️" and index > 0:
                 index -= 1
-                embed.set_image(url=attachments[index].url)
+                embed.set_image(url=attachments[index])  # Updated this line
                 await message.edit(embed=embed)
 
             # Update the current index in the paginated_embeds table
@@ -311,10 +311,13 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
             # Add attachments to the items list
             items.extend([attachment.url for attachment in reaction.message.attachments])
 
-            if len(items) > 1:
-                await send_paginated_embed(starboard_channel, items)
+            if items:  # Check if the items list is not empty
+                if len(items) > 1:
+                    await send_paginated_embed(starboard_channel, items)
+                else:
+                    embed.set_image(url=items[0])
+                    starboard_message = await starboard_channel.send(embed=embed)
             else:
-                embed.set_image(url=items[0])
                 starboard_message = await starboard_channel.send(embed=embed)
                 
             # Add the new starred message to the database
