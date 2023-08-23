@@ -299,14 +299,22 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
             starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
 
             # Check for stickers and attachments
-            if reaction.message.stickers or reaction.message.attachments:
-                items = reaction.message.stickers + reaction.message.attachments
-                if len(items) > 1:
-                    await send_paginated_embed(starboard_channel, items)
+            items = []
+
+            # Add stickers to the items list
+            for sticker in reaction.message.stickers:
+                if sticker.format == discord.StickerFormatType.apng:
+                    items.append(sticker.url + ".apng")
                 else:
-                    embed.set_image(url=items[0].url)
-                    starboard_message = await starboard_channel.send(embed=embed)
+                    items.append(sticker.url + ".png")
+
+            # Add attachments to the items list
+            items.extend([attachment.url for attachment in reaction.message.attachments])
+
+            if len(items) > 1:
+                await send_paginated_embed(starboard_channel, items)
             else:
+                embed.set_image(url=items[0])
                 starboard_message = await starboard_channel.send(embed=embed)
                 
             # Add the new starred message to the database
@@ -319,7 +327,7 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
                 starboard_entry_id=starboard_message.id,
                 message_link=message_link,
                 message_content=reaction.message.content,
-                attachment_url=items[0].url if items else None
+                attachment_url=items[0] if items else None
             )
 
 @bot.event
