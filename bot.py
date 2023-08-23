@@ -366,7 +366,7 @@ async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Mem
             await starboard_message.edit(embed=new_embed)
             
             # Check if the starboard message is a paginated embed
-            paginated_embed_data = await db_manager.get_paginated_embed(starboard_message.id)
+            paginated_embed_data = await db_manager.get_paginated_embed(starred_message["starboard_entry_id"])
             if paginated_embed_data:
                 print(f"Starboard message {starboard_message.id} is a paginated embed.")
                 
