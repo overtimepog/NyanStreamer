@@ -6,7 +6,7 @@ class Suffering():
 
     def generate(self, avatars, text, usernames, kwargs):
         # Open the main image
-        base = Image.open('suffering.png').convert('RGBA')
+        base = Image.open('assets/assets/suffering/suffering.png').convert('RGBA')
         
         # Get the avatar image and resize it to fit the coordinates
         avatar = Image.open(avatars[0]).resize((1227-650, 849-265)).convert('RGBA')
