@@ -262,7 +262,7 @@ class Images(commands.Cog, name="images"):
     description="Get an image or video based on type"
     )
     async def image(self, ctx: Context, user: discord.User, image_type: str):
-        valid_image_types = ["fear", "fedora", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "dab", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
+        valid_image_types = ["fear", "fedora", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "dab", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted", "suffering"]
         if image_type not in valid_image_types:
             sorted_valid_image_types = sorted(valid_image_types)
             await ctx.send(f"Invalid image type. Valid options are: {', '.join(sorted_valid_image_types)}", ephemeral=True)
@@ -303,7 +303,7 @@ class Images(commands.Cog, name="images"):
     @image.autocomplete("image_type")
     async def image_autocomplete(self, ctx: Context, argument):
         choices = []
-        image_types = ["fear", "fedora", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted"]
+        image_types = ["fear", "fedora", "fraud", "underthetable", "hell", "trash", "bateman", "america", "pat", "airpods", "jail", "delete", "deepfry", "affect", "aborted", "communism", "bongocat", "whodidthis", "wanted", "dab", "suffering"]
         for img_type in sorted(image_types):
             if img_type.startswith(argument.lower()):
                 choices.append(app_commands.Choice(name=img_type, value=img_type))
