@@ -1,5 +1,6 @@
 from io import BytesIO
 from PIL import Image
+from assets.utils import http
 
 class Suffering():
     params = ['avatar0']
@@ -9,9 +10,7 @@ class Suffering():
         base = Image.open('assets/assets/suffering/suffering.png').convert('RGBA')
         
         # Get the avatar image and resize it to fit the coordinates
-        response = requests.get(avatars[0])
-        avatar_data = BytesIO(response.content)
-        avatar = Image.open(avatar_data).resize((1227-650, 849-265)).convert('RGBA')
+        avatar = http.get_image(avatars[0]).resize((1227-650, 849-265)).convert('RGBA')
         
         # Paste the avatar image onto the main image at the specified coordinates
         base.paste(avatar, (650, 265), avatar)
