@@ -30,7 +30,7 @@ from helpers.card import Card
 from PIL import Image
 
 cash = "⌬"
-slot_spin = "<a:spin:1125313101307314187>"
+slot_spin = "<a:spin:1245491420165312594>"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
