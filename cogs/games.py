@@ -330,8 +330,7 @@ class Games(commands.Cog, name="games"):
             await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
             return
         luck = await db_manager.get_luck(ctx.author.id)
-        fish = await games.fishing_game()
-        await fish(ctx, ctx.author, luck)
+        await games.fish(luck)
 
     #puzzle command
     @commands.cooldown(1, 60, commands.BucketType.user)

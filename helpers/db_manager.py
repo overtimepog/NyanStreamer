@@ -5813,37 +5813,6 @@ async def get_starboard_config(server_id: int) -> dict:
                 "star_emoji": row[4]
             }
         return None
-    
-
-async def add_paginated_embed(starboard_message_id: int, current_index: int, total_attachments: int):
-    async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("INSERT INTO paginated_embeds (starboard_message_id, current_index, total_attachments) VALUES (?, ?, ?)", 
-                         (starboard_message_id, current_index, total_attachments))
-        await db.commit()
-
-async def update_paginated_embed_index(starboard_message_id: int, current_index: int):
-    async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("UPDATE paginated_embeds SET current_index=? WHERE starboard_message_id=?", 
-                         (current_index, starboard_message_id))
-        await db.commit()
-
-async def get_paginated_embed(starboard_message_id: int) -> dict:
-    async with aiosqlite.connect("database/database.db") as db:
-        cursor = await db.cursor()
-        await cursor.execute("SELECT current_index, total_attachments FROM paginated_embeds WHERE starboard_message_id=?", (starboard_message_id,))
-        row = await cursor.fetchone()
-        if row:
-            return {
-                "current_index": row[0],
-                "total_attachments": row[1]
-            }
-        return None
-
-async def remove_paginated_embed(starboard_message_id: int):
-    async with aiosqlite.connect("database/database.db") as db:
-        await db.execute("DELETE FROM paginated_embeds WHERE starboard_message_id=?", (starboard_message_id,))
-        await db.commit()
-
 
 async def add_starred_message(message_id: int, guild_id: int, channel_id: int, author_id: int, star_count: int, starboard_entry_id: int, message_link: str, message_content: str, attachment_url: str) -> None:
     async with aiosqlite.connect("database/database.db") as db:
@@ -5890,6 +5859,35 @@ async def update_starboard_entry_id(message_id: int, starboard_entry_id: int) ->
     async with aiosqlite.connect("database/database.db") as db:
         cursor = await db.cursor()
         await cursor.execute("UPDATE starred_messages SET starboard_entry_id = ? WHERE message_id = ?", (starboard_entry_id, message_id))
+        await db.commit()
+
+async def add_paginated_embed(starboard_message_id: int, current_index: int, total_attachments: int):
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("INSERT INTO paginated_embeds (starboard_message_id, current_index, total_attachments) VALUES (?, ?, ?)", 
+                         (starboard_message_id, current_index, total_attachments))
+        await db.commit()
+
+async def update_paginated_embed_index(starboard_message_id: int, current_index: int):
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("UPDATE paginated_embeds SET current_index=? WHERE starboard_message_id=?", 
+                         (current_index, starboard_message_id))
+        await db.commit()
+
+async def get_paginated_embed(starboard_message_id: int) -> dict:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("SELECT current_index, total_attachments FROM paginated_embeds WHERE starboard_message_id=?", (starboard_message_id,))
+        row = await cursor.fetchone()
+        if row:
+            return {
+                "current_index": row[0],
+                "total_attachments": row[1]
+            }
+        return None
+
+async def remove_paginated_embed(starboard_message_id: int):
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("DELETE FROM paginated_embeds WHERE starboard_message_id=?", (starboard_message_id,))
         await db.commit()
 
 #generate a api key
@@ -6033,3 +6031,5 @@ async def api_key_value_exists(api_key: str) -> bool:
             return False
         finally:
             await cursor.close()
+
+# In your db_manager.py or similar module

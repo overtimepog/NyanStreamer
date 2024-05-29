@@ -213,106 +213,71 @@ async def on_message(message: discord.Message) -> None:
     #if the message was sent from this webhook, run the code below
 
 
-@bot.event
-async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
-    # Ignore bot reactions
-    if user.bot:
-        return
-
-    # Fetch starboard configuration for the server
+async def update_starboard(reaction: discord.Reaction, user: Union[discord.Member, discord.User], remove: bool = False) -> None:
     config = await db_manager.get_starboard_config(reaction.message.guild.id)
     if not config:
         return
 
-    # Check if the reaction emoji matches the star emoji set for the server
     if str(reaction.emoji) == config["star_emoji"]:
-        # Check if the number of reactions meets the threshold
-        if reaction.count >= config["star_threshold"]:
-            # Fetch or construct the message link
-            message_link = f"https://discord.com/channels/{reaction.message.guild.id}/{reaction.message.channel.id}/{reaction.message.id}"
+        starred_message = await db_manager.get_starred_message_by_id(reaction.message.id)
+        if starred_message:
+            await db_manager.update_star_count(reaction.message.id, reaction.count if not remove else reaction.count - 1)
 
-            # Extract direct image/gif links from the message content
-            direct_links = [url for url in reaction.message.content.split() if url.startswith("https://media.discordapp.net/attachments/")]
-
-            # Combine attachments, stickers, and direct links
-            items = direct_links + [attachment.url for attachment in reaction.message.attachments] + [sticker.url for sticker in reaction.message.stickers]
-
-            # Check if the message is already in the starboard
-            starred_message = await db_manager.get_starred_message_by_id(reaction.message.id)
-            if starred_message:
-                # Update the star count in the database
-                await db_manager.update_star_count(reaction.message.id, reaction.count)
-                
-                # Edit the starboard message to reflect the new star count
-                starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
-                starboard_message = await starboard_channel.fetch_message(starred_message["starboard_entry_id"])
-                new_embed = starboard_message.embeds[0]
-                new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
-                await starboard_message.edit(embed=new_embed)
-                return
-
-            # Create an embed for new starred messages
-            embed = discord.Embed(
-                title=f"{reaction.emoji} {reaction.count} | Starred Message",
-                description=f"{reaction.message.content}\n\n[Jump to message]({message_link})",
-                color=discord.Color.gold()
-            )
-            embed.set_author(name=reaction.message.author.display_name, icon_url=reaction.message.author.avatar.url)
-
-            # If there's only one item, set it as the embed image
-            if len(items) == 1:
-                embed.set_image(url=items[0])
-            # If there are multiple items, list them in the embed description
-            elif len(items) > 1:
-                embed.description += "\n\nAttachments:\n" + "\n".join([f"[Link {i+1}]({url})" for i, url in enumerate(items)])
-
-            # Send the embed to the starboard channel
             starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
-            starboard_message = await starboard_channel.send(embed=embed)
+            if starboard_channel:
+                try:
+                    starboard_message = await starboard_channel.fetch_message(starred_message["starboard_entry_id"])
+                    new_embed = starboard_message.embeds[0]
+                    new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
+                    await starboard_message.edit(embed=new_embed)
+                    
+                    if remove and reaction.count < config["star_threshold"]:
+                        await starboard_message.delete()
+                        await db_manager.remove_starred_message(reaction.message.id)
+                except discord.NotFound:
+                    await db_manager.remove_starred_message(reaction.message.id)
+        else:
+            if reaction.count >= config["star_threshold"]:
+                message_link = f"https://discord.com/channels/{reaction.message.guild.id}/{reaction.message.channel.id}/{reaction.message.id}"
+                direct_links = [url for url in reaction.message.content.split() if url.startswith("https://media.discordapp.net/attachments/")]
+                items = direct_links + [attachment.url for attachment in reaction.message.attachments] + [sticker.url for sticker in reaction.message.stickers]
 
-            # Add the new starred message to the database
-            await db_manager.add_starred_message(
-                message_id=reaction.message.id,
-                guild_id=reaction.message.guild.id,
-                channel_id=reaction.message.channel.id,
-                author_id=reaction.message.author.id,
-                star_count=reaction.count,
-                starboard_entry_id=starboard_message.id,
-                message_link=message_link,
-                message_content=reaction.message.content,
-                attachment_url=items[0] if items else None
-            )
+                embed = discord.Embed(
+                    title=f"{reaction.emoji} {reaction.count} | Starred Message",
+                    description=f"{reaction.message.content}\n\n[Jump to message]({message_link})",
+                    color=discord.Color.gold()
+                )
+                embed.set_author(name=reaction.message.author.display_name, icon_url=reaction.message.author.avatar.url)
+
+                if len(items) == 1:
+                    embed.set_image(url=items[0])
+                elif len(items) > 1:
+                    embed.description += "\n\nAttachments:\n" + "\n".join([f"[Link {i+1}]({url})" for i, url in enumerate(items)])
+
+                starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
+                if starboard_channel:
+                    starboard_message = await starboard_channel.send(embed=embed)
+                    await db_manager.add_starred_message(
+                        message_id=reaction.message.id,
+                        guild_id=reaction.message.guild.id,
+                        channel_id=reaction.message.channel.id,
+                        author_id=reaction.message.author.id,
+                        star_count=reaction.count,
+                        starboard_entry_id=starboard_message.id,
+                        message_link=message_link,
+                        message_content=reaction.message.content,
+                        attachment_url=items[0] if items else None
+                    )
+
+@bot.event
+async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
+    await update_starboard(reaction, user)
 
 @bot.event
 async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
-    # Ignore bot reactions
-    if user.bot:
-        return
+    await update_starboard(reaction, user, remove=True)
 
-    # Fetch starboard configuration for the server
-    config = await db_manager.get_starboard_config(reaction.message.guild.id)
-    if not config:
-        return
 
-    # Check if the reaction emoji matches the star emoji set for the server
-    if str(reaction.emoji) == config["star_emoji"]:
-        # Check if the message is in the starboard
-        starred_message = await db_manager.get_starred_message_by_id(reaction.message.id)
-        if starred_message:
-            # Update the star count in the database
-            await db_manager.update_star_count(reaction.message.id, reaction.count)
-            
-            # Edit the starboard message to reflect the new star count
-            starboard_channel = reaction.message.guild.get_channel(config["starboard_channel_id"])
-            starboard_message = await starboard_channel.fetch_message(starred_message["starboard_entry_id"])
-            new_embed = starboard_message.embeds[0]
-            new_embed.title = f"{reaction.emoji} {reaction.count} | Starred Message"
-            await starboard_message.edit(embed=new_embed)
-            
-            # Optionally, if the count drops below the threshold, delete the starboard message
-            if reaction.count < config["star_threshold"]:
-                await starboard_message.delete()
-                await db_manager.remove_starred_message(reaction.message.id)
 
 @bot.event
 async def on_command_completion(context: Context) -> None:

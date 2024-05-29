@@ -227,264 +227,108 @@ async def slot_rules(ctx: Context):
     )
     #send the embed
     await ctx.send(embed=embed)
-    
-class FishingButton(discord.ui.View):
-    def __init__(self, user_id, **kwargs):
-        super().__init__(**kwargs)
-        self.user_id = user_id
-        self.button_clicked = asyncio.Event()
-        self.selected_spot = None
-        self.cancelled = False
 
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user_id:
-            await interaction.response.send_message("This is not your game!", ephemeral=True)
-            return False
-        return True
+    async def fish(self, ctx, user_luck: int):
+        fishes = {
+            "Shark": {"emoji": "<:Shark:1107388348693233735>", "points": 10, "rarity": 0.01, "rarity_name": "Legendary"},
+            "Whale": {"emoji": "<:Whale:1107388346264727683>", "points": 9, "rarity": 0.02, "rarity_name": "Epic"},
+            "Koi": {"emoji": "<:Koi:1107388726985891941>", "points": 8, "rarity": 0.03, "rarity_name": "Rare"},
+            "Swordfish": {"emoji": "<:Fish_Sword:1107388731599638540>", "points": 7, "rarity": 0.04, "rarity_name": "Rare"},
+            "Tuna": {"emoji": "<:Fish_Tuna:1107388734682439821>", "points": 6, "rarity": 0.05, "rarity_name": "Uncommon"},
+            "Clownfish": {"emoji": "<:Fish_Clown:1107388729930289323>", "points": 5, "rarity": 0.06, "rarity_name": "Uncommon"},
+            "Goldfish": {"emoji": "<:Fish_Gold:1107388728839770202>", "points": 4, "rarity": 0.07, "rarity_name": "Uncommon"},
+            "Yellow Lab": {"emoji": "<:Fish_LemonYellowLab:1107388730878210129>", "points": 3, "rarity": 0.08, "rarity_name": "Common"},
+            "Squid": {"emoji": "<:Cephalopod_Squid:1107389556048793711>", "points": 2, "rarity": 0.09, "rarity_name": "Common"},
+            "Octopus": {"emoji": "<:Cephalopod_Octopus:1107389552584294440>", "points": 2, "rarity": 0.1, "rarity_name": "Common"},
+            "Dolphin": {"emoji": "<:Mammal_Dolphin:1107389554404622547>", "points": 1, "rarity": 0.11, "rarity_name": "Common"},
+            "Crab": {"emoji": "<:Crustacean_Crab:1107389550067720234>", "points": 1, "rarity": 0.12, "rarity_name": "Common"},
+            "Jellyfish": {"emoji": "<:Fish_Jellyfish:1107389551758037053>", "points": 1, "rarity": 0.13, "rarity_name": "Common"}
+        }
 
-    @discord.ui.button(label="1", style=discord.ButtonStyle.secondary, row=0)
-    async def select_spot_1(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 1
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
-        
+        rarity_colors = {
+            "Common": 0x808080,  # Grey
+            "Uncommon": 0x319236,  # Green
+            "Rare": 0x4c51f7,  # Blue
+            "Epic": 0x9d4dbb,  # Purple
+            "Legendary": 0xf3af19,  # Gold
+        }
 
-    @discord.ui.button(label="2", style=discord.ButtonStyle.secondary, row=0)
-    async def select_spot_2(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 2
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
+        def catch_fish(user_luck):
+            catchable_fishes = [fish for fish in fishes if fishes[fish]["rarity"] <= user_luck / 100]
+            if not catchable_fishes:
+                catchable_fishes = [fish for fish in fishes]
+            return random.choice(catchable_fishes)
 
-    @discord.ui.button(label="3", style=discord.ButtonStyle.secondary, row=0)
-    async def select_spot_3(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 3
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
-
-    @discord.ui.button(label="4", style=discord.ButtonStyle.secondary, row=1)
-    async def select_spot_4(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 4
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
-
-    @discord.ui.button(label="5", style=discord.ButtonStyle.secondary, row=1)
-    async def select_spot_5(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 5
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
-
-    @discord.ui.button(label="6", style=discord.ButtonStyle.secondary, row=1)
-    async def select_spot_6(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 6
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
-
-    @discord.ui.button(label="7", style=discord.ButtonStyle.secondary, row=2)
-    async def select_spot_7(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 7
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
-
-    @discord.ui.button(label="8", style=discord.ButtonStyle.secondary, row=2)
-    async def select_spot_8(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 8
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
-
-    @discord.ui.button(label="9", style=discord.ButtonStyle.secondary, row=2)
-    async def select_spot_9(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.selected_spot = 9
-        button.style = discord.ButtonStyle.success
-        embed = interaction.message.embeds[0]
-        embed.set_footer(text=f"Selected spot: {self.selected_spot}")
-        await interaction.message.edit(embed=embed)
-        await interaction.response.defer()
-
-    @discord.ui.button(label="Cast", style=discord.ButtonStyle.primary)
-    async def cast(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if self.selected_spot is None:
-            await interaction.response.send_message('Please select a fishing spot first!', ephemeral=True)
-        else:
-            self.button_clicked.set()
-            await interaction.response.defer()
-            
-    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.danger)
-    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.cancelled = True
-        self.button_clicked.set()
-        await interaction.response.defer()
-
-async def fishing_game():
-    fishes = {
-    "Shark": {"emoji": "<:Shark:1107388348693233735>", "points": 10, "rarity": 0.01, "rarity_name": "Legendary"},
-    "Whale": {"emoji": "<:Whale:1107388346264727683>", "points": 9, "rarity": 0.02, "rarity_name": "Epic"},
-    "Koi": {"emoji": "<:Koi:1107388726985891941>", "points": 8, "rarity": 0.03, "rarity_name": "Rare"},
-    "Swordfish": {"emoji": "<:Fish_Sword:1107388731599638540>", "points": 7, "rarity": 0.04, "rarity_name": "Rare"},
-    "Tuna": {"emoji": "<:Fish_Tuna:1107388734682439821>", "points": 6, "rarity": 0.05, "rarity_name": "Uncommon"},
-    "Clownfish": {"emoji": "<:Fish_Clown:1107388729930289323>", "points": 5, "rarity": 0.06, "rarity_name": "Uncommon"},
-    "Goldfish": {"emoji": "<:Fish_Gold:1107388728839770202>", "points": 4, "rarity": 0.07, "rarity_name": "Uncommon"},
-    "Yellow Lab": {"emoji": "<:Fish_LemonYellowLab:1107388730878210129>", "points": 3, "rarity": 0.08, "rarity_name": "Common"},
-    "Squid": {"emoji": "<:Cephalopod_Squid:1107389556048793711>", "points": 2, "rarity": 0.09, "rarity_name": "Common"},
-    "Octopus": {"emoji": "<:Cephalopod_Octopus:1107389552584294440>", "points": 2, "rarity": 0.1, "rarity_name": "Common"},
-    "Dolphin": {"emoji": "<:Mammal_Dolphin:1107389554404622547>", "points": 1, "rarity": 0.11, "rarity_name": "Common"},
-    "Crab": {"emoji": "<:Crustacean_Crab:1107389550067720234>", "points": 1, "rarity": 0.12, "rarity_name": "Common"},
-    "Jellyfish": {"emoji": "<:Fish_Jellyfish:1107389551758037053>", "points": 1, "rarity": 0.13, "rarity_name": "Common"}
-    }
-
-    rarity_colors = {
-        "Common": 0x808080,  # Grey
-        "Uncommon": 0x319236,  # Green
-        "Rare": 0x4c51f7,  # Blue
-        "Epic": 0x9d4dbb,  # Purple
-        "Legendary": 0xf3af19,  # Gold
-    }
-
-    def catch_fish(user_luck):
-        catchable_fishes = [fish for fish in fishes if fishes[fish]["rarity"] <= user_luck/100]
-        if not catchable_fishes:
-            catchable_fishes = [fish for fish in fishes]
-        return random.choice(catchable_fishes)
-
-    async def fish(ctx: Context, user, user_luck):
-        baitAmount = await db_manager.get_item_amount_from_inventory(user.id, "bait")
+        baitAmount = await db_manager.get_item_amount_from_inventory(ctx.author.id, "bait")
         points = 0
         tries = 5 + baitAmount
+        catches = {}
 
-        view = FishingButton(user.id)
-        message = None
-
-        instructions = (
-            "Welcome to the fishing game! Here's how to play:\n"
-            "1. Select a fishing spot by clicking on one of the numbered buttons.\n"
-            "2. After selecting a panel, click the 'Cast' button to fish.\n"
-            "3. Repeat this process until you've used all your bait.\n"
-            "Good luck!"
-        )
-
-        embed = discord.Embed(
-            title=f"{user.name}'s Fishing Game",
-            description=instructions + "\n" + "\n" + f"Starting Bait: {tries}",
-            color=0x00BFFF  # Light blue
-        )
-        
-        message = await ctx.send(embed=embed, view=view)
-
-        await view.button_clicked.wait()
-
-        for i in range(tries):
-            if view.cancelled:
-                break
-
-            if view.selected_spot is None:
-                await ctx.send("Please select a fishing spot first!")
-                return
-
-            await view.button_clicked.wait()
-            view.button_clicked.clear()
-
+        for _ in range(tries):
             caught_fish = catch_fish(user_luck)
             fish_points = fishes[caught_fish]["points"]
             points += fish_points
 
-            embed = discord.Embed(
-                title=f'{user.name} caught a {fishes[caught_fish]["emoji"]}{caught_fish} in spot {view.selected_spot}!',
-                description=f'gained {fish_points} points! Bait left: {tries - i - 1}',
-                color=rarity_colors[fishes[caught_fish]["rarity_name"]]
-            )
-            embed.set_footer(text=f"Selected spot: {view.selected_spot}")
-
-            await message.edit(embed=embed)
+            if caught_fish in catches:
+                catches[caught_fish] += 1
+            else:
+                catches[caught_fish] = 1
 
             if baitAmount > 0:
-                await db_manager.remove_item_from_inventory(user.id, "bait", 1)
+                await db_manager.remove_item_from_inventory(ctx.author.id, "bait", 1)
                 baitAmount -= 1
-            
-        if baitAmount == 0:
-            if points >= 60:
-                prizeID = "fish_pet_epic"
-                prizeName = await db_manager.get_basic_item_name(prizeID)
-                prizeEmoji = await db_manager.get_basic_item_emoji(prizeID)
-                prizeAmount = 1
-                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
-                if view.cancelled:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
-                else:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
-            elif points >= 45:
-                prizeID = "pet_chest"
-                prizeName = await db_manager.get_chest_name(prizeID)
-                prizeEmoji = await db_manager.get_chest_icon(prizeID)
-                prizeAmount = 1
-                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
-                if view.cancelled:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
-                else:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
-            elif points >= 30:
-                prizeID = "chest"
-                prizeName = await db_manager.get_chest_name(prizeID)
-                prizeEmoji = await db_manager.get_chest_icon(prizeID)
-                prizeAmount = 2
-                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
-                if view.cancelled:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 2)
-                else:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 2)
-            elif points >= 15:
-                prizeID = "chest"
-                prizeName = await db_manager.get_chest_name(prizeID)
-                prizeEmoji = await db_manager.get_chest_icon(prizeID)
-                prizeAmount = 1
-                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
-                if view.cancelled:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
-                else:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 1)
-            elif points >= 5:
-                prizeID = "bait"
-                prizeName = await db_manager.get_basic_item_name(prizeID)
-                prizeEmoji = await db_manager.get_basic_item_emoji(prizeID)
-                prizeAmount = 2
-                prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
-                if view.cancelled:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 2)
-                else:
-                    await ctx.send(f'{user.mention} has finished fishing. Total points: {points}. You won {prize}!')
-                    await db_manager.add_item_to_inventory(user.id, prizeID, 2)
-    return fish
+
+        description = ""
+        for fish, count in catches.items():
+            description += f"{count} {fishes[fish]['emoji']} {fish}\n"
+
+        description += f"\n+{points} XP"
+
+        embed = discord.Embed(
+            title=f"{ctx.author.name}'s Fishing Results",
+            description=description,
+            color=0x00BFFF  # Light blue
+        )
+
+        await ctx.send(embed=embed)
+
+        # Award prizes based on points
+        if points >= 60:
+            prizeID = "fish_pet_epic"
+            prizeName = await db_manager.get_basic_item_name(prizeID)
+            prizeEmoji = await db_manager.get_basic_item_emoji(prizeID)
+            prizeAmount = 1
+            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            await db_manager.add_item_to_inventory(ctx.author.id, prizeID, 1)
+        elif points >= 45:
+            prizeID = "pet_chest"
+            prizeName = await db_manager.get_chest_name(prizeID)
+            prizeEmoji = await db_manager.get_chest_icon(prizeID)
+            prizeAmount = 1
+            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            await db_manager.add_item_to_inventory(ctx.author.id, prizeID, 1)
+        elif points >= 30:
+            prizeID = "chest"
+            prizeName = await db_manager.get_chest_name(prizeID)
+            prizeEmoji = await db_manager.get_chest_icon(prizeID)
+            prizeAmount = 2
+            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            await db_manager.add_item_to_inventory(ctx.author.id, prizeID, 2)
+        elif points >= 15:
+            prizeID = "chest"
+            prizeName = await db_manager.get_chest_name(prizeID)
+            prizeEmoji = await db_manager.get_chest_icon(prizeID)
+            prizeAmount = 1
+            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            await db_manager.add_item_to_inventory(ctx.author.id, prizeID, 1)
+        elif points >= 5:
+            prizeID = "bait"
+            prizeName = await db_manager.get_basic_item_name(prizeID)
+            prizeEmoji = await db_manager.get_basic_item_emoji(prizeID)
+            prizeAmount = 2
+            prize = f"{prizeEmoji} {prizeName} x{prizeAmount}"
+            await db_manager.add_item_to_inventory(ctx.author.id, prizeID, 2)
+
 
 
 class TriviaButton(Button):
