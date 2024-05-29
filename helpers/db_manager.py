@@ -5779,6 +5779,13 @@ async def get_pet_items_and_durations(pet_id: str, user_id: str):
 
 #starboard stuff
 #set the starboard channel
+async def set_starboard_enabled(server_id: int, enabled: bool) -> None:
+    async with aiosqlite.connect("database/database.db") as db:
+        cursor = await db.cursor()
+        await cursor.execute("INSERT OR IGNORE INTO starboard (server_id, is_enabled) VALUES (?, ?)", (server_id, enabled))
+        await cursor.execute("UPDATE starboard SET is_enabled = ? WHERE server_id = ?", (enabled, server_id))
+        await db.commit()
+
 async def set_starboard_channel(server_id: int, channel_id: int) -> None:
     async with aiosqlite.connect("database/database.db") as db:
         cursor = await db.cursor()
@@ -5807,10 +5814,11 @@ async def get_starboard_config(server_id: int) -> dict:
         row = await cursor.fetchone()
         if row:
             return {
-                "server_id": row[1],
-                "starboard_channel_id": row[2],
-                "star_threshold": row[3],
-                "star_emoji": row[4]
+                "server_id": row[0],
+                "starboard_channel_id": row[1],
+                "star_threshold": row[2],
+                "star_emoji": row[3],
+                "is_enabled": row[4]
             }
         return None
 

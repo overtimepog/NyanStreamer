@@ -227,7 +227,7 @@ class Streamer(commands.Cog, name="streamer"):
     async def create_item(self, ctx: Context, channel: str, name: str, emoji: discord.Emoji):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         """
         This command will create a new streamer item in the database.
@@ -309,7 +309,7 @@ class Streamer(commands.Cog, name="streamer"):
     async def removeitem(self, ctx: Context, channel: str, item: str):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         """
         This command will remove an item from the database.
@@ -398,7 +398,7 @@ class Streamer(commands.Cog, name="streamer"):
     async def case(self, ctx: Context, streamer: str = None):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         
         if streamer == None:
@@ -518,7 +518,7 @@ class Streamer(commands.Cog, name="streamer"):
     async def add_mod(self, ctx: Context, user: discord.Member):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         """
         This command will add a mod for a streamer in the database.
@@ -563,7 +563,7 @@ class Streamer(commands.Cog, name="streamer"):
     async def remove_mod(self, ctx: Context, user: discord.Member):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         """
         This command will remove a mod for a streamer in the database.
@@ -802,7 +802,7 @@ class Streamer(commands.Cog, name="streamer"):
         #check if th user exists in the database
         user_exists = await db_manager.check_user(ctx.author.id)
         if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         #create an embed to send to the user, then add a button to connect their twitch account
         embed = discord.Embed(

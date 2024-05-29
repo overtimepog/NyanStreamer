@@ -59,7 +59,7 @@ class Jobs(commands.Cog, name="jobs"):
         #check if the user exists
         user_exists = await db_manager.check_user(ctx.author.id)
         if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         #check if the user has a job
         user = await db_manager.profile(ctx.author.id)
@@ -89,7 +89,7 @@ class Jobs(commands.Cog, name="jobs"):
         #check if the user exists
         user_exists = await db_manager.check_user(ctx.author.id)
         if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         
         jobs_per_page = 3
@@ -240,7 +240,7 @@ class Jobs(commands.Cog, name="jobs"):
         #check if the user exists
         user_exists = await db_manager.check_user(ctx.author.id)
         if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         
         if job is None:
@@ -266,7 +266,7 @@ class Jobs(commands.Cog, name="jobs"):
             jobName = await db_manager.get_job_name_from_id(job)
             await ctx.send(f"You have accepted the job {job_icon}{jobName}!")
         else:
-            await ctx.send("You already have a job!, please use `nya job quit or /job quit` command to quit your current job.")
+            await ctx.send("You already have a job!, please use `s.job quit or /job quit` command to quit your current job.")
 
 
     @acceptjob.autocomplete("job")
@@ -298,7 +298,7 @@ class Jobs(commands.Cog, name="jobs"):
         #check if the user exists
         user_exists = await db_manager.check_user(ctx.author.id)
         if user_exists == None or user_exists == [] or user_exists == False or user_exists == 0 or user_exists == "None":
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         
         job_id = await db_manager.get_user_job(user_id)

@@ -45,7 +45,7 @@ class General(commands.Cog, name="general"):
         from discord.ext import commands
         checkUser = await db_manager.check_user(context.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await context.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await context.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         prefix = self.bot.config["prefix"]
 

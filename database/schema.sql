@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS `starboard` (
   `server_id` BIGINT NOT NULL,               -- The ID of the guild (server)
   `starboard_channel_id` BIGINT NOT NULL,   -- The ID of the channel where starred messages will be posted
   `star_threshold` INT DEFAULT 5,           -- The number of star reactions required for a message to be posted to the starboard
-  `star_emoji` varchar(255) DEFAULT '⭐'     -- The custom emoji ID or the default star emoji
+  `star_emoji` VARCHAR(255) DEFAULT '⭐',    -- The custom emoji ID or the default star emoji
+  `is_enabled` BOOLEAN DEFAULT TRUE         -- Whether the starboard is enabled or not
 );
 
 CREATE TABLE IF NOT EXISTS `starred_messages` (

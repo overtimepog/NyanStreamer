@@ -48,7 +48,7 @@ class Games(commands.Cog, name="games"):
     async def play(self, ctx: Context, bet: int):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         await games.slots(self, ctx, ctx.author, bet)
 
@@ -124,7 +124,7 @@ class Games(commands.Cog, name="games"):
         #check if the user exists in the database
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
 
         user_cash = await db_manager.get_money(ctx.author.id)
@@ -327,7 +327,7 @@ class Games(commands.Cog, name="games"):
         #get the users luck stat
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         luck = await db_manager.get_luck(ctx.author.id)
         await games.fish(luck)
@@ -342,7 +342,7 @@ class Games(commands.Cog, name="games"):
     async def puzzle(self, ctx: Context):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         await games.trivia(self, ctx)
 

@@ -104,7 +104,7 @@ class PetSelect(discord.ui.Select):
                         #if the pet is level 10, it will evolve
                         if pet_level == 10:
                             #tell the user they can evolve their pet
-                            await interaction.response.send_message(f"You used **{item_emoji}{item_name}** on **{pet_name}** and gave them **{item_effect_amount} XP** They Leveled up :), **{pet_name}** is now level **{pet_level}**! You can now evolve your pet with `nya evolve {pet_id} or /evolve`")
+                            await interaction.response.send_message(f"You used **{item_emoji}{item_name}** on **{pet_name}** and gave them **{item_effect_amount} XP** They Leveled up :), **{pet_name}** is now level **{pet_level}**! You can now evolve your pet with `s.evolve {pet_id} or /evolve`")
                             return
                         else:
                             await interaction.response.send_message(f"You used **{item_emoji}{item_name}** on **{pet_name}** and gave them **{item_effect_amount} XP** They Leveled up :), **{pet_name}** is now level **{pet_level}**!")
@@ -196,7 +196,7 @@ class Basic(commands.Cog, name="basic"):
     async def inventory(self, ctx: Context):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         # Get user inventory items from the database
         inventory_items = await db_manager.view_inventory(ctx.author.id)
@@ -219,7 +219,7 @@ class Basic(commands.Cog, name="basic"):
                 end_idx = start_idx + 5
                 inventory_embed = discord.Embed(
                     title="Inventory",
-                    description=f"{ctx.author.name}'s Inventory \n Commands: \n nya equip ID: equips an item based on its ID \n nya unequip ID: will unequip an item based on its ID. \n nya sell ID amount: will sell that amount of an item from your inventory",
+                    description=f"{ctx.author.name}'s Inventory \n Commands: \n s.equip ID: equips an item based on its ID \n s.unequip ID: will unequip an item based on its ID. \n s.sell ID amount: will sell that amount of an item from your inventory",
                 )
                 inventory_embed.set_footer(text=f"Page {i + 1}/{num_pages}")
 
@@ -559,7 +559,7 @@ class Basic(commands.Cog, name="basic"):
     async def shop(self, ctx: Context):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         #get the shop items from the database
         shopitems = await db_manager.display_shop_items()
@@ -727,7 +727,7 @@ class Basic(commands.Cog, name="basic"):
         """
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         user_id = ctx.message.author.id
         user_profile = await db_manager.profile(user_id)
@@ -902,7 +902,7 @@ class Basic(commands.Cog, name="basic"):
     async def sell(self, ctx: Context, item: str, amount: int):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
-            await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!")
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         
         """
@@ -993,9 +993,9 @@ class Basic(commands.Cog, name="basic"):
         user_profile = await db_manager.profile(user_id)
         if user_profile == None:
             if user_id == ctx.author.id:
-                await ctx.send("You are not in the database yet, please use the `nya start or /start` command to start your adventure!", ephemeral=True)
+                await ctx.send("you arent a sigma yet, use /start", ephemeral=True)
             else:
-                await ctx.send(f"{user.name} isnt in the database yet, please tell them to use the `nya start or /start` command to start their adventure!", ephemeral=True)
+                await ctx.send(f"{user.name} isnt a sigma yet, tell them to use /start", ephemeral=True)
         #print(user_profile)
         user_id = user_profile[0]
         user_money = user_profile[1]
@@ -1441,11 +1441,11 @@ class Basic(commands.Cog, name="basic"):
     #hybrid command to start the user on their journy, this will create a profile for the user using the profile function from helpers\db_manager.py and give them 200 bucks
     @commands.hybrid_command(
         name="start",
-        description="This command will start your journey.",
+        description="This command will make you a sigma.",
     )
     async def start(self, ctx: Context):
         """
-        This command will start your journey.
+        This command will make you a sigma.
 
         :param ctx: The context in which the command was called.
         """
@@ -1455,9 +1455,9 @@ class Basic(commands.Cog, name="basic"):
         if userExist == None or userExist == []:
             await db_manager.get_user(user_id)
             #equip the iron sword
-            await ctx.send(f"You have started your Journey, Welcome {ctx.message.author.name} to **Nyan Streamer**.")
+            await ctx.send(f"You are now a sigma")
         else:
-            await ctx.send("You have already started your journey.")
+            await ctx.send("You're already a sigma")
         
 
 

@@ -1,0 +1,12 @@
+{
+    "token": "YOUR_DISCORD_BOT_TOKEN",
+    "prefix": "!",
+    "application_id": 1000000000,
+    "CLIENT_ID": "YOUR_TWITCH_CLIENT_ID",
+    "CLIENT_SECRET": "YOUR_TWITCH_CLIENT_SECRET",
+    "sync_commands_globally": true
+    "owners": [
+        123456789012345678,
+        987654321098765432
+    ]
+}

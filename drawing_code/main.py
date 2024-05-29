@@ -208,7 +208,7 @@ TOKEN = config.get("token")
 
 if __name__ == "__main__":
     bot = Bot(
-        command_prefix="nya ",
+        command_prefix="s.",
         owner_ids=[267550284979503104, 761944238887272481],
         case_insensitive=True,
         intents=discord.Intents.all(),

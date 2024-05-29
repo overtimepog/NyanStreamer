@@ -34,6 +34,7 @@ import twitch
 from twitchAPI.twitch import Twitch
 from twitchAPI.types import AuthScope
 import lavalink
+import aiofiles
 
 cash = "⌬"
 if not os.path.isfile("config.json"):
@@ -81,7 +82,7 @@ intents.presences = True
 """
 
 intents = discord.Intents.default()
-intents.members = True
+intents.message_content = True
 
 """
 Uncomment this if you don't want to use prefix (normal) commands.
@@ -96,10 +97,11 @@ bot = Bot(command_prefix=commands.when_mentioned_or(
 
 
 async def init_db():
-    async with aiosqlite.connect("database/database.db") as db:
-        with open("database/schema.sql") as file:
-            await db.executescript(file.read())
-        await db.commit()
+    db = await aiosqlite.connect('database/database.db')
+    async with aiofiles.open("database/schema.sql", mode="r", encoding="utf-8") as file:
+        script = await file.read()
+        await db.executescript(script)
+    await db.close()
 
 
 """
@@ -194,7 +196,7 @@ async def status_task() -> None:
     streamer_count = len(streamers)
     #get the server count
     server_count = len(bot.guilds)
-    statuses = [f"With {streamer_count} Streamers!", "nya help", 'UwU', f"to {server_count} Servers!"]
+    statuses = [f"With {streamer_count} Streamers!", "s.help", 'UwU', f"to {server_count} Servers!"]
     await bot.change_presence(activity=discord.Streaming(name=random.choice(statuses), url="https://www.twitch.tv/overtimepog", twitch_name="overtimepog"))
 
 @bot.event
@@ -215,7 +217,7 @@ async def on_message(message: discord.Message) -> None:
 
 async def update_starboard(reaction: discord.Reaction, user: Union[discord.Member, discord.User], remove: bool = False) -> None:
     config = await db_manager.get_starboard_config(reaction.message.guild.id)
-    if not config:
+    if not config or not config["is_enabled"]:
         return
 
     if str(reaction.emoji) == config["star_emoji"]:
@@ -276,8 +278,6 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.Member
 @bot.event
 async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> None:
     await update_starboard(reaction, user, remove=True)
-
-
 
 @bot.event
 async def on_command_completion(context: Context) -> None:

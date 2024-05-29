@@ -24,7 +24,7 @@ class TwitchBot(commands.Bot):
 
     def __init__(self):
         # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
-        super().__init__(token=config["TOKEN"], prefix='nya ', initial_channels=[config["CHANNEL"]])
+        super().__init__(token=config["TOKEN"], prefix='s.', initial_channels=[config["CHANNEL"]])
 
     async def event_ready(self):
         # We are logged in and ready to chat and use commands...
@@ -92,7 +92,7 @@ class TwitchBot(commands.Bot):
     @commands.command()
     async def help(self, ctx: commands.Context):
         #send a help message with all the commands
-        await ctx.send("nya drop: Drops a random item from your channel to a random viewer in chat\n")
+        await ctx.send("s.drop: Drops a random item from your channel to a random viewer in chat\n")
 
     #command to drop an item to a random viewer in chat, get the random veiwer from https://tmi.twitch.tv/group/user/{channel}/chatters and then send a message to them
     @commands.cooldown(rate=1, per=60, bucket=commands.Bucket.channel)
