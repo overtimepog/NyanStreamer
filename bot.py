@@ -80,7 +80,8 @@ intents.message_content = True
 intents.presences = True
 """
 
-intents = discord.Intents.all()
+intents = discord.Intents.default()
+intents.members = True
 
 """
 Uncomment this if you don't want to use prefix (normal) commands.
@@ -121,7 +122,7 @@ async def structure_spawn_task() -> None:
         #    print("Skipping " + bot_guild.name + " because it's the Connections server")
         #    continue
         #reset the guilds current structure
-        channel = discord.utils.get(bot_guild.text_channels, topic="nyanstreamer")
+        channel = discord.utils.get(bot_guild.text_channels, topic="Sigma")
         if channel is None:
             #print("A channel with the topic nyanstreamer-structures does not exist in " + bot_guild.name)
             continue
@@ -162,7 +163,7 @@ async def mob_spawn_task() -> None:
         #    print("Skipping " + bot_guild.name + " because it's the Connections server")
         #    continue
         #reset the guilds current structure
-        channel = discord.utils.get(bot_guild.text_channels, topic="nyanstreamer")
+        channel = discord.utils.get(bot_guild.text_channels, topic="sigma")
         if channel is None:
             #print("A channel with the topic nyanstreamer-structures does not exist in " + bot_guild.name)
             continue
@@ -515,7 +516,7 @@ async def on_ready() -> None:
     # Run twitch bot file
     #run the drawing file 
     #subprocess.Popen([sys.executable, r'drawing_code/main.py'])
-    subprocess.Popen([sys.executable, r'twitch.py'])
+    #subprocess.Popen([sys.executable, r'twitch.py'])
 
 #when the bot joins a server, add all the members to the database
 @bot.event
