@@ -306,7 +306,7 @@ class Basic(commands.Cog, name="basic"):
     async def before_revive_users(self):
         await self.bot.wait_until_ready()
 
-    @commands.hybrid_command(name="leaderboard", description="Show the leaderboard for a specified category.")
+    @commands.hybrid_command(name="leaderboard", description="Show the leaderboard for a specified category.", aliases=["lb"])
     async def leaderboard(self, ctx: commands.Context):
         """
         Display the leaderboard for a chosen category.
