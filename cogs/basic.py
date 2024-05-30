@@ -1027,7 +1027,6 @@ class Basic(commands.Cog, name="basic"):
         return choices[:25]
 
     
-    logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)#sell all
     @commands.hybrid_command(
         name="sellall",
