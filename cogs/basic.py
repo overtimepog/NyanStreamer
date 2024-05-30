@@ -199,9 +199,10 @@ class LeaderboardDropdown(Select):
             await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
             return
 
-        # Calculate next reset time
-        now = datetime.datetime.now()
-        next_reset = now + datetime.timedelta(weeks=1)
+        # Calculate next reset time (Friday at 5 PM EST)
+        now = datetime.datetime.now(pytz.timezone('US/Eastern'))
+        next_friday = now + datetime.timedelta((4 - now.weekday()) % 7)
+        next_reset = next_friday.replace(hour=17, minute=0, second=0, microsecond=0)
         next_reset_unix = int(time.mktime(next_reset.timetuple()))
 
         embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{next_reset_unix}:R>")
@@ -257,8 +258,7 @@ class Basic(commands.Cog, name="basic"):
                     user_id = entry['user_id']
                     rank = entry['rank']
 
-                    #stop if the user_id is 0
-                    if user_id = 0:
+                    if user_id == 0:
                         continue
 
                     if rank == 1:
@@ -279,6 +279,17 @@ class Basic(commands.Cog, name="basic"):
     @weekly_leaderboard_reset.before_loop
     async def before_weekly_leaderboard_reset(self):
         await self.bot.wait_until_ready()
+
+        # Calculate the initial delay until the next Friday at 5 PM EST
+        now = datetime.datetime.now(pytz.timezone('US/Eastern'))
+        next_friday = now + datetime.timedelta((4 - now.weekday()) % 7)
+        next_reset = next_friday.replace(hour=17, minute=0, second=0, microsecond=0)
+        if now > next_reset:
+            next_reset += datetime.timedelta(weeks=1)
+        delay = (next_reset - now).total_seconds()
+
+        await discord.utils.sleep_until(next_reset)
+        self.weekly_leaderboard_reset.start()
 
     @shop_reset.before_loop
     async def before_shop_reset(self):
