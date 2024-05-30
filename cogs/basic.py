@@ -1033,7 +1033,7 @@ class Basic(commands.Cog, name="basic"):
     async def sellall(self, ctx: Context):
         # Step 1: Retrieve the user's inventory
         user_id = ctx.author.id
-        user_inventory = await db_manager.get_user_inventory(user_id)
+        user_inventory = await db_manager.view_inventory(user_id)
 
         # Step 2: Filter out sellable items
         sellable_items = [
