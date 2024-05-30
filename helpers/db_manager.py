@@ -6169,6 +6169,7 @@ async def update_leaderboard():
             ORDER BY player_level DESC
         """) as cursor:
             all_levels = await cursor.fetchall()
+            print(f"All levels fetched: {all_levels}")
 
         # Fetch all users by money
         async with db.execute("""
@@ -6177,10 +6178,12 @@ async def update_leaderboard():
             ORDER BY money DESC
         """) as cursor:
             all_money = await cursor.fetchall()
+            print(f"All money fetched: {all_money}")
 
         # Update leaderboard for highest level
         rank = 1
         for user_id, username, player_level in all_levels:
+            print(f"Updating highest_level for user_id: {user_id} with rank: {rank}")
             await db.execute("""
                 INSERT INTO leaderboard (category, user_id, username, value, rank)
                 VALUES ('highest_level', ?, ?, ?, ?)
@@ -6191,6 +6194,7 @@ async def update_leaderboard():
         # Update leaderboard for most money
         rank = 1
         for user_id, username, money in all_money:
+            print(f"Updating most_money for user_id: {user_id} with rank: {rank}")
             await db.execute("""
                 INSERT INTO leaderboard (category, user_id, username, value, rank)
                 VALUES ('most_money', ?, ?, ?, ?)
@@ -6200,6 +6204,7 @@ async def update_leaderboard():
 
         # Commit the transaction
         await db.commit()
+        print("Leaderboard update committed")
 
 
 async def get_leaderboard(bot, category, limit=20):
