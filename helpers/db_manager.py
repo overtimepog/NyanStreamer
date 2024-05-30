@@ -3993,11 +3993,11 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
             else:
                 #check if the item is a streamer item
                 isStreamerItem = await check_streamer_item(item_id)
-                print(isStreamerItem)
+                #print(isStreamerItem)
                 isBasicItem = await check_basic_item(item_id)
-                print(isBasicItem)
+                #print(isBasicItem)
                 isChest = await check_chest(item_id)
-                print(isChest)
+                #print(isChest)
                 #add the item to the inventory table
                 if isBasicItem == 1:
                     async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
