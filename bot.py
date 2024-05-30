@@ -392,7 +392,6 @@ async def load_cogs() -> None:
                 traceback.print_exception(type(e), e, e.__traceback__)
 
 async def setup() -> None:
-    await init_db()
     print("\n---------Basic Items----------")
     await db_manager.clear_basic_items()
     await db_manager.add_basic_items()
@@ -423,11 +422,11 @@ async def setup() -> None:
         if total_members > 10000:
             print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
             return
-    
+
         print(f"\nStarting check for Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | Total Users: {total_members}")
-        
+
         start_time = time.time()
-        
+
         member_counter = 0
         for member in bot_guild.members:
             if member.bot:
@@ -436,10 +435,10 @@ async def setup() -> None:
             checkUser = await db_manager.check_user(member.id)
             if checkUser is None:
                 await db_manager.get_user(member.id)
-    
+
         end_time = time.time()
         duration = end_time - start_time
-    
+
         print(f"\nFinished check for Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | Total Users: {total_members} | Time taken: {duration:.2f} seconds")
 
     tasks = [check_server(i, bot_guild, total_guilds) for i, bot_guild in enumerate(bot.guilds, start=1)]
@@ -449,6 +448,8 @@ async def setup() -> None:
 
 @bot.event
 async def on_ready() -> None:
+    await init_db()
+    print("\n-----------------------------")
     print(f"Logged in as {bot.user.name}")
     print(f"discord.py API version: {discord.__version__}")
     print(f"Python version: {platform.python_version()}")
@@ -460,7 +461,7 @@ async def on_ready() -> None:
         print("Syncing commands globally...")
         await bot.tree.sync()
         print("Done syncing commands globally!")
-    print("-----------------------------")
+    print("\n-----------------------------")
     await setup()
     #print("Structure Spawn Task Started")
     #structure_spawn_task.start()
