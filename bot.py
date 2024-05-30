@@ -31,8 +31,8 @@ from assets import endpoints
 import exceptions
 from helpers import db_manager
 import twitch
-from twitchAPI.twitch import Twitch
-from twitchAPI.types import AuthScope
+#from twitchAPI.twitch import Twitch
+#from twitchAPI.types import AuthScope
 import lavalink
 import aiofiles
 
