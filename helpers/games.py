@@ -218,8 +218,18 @@ async def fish(self, ctx, user_luck: int):
             catchable_fishes = fishes
         return random.choice(catchable_fishes)
 
+    equipped_items = await db_manager.get_equipped_items(ctx.author.id)
+    equipped_baits = [item for item in equipped_items if item['item_id'].startswith('bait_')]
+    
+    if not equipped_baits:
+        await ctx.send("You don't have any bait equipped to go fishing.")
+        return
+
+    equipped_baits.sort(key=lambda x: x['item_price'], reverse=True)
+    selected_bait = equipped_baits[0]
+
     try:
-        baitAmount = await db_manager.get_item_amount_from_inventory(ctx.author.id, "bait")
+        baitAmount = await db_manager.get_item_amount_from_inventory(ctx.author.id, selected_bait['item_id'])
     except Exception as e:
         logging.error(f"Error fetching bait amount: {e}\n{traceback.format_exc()}")
         await ctx.send("An error occurred while fetching bait data.")
@@ -228,15 +238,6 @@ async def fish(self, ctx, user_luck: int):
     if baitAmount == 0:
         await ctx.send("You don't have any bait to go fishing.")
         return
-
-    equipped_items = await db_manager.get_equipped_items(ctx.author.id)
-    equipped_baits = [item for item in equipped_items if "bait" in item['item_id']]
-    if not equipped_baits:
-        await ctx.send("You don't have any bait equipped to go fishing.")
-        return
-
-    equipped_baits.sort(key=lambda x: x['item_price'], reverse=True)
-    selected_bait = equipped_baits[0]
 
     tries = 5 + baitAmount
     catches = {}
@@ -318,7 +319,7 @@ async def fish(self, ctx, user_luck: int):
 
     async def sell_fish(interaction: discord.Interaction):
         total_earned = 0
-        sell_description = "You sold:\n"
+        sell_description = "**YOU SOLD**:\n"
         for fish_id, count in catches.items():
             try:
                 fish_data = await db_manager.get_basic_item_data(fish_id)
@@ -375,7 +376,6 @@ async def fish(self, ctx, user_luck: int):
     except Exception as e:
         logging.error(f"Error handling interaction: {e}\n{traceback.format_exc()}")
         await ctx.send("An unknown error occurred during the interaction.")
-
 
 
 class TriviaButton(Button):
