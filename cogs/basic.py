@@ -191,16 +191,21 @@ class Paginator(View):
         self.current_page = 0
 
     def create_embed(self, entries, category, next_reset_unix):
+        if category == "highest_level":
+            value = "Level: {value}"
+        elif category == "most_money":
+            value = "Money: {value}"
+
         embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{next_reset_unix}:R>")
         medals = ["🏆", "🥈", "🥉"]
         for entry in entries:
             rank = entry['rank']
             username = entry['username']
             value = entry['value']
-            name = f"{medals[rank-1]} Rank {rank}: {username}" if rank <= 3 else f"Rank {rank}: {username}"
+            name = f"{medals[rank-1]}{rank}: {username.title()}" if rank <= 3 else f"{rank}: {username.title()}"
             embed.add_field(
                 name=name,
-                value=f"Value: {value} \n",
+                value=value,
                 inline=False
             )
         embed.set_footer(text=f"Page {self.current_page + 1} of {len(self.pages)}")
@@ -212,14 +217,18 @@ class Paginator(View):
             self.current_page -= 1
             embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
             await interaction.response.edit_message(embed=embed, view=self)
-#give me some cool next symbols
-# https://emojicombos.com/ in the search bar type "next" and you will get a bunch of cool next symbols
+
     @discord.ui.button(label="≫", style=discord.ButtonStyle.primary)
     async def next(self, button: Button, interaction: discord.Interaction):
         if self.current_page < len(self.pages) - 1:
             self.current_page += 1
             embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
             await interaction.response.edit_message(embed=embed, view=self)
+
+    #delete button
+    @discord.ui.button(label="Close", style=discord.ButtonStyle.danger)
+    async def close(self, button: Button, interaction: discord.Interaction):
+        await interaction.response.delete_message()
 
     async def start(self, interaction: discord.Interaction, category, next_reset_unix):
         self.category = category
