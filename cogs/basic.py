@@ -290,6 +290,7 @@ class Basic(commands.Cog, name="basic"):
         self.bot = bot
         self.shop_reset.start()
         self.revive_users.start()
+        self.update_leaderboard.start()
         self.bot.loop.create_task(self.start_weekly_leaderboard_reset())
 
     @tasks.loop(hours=8)
@@ -300,6 +301,19 @@ class Basic(commands.Cog, name="basic"):
         await db_manager.add_shop_items()
         print("Done Resetting Shop...")
         print("-----------------------------")
+        
+    #task to update the leaderboard every 20min
+    @tasks.loop(minutes=20)
+    async def update_leaderboard(self):
+        print("-----------------------------")
+        print("Updating Leaderboard...")
+        await db_manager.update_leaderboard()
+        print("Done Updating Leaderboard...")
+        print("-----------------------------")
+    
+    @update_leaderboard.before_loop
+    async def before_update_leaderboard(self):
+        await self.bot.wait_until_ready()
 
     @tasks.loop(hours=168)  # Loop every week (168 hours)
     async def weekly_leaderboard_reset(self):

@@ -305,9 +305,6 @@ async def fish(self, ctx, user_luck: int):
         new_level = await db_manager.get_level(ctx.author.id)
         description += f"\n{ctx.author.mention} has leveled up! They are now level " + str(new_level) + "!"
 
-    # Update leaderboard
-    await db_manager.update_leaderboard()
-
     embed = discord.Embed(
         title=f"{ctx.author.name}",
         description=description,
