@@ -4157,7 +4157,6 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             print(f"Chest {item_id} not found in chests table.")
                             return 0
                 
-                print(f"Item {item_id} is neither a basic item nor a chest.")
                 await db.commit()
                 rows = await db.execute("SELECT COUNT(*) FROM inventory")
                 async with rows as cursor:
