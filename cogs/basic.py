@@ -1278,8 +1278,10 @@ class Basic(commands.Cog, name="basic"):
             item_total_value = item[6] * int(item[3])  # item_amount is at index 6 and item_sell_price is at index 3
             embed.add_field(name=f"x{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}", value=f"", inline=False)
             print(f"Added field to embed for item: {item}")
+            
+        money = await db_manager.get_money(user_id)    
 
-        embed.add_field(name=f"**{cash}{total_price}**", value=f"", inline=False)
+        embed.add_field(name=f"**{cash}{total_price}**", value=f"You now have **{cash}{money}**", inline=False)
         await ctx.send(embed=embed)
         print(f"Embed sent with total price: {total_price}")
 #view a users profile using the view_profile function from helpers\db_manager.py

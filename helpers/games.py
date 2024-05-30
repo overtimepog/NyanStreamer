@@ -341,12 +341,13 @@ async def fish(self, ctx, user_luck: int):
 
         try:
             await db_manager.add_money(ctx.author.id, total_earned)
+            money = await db_manager.get_money(ctx.author.id)
         except Exception as e:
             logging.error(f"Error adding money: {e}\n{traceback.format_exc()}")
             await interaction.response.send_message("An error occurred while adding money.")
             return
 
-        sell_description += f"\nTotal money earned from selling: ⌬{total_earned}"
+        sell_description += f"\nTotal money earned from selling: ⌬{total_earned} | You now have ⌬{money}"
         sell_embed = discord.Embed(
             title=f"{ctx.author.name}",
             description=sell_description,
