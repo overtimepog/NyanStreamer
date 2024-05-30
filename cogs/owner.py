@@ -434,14 +434,13 @@ class Owner(commands.Cog, name="owner"):
             file.write("\n".join(emoji_list))
 
         # Send the file to yourself via DM
-        owner = ctx.guild.owner
-        if owner:
-            try:
-                with open(filename, "rb") as file:
-                    await owner.send("Here is the list of emojis in the server:", file=discord.File(file, filename=filename))
-                await ctx.send("Emoji list has been sent to the server owner via DM.")
-            except Exception as e:
-                await ctx.send(f"An error occurred while sending the DM: {e}")
+        author = ctx.message.author
+        try:
+            with open(filename, "rb") as file:
+                await author.send("Here is the list of emojis in the server:", file=discord.File(file, filename=filename))
+            await ctx.send("Emoji list has been sent to the server owner via DM.", ephemeral=True)
+        except Exception as e:
+            await ctx.send(f"An error occurred while sending the DM: {e}", ephemeral=True)
 
         # Delete the temporary file
         os.remove(filename)
