@@ -227,13 +227,13 @@ class Basic(commands.Cog, name="basic"):
         aliases=["inv"],
     )
     async def inventory(self, ctx: Context):
-        checkUser = await self.db_manager.check_user(ctx.author.id)
+        checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser in [None, False, [], "None", 0]:
             await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
 
         # Get user inventory items from the database
-        inventory_items = await self.db_manager.view_inventory(ctx.author.id)
+        inventory_items = await db_manager.view_inventory(ctx.author.id)
         if not inventory_items:
             await ctx.send("You have no items in your inventory.")
             return
@@ -271,10 +271,10 @@ class Basic(commands.Cog, name="basic"):
                     item_crit_chance = item[11]
                     item_projectile = item[12]
                     if item_type == "Chest":
-                        item_description = await self.db_manager.get_chest_description(item_id)
+                        item_description = await db_manager.get_chest_description(item_id)
                     else:
-                        item_description = await self.db_manager.get_basic_item_description(item_id)
-                    isequippable = await self.db_manager.is_basic_item_equipable(item_id)
+                        item_description = await db_manager.get_basic_item_description(item_id)
+                    isequippable = await db_manager.is_basic_item_equipable(item_id)
                     if isequippable:
                         inventory_embed.add_field(
                             name=f"{item_emoji}{item_name} - x{item_amount}",
@@ -282,7 +282,7 @@ class Basic(commands.Cog, name="basic"):
                             inline=False
                         )
                     elif item_type == "Pet":
-                        pet_name = await self.db_manager.get_pet_name(ctx.author.id, item_id)
+                        pet_name = await db_manager.get_pet_name(ctx.author.id, item_id)
                         if pet_name != item_name:
                             inventory_embed.add_field(
                                 name=f"{item_emoji}{pet_name} (`{item_name}`) - x{item_amount}",
@@ -330,9 +330,9 @@ class Basic(commands.Cog, name="basic"):
                 selected_item_type = self.values[0]
 
                 if selected_item_type == "All":
-                    filtered_items = await self.db_manager.view_inventory(interaction.user.id)
+                    filtered_items = await db_manager.view_inventory(interaction.user.id)
                 else:
-                    filtered_items = [item for item in await self.db_manager.view_inventory(interaction.user.id) if item[7] == selected_item_type]
+                    filtered_items = [item for item in await db_manager.view_inventory(interaction.user.id) if item[7] == selected_item_type]
 
                 filtered_embeds = await create_embeds(filtered_items)
                 new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
@@ -2062,7 +2062,7 @@ class Basic(commands.Cog, name="basic"):
             "You were rewarded for your efforts with ",
             "Inside the chest, you were delighted to find "
         ]
-    
+
         def choose_items_based_on_chance(items_with_chances: List[Tuple], luck: int):
             chosen_items = []
             for item, chance in items_with_chances:
@@ -2070,7 +2070,7 @@ class Basic(commands.Cog, name="basic"):
                 if random.uniform(0, 100) <= adjusted_chance:
                     chosen_items.append(item)
             return chosen_items
-    
+
         chest_contents = await db_manager.get_chest_contents(item)
         chest_contents = [
             (
@@ -2078,11 +2078,11 @@ class Basic(commands.Cog, name="basic"):
                 item[3]
             ) for item in chest_contents
         ]
-    
+
         chosen_items = choose_items_based_on_chance(chest_contents, luck)
-    
+
         embed = discord.Embed(title="Chest Opened!", color=discord.Color.green())
-        
+
         if chosen_items:
             for chosen_item in chosen_items:
                 await db_manager.add_item_to_inventory(ctx.author.id, chosen_item['item_id'], chosen_item['item_amount'])
@@ -2093,7 +2093,7 @@ class Basic(commands.Cog, name="basic"):
         else:
             chest_name = await db_manager.get_chest_name(item)
             embed.description = f"It seems {chest_name} ended up being empty!"
-        
+
         await ctx.send(embed=embed)
     
     # Function to handle using pet items
