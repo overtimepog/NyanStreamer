@@ -191,11 +191,6 @@ class Paginator(View):
         self.current_page = 0
 
     def create_embed(self, entries, category, next_reset_unix):
-        if category == "highest_level":
-            value = "Level: {value}"
-        elif category == "most_money":
-            value = "Money: {value}"
-
         embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{next_reset_unix}:R>")
         medals = ["🏆", "🥈", "🥉"]
         for entry in entries:
@@ -203,9 +198,13 @@ class Paginator(View):
             username = entry['username']
             value = entry['value']
             name = f"{medals[rank-1]}{rank}: {username.title()}" if rank <= 3 else f"{rank}: {username.title()}"
+            if category == "highest_level":
+                stats = f"Level: {value}"
+            elif category == "most_money":
+                stats = f"Money: {value}"
             embed.add_field(
                 name=name,
-                value=value,
+                value=stats,
                 inline=False
             )
         embed.set_footer(text=f"Page {self.current_page + 1} of {len(self.pages)}")
