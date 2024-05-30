@@ -1074,8 +1074,8 @@ class Basic(commands.Cog, name="basic"):
         for item in sellable_items:
             item_name = item[1]  # item_name is at index 1
             item_emoji = item[4]  # item_emoji is at index 4
-            item_total_value = item[6] * item[3]  # item_amount is at index 6 and item_sell_price is at index 3
-            embed.add_field(name=item_name, value=f"{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}", inline=False)
+            item_total_value = item[6] * int(item[3])  # item_amount is at index 6 and item_sell_price is at index 3
+            embed.add_field(name=item_name, value=f"x{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}", inline=False)
 
         await ctx.send(embed=embed)
 

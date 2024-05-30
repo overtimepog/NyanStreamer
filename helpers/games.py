@@ -307,7 +307,7 @@ async def fish(self, ctx, user_luck: int):
 
                 fish_emoji = fish_data['item_emoji']
                 fish_name = fish_data['item_name']
-                sell_description += f"{count} {fish_emoji} {fish_name} - ⌬{earned}\n"
+                sell_description += f"x{count} {fish_emoji}{fish_name} - ⌬{earned}\n"
             except Exception as e:
                 logging.error(f"Error processing sell fish: {e}\n{traceback.format_exc()}")
                 await interaction.response.send_message("An error occurred while selling fish.")
