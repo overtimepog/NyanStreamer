@@ -28,6 +28,7 @@ from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from num2words import num2words
 import logging
+from discord import User
 
 global i
 i = 0
@@ -377,8 +378,11 @@ class Basic(commands.Cog, name="basic"):
         name="rank",
         description="This command will show your rank.",
     )
-    async def rank(ctx, user: discord.User):
-        user_id = user.id
+    async def rank(ctx, user: discord.User = None):
+        if user is None:
+            user = ctx.author
+            user_id = ctx.author.id
+
         print(f"Fetching ranks for user_id: {user_id}")
         most_money_rank, highest_level_rank = await get_user_ranks(user_id)
 
@@ -1356,7 +1360,6 @@ class Basic(commands.Cog, name="basic"):
         user_id = user.id if user else ctx.author.id
         print(f"Fetching ranks for user_id: {user_id}")
         most_money_rank, highest_level_rank = await get_user_ranks(user_id)
-
         if most_money_rank is not None or highest_level_rank is not None:
             embed.add_field(name="Most Money Rank", value=most_money_rank if most_money_rank is not None else "Not ranked", inline=True)
             embed.add_field(name="Highest Level Rank", value=highest_level_rank if highest_level_rank is not None else "Not ranked", inline=True)
