@@ -448,7 +448,7 @@ class General(commands.Cog, name="general"):
         """
         embed = discord.Embed(
             title="How to use the bot",
-            description="To see the shop, use `/shop`.\nTo buy some bait, use `/buy`.\nTo equip the bait, use `/equip` to equip it, then you can go fishing with /fish.",
+            description="To see the shop, use `/shop`.\nTo buy some bait, use `/buy`.\nTo equip the bait, use `/equip` to equip it,\n then you can go fishing with `/fish`.",
             color=0x9C84EF
         )
         await ctx.send(embed=embed)
