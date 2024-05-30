@@ -265,7 +265,7 @@ async def fish(self, ctx, user_luck: int):
         xp_gained = rarity_xp.get(fish_rarity, 0) * count
         total_xp += xp_gained
 
-        description += f"{count} {fish_emoji} {fish_name} (XP: {xp_gained})\n"
+        description += f"x{count} {fish_emoji}{fish_name} - XP: {xp_gained}\n"
         try:
             await db_manager.add_item_to_inventory(ctx.author.id, fish_id, count)
         except Exception as e:
