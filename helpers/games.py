@@ -342,14 +342,14 @@ async def fish(self, ctx, user_luck: int):
                 await sell_fish(interaction)
             elif interaction.data.get('custom_id') == "replay_fish":
                 #await message.delete()
-                await interaction.defer() 
+                await interaction.defer()
                 await fish(self, ctx, user_luck)
                 break
             elif interaction.data.get('custom_id') == "return":
                 await interaction.message.delete()
                 break
     except asyncio.TimeoutError:
-        await message.edit(content="Option timed out.", view=None)
+        await message.delete()
     except Exception as e:
         logging.error(f"Error handling interaction: {e}\n{traceback.format_exc()}")
         await ctx.send("An unknown error occurred during the interaction.")
