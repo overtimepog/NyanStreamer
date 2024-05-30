@@ -1029,6 +1029,7 @@ class Basic(commands.Cog, name="basic"):
     @commands.hybrid_command(
         name="sellall",
         description="This command will sell all items from your inventory.",
+        aliases=["sellall", "sell all", "sell_all"],
     )
     async def sellall(self, ctx: Context):
         checkUser = await db_manager.check_user(ctx.author.id)
@@ -1078,6 +1079,7 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name=item_name, value=f"x{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}")
 
         embed.add_field(name="Total", value=f"**{cash}{total_price}**", inline=False)
+        await ctx.send(embed=embed)
 
 
 
