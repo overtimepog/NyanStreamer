@@ -219,7 +219,7 @@ async def fish(self, ctx, user_luck: int):
         return random.choice(catchable_fishes)
 
     equipped_items = await db_manager.get_equipped_items(ctx.author.id)
-    equipped_baits = [item for item in equipped_items if item['item_id'].startswith('bait_')]
+    equipped_baits = [item for item in equipped_items if item[1].startswith('bait_')]
     
     if not equipped_baits:
         await ctx.send("You don't have any bait equipped to go fishing.")
@@ -319,7 +319,7 @@ async def fish(self, ctx, user_luck: int):
 
     async def sell_fish(interaction: discord.Interaction):
         total_earned = 0
-        sell_description = "**YOU SOLD**:\n"
+        sell_description = "**YOU SOLD: **\n"
         for fish_id, count in catches.items():
             try:
                 fish_data = await db_manager.get_basic_item_data(fish_id)
