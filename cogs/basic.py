@@ -211,14 +211,14 @@ class Paginator(View):
         return embed
 
     @discord.ui.button(label="≪", style=discord.ButtonStyle.primary)
-    async def previous(self, button: Button, interaction: discord.Interaction):
+    async def previous(self, interaction: discord.Interaction, button: Button):
         if self.current_page > 0:
             self.current_page -= 1
             embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
             await interaction.response.edit_message(embed=embed, view=self)
 
     @discord.ui.button(label="≫", style=discord.ButtonStyle.primary)
-    async def next(self, button: Button, interaction: discord.Interaction):
+    async def next(self, interaction: discord.Interaction, button: Button):
         if self.current_page < len(self.pages) - 1:
             self.current_page += 1
             embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
@@ -226,7 +226,7 @@ class Paginator(View):
 
     #delete button
     @discord.ui.button(label="Close", style=discord.ButtonStyle.danger)
-    async def close(self, button: Button, interaction: discord.Interaction):
+    async def close(self, interaction: discord.Interaction, button: Button):
         await interaction.message.delete()
 
     async def start(self, interaction: discord.Interaction, category, next_reset_unix):
