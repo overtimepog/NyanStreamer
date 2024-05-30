@@ -307,7 +307,7 @@ async def fish(self, ctx, user_luck: int):
         for fish_id, count in catches.items():
             fish_data = await db_manager.get_basic_item_data(fish_id)
             fish_price = fish_data['item_price']
-            total_earned += fish_price * count
+            total_earned += int(fish_price) * count
             await db_manager.remove_item_from_inventory(ctx.author.id, fish_id, count)
 
         await db_manager.add_money(ctx.author.id, total_earned)
