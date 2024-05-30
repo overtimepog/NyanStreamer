@@ -416,6 +416,7 @@ class Owner(commands.Cog, name="owner"):
         await db_manager.remove_money(user.id, amount)
         await ctx.send(f"You removed `{amount}` bucks from {user.mention}.", ephemeral=True)
 
+
     @commands.hybrid_command(
         name="listemojis",
         description="List all emojis in the server.",
@@ -432,6 +433,17 @@ class Owner(commands.Cog, name="owner"):
         with open(filename, "w") as file:
             file.write("\n".join(emoji_list))
 
-        await ctx.send(f"Emoji list has been saved to {filename}")
+        # Send the file to yourself via DM
+        owner = ctx.guild.owner
+        if owner:
+            try:
+                with open(filename, "rb") as file:
+                    await owner.send("Here is the list of emojis in the server:", file=discord.File(file, filename=filename))
+                await ctx.send("Emoji list has been sent to the server owner via DM.")
+            except Exception as e:
+                await ctx.send(f"An error occurred while sending the DM: {e}")
+
+        # Delete the temporary file
+        os.remove(filename)
 async def setup(bot):
     await bot.add_cog(Owner(bot))
