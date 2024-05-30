@@ -2996,6 +2996,14 @@ async def get_chest_contents(chest_id: str) -> list:
             return data
         else:
             return None
+
+async def get_chest_data_by_id(chest_id: str) -> list:
+        db = DB()
+        data = await db.execute(f"SELECT `chest_contents` FROM `chests` WHERE `chest_id` = ?", (chest_id,), fetch="all")
+        if data is not None:
+            return data
+        else:
+            return None
         
 #get all structures
 async def get_structures() -> list:

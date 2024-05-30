@@ -317,7 +317,7 @@ class Games(commands.Cog, name="games"):
         aliases=['bj']
     )
     async def blackjack(self, ctx: Context, bet: int):
-        await blackjack_game(ctx, bet)
+        await Games.blackjack_game(ctx, bet)
         
         
     #fishing command

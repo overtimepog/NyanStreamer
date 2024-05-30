@@ -43,7 +43,7 @@ rarity_colors = {
 }
 
 async def open_chest(self, ctx, chest_id: str, user_luck: int):
-        chest_data = await db.execute("SELECT `chest_contents` FROM `chests` WHERE `chest_id` = ?", (chest_id,), fetch="one")
+        chest_data = await db_manager.get_chest_data_by_id(chest_id)
         if not chest_data:
             await ctx.send("Invalid chest ID.")
             return
@@ -60,7 +60,7 @@ async def open_chest(self, ctx, chest_id: str, user_luck: int):
 
         description = "You opened the chest and received:\n"
         for item_id, amount in items_awarded.items():
-            item_data = await db.execute("SELECT `item_emoji`, `item_name` FROM `basic_items` WHERE `item_id` = ?", (item_id,), fetch="one")
+            item_data = await db_manager.get_basic_item_data(item_id)
             item_emoji = item_data["item_emoji"]
             item_name = item_data["item_name"]
             description += f"{amount} {item_emoji} {item_name}\n"
@@ -1359,7 +1359,7 @@ class Basic(commands.Cog, name="basic"):
 
         user_id = user.id if user else ctx.author.id
         print(f"Fetching ranks for user_id: {user_id}")
-        most_money_rank, highest_level_rank = await get_user_ranks(user_id)
+        most_money_rank, highest_level_rank = await db_manager.get_user_ranks(user_id)
         if most_money_rank is not None or highest_level_rank is not None:
             embed.add_field(name="Most Money Rank", value=most_money_rank if most_money_rank is not None else "Not ranked", inline=True)
             embed.add_field(name="Highest Level Rank", value=highest_level_rank if highest_level_rank is not None else "Not ranked", inline=True)
@@ -2266,7 +2266,7 @@ class Basic(commands.Cog, name="basic"):
     #ANCHOR use command
     #a cooldown of 2 minutes
     # Function to handle using chest items
-    async def use_chest(ctx: Context, item: str, user_id: int, luck: int):
+    async def use_chest(self, ctx: Context, item: str, user_id: int, luck: int):
         outcome_phrases = [
             "You opened the chest and found ",
             "As you pried open the chest, you discovered ",
@@ -2314,7 +2314,7 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(embed=embed)
 
     # Function to handle using pet items
-    async def use_pet_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
+    async def use_pet_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         pets = await db_manager.get_users_pets(ctx.author.id)
         if not pets:
             await ctx.send('You do not own any pets.')
@@ -2325,7 +2325,7 @@ class Basic(commands.Cog, name="basic"):
         view.message = message
 
     # Function to handle using timed items
-    async def use_timed_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
+    async def use_timed_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         item_effect = await db_manager.get_basic_item_effect(item)
         await db_manager.add_timed_item(user_id, item, item_effect)
         item_effect = item_effect.split(" ")
@@ -2349,7 +2349,7 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(f"You used {item_emoji}`{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
 
     # Function to handle using revive items
-    async def use_revive_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
+    async def use_revive_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         if await db_manager.is_alive(user_id):
             await ctx.send("You are already alive!")
             await db_manager.add_item_to_inventory(user_id, item, 1)
@@ -2386,27 +2386,36 @@ class Basic(commands.Cog, name="basic"):
             sub_type = await db_manager.get_basic_item_sub_type(item)
 
             if sub_type == "Pet Item":
-                await use_pet_item(ctx, item, user_id, item_emoji, item_name)
+                await self.use_pet_item(ctx, item, user_id, item_emoji, item_name)
                 return
 
             isTimed = await db_manager.is_timed_item(item)
             if isTimed:
-                await use_timed_item(ctx, item, user_id, item_emoji, item_name)
+                await self.use_timed_item(ctx, item, user_id, item_emoji, item_name)
                 return
 
             item_effect = await db_manager.get_basic_item_effect(item)
-            item_effect = "None" if item_effect == "None" or isChest else item_effect.split(" ")[0]
+            if item_effect == "None" or isChest:
+                item_effect_type = "None"
+                item_effect_amount = None
+            else:
+                item_effect = item_effect.split(" ")
+                item_effect_type = item_effect[0]
+                item_effect_amount = item_effect[2]
 
-            if item_effect == "revive":
-                await use_revive_item(ctx, item, user_id, item_emoji, item_name)
+            if item_effect_type == "revive":
+                await self.use_revive_item(ctx, item, user_id, item_emoji, item_name)
                 return
 
             if item == "chest" or item == "pet_chest":
                 luck = await db_manager.get_luck(user_id)
-                await use_chest(ctx, item, user_id, luck)
+                await self.use_chest(ctx, item, user_id, luck)
                 return
 
-            await ctx.send(f"You used `{item_name}`!" if item_effect == "None" else f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
+            if item_effect_type == "None":
+                await ctx.send(f"You used `{item_name}`!")
+            else:
+                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
 
