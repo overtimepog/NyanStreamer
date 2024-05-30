@@ -370,7 +370,19 @@ async def add_level(user_id: int, amount: int) -> None:
     db = DB()
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
-        await db.execute(f"UPDATE `users` SET `player_level` = `player_level` + ? WHERE `user_id` = ?", (amount, user_id))
+        current_xp = data['player_xp']
+        current_level = data['player_level']
+        target_level = current_level + amount
+        total_xp_needed = 0
+        
+        for level in range(current_level, target_level):
+            total_xp_needed += level * 20
+        
+        new_xp = current_xp - total_xp_needed
+        if new_xp < 0:
+            new_xp = 0
+
+        await db.execute(f"UPDATE `users` SET `player_level` = ?, `player_xp` = ? WHERE `user_id` = ?", (target_level, new_xp, user_id))
     else:
         return None
         
