@@ -72,40 +72,6 @@ async def open_chest(self, ctx, chest_id: str, user_luck: int):
         )
         await ctx.send(embed=embed)
 
-class LeaderboardDropdown(Select):
-    def __init__(self):
-        options = [
-            discord.SelectOption(label="Highest Level", value="highest_level"),
-            discord.SelectOption(label="Most Money", value="most_money"),
-        ]
-        super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
-
-    async def callback(self, interaction: discord.Interaction):
-        category = self.values[0]
-        leaderboard = await db_manager.get_leaderboard(interaction.client, category)
-
-        if not leaderboard:
-            await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
-            return
-
-        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard", color=discord.Color.blue())
-        for entry in leaderboard:
-            embed.add_field(
-                name=f"Rank {entry['rank']}: {entry['username']}",
-                value=f"Value: {entry['value']}",
-                inline=False
-            )
-
-        await interaction.response.send_message(embed=embed, ephemeral=True)
-
-class LeaderboardView(View):
-    def __init__(self):
-        super().__init__()
-        self.add_item(LeaderboardDropdown())
-
-    async def get_leaderboard(self, bot, category, limit=10):
-        return await db_manager.get_leaderboard(bot, category, limit)
-
 class PetSelect(discord.ui.Select):
     def __init__(self, pets: list, bot, user, item):
         self.bot = bot
@@ -217,14 +183,52 @@ class PetSelectView(discord.ui.View):
         async def interaction_check(self, interaction: discord.Interaction) -> bool:
             return self.user.id == interaction.user.id
 
-# Here we name the cog and create a new class for the cog.
+class LeaderboardDropdown(Select):
+    def __init__(self):
+        options = [
+            discord.SelectOption(label="Highest Level", value="highest_level"),
+            discord.SelectOption(label="Most Money", value="most_money"),
+        ]
+        super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        category = self.values[0]
+        leaderboard = await db_manager.get_leaderboard(interaction.client, category)
+
+        if not leaderboard:
+            await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
+            return
+
+        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard", color=discord.Color.blue())
+        medals = ["🏆", "🥈", "🥉"]
+        for entry in leaderboard:
+            rank = entry['rank']
+            username = entry['username']
+            value = entry['value']
+            name = f"{medals[rank-1]} Rank {rank}: {username}" if rank <= 3 else f"Rank {rank}: {username}"
+            embed.add_field(
+                name=name,
+                value=f"Value: {value}",
+                inline=False
+            )
+
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+class LeaderboardView(View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(LeaderboardDropdown())
+
+    async def get_leaderboard(self, bot, category, limit=10):
+        return await db_manager.get_leaderboard(bot, category, limit)
+
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
         self.bot = bot
         self.shop_reset.start()
         self.revive_users.start()
+        self.weekly_leaderboard_reset.start()
 
-    #every 8 hours the shop will reset
     @tasks.loop(hours=8)
     async def shop_reset(self):
         print("-----------------------------")
@@ -233,6 +237,38 @@ class Basic(commands.Cog, name="basic"):
         await db_manager.add_shop_items()
         print("Done Resetting Shop...")
         print("-----------------------------")
+
+    @tasks.loop(hours=168)  # Loop every week (168 hours)
+    async def weekly_leaderboard_reset(self):
+        print("-----------------------------")
+        print("Resetting Leaderboard and Distributing Prizes...")
+        categories = ["highest_level", "most_money"]
+
+        for category in categories:
+            leaderboard = await db_manager.get_leaderboard(self.bot, category, limit=3)
+            if leaderboard:
+                for entry in leaderboard:
+                    user_id = entry['user_id']
+                    rank = entry['rank']
+
+                    if rank == 1:
+                        prize = "gold_trophy"
+                    elif rank == 2:
+                        prize = "silver_trophy"
+                    elif rank == 3:
+                        prize = "bronze_trophy"
+
+                    await db_manager.add_item_to_inventory(user_id, prize, 1)
+                    user = await self.bot.fetch_user(user_id)
+                    await user.send(f"Congratulations! You placed {rank} in the {category.replace('_', ' ')} leaderboard and received a {prize}!")
+
+        await db_manager.reset_leaderboard()
+        print("Done Resetting Leaderboard and Distributing Prizes...")
+        print("-----------------------------")
+
+    @weekly_leaderboard_reset.before_loop
+    async def before_weekly_leaderboard_reset(self):
+        await self.bot.wait_until_ready()
 
     @shop_reset.before_loop
     async def before_shop_reset(self):
@@ -2862,16 +2898,16 @@ class Basic(commands.Cog, name="basic"):
     )
     async def daily(self, ctx: Context):
         user_id = ctx.author.id
-    
+
         # Fetch user data
         user_data = await db_manager.profile(user_id)
-    
+
         # Check if the user is eligible for daily rewards
         current_time = datetime.datetime.now()
         if user_data[31] is not None:
             last_daily = datetime.datetime.strptime(user_data[31].split('.')[0], "%Y-%m-%d %H:%M:%S")
             seconds_passed = (current_time - last_daily).total_seconds()
-    
+
             # Calculate the streak
             if seconds_passed < 86400:  # 86400 seconds in a day
                 reset_time_unix = int((current_time + datetime.timedelta(days=1)).timestamp())  # Unix timestamp for the next day
@@ -2880,7 +2916,7 @@ class Basic(commands.Cog, name="basic"):
                     color=discord.Color.red()
                 )
                 embed.description = f"You already claimed your daily reward!\nCome back <t:{reset_time_unix}:R>"
-    
+
                 await ctx.send(embed=embed)
                 return
             elif seconds_passed < 172800:  # 172800 seconds in two days
@@ -2889,7 +2925,7 @@ class Basic(commands.Cog, name="basic"):
                 streak = 0
         else:
             streak = 0
-    
+
         # Grant daily reward
         # Get the bonus % of the user
         bonus = await db_manager.get_percent_bonus(user_id)
@@ -2899,11 +2935,11 @@ class Basic(commands.Cog, name="basic"):
         # Get the bonus % of the daily reward and add it to the daily reward
         new_balance = user_data[2] + daily_reward
         await db_manager.set_money(user_id, new_balance)
-    
+
         # Update the last_daily and streak fields in the database
         await db_manager.update_daily(user_id)
         await db_manager.set_streak(user_id, streak)
-    
+
         # Notify the user with an embed
         embed = discord.Embed(
             title="Daily Reward",
