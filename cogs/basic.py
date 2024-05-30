@@ -1513,6 +1513,13 @@ class Basic(commands.Cog, name="basic"):
                         self.current_page = len(self.embeds) - 1
                         await interaction.response.defer()
                         await interaction.message.edit(embed=self.embeds[self.current_page])
+                        
+                    #close button
+                    @discord.ui.button(label="Close", style=discord.ButtonStyle.red, row=1)
+                    async def on_close(self, interaction: discord.Interaction, button: discord.ui.Button):
+                        await interaction.response.defer()
+                        await interaction.message.delete()
+                        self.stop()
 
             view = InventoryButton(current_page=0, embeds=embeds)
             await ctx.send(embed=embeds[0], view=view, ephemeral=True)
@@ -1606,6 +1613,13 @@ class Basic(commands.Cog, name="basic"):
                     self.current_page = len(self.embeds) - 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
+                    
+                #close button
+                @discord.ui.button(label="Close", style=discord.ButtonStyle.red, row=1)
+                async def on_close(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    await interaction.response.defer()
+                    await interaction.message.delete()
+                    self.stop()
 
             view = PetButton(current_page=0, embeds=embeds)
             try:
@@ -1702,6 +1716,13 @@ class Basic(commands.Cog, name="basic"):
                 async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                     self.current_page = len(self.embeds) - 1
                     await interaction.response.edit_message(embed=self.embeds[self.current_page])
+                    
+                #close button
+                @discord.ui.button(label="Close", style=discord.ButtonStyle.red, row=1)
+                async def on_close(self, interaction: discord.Interaction, button: discord.ui.Button):
+                    await interaction.response.defer()
+                    await interaction.message.delete()
+                    self.stop()
 
             # If there are multiple pages, add the buttons
             if len(embeds) > 1:
@@ -1738,6 +1759,13 @@ class Basic(commands.Cog, name="basic"):
             async def stats_button(self, interaction: discord.Interaction, button: discord.ui.Button):
                 await display_stats(self.ctx, self.user)
                 await interaction.response.defer()
+                
+            #close button
+            @discord.ui.button(label="Close", style=discord.ButtonStyle.red, row=1)
+            async def on_close(self, interaction: discord.Interaction, button: discord.ui.Button):
+                await interaction.response.defer()
+                await interaction.message.delete()
+                self.stop()
 
         view = ProfileView(ctx)
         await ctx.send(embed=embed, view=view)
