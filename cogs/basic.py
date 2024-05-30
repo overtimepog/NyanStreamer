@@ -2346,7 +2346,7 @@ class Basic(commands.Cog, name="basic"):
         elif item_effect_type == "halt_happiness":
             await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now can't lose happiness for {item_effect_time}!")
         else:
-            await ctx.send(f"You used {item_emoji}`{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
+            await ctx.send(f"You used {item_emoji}`{item_name}` and got {plus_or_minus}`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
 
     # Function to handle using revive items
     async def use_revive_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
