@@ -2885,30 +2885,30 @@ class Basic(commands.Cog, name="basic"):
         await ctx.send(embed=embed)
 
     class LeaderboardDropdown(Select):
-    def __init__(self):
-        options = [
-            discord.SelectOption(label="Highest Level", value="highest_level"),
-            discord.SelectOption(label="Most Money", value="most_money")
-        ]
-        super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
+        def __init__(self):
+            options = [
+                discord.SelectOption(label="Highest Level", value="highest_level"),
+                discord.SelectOption(label="Most Money", value="most_money")
+            ]
+            super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
 
-    async def callback(self, interaction: discord.Interaction):
-        category = self.values[0]
-        leaderboard = await get_leaderboard(category)
-
-        if not leaderboard:
-            await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
-            return
-
-        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard", color=discord.Color.blue())
-        for entry in leaderboard:
-            embed.add_field(
-                name=f"Rank {entry['rank']}: {entry['username']}#{entry['discriminator']}",
-                value=f"Value: {entry['value']}",
-                inline=False
-            )
-
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        async def callback(self, interaction: discord.Interaction):
+            category = self.values[0]
+            leaderboard = await get_leaderboard(category)
+    
+            if not leaderboard:
+                await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
+                return
+    
+            embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard", color=discord.Color.blue())
+            for entry in leaderboard:
+                embed.add_field(
+                    name=f"Rank {entry['rank']}: {entry['username']}#{entry['discriminator']}",
+                    value=f"Value: {entry['value']}",
+                    inline=False
+                )
+    
+            await interaction.response.send_message(embed=embed, ephemeral=True)
 
     class LeaderboardView(View):
         def __init__(self):
