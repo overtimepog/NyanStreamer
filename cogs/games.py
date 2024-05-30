@@ -69,7 +69,6 @@ class Games(commands.Cog, name="games"):
 
     @staticmethod
     def center(*hands: Tuple[Image.Image]) -> Image.Image:
-        """Creates blackjack table with cards placed"""
         bg: Image.Image = Image.open(
             os.path.join('assets/pictures/table.png')
         )
@@ -95,7 +94,6 @@ class Games(commands.Cog, name="games"):
 
     @staticmethod
     def calc_hand(hand: List[List[Card]]) -> int:
-        """Calculates the sum of the card values and accounts for aces"""
         non_aces = [c for c in hand if c.symbol != 'A']
         aces = [c for c in hand if c.symbol == 'A']
         sum = 0
@@ -109,19 +107,7 @@ class Games(commands.Cog, name="games"):
                 else: sum += 1
         return sum
 
-
-    @commands.hybrid_command(
-        name="blackjack",
-        description="Play a game of blackjack.",
-        aliases=['bj']
-    )
-    async def blackjack(self, ctx: Context, bet: int):
-        #make sure bet is valid
-        #get the players balance
-        #if bet is greater than balance, return
-        #if bet is less than 0, return
-
-        #check if the user exists in the database
+    async def blackjack_game(self, ctx: Context, bet: int):
         checkUser = await db_manager.check_user(ctx.author.id)
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
@@ -139,9 +125,7 @@ class Games(commands.Cog, name="games"):
             await ctx.send(f"You can't bet nothing.")
             return
         deck = [Card(suit, num) for num in range(2,15) for suit in Card.suits]
-        random.shuffle(deck) # Generate deck and shuffle it
-        #give the user a higher chance of drawing a good hand based on their luck stat
-
+        random.shuffle(deck)
 
         player_hand: List[Card] = []
         dealer_hand: List[Card] = []
@@ -152,13 +136,8 @@ class Games(commands.Cog, name="games"):
         dealer_hand.append(deck.pop().flip())
         
         luck = await db_manager.get_luck(ctx.author.id)
-        #roll a random number between the luck stat and 100
         luck = random.randint(luck, 100)
-        print("Luck: " + str(luck))
         if luck > 99:
-            #set the player's hand to 21
-            #pick one of the random hands
-            #set the player's hand to that hand
             blackjackHands = [
                 [Card("D", 10), Card("S", 14)], 
                 [Card("C", 10), Card("D", 14)], 
@@ -210,12 +189,11 @@ class Games(commands.Cog, name="games"):
                 [Card("C", 14), Card("S", 13)],
             ]
             player_hand = random.choice(blackjackHands)
-        print("Player hand: " + str(player_hand))
+        
         player_score = self.calc_hand(player_hand)
         dealer_score = self.calc_hand(dealer_hand)
 
         async def out_table(**kwargs) -> discord.Message:
-            """Sends a picture of the current table"""
             self.output(ctx.author.id, dealer_hand, player_hand)
             embed = make_embed(**kwargs)
             file = discord.File(
@@ -230,10 +208,10 @@ class Games(commands.Cog, name="games"):
             user: Union[discord.Member, discord.User]
         ) -> bool:
             return all((
-                str(reaction.emoji) in ("🇸", "🇭"),  # correct emoji
-                user == ctx.author,                  # correct user
-                user != self.bot.user,           # isn't the bot
-                reaction.message == msg            # correct message
+                str(reaction.emoji) in ("🇸", "🇭"), 
+                user == ctx.author,                  
+                user != self.bot.user,           
+                reaction.message == msg            
             ))
 
         standing = False
@@ -241,13 +219,12 @@ class Games(commands.Cog, name="games"):
         while True:
             player_score = self.calc_hand(player_hand)
             dealer_score = self.calc_hand(dealer_hand)
-            if player_score == 21:  # win condition
-                #return 3/2 of the bet
+            if player_score == 21:
                 bet = int(bet*1.5)
                 await db_manager.add_money(ctx.author.id, bet)
                 result = ("Blackjack!", 'won')
                 break
-            elif player_score > 21:  # losing condition
+            elif player_score > 21:
                 await db_manager.remove_money(ctx.author.id, bet)
                 result = ("Player busts", 'lost')
                 break
@@ -259,7 +236,7 @@ class Games(commands.Cog, name="games"):
             await msg.add_reaction("🇭")
             await msg.add_reaction("🇸")
             
-            try:  # reaction command
+            try:
                 reaction, _ = await self.bot.wait_for(
                     'reaction_add', timeout=60, check=check
                 )
@@ -279,11 +256,11 @@ class Games(commands.Cog, name="games"):
             player_score = self.calc_hand(player_hand)
             dealer_score = self.calc_hand(dealer_hand)
 
-            while dealer_score < 17:  # dealer draws until 17 or greater
+            while dealer_score < 17:
                 dealer_hand.append(deck.pop())
                 dealer_score = self.calc_hand(dealer_hand)
 
-            if dealer_score == 21:  # winning/losing conditions
+            if dealer_score == 21:
                 await db_manager.remove_money(ctx.author.id, bet)
                 result = ('Dealer blackjack', 'lost')
             elif dealer_score > 21:
@@ -316,6 +293,31 @@ class Games(commands.Cog, name="games"):
             )
         )
         os.remove(f'./{ctx.author.id}.png')
+
+        # Add replay button
+        view = discord.ui.View()
+        view.add_item(discord.ui.Button(label="Replay", style=discord.ButtonStyle.primary, custom_id="replay_blackjack"))
+
+        replay_message = await ctx.send("Do you want to play again?", view=view)
+
+        def button_check(interaction: discord.Interaction) -> bool:
+            return interaction.custom_id == "replay_blackjack" and interaction.user == ctx.author
+
+        try:
+            interaction = await self.bot.wait_for("interaction", timeout=60.0, check=button_check)
+            if interaction.custom_id == "replay_blackjack":
+                await replay_message.delete()
+                await self.blackjack_game(ctx, bet)
+        except asyncio.TimeoutError:
+            await replay_message.edit(content="Replay timed out.", view=None)
+
+    @commands.hybrid_command(
+        name="blackjack",
+        description="Play a game of blackjack.",
+        aliases=['bj']
+    )
+    async def blackjack(self, ctx: Context, bet: int):
+        await blackjack_game(ctx, bet)
         
         
     #fishing command
@@ -330,7 +332,7 @@ class Games(commands.Cog, name="games"):
             await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
         luck = await db_manager.get_luck(ctx.author.id)
-        await games.fish(luck)
+        await games.fish(self, ctx, luck)
 
     #puzzle command
     @commands.cooldown(1, 60, commands.BucketType.user)

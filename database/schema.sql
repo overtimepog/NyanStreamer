@@ -105,9 +105,11 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `recipe_id` varchar(255),
   `isHuntable` boolean,
   `item_hunt_chance` int(11),
-  `item_effect` varchar(255) NOT NULL,
   `isMineable` boolean,
   `item_mine_chance` int(11),
+  `isFishable` boolean,
+  `item_fish_chance` int(11),
+  `item_effect` varchar(255) NOT NULL,
   `quote_id` varchar(255),
   `item_sub_type` varchar(255) NOT NULL,
   FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)

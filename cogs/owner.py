@@ -159,11 +159,11 @@ class Owner(commands.Cog, name="owner"):
         )
         await context.send(embed=embed)
 
+    @app_commands.describe(cog="The name of the cog to reload")
     @commands.hybrid_command(
         name="reload",
         description="Reloads a cog.",
     )
-    @app_commands.describe(cog="The name of the cog to reload")
     @checks.is_owner()
     async def reload(self, context: Context, cog: str) -> None:
         """
@@ -188,6 +188,17 @@ class Owner(commands.Cog, name="owner"):
             color=0x9C84EF
         )
         await context.send(embed=embed)
+
+    @reload.autocomplete("cog")
+    async def reload_autocomplete(self, interaction: discord.Interaction, argument: str):
+        cogs = [cog.split('.')[-1] for cog in self.bot.extensions.keys()]
+        choices = [
+            app_commands.Choice(name=cog, value=cog)
+            for cog in cogs if argument.lower() in cog.lower()
+        ]
+        return choices[:25]
+
+    
 
     @commands.hybrid_command(
         name="shutdown",
@@ -369,7 +380,7 @@ class Owner(commands.Cog, name="owner"):
             description=f"**{user.name}** has been given a **{item_name}**",
             color=0x9C84EF
         )
-        await context.send(embed=embed)
+        await context.send(embed=embed, ephemeral=True)
         
     
     #a command to add money to a user using the add_money function from helpers\db_manager.py
@@ -387,9 +398,40 @@ class Owner(commands.Cog, name="owner"):
         :param amount: The amount of money that should be given.
         """
         await db_manager.add_money(user.id, amount)
-        await ctx.send(f"You gave {user.mention} `{amount}` bucks.")
-        
+        await ctx.send(f"You gave {user.mention} `{amount}` bucks.", ephemeral=True)
 
+    @commands.hybrid_command(
+        name="removemoney",
+        description="This command will remove money from a user.",
+    )
+    @checks.is_owner()
+    async def removemoney(self, ctx: Context, user: discord.Member, amount: int):
+        """
+        This command will remove money from a user.
 
+        :param ctx: The context in which the command was called.
+        :param user: The user that should have money removed.
+        :param amount: The amount of money that should be removed.
+        """
+        await db_manager.remove_money(user.id, amount)
+        await ctx.send(f"You removed `{amount}` bucks from {user.mention}.", ephemeral=True)
+
+    @commands.hybrid_command(
+        name="listemojis",
+        description="List all emojis in the server.",
+    )
+    @checks.is_owner()
+    async def list_emojis(self, ctx: Context):
+        emojis = ctx.guild.emojis
+        emoji_list = [str(emoji) for emoji in emojis]
+
+        # Create a filename based on the server name
+        filename = f"{ctx.guild.name}_emojis.txt".replace(" ", "_")
+
+        # Write the emojis to the file
+        with open(filename, "w") as file:
+            file.write("\n".join(emoji_list))
+
+        await ctx.send(f"Emoji list has been saved to {filename}")
 async def setup(bot):
     await bot.add_cog(Owner(bot))

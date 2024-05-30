@@ -83,6 +83,7 @@ intents.presences = True
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 """
 Uncomment this if you don't want to use prefix (normal) commands.
@@ -392,70 +393,54 @@ async def load_cogs() -> None:
 
 async def setup() -> None:
     await init_db()
-    #print("\n" + "-----------------------------")
-    #delete the joined_channels.json file
+    print("\n---------Loading Cogs----------")
+    await load_cogs()
+    print("\n---------Basic Items----------")
+    await db_manager.clear_basic_items()
+    await db_manager.add_basic_items()
+    print("\n---------Shop Items----------")
+    await db_manager.clear_shop()
+    await db_manager.add_shop_items()
+    print("\n---------Chests----------")
+    await db_manager.clear_chests()
+    await db_manager.add_chests()
+    print("\n---------Jobs----------")
+    await db_manager.clear_jobs()
+    await db_manager.add_jobs_and_minigames()
+    await db_manager.add_jobs_to_jobboard()
+    print("\n---------COPY PASTE ITEMS----------")
+    await db_manager.print_items()
+    print("\n---------Inventory Check----------")
+    await db_manager.clean_inventory()
+    print("\n-----------------------------")
+    
+    # Remove the joined_channels.json file if it exists
     if os.path.isfile('joined_channels.json'):
         os.remove('joined_channels.json')
-    #print("---------Users----------")
-    total_guilds = len(bot.guilds)
-    print_lock = asyncio.Lock()
     
+    total_guilds = len(bot.guilds)
+
     async def check_server(i, bot_guild, total_guilds):
         total_members = len([member for member in bot_guild.members if not member.bot])
         if total_members > 10000:
-            async with print_lock:
-                pass
-                #print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
+            print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
             return
+        
         member_counter = 0
         for member in bot_guild.members:
             if member.bot:
                 continue
             member_counter += 1
-            async with print_lock:
-                pass
-                #print('\r' + ' ' * 100, end='')  # Clear the entire line
-                #print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
+            print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
             checkUser = await db_manager.check_user(member.id)
-            if checkUser == None:
+            if checkUser is None:
                 await db_manager.get_user(member.id)
-        async with print_lock:
-            pass  # Print a newline at the end of each server's member check
+            print(f"\nProcessed member {member.name} (ID: {member.id}) in server {bot_guild.name}")
 
     tasks = [check_server(i, bot_guild, total_guilds) for i, bot_guild in enumerate(bot.guilds, start=1)]
     await asyncio.gather(*tasks)
-
-    #print("\n" + "---------Enemies----------")
-    #await db_manager.add_enemies()
-    #print("\n" + "---------Quests----------")
-    #await db_manager.add_quests()
-    #print("\n" + "---------Quests to Board----------")
-    #await db_manager.clear_board()
-    #await db_manager.add_quests_to_board()
-    #print("\n" + "---------Structures----------")
-    #await db_manager.add_structures()
-    print("\n" + "---------Basic Items----------")
-    await db_manager.clear_basic_items()
-    await db_manager.add_basic_items()
-    print("\n" + "---------Shop Items----------")
-    await db_manager.clear_shop()
-    await db_manager.add_shop_items()
-    print("\n" + "---------Chests----------")
-    await db_manager.clear_chests()
-    await db_manager.add_chests()
-    print("\n" + "---------Jobs----------")
-    await db_manager.clear_jobs()
-    await db_manager.add_jobs_and_minigames()
-    await db_manager.add_jobs_to_jobboard()
-    print("\n" + "---------COPY PASTE ITEMS----------")
-    await db_manager.print_items()
-    print("\n" + "---------Inventory Check----------")
-    await db_manager.clean_inventory()
-    print("\n" + "---------Loading Cogs----------")
-    await load_cogs()
-    #look through all the guilds the bot is in, and add all the members to the database if they are not already in it
-    print("Setup Complete")
-    print("-----------------------------")
+    print("\nSetup Complete")
+    print("\n-----------------------------")
 
 @bot.event
 async def on_ready() -> None:

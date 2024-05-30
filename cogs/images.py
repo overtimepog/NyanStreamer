@@ -31,7 +31,7 @@ from PIL import Image
 from urllib.parse import quote
 from jeyyapi import JeyyAPIClient
 import subprocess
-import fcntl
+#import fcntl
 client = JeyyAPIClient('6COJCCHO74OJ2CPM6GRJ4C9O6OS3G.9PSM2RH0ADQ74PB1DLIN4.FOauZ8Gi-J7wAuWDj_hH-g')
     # Define a function that wraps around the spinning_model function
 Nyan_Api_Key = 'b7CE_rDmkHupVy65Ni55vXX_FOYx2lRjSR8RHRtAXVs'

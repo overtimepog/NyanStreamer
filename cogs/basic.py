@@ -39,6 +39,37 @@ rarity_colors = {
     # Add more rarities and colors as needed
 }
 
+async def open_chest(self, ctx, chest_id: str, user_luck: int):
+        chest_data = await db.execute("SELECT `chest_contents` FROM `chests` WHERE `chest_id` = ?", (chest_id,), fetch="one")
+        if not chest_data:
+            await ctx.send("Invalid chest ID.")
+            return
+    
+        chest_contents = chest_data["chest_contents"]
+        items_awarded = {}
+    
+        for item in chest_contents:
+            if random.randint(1, 100) <= (item["drop_chance"] * 100 + user_luck):
+                if item["item_id"] in items_awarded:
+                    items_awarded[item["item_id"]] += item["item_amount"]
+                else:
+                    items_awarded[item["item_id"]] = item["item_amount"]
+    
+        description = "You opened the chest and received:\n"
+        for item_id, amount in items_awarded.items():
+            item_data = await db.execute("SELECT `item_emoji`, `item_name` FROM `basic_items` WHERE `item_id` = ?", (item_id,), fetch="one")
+            item_emoji = item_data["item_emoji"]
+            item_name = item_data["item_name"]
+            description += f"{amount} {item_emoji} {item_name}\n"
+            await db_manager.add_item_to_inventory(ctx.author.id, item_id, amount)
+    
+        embed = discord.Embed(
+            title="Chest Opened",
+            description=description,
+            color=0xFFD700
+        )
+        await ctx.send(embed=embed)
+
 class PetSelect(discord.ui.Select):
     def __init__(self, pets: list, bot, user, item):
         self.bot = bot
@@ -180,6 +211,8 @@ class Basic(commands.Cog, name="basic"):
     async def before_revive_users(self):
         await self.bot.wait_until_ready()
 
+
+
     
 
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
@@ -194,13 +227,14 @@ class Basic(commands.Cog, name="basic"):
         aliases=["inv"],
     )
     async def inventory(self, ctx: Context):
-        checkUser = await db_manager.check_user(ctx.author.id)
-        if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
+        checkUser = await self.db_manager.check_user(ctx.author.id)
+        if checkUser in [None, False, [], "None", 0]:
             await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
+
         # Get user inventory items from the database
-        inventory_items = await db_manager.view_inventory(ctx.author.id)
-        if inventory_items == []:
+        inventory_items = await self.db_manager.view_inventory(ctx.author.id)
+        if not inventory_items:
             await ctx.send("You have no items in your inventory.")
             return
 
@@ -237,22 +271,36 @@ class Basic(commands.Cog, name="basic"):
                     item_crit_chance = item[11]
                     item_projectile = item[12]
                     if item_type == "Chest":
-                        item_description = await db_manager.get_chest_description(item_id)
+                        item_description = await self.db_manager.get_chest_description(item_id)
                     else:
-                        item_description = await db_manager.get_basic_item_description(item_id)
-                    isequippable = await db_manager.is_basic_item_equipable(item_id)
-                    if isequippable == True:
-                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}', inline=False)
-                    #if its item type is pet
+                        item_description = await self.db_manager.get_basic_item_description(item_id)
+                    isequippable = await self.db_manager.is_basic_item_equipable(item_id)
+                    if isequippable:
+                        inventory_embed.add_field(
+                            name=f"{item_emoji}{item_name} - x{item_amount}",
+                            value=f'**{item_description}** \n Price: `{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}',
+                            inline=False
+                        )
                     elif item_type == "Pet":
-                        #if its named
-                        pet_name = await db_manager.get_pet_name(ctx.author.id, item_id)
+                        pet_name = await self.db_manager.get_pet_name(ctx.author.id, item_id)
                         if pet_name != item_name:
-                            inventory_embed.add_field(name=f"{item_emoji}{pet_name} (`{item_name}`) - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                            inventory_embed.add_field(
+                                name=f"{item_emoji}{pet_name} (`{item_name}`) - x{item_amount}",
+                                value=f'**{item_description}** \n Price: `{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`',
+                                inline=False
+                            )
                         else:
-                            inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                            inventory_embed.add_field(
+                                name=f"{item_emoji}{item_name} - x{item_amount}",
+                                value=f'**{item_description}** \n Price: `{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`',
+                                inline=False
+                            )
                     else:
-                        inventory_embed.add_field(name=f"{item_emoji}{item_name} - x{item_amount}", value=f'**{item_description}** \n Price: `{cash}{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`', inline=False)
+                        inventory_embed.add_field(
+                            name=f"{item_emoji}{item_name} - x{item_amount}",
+                            value=f'**{item_description}** \n Price: `{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}`',
+                            inline=False
+                        )
 
                 embeds.append(inventory_embed)
 
@@ -260,72 +308,75 @@ class Basic(commands.Cog, name="basic"):
 
         # Create a list of embeds with 5 items per embed
         embeds = await create_embeds(inventory_items)
+
         class Select(discord.ui.Select):
-                def __init__(self):
-                    options=[
-                        discord.SelectOption(label="All"),
-                        discord.SelectOption(label="Collectable"),
-                        discord.SelectOption(label="Sellable"),
-                        discord.SelectOption(label="Consumable"),
-                        discord.SelectOption(label="Material"),
-                        discord.SelectOption(label="Tool"),
-                        discord.SelectOption(label="Weapon"),
-                        discord.SelectOption(label="Armor"),
-                        discord.SelectOption(label="Badge"),
-                        discord.SelectOption(label="Pet"),
-                        discord.SelectOption(label="Misc"),
-                    ]
-                    super().__init__(placeholder="Select an option", max_values=11, min_values=1, options=options)
+            def __init__(self):
+                options = [
+                    discord.SelectOption(label="All"),
+                    discord.SelectOption(label="Collectable"),
+                    discord.SelectOption(label="Sellable"),
+                    discord.SelectOption(label="Consumable"),
+                    discord.SelectOption(label="Material"),
+                    discord.SelectOption(label="Tool"),
+                    discord.SelectOption(label="Weapon"),
+                    discord.SelectOption(label="Armor"),
+                    discord.SelectOption(label="Badge"),
+                    discord.SelectOption(label="Pet"),
+                    discord.SelectOption(label="Misc"),
+                ]
+                super().__init__(placeholder="Select an option", max_values=11, min_values=1, options=options)
 
-                async def callback(self, interaction: discord.Interaction):
-                    selected_item_type = self.values[0]
+            async def callback(self, interaction: discord.Interaction):
+                selected_item_type = self.values[0]
 
-                    if selected_item_type == "All":
-                        filtered_items = await db_manager.view_inventory(interaction.user.id)
-                    else:
-                        filtered_items = [item for item in await db_manager.view_inventory(interaction.user.id) if item[7] == selected_item_type]
+                if selected_item_type == "All":
+                    filtered_items = await self.db_manager.view_inventory(interaction.user.id)
+                else:
+                    filtered_items = [item for item in await self.db_manager.view_inventory(interaction.user.id) if item[7] == selected_item_type]
 
-                    filtered_embeds = await create_embeds(filtered_items)
-                    new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
-                    try:
-                        await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
-                    #catch IndexError 
-                    except(IndexError):
-                        await interaction.response.defer()
-                    
+                filtered_embeds = await create_embeds(filtered_items)
+                new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
+                try:
+                    await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
+                except IndexError:
+                    await interaction.response.defer()
 
         class InventoryButton(discord.ui.View):
-                def __init__(self, current_page, embeds, **kwargs):
-                    super().__init__(**kwargs)
-                    self.current_page = current_page
-                    self.embeds = embeds
-                    self.add_item(Select())
+            def __init__(self, current_page, embeds, **kwargs):
+                super().__init__(**kwargs)
+                self.current_page = current_page
+                self.embeds = embeds
+                self.add_item(Select())
 
-                @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
-                async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                    self.current_page = 0
+            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+            async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = 0
+                await interaction.response.defer()
+                await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+            async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page > 0:
+                    self.current_page -= 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
 
-                @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
-                async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                    if self.current_page > 0:
-                        self.current_page -= 1
-                        await interaction.response.defer()
-                        await interaction.message.edit(embed=self.embeds[self.current_page])
-
-                @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
-                async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                    if self.current_page < len(self.embeds) - 1:
-                        self.current_page += 1
-                        await interaction.response.defer()
-                        await interaction.message.edit(embed=self.embeds[self.current_page])
-
-                @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
-                async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
-                    self.current_page = len(self.embeds) - 1
+            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+            async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                if self.current_page < len(self.embeds) - 1:
+                    self.current_page += 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+            async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.current_page = len(self.embeds) - 1
+                await interaction.response.defer()
+                await interaction.message.edit(embed=self.embeds[self.current_page])
+
+            @discord.ui.button(label="Close", style=discord.ButtonStyle.red, row=1)
+            async def close_inventory(self, interaction: discord.Interaction, button: discord.ui.Button):
+                await interaction.message.delete()
 
         view = InventoryButton(current_page=0, embeds=embeds)
         await ctx.send(embed=embeds[0], view=view)
@@ -974,6 +1025,57 @@ class Basic(commands.Cog, name="basic"):
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
+    #sell all
+    @commands.hybrid_command(
+        name="sellall",
+        description="This command will sell all items from your inventory.",
+    )
+    async def sellall(self, ctx: Context):
+        # Step 1: Retrieve the user's inventory
+        user_id = ctx.author.id
+        user_inventory = await db_manager.get_user_inventory(user_id)
+
+        # Step 2: Filter out sellable items
+        sellable_items = [
+            item for item in user_inventory if item['item_type'] == 'Sellable'
+        ]
+
+        if not sellable_items:
+            embed = discord.Embed(
+                title="Sell Items",
+                description="You have no sellable items in your inventory.",
+            )
+            await ctx.send(embed=embed)
+            return
+
+        # Step 3: Calculate the total price for all sellable items
+        total_price = 0
+        for item in sellable_items:
+            total_price += item['item_amount'] * item['item_sell_price']
+
+        # Step 4: Remove the sold items from the user's inventory
+        for item in sellable_items:
+            await db_manager.remove_item_from_inventory(user_id, item['item_id'], item['item_amount'])
+
+        # Step 5: Add the calculated amount to the user's balance
+        await db_manager.add_currency_to_user(user_id, total_price)
+
+        # Step 6: Send an embed message with the sale summary
+        embed = discord.Embed(
+            title="Items Sold!",
+            description=f"You sold all your sellable items for a total of {cash}{total_price}.",
+        )
+
+        for item in sellable_items:
+            item_name = await db_manager.get_basic_item_name(item['item_id'])
+            item_emoji = await db_manager.get_basic_item_emoji(item['item_id'])
+            item_total_value = item['item_amount'] * item['item_sell_price']
+            embed.add_field(name=item_name, value=f"{item_emoji} - {item['item_amount']} for {cash}{item_total_value}", inline=False)
+
+        await ctx.send(embed=embed)
+
+
+
 #view a users profile using the view_profile function from helpers\db_manager.py
     @commands.hybrid_command(
         name="profile",
@@ -1458,9 +1560,6 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(f"You are now a sigma")
         else:
             await ctx.send("You're already a sigma")
-        
-
-
 
 #a command to give a user money using the add_money function from helpers\db_manager.py
     @commands.hybrid_command(
@@ -1899,11 +1998,11 @@ class Basic(commands.Cog, name="basic"):
         #check if the user is in a battle
         user_exists = await db_manager.check_user(ctx.author.id)
         if user_exists == None:
-            await ctx.send("You are not in the database yet, please use the `/start` command to start your adventure!")
+            await ctx.send("you're not a sigma yet, please use the `/start`")
             return
         user_exists = await db_manager.check_user(target.id)
         if user_exists == None:
-            await ctx.send("This user does not exist!, tell them to do /start to start playing!")
+            await ctx.send("This user does not exist lol!, tell them to do /start to be a sigma!")
             return
         #check if the user is dead
         user_is_alive = await db_manager.is_alive(ctx.author.id)
@@ -1949,223 +2048,164 @@ class Basic(commands.Cog, name="basic"):
     
     #ANCHOR use command
     #a cooldown of 2 minutes
+    # Function to handle using chest items
+    async def use_chest(ctx: Context, item: str, user_id: int, luck: int):
+        outcome_phrases = [
+            "You opened the chest and found ",
+            "As you pried open the chest, you discovered ",
+            "With a satisfying creak, the chest opened to reveal ",
+            "Inside the chest, you found ",
+            "You eagerly opened the chest to reveal ",
+            "With bated breath, you lifted the lid of the chest and uncovered ",
+            "The chest was heavy, but it was worth it when you saw ",
+            "With a sense of anticipation, you opened the chest and saw ",
+            "You were rewarded for your efforts with ",
+            "Inside the chest, you were delighted to find "
+        ]
+    
+        def choose_items_based_on_chance(items_with_chances: List[Tuple], luck: int):
+            chosen_items = []
+            for item, chance in items_with_chances:
+                adjusted_chance = chance + (luck / 100)
+                if random.uniform(0, 100) <= adjusted_chance:
+                    chosen_items.append(item)
+            return chosen_items
+    
+        chest_contents = await db_manager.get_chest_contents(item)
+        chest_contents = [
+            (
+                {'item_id': item[1], 'item_amount': item[2]},
+                item[3]
+            ) for item in chest_contents
+        ]
+    
+        chosen_items = choose_items_based_on_chance(chest_contents, luck)
+    
+        embed = discord.Embed(title="Chest Opened!", color=discord.Color.green())
+        
+        if chosen_items:
+            for chosen_item in chosen_items:
+                await db_manager.add_item_to_inventory(ctx.author.id, chosen_item['item_id'], chosen_item['item_amount'])
+                item_name = await db_manager.get_basic_item_name(chosen_item['item_id'])
+                item_emoji = await db_manager.get_basic_item_emoji(chosen_item['item_id'])
+                embed.add_field(name=item_name, value=f"{item_emoji} - {chosen_item['item_amount']}", inline=False)
+            embed.description = random.choice(outcome_phrases)
+        else:
+            chest_name = await db_manager.get_chest_name(item)
+            embed.description = f"It seems {chest_name} ended up being empty!"
+        
+        await ctx.send(embed=embed)
+    
+    # Function to handle using pet items
+    async def use_pet_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
+        pets = await db_manager.get_users_pets(ctx.author.id)
+        if not pets:
+            await ctx.send('You do not own any pets.')
+            return
+        view = PetSelectView(pets, ctx.author, self.bot, item)
+        await view.prepare()
+        message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
+        view.message = message
+    
+    # Function to handle using timed items
+    async def use_timed_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
+        item_effect = await db_manager.get_basic_item_effect(item)
+        await db_manager.add_timed_item(user_id, item, item_effect)
+        item_effect = item_effect.split(" ")
+        item_effect_type = item_effect[0]
+        item_effect_amount = item_effect[2]
+        plus_or_minus = item_effect[1]
+        try:
+            item_effect_time = item_effect[3]
+        except IndexError:
+            item_effect_time = 0
+    
+        if item_effect_type == "lock":
+            await ctx.send(f"You used {item_emoji}`{item_name}` You now can't be robbed for {item_effect_time}!")
+        elif item_effect_type == "halt_cleanliness":
+            await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now can't lose cleanliness for {item_effect_time}!")
+        elif item_effect_type == "halt_hunger":
+            await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now can't lose hunger for {item_effect_time}!")
+        elif item_effect_type == "halt_happiness":
+            await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now can't lose happiness for {item_effect_time}!")
+        else:
+            await ctx.send(f"You used {item_emoji}`{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
+    
+    # Function to handle using revive items
+    async def use_revive_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
+        if await db_manager.is_alive(user_id):
+            await ctx.send("You are already alive!")
+            await db_manager.add_item_to_inventory(user_id, item, 1)
+        else:
+            await db_manager.set_alive(user_id)
+            await db_manager.add_health(user_id, 100)
+            await ctx.send(f"You used **{item_emoji}{item_name}** and revived!")
+    
+    # Main use command function
     @commands.hybrid_command(
         name="use",
         description="This command will use an item.",
     )
     async def use(self, ctx: Context, item: str):
-        """
-        This command will use an item.
-        :param ctx: The context in which the command was called.
-        :param item: The item that should be used.
-        """
         userExist = await db_manager.check_user(ctx.author.id)
-        if userExist == None or userExist == []:
+        if not userExist:
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.use.reset_cooldown(ctx)
             return
-        #check if the item is in the inventory
-        isItemThere = await db_manager.is_item_in_inventory(ctx.author.id, item)
-        if isItemThere == False or isItemThere == None or isItemThere == 0:
+    
+        if not await db_manager.is_item_in_inventory(ctx.author.id, item):
             await ctx.send("You don't have this item!")
             await self.use.reset_cooldown(ctx)
             return
-        user_id = ctx.message.author.id
+    
+        user_id = ctx.author.id
         isChest = await db_manager.check_chest(item)
-        if isChest == 1:
-            item_name = await db_manager.get_chest_name(item)
-            isUsable = 1
-        else: 
-            item_name = await db_manager.get_basic_item_name(item)
-            isUsable = await db_manager.is_basic_item_usable(item)
-        if isUsable == 1:
-            #remove item from inventory
+        item_name = await db_manager.get_chest_name(item) if isChest else await db_manager.get_basic_item_name(item)
+        isUsable = 1 if isChest else await db_manager.is_basic_item_usable(item)
+    
+        if isUsable:
             await db_manager.remove_item_from_inventory(user_id, item, 1)
-            sub_type = await db_manager.get_basic_item_sub_type(item)
             item_emoji = await db_manager.get_basic_item_emoji(item)
+            sub_type = await db_manager.get_basic_item_sub_type(item)
+    
             if sub_type == "Pet Item":
-                pets = await db_manager.get_users_pets(ctx.author.id)
-                if not pets:
-                    await ctx.send('You do not own any pets.')
-                    return
-                view = PetSelectView(pets, ctx.author, self.bot, item)
-                await view.prepare()
-                message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
-                view.message = message
+                await use_pet_item(ctx, item, user_id, item_emoji, item_name)
                 return
-            
+    
             isTimed = await db_manager.is_timed_item(item)
-            #if its true
-            if isTimed == True:
-                #get the effect 
-                item_effect = await db_manager.get_basic_item_effect(item)
-                await db_manager.add_timed_item(user_id, item, item_effect)
-                item_name = await db_manager.get_basic_item_name(item)
-                #split the item effect by space
-                item_effect = item_effect.split(" ")
-                #get the item effect type
-                item_effect_type = item_effect[0]
-                item_effect_amount = item_effect[2]
-                plus_or_minus = item_effect[1]
-                #get the item effect amount
-                try:
-                    item_effect_time = item_effect[3]
-                except IndexError:
-                    item_effect_time = 0
-                print(item_effect)
-                #add it to the user
-                #send a message
-                if item_effect_type == "lock":
-                    await ctx.send(f"You used {item_emoji}`{item_name}` You now cant be robbed for {item_effect_time}!")
-                    return
-                elif item_effect_type == "halt_cleanliness":
-                    await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now cant lose cleanliness for {item_effect_time}!")
-                    return
-                elif item_effect_type == "halt_hunger":
-                    await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now cant lose hunger for {item_effect_time}!")
-                    return
-                elif item_effect_type == "halt_happiness":
-                    await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now cant lose happiness for {item_effect_time}!")
-                    return
-                await ctx.send(f"You used {item_emoji}`{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
+            if isTimed:
+                await use_timed_item(ctx, item, user_id, item_emoji, item_name)
                 return
-            #if the item's name is "Potion", add 10 health to the user
-            #get the items effect
+    
             item_effect = await db_manager.get_basic_item_effect(item)
-            #if the item effect is "None":
-            if item_effect == "None":
-                item_effect = "None"
-                item_effect_type = "None"
-            elif isChest == 1:
-                item_effect = "None"
-                item_effect_type = "None"
-            else:
-                #split the item effect by space
-                item_effect = item_effect.split(" ")
-                #get the item effect type
-                item_effect_type = item_effect[0]
-                item_effect_amount = item_effect[2]
-                plus_or_minus = item_effect[1]
-                #get the item effect amount
-                try:
-                    item_effect_time = item_effect[3]
-                except IndexError:
-                    item_effect_time = 0
-                print(item_effect)
-                print(item_effect_type, plus_or_minus, item_effect_amount)
-            #if the item effect is "revive"
-            if item_effect_type == "revive":
-                #if the user is alive, don't revive them and send a message
-                if await db_manager.is_alive(user_id) == True:
-                    await ctx.send("You are already alive!")
-                    #give the item back to the user
-                    await db_manager.add_item_to_inventory(user_id, item, 1)
-                    return
-                #revive the user
-                await db_manager.set_alive(user_id)
-                #add the item effect amount to the users health
-                await db_manager.add_health(user_id, 100)
-                await ctx.send(f"You used **{item_emoji}{item_name}** and revived!")
-                return
+            item_effect = "None" if item_effect == "None" or isChest else item_effect.split(" ")[0]
             
-            if item_effect_type == "bank_capacity":
-                #send an embed to the user show their updated bank capacity
-                bank_capacity = await db_manager.get_bank_capacity(user_id)
-                #remove the ( and ) and , from the bank capacity
-                bank_capacity = str(bank_capacity)
-                bank_capacity = bank_capacity.replace(")", "")
-                bank_capacity = bank_capacity.replace("(", "")
-                bank_capacity = bank_capacity.replace(",", "")
-                bank_capacity = int(bank_capacity)
-                embed = discord.Embed(
-                    title="Bank Capacity Upraded!",
-                    description=f"Your bank can now hold **{cash}{bank_capacity:,}**!",
-                    color=discord.Color.blurple()
-                )
-                await ctx.send(embed=embed)
+            if item_effect == "revive":
+                await use_revive_item(ctx, item, user_id, item_emoji, item_name)
                 return
-
-            #split the item_id by the "_"
-            chest_name = await db_manager.get_chest_name(item)
-            #get the item type 
-            luck = await db_manager.get_luck(user_id)
+    
             if item == "chest" or item == "pet_chest":
-                print(item)
-                contents = await db_manager.get_chest_contents(item)
-
-                outcomePhrases = [
-                    "You opened the chest and found ",
-                    "As you pried open the chest, you discovered ",
-                    "With a satisfying creak, the chest opened to reveal ",
-                    "Inside the chest, you found ",
-                    "You eagerly opened the chest to reveal ",
-                    "With bated breath, you lifted the lid of the chest and uncovered ",
-                    "The chest was heavy, but it was worth it when you saw ",
-                    "With a sense of anticipation, you opened the chest and saw ",
-                    "You were rewarded for your efforts with ",
-                    "Inside the chest, you were delighted to find "
-                ]
-
-                chest_contents = await db_manager.get_chest_contents(item)
-
-                def choose_item_based_on_chance(items_with_chances: List[Tuple]):
-                    total = sum(w for _, w in items_with_chances)
-                    r = random.uniform(0, total)
-                    upto = 0
-                    for item, w in items_with_chances:
-                        if upto + w >= r:
-                            return item
-                        upto += w
-                    assert False, "Shouldn't get here"
-
-                chest_contents = [
-                    (
-                        {'item_id': item[1], 'item_amount': item[2]}, 
-                        item[3] + luck / 100
-                    ) for item in chest_contents
-                ]
-
-                total_chance = sum(chance for _, chance in chest_contents)
-                chest_contents = [
-                    (
-                        {'item_id': item['item_id'], 'item_amount': item['item_amount']}, 
-                        chance / total_chance
-                    ) for item, chance in chest_contents
-                ]
-
-                chosen_item = choose_item_based_on_chance(chest_contents)
-                print(chosen_item)
-
-                if chosen_item is not None:
-                    await db_manager.add_item_to_inventory(ctx.author.id, chosen_item['item_id'], chosen_item['item_amount'])
-                    item_name = await db_manager.get_basic_item_name(chosen_item['item_id'])
-                    item_emoji = await db_manager.get_basic_item_emoji(chosen_item['item_id'])
-                    await ctx.send(random.choice(outcomePhrases) + f"{item_emoji} **{item_name}** - {chosen_item['item_amount']}")
-                else:
-                    await ctx.send(f"It seems {chest_name} ended up being empty!")
-
-            #if the item_subtype is pet_item
-            #print the use message
-            if item_effect_type == "None":
-                await ctx.send(f"You used `{item_name}`!")
-            else:
-                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
+                luck = await db_manager.get_luck(user_id)
+                await use_chest(ctx, item, user_id, luck)
+                return
+    
+            await ctx.send(f"You used `{item_name}`!" if item_effect == "None" else f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
     
     @use.autocomplete("item")
     async def use_autocomplete(self, ctx: discord.Interaction, argument):
-        #print(argument)
         user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory(user_id)
-        choices = []
-        for item in user_inventory:
-            if argument.lower() in item[2].lower():
-                isUsable = await db_manager.is_basic_item_usable(item[1])
-                isChest = await db_manager.check_chest(item[1])
-                if isUsable == 1 or isUsable == True or isChest == 1 or isChest == True:
-                    choices.append(app_commands.Choice(name=item[2], value=item[1]))
+        choices = [
+            app_commands.Choice(name=item[2], value=item[1])
+            for item in user_inventory
+            if argument.lower() in item[2].lower() and (
+                await db_manager.is_basic_item_usable(item[1]) or await db_manager.check_chest(item[1])
+            )
+        ]
         return choices[:25]
+
 
     #explore command
     #@commands.hybrid_command(

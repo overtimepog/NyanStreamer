@@ -123,6 +123,37 @@ async def get_chests() -> list:
 async def get_jobs() -> list:
     return jobs
 
+async def get_basic_item_data(item_id):
+    db = DB()
+    data = await db.execute("SELECT `item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, `isFishable`, `item_fish_chance`, `quote_id`, `item_sub_type` FROM `basic_items` WHERE `item_id` = ?", (item_id,), fetch="one")
+    if data is not None:
+        return {
+            'item_id': data[0],
+            'item_name': data[1],
+            'item_price': data[2],
+            'item_emoji': data[3],
+            'item_rarity': data[4],
+            'item_type': data[5],
+            'item_damage': data[6],
+            'isUsable': data[7],
+            'inShop': data[8],
+            'isEquippable': data[9],
+            'item_description': data[10],
+            'item_element': data[11],
+            'item_crit_chance': data[12],
+            'item_projectile': data[13],
+            'recipe_id': data[14],
+            'isHuntable': data[15],
+            'item_hunt_chance': data[16],
+            'item_effect': data[17],
+            'isMineable': data[18],
+            'item_mine_chance': data[19],
+            'isFishable': data[20],
+            'item_fish_chance': data[21],
+            'quote_id': data[22],
+            'item_sub_type': data[23]
+        }
+    return None
 
 async def get_money(user_id: int) -> int:
         db = DB()
@@ -930,129 +961,93 @@ async def clear_basic_items() -> None:
 async def add_basic_items() -> None:
     db = DB()
     for item in basic_items:
-        data = await db.execute(f"SELECT * FROM `basic_items` WHERE item_id = ?", (item['item_id'],), fetch="one")
+        data = await db.execute("SELECT * FROM `basic_items` WHERE item_id = ?", (item['item_id'],), fetch="one")
+        # Prepare the fields
+        isHuntable = item.get('isHuntable', False)
+        item_hunt_chance = item.get('item_hunt_chance', 0)
+        isMineable = item.get('isMineable', False)
+        item_mine_chance = item.get('item_mine_chance', 0)
+        isFishable = item.get('isFishable', False)
+        item_fish_chance = item.get('item_fish_chance', 0)
+        quote_id = item.get('quote_id', "None")
+        item_sub_type = item.get('item_sub_type', "None")
+        recipe_id = item.get('recipe_id', "None")
+        
+        # New item data
+        new_item_data = (
+            item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], 
+            item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], 
+            item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], 
+            recipe_id, isHuntable, item_hunt_chance, item['item_effect'], isMineable, item_mine_chance, 
+            isFishable, item_fish_chance, quote_id, item_sub_type
+        )
+
         if data is not None:
-            #check if there is a isHuntable, item_hunt_chance, isMineable, item_mine_chance, quote_id, or item_sub_type
-            if 'isHuntable' in item:
-                isHuntable = item['isHuntable']
+            # Current item data from the database
+            current_item_data = (
+                data['item_id'], data['item_name'], data['item_price'], data['item_emoji'], data['item_rarity'], 
+                data['item_type'], data['item_damage'], data['isUsable'], data['inShop'], data['isEquippable'], 
+                data['item_description'], data['item_element'], data['item_crit_chance'], data['item_projectile'], 
+                data['recipe_id'], data['isHuntable'], data['item_hunt_chance'], data['item_effect'], data['isMineable'], 
+                data['item_mine_chance'], data['isFishable'], data['item_fish_chance'], data['quote_id'], data['item_sub_type']
+            )
+            
+            if new_item_data != current_item_data:
+                # Delete the item from the database, then add it again
+                await db.execute(f"DELETE FROM `basic_items` WHERE item_id = ?", (item['item_id'],))
+                await db.execute(f"""
+                    INSERT INTO `basic_items` (
+                        `item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, 
+                        `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, 
+                        `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, 
+                        `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, 
+                        `isFishable`, `item_fish_chance`, `quote_id`, `item_sub_type`
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, new_item_data)
+                print(f"Updated {item['item_name']}")
+                
+                if quote_id != "None":
+                    # Remove the old quotes from the database
+                    await db.execute(f"DELETE FROM `item_quotes` WHERE item_id = ?", (quote_id,))
+                    # Add new quotes to the database
+                    for quote in item['item_quotes']:
+                        await db.execute(f"INSERT INTO `item_quotes` (`item_id`, `quote`) VALUES (?, ?)", (quote_id, quote['quote']))
+                        print(f"Updated Quote: |{quote['quote']}| to the item_quotes for |{item['item_name']}|")
+                    print(f"Updated |{item['item_name']}|'s item_quotes to the database")
+
+                if recipe_id != "None":
+                    # Remove the old recipes from the database
+                    await db.execute(f"DELETE FROM `recipes` WHERE item_id = ?", (recipe_id,))
+                    # Add new recipes to the database
+                    for ingredient in item['item_recipe']:
+                        await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (recipe_id, ingredient['ingredient_id'], ingredient['ingredient_amount']))
+                        print(f"Updated Ingredient: |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
+                    print(f"Updated |{item['item_name']}|'s recipe to the database")
             else:
-                isHuntable = False
-            if 'item_hunt_chance' in item:
-                item_hunt_chance = item['item_hunt_chance']
-            else:
-                item_hunt_chance = 0
-            if 'isMineable' in item:
-                isMineable = item['isMineable']
-            else:
-                isMineable = False
-            if 'item_mine_chance' in item:
-                item_mine_chance = item['item_mine_chance']
-            else:
-                item_mine_chance = 0
-            if 'quote_id' in item:
-                quote_id = item['quote_id']
-            else:
-                quote_id = "None"
-            if 'item_sub_type' in item:
-                item_sub_type = item['item_sub_type']
-            else:
-                item_sub_type = "None"
-            if "recipe_id" in item:
-                recipe_id = item['recipe_id']
-            else:
-                recipe_id = "None"
-            #delete the item from the database, then add it again
-            await db.execute(f"DELETE FROM `basic_items` WHERE item_id = ?", (item['item_id'],))
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, quote_id, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], recipe_id, isHuntable, item_hunt_chance, item['item_effect'], isMineable, item_mine_chance, quote_id, item_sub_type))
-            print(f"Updated {item['item_name']}")
-            if quote_id != "None":
-                #remove the old quotes from the database
-                await db.execute(f"DELETE FROM `item_quotes` WHERE item_id = ?", (item['quote_id'],))
-                #for each item in the recipe add it to the database with the item_id being the recipe_id
-                for quote in item['item_quotes']:
-                    await db.execute(f"INSERT INTO `item_quotes` (`item_id`, `quote`) VALUES (?, ?)", (item['quote_id'], quote['quote']))
-                    print(f"Updated Quote: |{quote['quote']}| to the item_quotes for |{item['item_name']}|")
-                print(f"Updated |{item['item_name']}|'s item_quotes to the database")
-            if recipe_id != "None":
-                #remove the old recipes from the database
-                await db.execute(f"DELETE FROM `recipes` WHERE item_id = ?", (item['recipe_id'],))
-                #for each item in the recipe add it to the database with the item_id being the recipe_id
-                for ingredient in item['item_recipe']:
-                    await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (item['recipe_id'], ingredient['ingredient_id'], ingredient['ingredient_amount']))
-                    print(f"Updated Ingredient: |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
-                print(f"Updated |{item['item_name']}|'s recipe to the database")
-            pass
+                print(f"No changes for {item['item_name']}")
         else:
-            #CREATE TABLE IF NOT EXISTS `basic_items` (
-            #`item_id` varchar(255) PRIMARY KEY,
-            #`item_name` varchar(255) NOT NULL,
-            #`item_price` varchar(255) NOT NULL,
-            #`item_emoji` varchar(255) NOT NULL,
-            #`item_rarity` varchar(255) NOT NULL,
-            #`item_type` varchar(255) NOT NULL,
-            #`item_damage` int(11) NOT NULL,
-            #`isUsable` boolean NOT NULL,
-            #`inShop` boolean NOT NULL,
-            #`isEquippable` boolean NOT NULL,
-            #`item_description` varchar(255) NOT NULL,
-            #`item_element` varchar(255) NOT NULL,
-            #`item_crit_chance` int(11) NOT NULL,
-            #`item_projectile` varchar(255) NOT NULL,
-            #`recipe_id` varchar(255) NOT NULL,
-            #`isHuntable` boolean NOT NULL,
-            #`item_hunt_chance` int(11) NOT NULL,
-            #`item_effect` varchar(255) NOT NULL,
-            #`isMineable` boolean NOT NULL,
-            #`item_mine_chance` int(11) NOT NULL,
-            
-            #add the item to the database
-            if 'isHuntable' in item:
-                isHuntable = item['isHuntable']
-            else:
-                isHuntable = False
-            if 'item_hunt_chance' in item:
-                item_hunt_chance = item['item_hunt_chance']
-            else:
-                item_hunt_chance = 0
-            if 'isMineable' in item:
-                isMineable = item['isMineable']
-            else:
-                isMineable = False
-            if 'item_mine_chance' in item:
-                item_mine_chance = item['item_mine_chance']
-            else:
-                item_mine_chance = 0
-            if 'quote_id' in item:
-                quote_id = item['quote_id']
-            else:
-                quote_id = "None"
-            if 'item_sub_type' in item:
-                item_sub_type = item['item_sub_type']
-            else:
-                item_sub_type = "None"
-            if "recipe_id" in item:
-                recipe_id = item['recipe_id']
-            else:
-                recipe_id = "None"
-            await db.execute(f"DELETE FROM `basic_items` WHERE item_id = ?", (item['item_id'],))
-            await db.execute(f"INSERT INTO `basic_items` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, quote_id, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], recipe_id, isHuntable, item_hunt_chance, item['item_effect'], isMineable, item_mine_chance, quote_id, item_sub_type))
+            # Add the item to the database
+            await db.execute("""
+                INSERT INTO `basic_items` (
+                    `item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, 
+                    `item_damage`, `isUsable`, `inShop`, `isEquippable`, `item_description`, 
+                    `item_element`, `item_crit_chance`, `item_projectile`, `recipe_id`, 
+                    `isHuntable`, `item_hunt_chance`, `item_effect`, `isMineable`, `item_mine_chance`, 
+                    `isFishable`, `item_fish_chance`, `quote_id`, `item_sub_type`
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, new_item_data)
             print(f"Added |{item['item_name']}| to the database")
-            
-            #add the items recipe to the database
-            #CREATE TABLE IF NOT EXISTS recipes (
-            # item_id VARCHAR(255) NOT NULL,
-            # ingredient_id VARCHAR(255) NOT NULL,
-            # ingredient_amount INTEGER NOT NULL
             if quote_id != "None":
-                #for each item in the recipe add it to the database with the item_id being the recipe_id
+                # Add new quotes to the database
                 for quote in item['item_quotes']:
-                    await db.execute(f"INSERT INTO `item_quotes` (`item_id`, `quote`) VALUES (?, ?)", (item['quote_id'], quote['quote']))
+                    await db.execute(f"INSERT INTO `item_quotes` (`item_id`, `quote`) VALUES (?, ?)", (quote_id, quote['quote']))
                     print(f"Added Quote: |{quote['quote']}| to the item_quotes for |{item['item_name']}|")
                 print(f"Added |{item['item_name']}|'s item_quotes to the database")
+
             if recipe_id != "None":
-                #for each item in the recipe add it to the database with the item_id being the recipe_id
+                # Add new recipes to the database
                 for ingredient in item['item_recipe']:
-                    await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (item['recipe_id'], ingredient['ingredient_id'], ingredient['ingredient_amount']))
+                    await db.execute(f"INSERT INTO `recipes` (`item_id`, `ingredient_id`, `ingredient_amount`) VALUES (?, ?, ?)", (recipe_id, ingredient['ingredient_id'], ingredient['ingredient_amount']))
                     print(f"Added Ingredient: |{ingredient['ingredient_id']}| to the recipe for |{item['item_name']}|")
                 print(f"Added |{item['item_name']}|'s recipe to the database")
 
@@ -1077,14 +1072,6 @@ async def print_items() -> None:
     #    print("Type: Quest | ID: " + quest['quest_id'])
 
     for job in jobs:
-        #"required_item": "spacesuit",
-        #"required_level": 7,
-        #"required_shifts": 1000,
-        #"base_pay": 2000,
-        #"pay_per_level": 200,
-        #"max_level": 15,
-        #"cooldown": 10800,
-        #"cooldown_reduction_per_level": 180,
         print(f"Type: Job | ID: {job['id']} | Name: {job['name']} | Required Hours: {job['required_shifts']} | Base Pay: {job['base_pay']} | Pay Per Level: {job['pay_per_level']} | Cooldown (in Seconds): {job['cooldown']} | Cooldown Reduction Per Level (in Seconds): {job['cooldown_reduction_per_level']}")
 
 
@@ -1173,7 +1160,8 @@ async def add_chests() -> None:
             if chest['chest_contentsID'] != "None":
                 for item in chest['chest_contents']:
                     await db.execute(f"INSERT INTO `chest_contents` (`chest_id`, `item_id`, `item_amount`, `drop_chance`) VALUES (?, ?, ?, ?)", (chest['chest_contentsID'], item['item_id'], item['item_amount'], item['drop_chance']))
-                    print(f"Updated |{item['item_id']}| x{item['item_amount']} to the chest |{chest['chest_id']}| with a drop chance of |{item['drop_chance']}|")
+                    item_name = await get_basic_item_name(item['item_id'])
+                    print(f"Updated |{item_name}| x{item['item_amount']} to the chest |{chest['chest_id']}| with a drop chance of |{item['drop_chance']}|")
                 print(f"Updated |{chest['chest_name']}|'s contents to the database")
             
         else:
@@ -1205,7 +1193,8 @@ async def add_chests() -> None:
             if chest['chest_contentsID'] != "None":
                 for item in chest['chest_contents']:
                     await db.execute(f"INSERT INTO `chest_contents` (`chest_id`, `item_id`, `item_amount`, `drop_chance`) VALUES (?, ?, ?, ?)", (chest['chest_contentsID'], item['item_id'], item['item_amount'], item['drop_chance']))
-                    print(f"Added |{item['item_id']}| to the chest |{chest['chest_name']}| with a drop chance of |{item['drop_chance']}|")
+                    item_name = await get_basic_item_name(item['item_id'])
+                    print(f"Added |{item_name}| to the chest |{chest['chest_name']}| with a drop chance of |{item['drop_chance']}|")
                 print(f"Added |{chest['chest_name']}|'s contents to the database")
             
             
@@ -1242,9 +1231,10 @@ async def add_shop_items() -> None:
         print(f"Could not select 25 items, selected {len(filtered_data)} items instead.")
     for item in filtered_data:
         item_id = item[0]
+        item_name = await get_basic_item_name(item_id)
         item_amount = 1
         await db.execute(f"INSERT INTO `shop` (`item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_type`, `item_damage`, `isUsable`, `isEquippable`, `item_amount`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7], item[8], item_amount))
-        print(f"Added |{item_id}| to the shop")
+        print(f"Added |{item_name}| to the shop")
     print("Finished adding items to the shop.")
         
 #clear the shop table
@@ -1390,54 +1380,98 @@ async def add_jobs_and_minigames():
     for job in jobs:
         # Process job
         data = await db.execute("SELECT * FROM `jobs` WHERE id = ?", (job['id'],), fetch="one")
-        if data is not None:
-            await db.execute("DELETE FROM `jobs` WHERE id = ?", (job['id'],))
-        await db.execute(
-            """
-            INSERT INTO `jobs` (
-                `id`, `name`, `description`, `job_icon`, `required_shifts`,
-                `base_pay`, `pay_per_level`,
-                `cooldown`, `cooldown_reduction_per_level`
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                job['id'], job['name'], job['description'], job['job_icon'], job['required_shifts'],
-                job['base_pay'], job['pay_per_level'], job['cooldown'], job['cooldown_reduction_per_level']
-            )
+        # Prepare the job fields
+        new_job_data = (
+            job['id'], job['name'], job['description'], job['job_icon'], job['required_shifts'],
+            job['base_pay'], job['pay_per_level'], job['cooldown'], job['cooldown_reduction_per_level']
         )
-        print(f"Processed job {job['name']}")
+
+        if data is not None:
+            # Current job data from the database
+            current_job_data = (
+                data['id'], data['name'], data['description'], data['job_icon'], data['required_shifts'],
+                data['base_pay'], data['pay_per_level'], data['cooldown'], data['cooldown_reduction_per_level']
+            )
+            
+            if new_job_data != current_job_data:
+                # Delete the job from the database, then add it again
+                await db.execute("DELETE FROM `jobs` WHERE id = ?", (job['id'],))
+                await db.execute(
+                    """
+                    INSERT INTO `jobs` (
+                        `id`, `name`, `description`, `job_icon`, `required_shifts`,
+                        `base_pay`, `pay_per_level`,
+                        `cooldown`, `cooldown_reduction_per_level`
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    new_job_data
+                )
+                print(f"Updated job {job['name']}")
+            else:
+                print(f"No changes for job {job['name']}")
+        else:
+            await db.execute(
+                """
+                INSERT INTO `jobs` (
+                    `id`, `name`, `description`, `job_icon`, `required_shifts`,
+                    `base_pay`, `pay_per_level`,
+                    `cooldown`, `cooldown_reduction_per_level`
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                new_job_data
+            )
+            print(f"Added job {job['name']}")
+
         # Process minigames for this job
         for minigame in job['minigames']:
-            minigame_id = await db.execute(
-                "INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)",
-                (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True
+            # Check if minigame exists
+            minigame_data = await db.execute(
+                "SELECT * FROM `minigames` WHERE job_id = ? AND type = ? AND prompt = ?",
+                (job['id'], minigame['type'], minigame.get('prompt')), fetch="one"
             )
+            
+            if minigame_data is not None:
+                minigame_id = minigame_data['id']
+            else:
+                minigame_id = await db.execute(
+                    "INSERT INTO `minigames` (`job_id`, `type`, `prompt`) VALUES (?, ?, ?)",
+                    (job['id'], minigame['type'], minigame.get('prompt')), lastrowid=True
+                )
+
             # Process rewards for this minigame
             if 'reward' in minigame:
+                # Delete existing rewards
+                await db.execute("DELETE FROM `rewards` WHERE minigame_id = ?", (minigame_id,))
                 for reward in minigame['reward']:
                     await db.execute(
                         "INSERT INTO `rewards` (`minigame_id`, `reward_type`, `reward`, `chance`) VALUES (?, ?, ?, ?)",
                         (minigame_id, reward['rewardType'], reward.get('reward'), reward.get('chance'))
                     )
+            
             # Process data depending on minigame type
             if minigame['type'] == 'Trivia':
+                await db.execute("DELETE FROM `trivia` WHERE minigame_id = ?", (minigame_id,))
                 for question in minigame['questions']:
                     await db.execute(
                         "INSERT INTO `trivia` (`minigame_id`, `question`, `options`, `answer`) VALUES (?, ?, ?, ?)",
                         (minigame_id, question['question'], json.dumps(question['options']), question['answer'])
                     )
             elif minigame['type'] == 'Order':
+                await db.execute("DELETE FROM `order_game` WHERE minigame_id = ?", (minigame_id,))
                 for sequence in minigame['sequences']:
                     await db.execute(
                         "INSERT INTO `order_game` (`minigame_id`, `task`, `items`, `correct_order`) VALUES (?, ?, ?, ?)",
                         (minigame_id, sequence['task'], json.dumps(sequence['items']), json.dumps(sequence['correctOrder']))
                     )
             elif minigame['type'] == 'Matching':
+                await db.execute("DELETE FROM `matching` WHERE minigame_id = ?", (minigame_id,))
                 await db.execute(
                     "INSERT INTO `matching` (`minigame_id`, `items`, `correct_matches`) VALUES (?, ?, ?)",
                     (minigame_id, json.dumps(minigame['items']), json.dumps(minigame['correctMatches']))
                 )
             elif minigame['type'] == 'Choice':
+                await db.execute("DELETE FROM `choices` WHERE minigame_id = ?", (minigame_id,))
+                await db.execute("DELETE FROM `outcomes` WHERE choice_id IN (SELECT id FROM `choices` WHERE minigame_id = ?)", (minigame_id,))
                 for option in minigame['options']:
                     try:
                         choice_id = await db.execute(
@@ -1454,29 +1488,29 @@ async def add_jobs_and_minigames():
                             )
                         except Exception as e:
                             print(f"Error inserting into `outcomes`: {e}")
-                            
             elif minigame['type'] == 'Backwards':
+                await db.execute("DELETE FROM `backwards` WHERE minigame_id = ?", (minigame_id,))
                 for word in minigame['words']:
                     await db.execute(
                         "INSERT INTO `backwards` (`minigame_id`, `word`) VALUES (?, ?)",
                         (minigame_id, word)
                     )
-                
             elif minigame['type'] == 'Retype':
+                await db.execute("DELETE FROM `retype` WHERE minigame_id = ?", (minigame_id,))
                 for phrase in minigame['phrases']:
                     await db.execute(
                         "INSERT INTO `retype` (`minigame_id`, `phrase`) VALUES (?, ?)",
                         (minigame_id, phrase)
                     )
-
             elif minigame['type'] == 'Hangman':
+                await db.execute("DELETE FROM `hangman` WHERE minigame_id = ?", (minigame_id,))
                 for hangman in minigame['sentences']:
                     await db.execute(
                         "INSERT INTO `hangman` (`minigame_id`, `sentence`, `answer`) VALUES (?, ?, ?)",
                         (minigame_id, hangman['sentence'], hangman['answer'])
                     )
-
             elif minigame['type'] == 'Anagram':
+                await db.execute("DELETE FROM `anagram` WHERE minigame_id = ?", (minigame_id,))
                 for anagram in minigame['words']:
                     await db.execute(
                         "INSERT INTO `anagram` (`minigame_id`, `scrambled_word`, `solution`) VALUES (?, ?, ?)",
@@ -1490,10 +1524,20 @@ async def add_jobs_to_jobboard():
     for job in jobs:
         # Process job
         data = await db.execute("SELECT * FROM `jobboard` WHERE id = ?", (job['id'],), fetch="one")
+        new_jobboard_data = (job['id'], job['name'], job['job_icon'])
+
         if data is not None:
-            await db.execute("DELETE FROM `jobboard` WHERE id = ?", (job['id'],))
-        await db.execute("INSERT INTO `jobboard` (`id`, `name`, `job_icon`) VALUES (?, ?, ?)", (job['id'], job['name'], job['job_icon']))
-        print(f"Processed job {job['name']} for the job board")
+            current_jobboard_data = (data['id'], data['name'], data['job_icon'])
+            if new_jobboard_data != current_jobboard_data:
+                await db.execute("DELETE FROM `jobboard` WHERE id = ?", (job['id'],))
+                await db.execute("INSERT INTO `jobboard` (`id`, `name`, `job_icon`) VALUES (?, ?, ?)", new_jobboard_data)
+                print(f"Updated job {job['name']} for the job board")
+            else:
+                print(f"No changes for job {job['name']} on the job board")
+        else:
+            await db.execute("INSERT INTO `jobboard` (`id`, `name`, `job_icon`) VALUES (?, ?, ?)", new_jobboard_data)
+            print(f"Added job {job['name']} to the job board")
+
 
 
 async def add_user_job(user_id: int, job_id: str) -> None:
@@ -2431,6 +2475,41 @@ async def check_item_recipe(item_id: str) -> bool:
         return True
     else:
         return False
+
+async def get_fishable_status(item_id: str):
+    db = DB()
+    data = await db.execute("SELECT `isFishable`, `item_fish_chance` FROM `basic_items` WHERE `item_id` = ?", (item_id,), fetch="one")
+    if data is None:
+        return False, 0  # Default values if the item is not found
+
+    is_fishable, fish_chance = data
+    return is_fishable, fish_chance
+
+async def get_basic_item_isFishable(item_id: str):
+    db = DB()
+    data = await db.execute("SELECT `isFishable` FROM `basic_items` WHERE `item_id` = ?", (item_id,), fetch="one")
+    if data is None:
+        return False  # Default value if the item is not found
+    
+    is_fishable = data[0]
+    return is_fishable
+
+
+async def get_basic_item_fish_chance(item_id: str):
+    db = DB()
+    data = await db.execute("SELECT `item_fish_chance` FROM `basic_items` WHERE `item_id` = ?", (item_id,), fetch="one")
+    if data is None:
+        return 0  # Default value if the item is not found
+    
+    fish_chance = data[0]
+    return fish_chance
+
+async def get_fish_from_db():
+    db = DB()
+    fish = await db.execute("SELECT `item_id`, `item_emoji`, `item_fish_chance` FROM `basic_items` WHERE `isFishable` = true", fetch="all")
+    if fish is None:
+        return None
+    return fish
     
 #get the items effect from its ID
 async def get_basic_item_effect(item_id: str) -> str:
@@ -4805,7 +4884,7 @@ async def get_basic_item_description(item_id: str) -> str:
             return result[10] if result is not None else 0
         
 #get if a basic item is huntable via its id
-async def get_basic_item_huntable(item_id: str) -> bool:
+async def get_basic_item_isHuntable(item_id: str) -> bool:
     """
     This function will get if a basic item is huntable.
 
@@ -4831,7 +4910,7 @@ async def get_basic_item_hunt_chance(item_id: str) -> int:
             return result[16] if result is not None else 0
         
 #get if a basic item is mineable via its id
-async def get_basic_item_mineable(item_id: str) -> bool:
+async def get_basic_item_isMineable(item_id: str) -> bool:
     """
     This function will get if a basic item is mineable.
 

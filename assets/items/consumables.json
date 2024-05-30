@@ -1,25 +1,5 @@
 [
     {
-        "item_id": "revivepotion",
-        "item_name": "Revive Potion",
-        "item_price": 100,
-        "item_emoji": "<:RevivePotion:1077645427647725578>",
-        "item_rarity": "Rare",
-        "item_type": "Consumable",
-        "item_damage": 0,
-        "isUsable": true,
-        "inShop": true,
-        "isEquippable": false,
-        "item_description": "revives the player who uses it, tastes like death but it works",
-        "item_element": "None",
-        "item_crit_chance": "0%",
-        "item_projectile": "None",
-        "recipe_id": "None",
-        "item_recipe": [],
-        "item_effect": "revive + 1",
-        "item_sub_type": "Potion"
-    },
-    {
         "item_id": "luckpotion",
         "item_name": "Luck Potion",
         "item_price": 1500,
@@ -30,13 +10,13 @@
         "isUsable": true,
         "inShop": true,
         "isEquippable": false,
-        "item_description": "Gain 5 luck for 1 hour",
+        "item_description": "Gain 1 luck for 1 hour",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
         "recipe_id": "None",
         "item_recipe": [],
-        "item_effect": "luck + 5 1hr",
+        "item_effect": "luck + 1 1hr",
         "item_sub_type": "Potion"
     },
     {
@@ -50,13 +30,13 @@
         "isUsable": true,
         "inShop": true,
         "isEquippable": false,
-        "item_description": "crazy good stuff, especially for sniffing",
+        "item_description": "crazy good stuff, especially for sniffing, grants 2 luck for 1 hour",
         "item_element": "None",
         "item_crit_chance": "0%",
         "item_projectile": "None",
         "recipe_id": "None",
         "item_recipe": [],
-        "item_effect": "luck + 50 2hr",
+        "item_effect": "luck + 2 1hr",
         "item_sub_type": "Potion"
     },
     {
