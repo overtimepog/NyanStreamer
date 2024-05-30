@@ -312,9 +312,9 @@ async def fish(self, ctx, user_luck: int):
         title=f"{ctx.author.name}",
         description=description,
     )
-    
+
     bait_used = initial_bait_amount - bait_amount
-    embed.set_footer(text=f"\nTotal bait used: {bait_used}")
+    embed.set_footer(text=f"\nTotal bait used: {bait_used} | Remaining bait: {bait_amount}")
 
     view = discord.ui.View()
     view.add_item(discord.ui.Button(label="Sell Fish", style=discord.ButtonStyle.primary, custom_id="sell_fish"))
@@ -334,8 +334,8 @@ async def fish(self, ctx, user_luck: int):
                 total_earned += earned
                 await db_manager.remove_item_from_inventory(ctx.author.id, fish_id, count)
 
-                fish_emoji = fish_data[3]  # Assuming emoji is at index 3
-                fish_name = fish_data[1]  # Assuming name is at index 1
+                fish_emoji = fish_data["item_emoji"]  # Assuming emoji is at index 3
+                fish_name = fish_data["item_name"]  # Assuming name is at index 1
                 sell_description += f"{count} {fish_emoji}{fish_name} - ⌬{earned}\n"
             except Exception as e:
                 logging.error(f"Error processing sell fish: {e}\n{traceback.format_exc()}")
