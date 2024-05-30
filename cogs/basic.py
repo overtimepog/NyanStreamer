@@ -1183,8 +1183,8 @@ class Basic(commands.Cog, name="basic"):
     )
     async def sellall(self, ctx: Context):
         checkuser = await db_manager.check_user(ctx.author.id)
-        print(f"Check user result: {checkUser}")
-        if checkUser in [None, False, [], "None", 0]:
+        print(f"Check user result: {checkuser}")
+        if checkuser in [None, False, [], "None", 0]:
             await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
 
