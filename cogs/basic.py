@@ -199,7 +199,12 @@ class LeaderboardDropdown(Select):
             await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
             return
 
-        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard", color=discord.Color.blue())
+        # Calculate next reset time
+        now = datetime.datetime.now()
+        next_reset = now + datetime.timedelta(weeks=1)
+        next_reset_unix = int(time.mktime(next_reset.timetuple()))
+
+        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{next_reset_unix}:R>")
         medals = ["🏆", "🥈", "🥉"]
         for entry in leaderboard:
             rank = entry['rank']
@@ -208,10 +213,11 @@ class LeaderboardDropdown(Select):
             name = f"{medals[rank-1]} Rank {rank}: {username}" if rank <= 3 else f"Rank {rank}: {username}"
             embed.add_field(
                 name=name,
-                value=f"Value: {value}",
+                value=f"Value: {value} \n",
                 inline=False
             )
 
+        embed.set_footer(text=f"")
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 class LeaderboardView(View):
