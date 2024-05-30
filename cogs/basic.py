@@ -1063,7 +1063,7 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.remove_item_from_inventory(user_id, item[0], item[6])  # item_id is at index 0 and item_amount is at index 6
 
         # Step 5: Add the calculated amount to the user's balance
-        await db_manager.add_currency_to_user(user_id, total_price)
+        await db_manager.add_money(user_id, total_price)
 
         # Step 6: Send an embed message with the sale summary
         embed = discord.Embed(
