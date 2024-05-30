@@ -416,7 +416,7 @@ class Owner(commands.Cog, name="owner"):
         await db_manager.remove_money(user.id, amount)
         await ctx.send(f"You removed `{amount}` bucks from {user.mention}.", ephemeral=True)
 
-
+    import os
     @commands.hybrid_command(
         name="listemojis",
         description="List all emojis in the server.",
