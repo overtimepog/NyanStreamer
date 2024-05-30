@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `giveaways` (
   `start_time` DATETIME NOT NULL, -- the time when the giveaway started
   `end_time` DATETIME NOT NULL, -- the time when the giveaway should end
   `winner_id` varchar(255), -- the ID of the user who won the giveaway (NULL if the giveaway is still ongoing)
-  FOREIGN KEY (`streamer_id`) REFERENCES `streamer`(`user_id`) -- assuming the streamer's user_id is stored in the `streamer` table
+  FOREIGN KEY (`streamer_id`) REFERENCES `streamer`(`user_id`) -- assuming the streamers user_id is stored in the `streamer` table
 );
 
 CREATE TABLE IF NOT EXISTS `giveaway_entries` (

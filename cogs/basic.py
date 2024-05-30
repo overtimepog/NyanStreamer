@@ -823,13 +823,12 @@ class Basic(commands.Cog, name="basic"):
             return
         user_id = ctx.message.author.id
         user_profile = await db_manager.profile(user_id)
-        user_money = user_profile[1]
-        user_money = int(user_money)
-        user_health = user_profile[2]
-        isStreamer = user_profile[3]
-        #get the users xp and level
-        user_xp = user_profile[11]
-        user_level = user_profile[12]
+        user_money = int(user_profile[2])
+        user_health = user_profile[3]
+        isStreamer = user_profile[4]
+        # Get the user's xp and level
+        user_xp = user_profile[12]
+        user_level = user_profile[13]
         #check if the item exists in the shop
         shop = await db_manager.display_shop_items()
         for i in shop:
@@ -1006,37 +1005,34 @@ class Basic(commands.Cog, name="basic"):
         """
         user_id = ctx.message.author.id
         user_profile = await db_manager.profile(user_id)
-        user_money = user_profile[1]
-        user_money = int(user_money)
-        user_health = user_profile[2]
-        isStreamer = user_profile[3]
-        #get the users xp and level
-        user_xp = user_profile[11]
-        user_level = user_profile[12]
-        #check if the item exists in the users inventory
+        user_money = int(user_profile[2])
+        user_health = user_profile[3]
+        isStreamer = user_profile[4]
+        # Get the user's xp and level
+        user_xp = user_profile[12]
+        user_level = user_profile[13]
+        # Check if the item exists in the user's inventory
         user_inventory = await db_manager.view_inventory(user_id)
         for i in user_inventory:
-            if item in i:
-                #check if its equipped
-                if i[9] == 1:
+            if item == i[2]:
+                # Check if it's equipped
+                if i[9]:
                     await ctx.send(f"You can't sell an equipped item!, unequip it first with `/unequip {item}`")
                     return
-                if i[5] == 'Collectable':
+                if i[7] == 'Collectable':
                     await ctx.send(f"You can't sell a collectable!")
                     return
-                #check if the user has enough of the item
-                item_amount = i[6]
-                item_amount = int(item_amount)
+                # Check if the user has enough of the item
+                item_amount = int(i[6])
                 if item_amount >= amount:
-                    item_price = i[3]
-                    item_price = int(item_price)
+                    item_price = int(i[3])
                     total_price = item_price * amount
-                    #remove the item from the users inventory
+                    # Remove the item from the user's inventory
                     await db_manager.remove_item_from_inventory(user_id, item, amount)
-                    item_emoji = await db_manager.get_basic_item_emoji(item)
-                    #add the price to the users money
+                    item_emoji = i[4]
+                    # Add the price to the user's money
                     await db_manager.add_money(user_id, total_price)
-                    await ctx.send(f"You sold {amount} **{item_emoji}{i[2]}** for **{cash}{total_price:,}**")
+                    await ctx.send(f"You sold {amount} **{item_emoji}{i[2]}** for **{total_price:,}**")
                     return
                 else:
                     await ctx.send(f"You don't have enough **{item_emoji}{i[2]}** to sell `{amount}`.")
@@ -1137,38 +1133,40 @@ class Basic(commands.Cog, name="basic"):
     async def profile(self, ctx: Context, user: discord.User = None):
         """
         This command will view your profile.
-
+    
         :param ctx: The context in which the command was called.
         """
         if user is None:
             user = ctx.author
-
+    
         user_id = user.id
         user_profile = await db_manager.profile(user_id)
-        if user_profile == None:
+        if user_profile is None:
             if user_id == ctx.author.id:
                 await ctx.send("you arent a sigma yet, use /start", ephemeral=True)
             else:
                 await ctx.send(f"{user.name} isnt a sigma yet, tell them to use /start", ephemeral=True)
-        #print(user_profile)
+            return
+    
         user_id = user_profile[0]
-        user_money = user_profile[1]
-        user_health = user_profile[2]
-        isStreamer = user_profile[3]
-        #get the users xp and level
-        user_xp = user_profile[11]
-        user_level = user_profile[12]
-        user_quest = user_profile[13]
-        user_twitch_id = user_profile[14]
-        user_twitch_name = user_profile[15]
-        player_title = user_profile[25]
-        job_id = user_profile[26]
-        locked = user_profile[33]
-        #print all this info
-        #get the xp needed for the next level
+        user_money = user_profile[2]
+        user_health = user_profile[3]
+        isStreamer = user_profile[4]
+        # Get the user's xp and level
+        user_xp = user_profile[12]
+        user_level = user_profile[13]
+        user_quest = user_profile[14]
+        user_twitch_id = user_profile[15]
+        user_twitch_name = user_profile[16]
+        player_title = user_profile[27]
+        job_id = user_profile[28]
+        locked = user_profile[35]
+    
+        # Get the xp needed for the next level
         xp_needed = await db_manager.xp_needed(user_id)
-        #convert the xp needed to a string
+        # Convert the xp needed to a string
         xp_needed = str(xp_needed)
+        
         print(f"User ID: {user_id}")
         print(f"Users Wallet: {user_money}")
         print(f"User Health: {user_health}")
@@ -1179,6 +1177,7 @@ class Basic(commands.Cog, name="basic"):
         print(f"User Quest: {user_quest}")
         print(f"User Twitch ID: {user_twitch_id}")
         print(f"User Twitch Name: {user_twitch_name}")
+    
         user_items = await db_manager.view_inventory(user_id)
         embed = discord.Embed(title="Profile", description=f"{user.mention}'s Profile.")
         isalive = await db_manager.is_alive(user_id)
@@ -1472,11 +1471,11 @@ class Basic(commands.Cog, name="basic"):
 
             # Create an embed for the stats
             stats_embed = discord.Embed(title="Stats", description=f"{user.name}'s Stats")
-            stats_embed.add_field(name="Luck", value=user_profile[24])
-            stats_embed.add_field(name="Shifts Worked", value=user_profile[29])
-            stats_embed.add_field(name="Bonus %", value=user_profile[34] + "%")
+            stats_embed.add_field(name="Luck", value=user_profile[26])
+            stats_embed.add_field(name="Shifts Worked", value=user_profile[32])
+            stats_embed.add_field(name="Bonus %", value=str(user_profile[35]) + "%")
 
-            await ctx.send(embed=stats_embed, ephemeral=True)
+            await ctx.send(embed=stats_embed)
 
         async def display_active_items(ctx: Context, user):
             # Get user active items from the database
@@ -2863,16 +2862,16 @@ class Basic(commands.Cog, name="basic"):
     )
     async def daily(self, ctx: Context):
         user_id = ctx.author.id
-
+    
         # Fetch user data
         user_data = await db_manager.profile(user_id)
-
+    
         # Check if the user is eligible for daily rewards
         current_time = datetime.datetime.now()
         if user_data[31] is not None:
             last_daily = datetime.datetime.strptime(user_data[31].split('.')[0], "%Y-%m-%d %H:%M:%S")
             seconds_passed = (current_time - last_daily).total_seconds()
-
+    
             # Calculate the streak
             if seconds_passed < 86400:  # 86400 seconds in a day
                 reset_time_unix = int((current_time + datetime.timedelta(days=1)).timestamp())  # Unix timestamp for the next day
@@ -2881,36 +2880,35 @@ class Basic(commands.Cog, name="basic"):
                     color=discord.Color.red()
                 )
                 embed.description = f"You already claimed your daily reward!\nCome back <t:{reset_time_unix}:R>"
-
+    
                 await ctx.send(embed=embed)
                 return
             elif seconds_passed < 172800:  # 172800 seconds in two days
-                streak = user_data[33] + 1
+                streak = user_data[34] + 1
             else:
                 streak = 0
         else:
             streak = 0
-
-
+    
         # Grant daily reward
-        #get the bonus % of the user
+        # Get the bonus % of the user
         bonus = await db_manager.get_percent_bonus(user_id)
         bonus = int(bonus) / 100
         daily_reward = 500 + (streak * 100)  # Add bonus reward according to streak
         daily_reward = int(daily_reward + (daily_reward * bonus))  # Add bonus reward according to user's bonus %
-        #get the bonus % of the daily reward and add it to the daily reward
-        new_balance = user_data[1] + daily_reward
+        # Get the bonus % of the daily reward and add it to the daily reward
+        new_balance = user_data[2] + daily_reward
         await db_manager.set_money(user_id, new_balance)
-
+    
         # Update the last_daily and streak fields in the database
         await db_manager.update_daily(user_id)
         await db_manager.set_streak(user_id, streak)
-
+    
         # Notify the user with an embed
-        embed = Embed(
+        embed = discord.Embed(
             title="Daily Reward",
-            description=f"Successfully granted your daily reward!\nYour new balance is **{cash}{new_balance:,}**",
-            color=Color.green()
+            description=f"Successfully granted your daily reward!\nYour new balance is **{new_balance:,}**",
+            color=discord.Color.green()
         )
         embed.set_footer(text=f"Current streak: {streak} days")
         await ctx.send(embed=embed)
