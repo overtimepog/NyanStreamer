@@ -305,9 +305,6 @@ async def fish(self, ctx, user_luck: int):
         new_level = await db_manager.get_level(ctx.author.id)
         description += f"\n{ctx.author.mention} has leveled up! They are now level " + str(new_level) + "!"
 
-    bait_used = initial_bait_amount - bait_amount
-    embed.set_footer(text=f"\nTotal bait used: {bait_used}")
-
     # Update leaderboard
     await db_manager.update_leaderboard()
 
@@ -315,6 +312,9 @@ async def fish(self, ctx, user_luck: int):
         title=f"{ctx.author.name}",
         description=description,
     )
+    
+    bait_used = initial_bait_amount - bait_amount
+    embed.set_footer(text=f"\nTotal bait used: {bait_used}")
 
     view = discord.ui.View()
     view.add_item(discord.ui.Button(label="Sell Fish", style=discord.ButtonStyle.primary, custom_id="sell_fish"))
