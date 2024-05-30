@@ -1354,11 +1354,12 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name="Badges", value=f"{Userbadges}", inline=False)
 
         user_id = user.id if user else ctx.author.id
-        user_stats = await db_manager.get_user_ranks(user_id)
+        print(f"Fetching ranks for user_id: {user_id}")
+        most_money_rank, highest_level_rank = await get_user_ranks(user_id)
 
-        if user_stats:
-            embed.add_field(name="Highest Level Rank", value=user_stats["highest_level_rank"], inline=True)
-            embed.add_field(name="Most Money Rank", value=user_stats["most_money_rank"], inline=True)
+        if most_money_rank is not None or highest_level_rank is not None:
+            embed.add_field(name="Most Money Rank", value=most_money_rank if most_money_rank is not None else "Not ranked", inline=True)
+            embed.add_field(name="Highest Level Rank", value=highest_level_rank if highest_level_rank is not None else "Not ranked", inline=True)
 
         inventory_items = await db_manager.view_inventory(user.id)
 
