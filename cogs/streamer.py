@@ -85,8 +85,8 @@ def refresh_token_func(refresh_token):
 global i
 i = 0
 cash = "⌬"
-replycont = "<:replycontinued:1124415317054070955>"
-reply = "<:reply:1124415034643189912>"
+replycont = "<:replycontinued:1245851813022793778>"
+reply = "<:reply:1245851809730396210>"
 rarity_colors = {
     "Common": 0x808080,  # Grey
     "Uncommon": 0x319236,  # Green
