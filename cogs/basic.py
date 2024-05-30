@@ -1029,7 +1029,7 @@ class Basic(commands.Cog, name="basic"):
     @commands.hybrid_command(
         name="sellall",
         description="This command will sell all items from your inventory.",
-        aliases=["sellall", "sell all", "sell_all"],
+        aliases=["sall"],
     )
     async def sellall(self, ctx: Context):
         checkUser = await db_manager.check_user(ctx.author.id)
