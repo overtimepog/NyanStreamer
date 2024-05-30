@@ -1068,7 +1068,7 @@ class Basic(commands.Cog, name="basic"):
         # Step 6: Send an embed message with the sale summary
         embed = discord.Embed(
             title="Items Sold!",
-            description=f"You sold all your sellable items for a total of {cash}{total_price}.",
+            description="You sold all your sellable items.",
         )
 
         for item in sellable_items:
@@ -1077,7 +1077,7 @@ class Basic(commands.Cog, name="basic"):
             item_total_value = item[6] * int(item[3])  # item_amount is at index 6 and item_sell_price is at index 3
             embed.add_field(name=item_name, value=f"x{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}", inline=False)
 
-        await ctx.send(embed=embed)
+        embed.add_field(name="Total", value=f"**{cash}{total_price}**", inline=False)
 
 
 
