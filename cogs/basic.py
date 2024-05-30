@@ -1066,7 +1066,7 @@ class Basic(commands.Cog, name="basic"):
 
         # Step 4: Remove the sold items from the user's inventory
         for item in sellable_items:
-            await db_manager.remove_item_from_inventory(user_id, item[0], item[6])  # item_id is at index 0 and item_amount is at index 6
+            await db_manager.remove_item_from_inventory(user_id, item[1], item[6])  # item_id is at index 0 and item_amount is at index 6
             print(f"Removed item from inventory: {item}")
 
         # Step 5: Add the calculated amount to the user's balance
