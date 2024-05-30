@@ -2916,10 +2916,7 @@ class Basic(commands.Cog, name="basic"):
             super().__init__()
             self.add_item(LeaderboardDropdown())
 
-    @commands.hybrid_command(
-        name="leaderboard",
-        description="This command will show the leaderboard.",
-    )
+    @commands.hybrid_command(name="leaderboard", description="Show the leaderboard for a specified category.")
     async def leaderboard(ctx: commands.Context):
         """
         Show the leaderboard for a specified category.
