@@ -183,24 +183,27 @@ class PetSelectView(discord.ui.View):
         async def interaction_check(self, interaction: discord.Interaction) -> bool:
             return self.user.id == interaction.user.id
 
+
 class Paginator(View):
-    def __init__(self, pages, per_page):
+    def __init__(self, pages, per_page, category, next_reset_unix):
         super().__init__(timeout=180)
         self.pages = pages
         self.per_page = per_page
         self.current_page = 0
+        self.category = category
+        self.next_reset_unix = next_reset_unix
 
-    def create_embed(self, entries, category, next_reset_unix):
-        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{next_reset_unix}:R>")
+    def create_embed(self, entries):
+        embed = discord.Embed(title=f"{self.category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{self.next_reset_unix}:R>")
         medals = ["🏆", "🥈", "🥉"]
         for entry in entries:
             rank = entry['rank']
             username = entry['username']
             value = entry['value']
             name = f"{medals[rank-1]}{rank}: {username.title()}" if rank <= 3 else f"{rank}: {username.title()}"
-            if category == "highest_level":
+            if self.category == "highest_level":
                 stats = f"Level: {value}"
-            elif category == "most_money":
+            elif self.category == "most_money":
                 stats = f"Money: {value}"
             embed.add_field(
                 name=name,
@@ -214,25 +217,22 @@ class Paginator(View):
     async def previous(self, interaction: discord.Interaction, button: Button):
         if self.current_page > 0:
             self.current_page -= 1
-            embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
+            embed = self.create_embed(self.pages[self.current_page])
             await interaction.response.edit_message(embed=embed, view=self)
 
     @discord.ui.button(label="≫", style=discord.ButtonStyle.primary)
     async def next(self, interaction: discord.Interaction, button: Button):
         if self.current_page < len(self.pages) - 1:
             self.current_page += 1
-            embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
+            embed = self.create_embed(self.pages[self.current_page])
             await interaction.response.edit_message(embed=embed, view=self)
 
-    #delete button
     @discord.ui.button(label="Close", style=discord.ButtonStyle.danger)
     async def close(self, interaction: discord.Interaction, button: Button):
         await interaction.message.delete()
 
-    async def start(self, interaction: discord.Interaction, category, next_reset_unix):
-        self.category = category
-        self.next_reset_unix = next_reset_unix
-        embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
+    async def start(self, interaction: discord.Interaction):
+        embed = self.create_embed(self.pages[self.current_page])
         await interaction.response.send_message(embed=embed, view=self)
 
 class LeaderboardDropdown(Select):
@@ -260,16 +260,14 @@ class LeaderboardDropdown(Select):
         per_page = 10  # Number of entries per page
         pages = [leaderboard[i:i + per_page] for i in range(0, len(leaderboard), per_page)]
 
-        paginator = Paginator(pages, per_page)
-        await paginator.start(interaction, category, next_reset_unix)
+        paginator = Paginator(pages, per_page, category, next_reset_unix)
+        await paginator.start(interaction)
+
 
 class LeaderboardView(View):
     def __init__(self):
         super().__init__()
         self.add_item(LeaderboardDropdown())
-
-    async def get_leaderboard(self, bot, category, limit=10):
-        return await db_manager.get_leaderboard(bot, category, limit)
 
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
