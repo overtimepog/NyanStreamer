@@ -229,6 +229,7 @@ async def slot_rules(ctx: Context):
     await ctx.send(embed=embed)
 
 import logging
+import traceback
 
 async def fish(self, ctx, user_luck: int):
     rarity_colors = {
@@ -251,7 +252,7 @@ async def fish(self, ctx, user_luck: int):
         try:
             fishes = await db_manager.get_fish_from_db()
         except Exception as e:
-            logging.error(f"Error fetching fish from DB: {e}")
+            logging.error(f"Error fetching fish from DB: {e}\n{traceback.format_exc()}")
             await ctx.send("An error occurred while fetching fish data.")
             return None
         
@@ -263,7 +264,7 @@ async def fish(self, ctx, user_luck: int):
     try:
         baitAmount = await db_manager.get_item_amount_from_inventory(ctx.author.id, "bait")
     except Exception as e:
-        logging.error(f"Error fetching bait amount: {e}")
+        logging.error(f"Error fetching bait amount: {e}\n{traceback.format_exc()}")
         await ctx.send("An error occurred while fetching bait data.")
         return
 
@@ -288,7 +289,7 @@ async def fish(self, ctx, user_luck: int):
                 await db_manager.remove_item_from_inventory(ctx.author.id, "bait", 1)
                 baitAmount -= 1
             except Exception as e:
-                logging.error(f"Error removing bait from inventory: {e}")
+                logging.error(f"Error removing bait from inventory: {e}\n{traceback.format_exc()}")
                 await ctx.send("An error occurred while removing bait from your inventory.")
                 return
 
@@ -297,7 +298,7 @@ async def fish(self, ctx, user_luck: int):
         try:
             fish_data = await db_manager.get_basic_item_data(fish_id)
         except Exception as e:
-            logging.error(f"Error fetching fish data: {e}")
+            logging.error(f"Error fetching fish data: {e}\n{traceback.format_exc()}")
             await ctx.send("An error occurred while fetching fish data.")
             continue
 
@@ -312,14 +313,14 @@ async def fish(self, ctx, user_luck: int):
         try:
             await db_manager.add_item_to_inventory(ctx.author.id, fish_id, count)
         except Exception as e:
-            logging.error(f"Error adding item to inventory: {e}")
+            logging.error(f"Error adding item to inventory: {e}\n{traceback.format_exc()}")
             await ctx.send("An error occurred while adding items to your inventory.")
             continue
 
     try:
         await db_manager.add_xp(ctx.author.id, total_xp)
     except Exception as e:
-        logging.error(f"Error adding XP: {e}")
+        logging.error(f"Error adding XP: {e}\n{traceback.format_exc()}")
         await ctx.send("An error occurred while adding XP.")
         return
 
@@ -333,6 +334,7 @@ async def fish(self, ctx, user_luck: int):
 
     view = discord.ui.View()
     view.add_item(discord.ui.Button(label="Sell Fish", style=discord.ButtonStyle.primary, custom_id="sell_fish"))
+    view.add_item(discord.ui.Button(label="Replay", style=discord.ButtonStyle.primary, custom_id="replay_fish"))
 
     message = await ctx.send(embed=embed, view=view)
 
@@ -345,14 +347,14 @@ async def fish(self, ctx, user_luck: int):
                 total_earned += int(fish_price) * count
                 await db_manager.remove_item_from_inventory(ctx.author.id, fish_id, count)
             except Exception as e:
-                logging.error(f"Error processing sell fish: {e}")
+                logging.error(f"Error processing sell fish: {e}\n{traceback.format_exc()}")
                 await interaction.response.send_message("An error occurred while selling fish.")
                 return
 
         try:
             await db_manager.add_money(ctx.author.id, total_earned)
         except Exception as e:
-            logging.error(f"Error adding money: {e}")
+            logging.error(f"Error adding money: {e}\n{traceback.format_exc()}")
             await interaction.response.send_message("An error occurred while adding money.")
             return
 
@@ -365,36 +367,23 @@ async def fish(self, ctx, user_luck: int):
         await interaction.response.edit_message(embed=sell_embed, view=None)
 
     def button_check(interaction: discord.Interaction) -> bool:
-        return interaction.data.get('custom_id') == "sell_fish" and interaction.user == ctx.author
+        return interaction.data.get('custom_id') in ["sell_fish", "replay_fish"] and interaction.user == ctx.author
 
     try:
-        interaction = await self.bot.wait_for("interaction", timeout=60.0, check=button_check)
-        if interaction.data.get('custom_id') == "sell_fish":
-            await sell_fish(interaction)
+        while True:
+            interaction = await self.bot.wait_for("interaction", timeout=60.0, check=button_check)
+            if interaction.data.get('custom_id') == "sell_fish":
+                await sell_fish(interaction)
+            elif interaction.data.get('custom_id') == "replay_fish":
+                await message.delete()
+                await fish(self, ctx, user_luck)
+                break
     except asyncio.TimeoutError:
-        await message.edit(content="Sell option timed out.", view=None)
+        await message.edit(content="Option timed out.", view=None)
     except Exception as e:
-        logging.error(f"Error handling sell interaction: {e}")
-        await ctx.send("An unknown error occurred during the sell interaction.")
+        logging.error(f"Error handling interaction: {e}\n{traceback.format_exc()}")
+        await ctx.send("An unknown error occurred during the interaction.")
 
-    replay_view = discord.ui.View()
-    replay_view.add_item(discord.ui.Button(label="Replay", style=discord.ButtonStyle.primary, custom_id="replay_fish"))
-
-    replay_message = await ctx.send("Do you want to fish again?", view=replay_view)
-
-    def button_check_replay(interaction: discord.Interaction) -> bool:
-        return interaction.data.get('custom_id') == "replay_fish" and interaction.user == ctx.author
-
-    try:
-        interaction = await self.bot.wait_for("interaction", timeout=60.0, check=button_check_replay)
-        if interaction.data.get('custom_id') == "replay_fish":
-            await replay_message.delete()
-            await fish(self, ctx, user_luck)
-    except asyncio.TimeoutError:
-        await replay_message.edit(content="Replay timed out.", view=None)
-    except Exception as e:
-        logging.error(f"Error handling replay interaction: {e}")
-        await ctx.send("An unknown error occurred during the replay interaction.")
 
 class TriviaButton(Button):
     def __init__(self, label, trivia_view, *args, **kwargs):
