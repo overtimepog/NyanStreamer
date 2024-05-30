@@ -183,6 +183,50 @@ class PetSelectView(discord.ui.View):
         async def interaction_check(self, interaction: discord.Interaction) -> bool:
             return self.user.id == interaction.user.id
 
+class Paginator(View):
+    def __init__(self, pages, per_page):
+        super().__init__(timeout=180)
+        self.pages = pages
+        self.per_page = per_page
+        self.current_page = 0
+
+    def create_embed(self, entries, category, next_reset_unix):
+        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{next_reset_unix}:R>")
+        medals = ["🏆", "🥈", "🥉"]
+        for entry in entries:
+            rank = entry['rank']
+            username = entry['username']
+            value = entry['value']
+            name = f"{medals[rank-1]} Rank {rank}: {username}" if rank <= 3 else f"Rank {rank}: {username}"
+            embed.add_field(
+                name=name,
+                value=f"Value: {value} \n",
+                inline=False
+            )
+        embed.set_footer(text=f"Page {self.current_page + 1} of {len(self.pages)}")
+        return embed
+
+    @discord.ui.button(label="≪", style=discord.ButtonStyle.primary)
+    async def previous(self, button: Button, interaction: discord.Interaction):
+        if self.current_page > 0:
+            self.current_page -= 1
+            embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
+            await interaction.response.edit_message(embed=embed, view=self)
+#give me some cool next symbols
+# https://emojicombos.com/ in the search bar type "next" and you will get a bunch of cool next symbols
+    @discord.ui.button(label="≫", style=discord.ButtonStyle.primary)
+    async def next(self, button: Button, interaction: discord.Interaction):
+        if self.current_page < len(self.pages) - 1:
+            self.current_page += 1
+            embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
+            await interaction.response.edit_message(embed=embed, view=self)
+
+    async def start(self, interaction: discord.Interaction, category, next_reset_unix):
+        self.category = category
+        self.next_reset_unix = next_reset_unix
+        embed = self.create_embed(self.pages[self.current_page], self.category, self.next_reset_unix)
+        await interaction.response.send_message(embed=embed, view=self)
+
 class LeaderboardDropdown(Select):
     def __init__(self):
         options = [
@@ -193,7 +237,7 @@ class LeaderboardDropdown(Select):
 
     async def callback(self, interaction: discord.Interaction):
         category = self.values[0]
-        leaderboard = await db_manager.get_leaderboard(interaction.client, category)
+        leaderboard = await db_manager.get_leaderboard(interaction.client, category, limit=50)  # Adjust the limit as needed
 
         if not leaderboard:
             await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
@@ -205,21 +249,11 @@ class LeaderboardDropdown(Select):
         next_reset = next_friday.replace(hour=17, minute=0, second=0, microsecond=0)
         next_reset_unix = int(time.mktime(next_reset.timetuple()))
 
-        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{next_reset_unix}:R>")
-        medals = ["🏆", "🥈", "🥉"]
-        for entry in leaderboard:
-            rank = entry['rank']
-            username = entry['username']
-            value = entry['value']
-            name = f"{medals[rank-1]} Rank {rank}: {username}" if rank <= 3 else f"Rank {rank}: {username}"
-            embed.add_field(
-                name=name,
-                value=f"Value: {value} \n",
-                inline=False
-            )
+        per_page = 10  # Number of entries per page
+        pages = [leaderboard[i:i + per_page] for i in range(0, len(leaderboard), per_page)]
 
-        embed.set_footer(text=f"")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        paginator = Paginator(pages, per_page)
+        await paginator.start(interaction, category, next_reset_unix)
 
 class LeaderboardView(View):
     def __init__(self):
@@ -448,27 +482,27 @@ class Basic(commands.Cog, name="basic"):
                 self.embeds = embeds
                 self.add_item(Select())
 
-            @discord.ui.button(label="<<", style=discord.ButtonStyle.green, row=1)
+            @discord.ui.button(label="⋘", style=discord.ButtonStyle.green, row=1)
             async def on_first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 self.current_page = 0
                 await interaction.response.defer()
                 await interaction.message.edit(embed=self.embeds[self.current_page])
 
-            @discord.ui.button(label="<", style=discord.ButtonStyle.green, row=1)
+            @discord.ui.button(label="≪", style=discord.ButtonStyle.green, row=1)
             async def on_previous_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 if self.current_page > 0:
                     self.current_page -= 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
 
-            @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
+            @discord.ui.button(label="≫", style=discord.ButtonStyle.green, row=1)
             async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 if self.current_page < len(self.embeds) - 1:
                     self.current_page += 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
 
-            @discord.ui.button(label=">>", style=discord.ButtonStyle.green, row=1)
+            @discord.ui.button(label="⋙", style=discord.ButtonStyle.green, row=1)
             async def on_last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 self.current_page = len(self.embeds) - 1
                 await interaction.response.defer()

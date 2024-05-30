@@ -6167,7 +6167,7 @@ async def update_leaderboard():
             SELECT user_id, username, player_level
             FROM users
             ORDER BY player_level DESC
-            LIMIT 10
+            LIMIT 20
         """) as cursor:
             top_levels = await cursor.fetchall()
 
@@ -6176,25 +6176,37 @@ async def update_leaderboard():
             SELECT user_id, username, money
             FROM users
             ORDER BY money DESC
-            LIMIT 10
+            LIMIT 20
         """) as cursor:
             top_money = await cursor.fetchall()
 
+        unique_users = set()
+        
         # Update leaderboard for highest level
-        for rank, (user_id, username, player_level) in enumerate(top_levels, start=1):
-            await db.execute("""
-                INSERT INTO leaderboard (category, user_id, username, value, rank)
-                VALUES ('highest_level', ?, ?, ?, ?)
-                ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value, username = excluded.username
-            """, (user_id, username, player_level, rank))
+        rank = 1
+        for user_id, username, player_level in top_levels:
+            if user_id not in unique_users and rank <= 10:
+                await db.execute("""
+                    INSERT INTO leaderboard (category, user_id, username, value, rank)
+                    VALUES ('highest_level', ?, ?, ?, ?)
+                    ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value, username = excluded.username
+                """, (user_id, username, player_level, rank))
+                unique_users.add(user_id)
+                rank += 1
+
+        unique_users.clear()
 
         # Update leaderboard for most money
-        for rank, (user_id, username, money) in enumerate(top_money, start=1):
-            await db.execute("""
-                INSERT INTO leaderboard (category, user_id, username, value, rank)
-                VALUES ('most_money', ?, ?, ?, ?)
-                ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value, username = excluded.username
-            """, (user_id, username, money, rank))
+        rank = 1
+        for user_id, username, money in top_money:
+            if user_id not in unique_users and rank <= 10:
+                await db.execute("""
+                    INSERT INTO leaderboard (category, user_id, username, value, rank)
+                    VALUES ('most_money', ?, ?, ?, ?)
+                    ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value, username = excluded.username
+                """, (user_id, username, money, rank))
+                unique_users.add(user_id)
+                rank += 1
 
         # Commit the transaction
         await db.commit()
