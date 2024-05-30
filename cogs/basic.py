@@ -21,6 +21,7 @@ from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 import time
+from discord.ui import Select, View
 
 from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
 from typing import List, Tuple
@@ -2891,15 +2892,15 @@ class Basic(commands.Cog, name="basic"):
                 discord.SelectOption(label="Most Money", value="most_money")
             ]
             super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
-    
+
         async def callback(self, interaction: discord.Interaction):
             category = self.values[0]
             leaderboard = await get_leaderboard(category)
-    
+
             if not leaderboard:
                 await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
                 return
-    
+
             embed = discord.Embed(title=f"Leaderboard for {category.replace('_', ' ').title()}", color=discord.Color.blue())
             for entry in leaderboard:
                 embed.add_field(
@@ -2907,14 +2908,14 @@ class Basic(commands.Cog, name="basic"):
                     value=f"Value: {entry['value']}",
                     inline=False
                 )
-    
+
             await interaction.response.send_message(embed=embed, ephemeral=True)
-    
+
     class LeaderboardView(View):
         def __init__(self):
             super().__init__()
             self.add_item(LeaderboardDropdown())
-    
+
     @bot.hybrid_command(
         name="leaderboard",
         description="This command will show the leaderboard.",
@@ -2922,7 +2923,7 @@ class Basic(commands.Cog, name="basic"):
     async def leaderboard(ctx: commands.Context):
         """
         Show the leaderboard for a specified category.
-    
+
         :param ctx: The context of the command.
         """
         await ctx.send("Please select a leaderboard category:", view=LeaderboardView())
