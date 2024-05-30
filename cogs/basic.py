@@ -378,7 +378,7 @@ class Basic(commands.Cog, name="basic"):
         name="rank",
         description="This command will show your rank.",
     )
-    async def rank(ctx: Context, user: discord.User = None):
+    async def rank(self, ctx: Context, user: discord.User = None):
         if user is None:
             user = ctx.author
             user_id = ctx.author.id
