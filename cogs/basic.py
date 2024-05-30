@@ -2868,15 +2868,6 @@ class Basic(commands.Cog, name="basic"):
         embed.set_footer(text=f"Current streak: {streak} days")
         await ctx.send(embed=embed)
 
-    #hunt command
-    @commands.hybrid_command(
-        name="hunt",
-        description="Hunt for animals.",
-        usage="hunt",
-    )
-    async def hunt(self, ctx: Context):
-        
-
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
     await bot.add_cog(Basic(bot))
