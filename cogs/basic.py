@@ -1056,7 +1056,7 @@ class Basic(commands.Cog, name="basic"):
         # Step 3: Calculate the total price for all sellable items
         total_price = 0
         for item in sellable_items:
-            total_price += item[6] * item[3]  # item_amount is at index 6 and item_sell_price is at index 3
+            total_price += item[6] * int(item[3])  # item_amount is at index 6 and item_sell_price is at index 3
 
         # Step 4: Remove the sold items from the user's inventory
         for item in sellable_items:
