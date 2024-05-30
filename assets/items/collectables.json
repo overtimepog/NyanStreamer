@@ -53,7 +53,7 @@
             "item_type": "Collectable",
             "item_damage": 0,
             "isUsable": false,
-            "inShop": true,
+            "inShop": false,
             "isEquippable": false,
             "item_description": "a duck with tentacles, best used in the bath, wink wink",
             "item_element": "None",

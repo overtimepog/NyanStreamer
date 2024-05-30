@@ -8,7 +8,7 @@
         "item_type": "Pet",
         "item_damage": 0,
         "isUsable": false,
-        "inShop": true,
+        "inShop": false,
         "isEquippable": false,
         "item_description": "very cute black cat, owned by a furry, very epic :)",
         "item_element": "None",

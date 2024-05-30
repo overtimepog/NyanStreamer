@@ -8,7 +8,7 @@
         "item_type": "Weapon",
         "item_damage": "5-8",
         "isUsable": false,
-        "inShop": true,
+        "inShop": false,
         "isEquippable": true,
         "item_description": "it's a gun, what else do you want? found from a few jobs",
         "item_element": "None",
