@@ -1025,25 +1025,34 @@ class Basic(commands.Cog, name="basic"):
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
-    #sell all
+    
+    logging.basicConfig(level=logging.DEBUG)
+    logger = logging.getLogger(__name__)#sell all
     @commands.hybrid_command(
         name="sellall",
         description="This command will sell all items from your inventory.",
     )
     async def sellall(self, ctx: Context):
+        logger.debug("sellall command invoked by user: %s", ctx.author.id)
+        
         checkUser = await db_manager.check_user(ctx.author.id)
+        logger.debug("Check user result: %s", checkUser)
+        
         if checkUser in [None, False, [], "None", 0]:
             await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
 
         # Step 1: Retrieve the user's inventory
         user_id = ctx.author.id
+        logger.debug("Retrieving inventory for user: %s", user_id)
         user_inventory = await db_manager.view_inventory(user_id)
+        logger.debug("User inventory: %s", user_inventory)
 
         # Step 2: Filter out sellable items
         sellable_items = [
             item for item in user_inventory if item[7] == 'Sellable'  # item_type is at index 7
         ]
+        logger.debug("Sellable items: %s", sellable_items)
 
         if not sellable_items:
             embed = discord.Embed(
@@ -1057,13 +1066,16 @@ class Basic(commands.Cog, name="basic"):
         total_price = 0
         for item in sellable_items:
             total_price += item[6] * int(item[3])  # item_amount is at index 6 and item_sell_price is at index 3
+        logger.debug("Total price calculated: %s", total_price)
 
         # Step 4: Remove the sold items from the user's inventory
         for item in sellable_items:
             await db_manager.remove_item_from_inventory(user_id, item[0], item[6])  # item_id is at index 0 and item_amount is at index 6
+            logger.debug("Removed item from inventory: %s", item)
 
         # Step 5: Add the calculated amount to the user's balance
         await db_manager.add_money(user_id, total_price)
+        logger.debug("Added money to user balance: %s", total_price)
 
         # Step 6: Send an embed message with the sale summary
         embed = discord.Embed(
@@ -1076,9 +1088,11 @@ class Basic(commands.Cog, name="basic"):
             item_emoji = item[4]  # item_emoji is at index 4
             item_total_value = item[6] * int(item[3])  # item_amount is at index 6 and item_sell_price is at index 3
             embed.add_field(name=f"x{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}", value=f"", inline=False)
+            logger.debug("Added field to embed for item: %s", item)
 
         embed.add_field(name=f"**{cash}{total_price}**", value=f"", inline=False)
-        ctx.send(embed=embed)
+        await ctx.send(embed=embed)
+        logger.debug("Embed sent with total price: %s", total_price)
 
 
 
