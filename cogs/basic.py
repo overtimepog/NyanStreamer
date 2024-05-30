@@ -2916,7 +2916,7 @@ class Basic(commands.Cog, name="basic"):
             super().__init__()
             self.add_item(LeaderboardDropdown())
 
-    @bot.hybrid_command(
+    @commands.hybrid_command(
         name="leaderboard",
         description="This command will show the leaderboard.",
     )
