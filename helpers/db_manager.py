@@ -373,8 +373,6 @@ async def add_level(user_id: int, amount: int) -> None:
         await db.execute(f"UPDATE `users` SET `player_level` = `player_level` + ? WHERE `user_id` = ?", (amount, user_id))
         #reset the players xp to 0
         await db.execute(f"UPDATE `users` SET `player_xp` = 0 WHERE `user_id` = ?", (user_id,))
-        #give the user a bonus coin
-        await add_item_to_inventory(user_id, "bonus_coin", 1)
     else:
         return None
         

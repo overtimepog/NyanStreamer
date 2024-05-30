@@ -281,6 +281,15 @@ async def fish(self, ctx, user_luck: int):
         return
 
     description += f"\nTotal XP gained: {total_xp}"
+    #level the user up if they have enough xp
+    canLevelUp = await db_manager.can_level_up(ctx.author.id)
+    if canLevelUp:
+        await db_manager.add_level(ctx.author.id, 1)
+        new_level = await db_manager.get_level(ctx.author.id)
+        description += f"\n{ctx.author.mention} has leveled up! They are now level " + str(new_level) + "!"
+
+    #update leaderboard
+    await db_manager.update_leaderboard()
 
     embed = discord.Embed(
         title=f"{ctx.author.name}",
