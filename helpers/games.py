@@ -229,7 +229,7 @@ async def fish(self, ctx, user_luck: int):
     selected_bait = equipped_baits[0]
 
     try:
-        baitAmount = await db_manager.get_item_amount_from_inventory(ctx.author.id, selected_bait['item_id'])
+        baitAmount = await db_manager.get_item_amount_from_inventory(ctx.author.id, selected_bait[1])
     except Exception as e:
         logging.error(f"Error fetching bait amount: {e}\n{traceback.format_exc()}")
         await ctx.send("An error occurred while fetching bait data.")
@@ -257,7 +257,7 @@ async def fish(self, ctx, user_luck: int):
 
         if baitAmount > 0:
             try:
-                await db_manager.remove_item_from_inventory(ctx.author.id, selected_bait['item_id'], 1)
+                await db_manager.remove_item_from_inventory(ctx.author.id, selected_bait[1], 1)
                 baitAmount -= 1
             except Exception as e:
                 logging.error(f"Error removing bait from inventory: {e}\n{traceback.format_exc()}")
