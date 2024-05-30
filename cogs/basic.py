@@ -192,6 +192,7 @@ class Paginator(View):
         self.current_page = 0
         self.category = category
         self.next_reset_unix = next_reset_unix
+        self.add_item(LeaderboardDropdown(self))
 
     def create_embed(self, entries):
         embed = discord.Embed(title=f"{self.category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{self.next_reset_unix}:R>")
@@ -236,7 +237,8 @@ class Paginator(View):
         await interaction.response.send_message(embed=embed, view=self)
 
 class LeaderboardDropdown(Select):
-    def __init__(self):
+    def __init__(self, paginator):
+        self.paginator = paginator
         options = [
             discord.SelectOption(label="Highest Level", value="highest_level"),
             discord.SelectOption(label="Most Money", value="most_money"),
@@ -260,8 +262,14 @@ class LeaderboardDropdown(Select):
         per_page = 10  # Number of entries per page
         pages = [leaderboard[i:i + per_page] for i in range(0, len(leaderboard), per_page)]
 
-        paginator = Paginator(pages, per_page, category, next_reset_unix)
-        await paginator.start(interaction)
+        self.paginator.pages = pages
+        self.paginator.per_page = per_page
+        self.paginator.category = category
+        self.paginator.next_reset_unix = next_reset_unix
+        self.paginator.current_page = 0
+
+        embed = self.paginator.create_embed(pages[0])
+        await interaction.response.edit_message(embed=embed, view=self.paginator)
 
 
 class LeaderboardView(View):
