@@ -4258,7 +4258,7 @@ async def remove_item_from_inventory(user_id: int, item_id: str, amount: int) ->
         async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
             result = await cursor.fetchone()
             if result is not None:
-                item_type = result[5]  # index 7 corresponds to item_type in the schema
+                item_type = result[7]  # index 7 corresponds to item_type in the schema
                 item_effect = await get_basic_item_effect(item_id)
                 # if the item already exists in the inventory table, remove the specified amount from the item_amount
                 await db.execute("UPDATE inventory SET item_amount = item_amount - ? WHERE user_id=? AND item_id=?", (amount, user_id, item_id))
