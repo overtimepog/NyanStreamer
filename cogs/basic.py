@@ -1034,6 +1034,7 @@ class Basic(commands.Cog, name="basic"):
         description="This command will sell all items from your inventory.",
     )
     async def sellall(self, ctx: Context):
+        logger = logging.getLogger(__name__)#sell all
         logger.debug("sellall command invoked by user: %s", ctx.author.id)
         
         checkUser = await db_manager.check_user(ctx.author.id)
@@ -2895,11 +2896,11 @@ class Basic(commands.Cog, name="basic"):
         async def callback(self, interaction: discord.Interaction):
             category = self.values[0]
             leaderboard = await get_leaderboard(category)
-    
+
             if not leaderboard:
                 await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
                 return
-    
+
             embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard", color=discord.Color.blue())
             for entry in leaderboard:
                 embed.add_field(
@@ -2907,7 +2908,7 @@ class Basic(commands.Cog, name="basic"):
                     value=f"Value: {entry['value']}",
                     inline=False
                 )
-    
+
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     class LeaderboardView(View):
