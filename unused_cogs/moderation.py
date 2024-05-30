@@ -337,7 +337,7 @@ class Moderation(commands.Cog, name="moderation"):
         for member in context.guild.members:
             if member.bot:
                 continue
-            await db_manager.get_user(member.id)
+            await db_manager.get_user(member.id, member.name)
         await context.send("Done!")
 
 

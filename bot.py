@@ -434,7 +434,7 @@ async def setup() -> None:
             member_counter += 1
             checkUser = await db_manager.check_user(member.id)
             if checkUser is None:
-                await db_manager.get_user(member.id)
+                await db_manager.get_user(member.id, member.name)
 
         end_time = time.time()
         duration = end_time - start_time
@@ -483,7 +483,7 @@ async def on_guild_join(guild: discord.Guild) -> None:
     for member in guild.members:
         if member.bot:
             continue
-        await db_manager.get_user(member.id)
+        await db_manager.get_user(member.id, member.name)
 
 #when a user joins a server, add them to the database
 @bot.event
@@ -493,6 +493,6 @@ async def on_member_join(member: discord.Member) -> None:
     #if the user is not in the database, add them
     checkUser = await db_manager.check_user(member.id)
     if checkUser == None:
-        await db_manager.get_user(member.id)
+        await db_manager.get_user(member.id, member.name)
 
 bot.run(config["token"])
