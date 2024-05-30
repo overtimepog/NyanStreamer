@@ -304,7 +304,6 @@ async def fish(self, ctx, user_luck: int):
 
         fish_emoji = fish_data['item_emoji']
         fish_name = fish_data['item_name']
-        fish_price = fish_data['item_price']
         fish_rarity = fish_data['item_rarity']
         xp_gained = rarity_xp.get(fish_rarity, 0) * count
         total_xp += xp_gained
@@ -340,12 +339,18 @@ async def fish(self, ctx, user_luck: int):
 
     async def sell_fish(interaction: discord.Interaction):
         total_earned = 0
+        sell_description = "You sold:\n"
         for fish_id, count in catches.items():
             try:
                 fish_data = await db_manager.get_basic_item_data(fish_id)
                 fish_price = fish_data['item_price']
-                total_earned += int(fish_price) * count
+                earned = int(fish_price) * count
+                total_earned += earned
                 await db_manager.remove_item_from_inventory(ctx.author.id, fish_id, count)
+
+                fish_emoji = fish_data['item_emoji']
+                fish_name = fish_data['item_name']
+                sell_description += f"{count} {fish_emoji} {fish_name} - ⌬{earned}\n"
             except Exception as e:
                 logging.error(f"Error processing sell fish: {e}\n{traceback.format_exc()}")
                 await interaction.response.send_message("An error occurred while selling fish.")
@@ -358,13 +363,17 @@ async def fish(self, ctx, user_luck: int):
             await interaction.response.send_message("An error occurred while adding money.")
             return
 
-        sell_description = description + f"\nTotal money earned from selling: ⌬{total_earned}"
+        sell_description += f"\nTotal money earned from selling: ⌬{total_earned}"
         sell_embed = discord.Embed(
             title=f"{ctx.author.name}",
             description=sell_description,
             color=0x00BFFF
         )
-        await interaction.response.edit_message(embed=sell_embed, view=None)
+
+        sell_view = discord.ui.View()
+        sell_view.add_item(discord.ui.Button(label="Replay", style=discord.ButtonStyle.primary, custom_id="replay_fish"))
+
+        await interaction.response.edit_message(embed=sell_embed, view=sell_view)
 
     def button_check(interaction: discord.Interaction) -> bool:
         return interaction.data.get('custom_id') in ["sell_fish", "replay_fish"] and interaction.user == ctx.author
