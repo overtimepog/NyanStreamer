@@ -76,7 +76,7 @@ class LeaderboardDropdown(Select):
     def __init__(self):
         options = [
             discord.SelectOption(label="Highest Level", value="highest_level"),
-            discord.SelectOption(label="Most Money"),
+            discord.SelectOption(label="Most Money", value="most_money"),
         ]
         super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
 
