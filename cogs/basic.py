@@ -234,7 +234,7 @@ class Basic(commands.Cog, name="basic"):
         self.bot = bot
         self.shop_reset.start()
         self.revive_users.start()
-        self.weekly_leaderboard_reset.start()
+        self.bot.loop.create_task(self.start_weekly_leaderboard_reset())
 
     @tasks.loop(hours=8)
     async def shop_reset(self):
@@ -272,7 +272,8 @@ class Basic(commands.Cog, name="basic"):
                     user = await self.bot.fetch_user(user_id)
                     await user.send(f"Congratulations! You placed {rank} in the {category.replace('_', ' ')} leaderboard and received a {prize}!")
 
-        await db_manager.reset_leaderboard()
+        await db_manager.delete_leaderboard()
+        await db_manager.update_leaderboard()
         print("Done Resetting Leaderboard and Distributing Prizes...")
         print("-----------------------------")
 
@@ -280,7 +281,8 @@ class Basic(commands.Cog, name="basic"):
     async def before_weekly_leaderboard_reset(self):
         await self.bot.wait_until_ready()
 
-        # Calculate the initial delay until the next Friday at 5 PM EST
+    async def start_weekly_leaderboard_reset(self):
+        await self.bot.wait_until_ready()
         now = datetime.datetime.now(pytz.timezone('US/Eastern'))
         next_friday = now + datetime.timedelta((4 - now.weekday()) % 7)
         next_reset = next_friday.replace(hour=17, minute=0, second=0, microsecond=0)
@@ -288,7 +290,7 @@ class Basic(commands.Cog, name="basic"):
             next_reset += datetime.timedelta(weeks=1)
         delay = (next_reset - now).total_seconds()
 
-        await discord.utils.sleep_until(next_reset)
+        await asyncio.sleep(delay)
         self.weekly_leaderboard_reset.start()
 
     @shop_reset.before_loop

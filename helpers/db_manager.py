@@ -6150,6 +6150,12 @@ async def api_key_value_exists(api_key: str) -> bool:
 
 
 #leaderboard stuff
+#delete leaderboard
+async def delete_leaderboard() -> None:
+    async with aiosqlite.connect("database/database.db") as db:
+        await db.execute("DELETE FROM leaderboard")
+        await db.commit()
+
 async def update_leaderboard():
     """
     Update the leaderboard based on the latest data from the users table.
