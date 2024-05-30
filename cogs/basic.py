@@ -2050,6 +2050,22 @@ class Basic(commands.Cog, name="basic"):
             await self.beg.reset_cooldown(ctx)
             return
         await beg.beg(ctx)
+
+    #hunt command
+    #command cooldown of 20 seconds
+    @commands.cooldown(1, 20, commands.BucketType.user)
+    @commands.hybrid_command(
+        name="hunt",
+        description="Hunt for animals",
+    )
+    async def hunt(self, ctx: Context):
+        userExist = await db_manager.check_user(ctx.author.id)
+        if userExist == None or userExist == []:
+            await ctx.send("You don't have an account! Use `/start` to start your adventure!")
+            await self.hunt.reset_cooldown(ctx)
+            return
+        await hunt.hunt(ctx)
+        await ctx.defer()
     
     #ANCHOR use command
     #a cooldown of 2 minutes
@@ -2852,6 +2868,14 @@ class Basic(commands.Cog, name="basic"):
         embed.set_footer(text=f"Current streak: {streak} days")
         await ctx.send(embed=embed)
 
+    #hunt command
+    @commands.hybrid_command(
+        name="hunt",
+        description="Hunt for animals.",
+        usage="hunt",
+    )
+    async def hunt(self, ctx: Context):
+        
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):

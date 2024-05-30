@@ -49,7 +49,7 @@ async def hunt(ctx: Context):
 
         # Create and send the embed message
         embed = discord.Embed(title="Hunt", description=random.choice(outcomePhrases) + f"{item_emoji} **{item_name}**", color=0x00ff00)
-        embed.add_field(name=f"Quantity", value=f"{amount}", inline=False)
+        embed.add_field(name=f"Quantity", value=f"x{amount}", inline=False)
         await ctx.send(embed=embed)
 
         # Quest handling logic
