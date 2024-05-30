@@ -30,7 +30,7 @@ from assets import endpoints
 
 import exceptions
 from helpers import db_manager
-import twitch
+#import twitch
 #from twitchAPI.twitch import Twitch
 #from twitchAPI.types import AuthScope
 import lavalink
@@ -43,10 +43,10 @@ else:
     with open("config.json") as file:
         config = json.load(file)
 
-twitch_client_id = config["CLIENT_ID"]
-twitch_client_secret = config["CLIENT_SECRET"]
-twitch = Twitch(twitch_client_id, twitch_client_secret)
-twitch.authenticate_app([])
+#twitch_client_id = config["CLIENT_ID"]
+#twitch_client_secret = config["CLIENT_SECRET"]
+#twitch = Twitch(twitch_client_id, twitch_client_secret)
+#twitch.authenticate_app([])
 
 """	
 Setup bot intents (events restrictions)
