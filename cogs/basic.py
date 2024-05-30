@@ -26,6 +26,7 @@ from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
 from typing import List, Tuple
 from discord.ext.commands.errors import CommandInvokeError
 from num2words import num2words
+import logging
 
 global i
 i = 0
