@@ -370,8 +370,8 @@ async def add_level(user_id: int, amount: int) -> None:
     db = DB()
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
-        current_xp = data['player_xp']
-        current_level = data['player_level']
+        current_xp = data[12]
+        current_level = data[13]
         target_level = current_level + amount
         total_xp_needed = 0
         
@@ -385,6 +385,7 @@ async def add_level(user_id: int, amount: int) -> None:
         await db.execute(f"UPDATE `users` SET `player_level` = ?, `player_xp` = ? WHERE `user_id` = ?", (target_level, new_xp, user_id))
     else:
         return None
+
         
 #remove level from a user
 async def remove_level(user_id: int, amount: int) -> None:
