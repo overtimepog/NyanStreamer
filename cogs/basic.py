@@ -1031,13 +1031,18 @@ class Basic(commands.Cog, name="basic"):
         description="This command will sell all items from your inventory.",
     )
     async def sellall(self, ctx: Context):
+        checkUser = await db_manager.check_user(ctx.author.id)
+        if checkUser in [None, False, [], "None", 0]:
+            await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
+            return
+
         # Step 1: Retrieve the user's inventory
         user_id = ctx.author.id
         user_inventory = await db_manager.view_inventory(user_id)
 
         # Step 2: Filter out sellable items
         sellable_items = [
-            item for item in user_inventory if item['item_type'] == 'Sellable'
+            item for item in user_inventory if item[7] == 'Sellable'  # item_type is at index 7
         ]
 
         if not sellable_items:
@@ -1051,11 +1056,11 @@ class Basic(commands.Cog, name="basic"):
         # Step 3: Calculate the total price for all sellable items
         total_price = 0
         for item in sellable_items:
-            total_price += item['item_amount'] * item['item_sell_price']
+            total_price += item[6] * item[3]  # item_amount is at index 6 and item_sell_price is at index 3
 
         # Step 4: Remove the sold items from the user's inventory
         for item in sellable_items:
-            await db_manager.remove_item_from_inventory(user_id, item['item_id'], item['item_amount'])
+            await db_manager.remove_item_from_inventory(user_id, item[0], item[6])  # item_id is at index 0 and item_amount is at index 6
 
         # Step 5: Add the calculated amount to the user's balance
         await db_manager.add_currency_to_user(user_id, total_price)
@@ -1067,10 +1072,10 @@ class Basic(commands.Cog, name="basic"):
         )
 
         for item in sellable_items:
-            item_name = await db_manager.get_basic_item_name(item['item_id'])
-            item_emoji = await db_manager.get_basic_item_emoji(item['item_id'])
-            item_total_value = item['item_amount'] * item['item_sell_price']
-            embed.add_field(name=item_name, value=f"{item_emoji} - {item['item_amount']} for {cash}{item_total_value}", inline=False)
+            item_name = item[1]  # item_name is at index 1
+            item_emoji = item[4]  # item_emoji is at index 4
+            item_total_value = item[6] * item[3]  # item_amount is at index 6 and item_sell_price is at index 3
+            embed.add_field(name=item_name, value=f"{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}", inline=False)
 
         await ctx.send(embed=embed)
 
