@@ -423,17 +423,24 @@ async def setup() -> None:
         if total_members > 10000:
             print(f"\nSkipping Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {total_members} (more than 10,000 members)")
             return
+    
+        print(f"\nStarting check for Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | Total Users: {total_members}")
+        
+        start_time = time.time()
         
         member_counter = 0
         for member in bot_guild.members:
             if member.bot:
                 continue
             member_counter += 1
-            print(f"\rChecking Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | USERS: {member_counter}/{total_members}", end='')
             checkUser = await db_manager.check_user(member.id)
             if checkUser is None:
                 await db_manager.get_user(member.id)
-            print(f"\nProcessed member {member.name} (ID: {member.id}) in server {bot_guild.name}")
+    
+        end_time = time.time()
+        duration = end_time - start_time
+    
+        print(f"\nFinished check for Server {i}/{total_guilds}: {bot_guild.name} ID: {bot_guild.id} | Total Users: {total_members} | Time taken: {duration:.2f} seconds")
 
     tasks = [check_server(i, bot_guild, total_guilds) for i, bot_guild in enumerate(bot.guilds, start=1)]
     await asyncio.gather(*tasks)
