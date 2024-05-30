@@ -6236,7 +6236,7 @@ async def create_leaderboard_categories():
             for rank in range(1, 11):  # Initializing top 10 ranks for each category
                 await db.execute("""
                     INSERT OR IGNORE INTO leaderboard (category, user_id, username, value, rank)
-                    VALUES (?, 0, "placeholder :)", 0, ?)
+                    VALUES (?, 0, "sub to overtimepog", 0, ?)
                 """, (category, rank))
         
         # Commit the transaction

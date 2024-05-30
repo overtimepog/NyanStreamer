@@ -257,6 +257,10 @@ class Basic(commands.Cog, name="basic"):
                     user_id = entry['user_id']
                     rank = entry['rank']
 
+                    #stop if the user_id is 0
+                    if user_id = 0:
+                        continue
+
                     if rank == 1:
                         prize = "gold_trophy"
                     elif rank == 2:
