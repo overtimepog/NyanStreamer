@@ -185,8 +185,7 @@ class PetSelectView(discord.ui.View):
 
 
 class LeaderboardDropdown(Select):
-    def __init__(self, view):
-        self.view = view
+    def __init__(self):
         options = [
             discord.SelectOption(label="Highest Level", value="highest_level"),
             discord.SelectOption(label="Most Money", value="most_money"),
@@ -211,7 +210,8 @@ class LeaderboardDropdown(Select):
         pages = [leaderboard[i:i + per_page] for i in range(0, len(leaderboard), per_page)]
 
         paginator = Paginator(pages, per_page, category, next_reset_unix)
-        self.view.paginator = paginator
+        self.view.clear_items()
+        self.view.add_item(paginator)
         embed = paginator.create_embed(pages[0])
         await interaction.response.edit_message(content=None, embed=embed, view=paginator)
 
@@ -269,8 +269,7 @@ class Paginator(View):
 class LeaderboardView(View):
     def __init__(self):
         super().__init__(timeout=180)
-        self.paginator = None
-        self.add_item(LeaderboardDropdown(self))
+        self.add_item(LeaderboardDropdown())
 
     async def start(self, interaction: discord.Interaction):
         await interaction.response.send_message("Select a leaderboard category:", view=self)
