@@ -227,7 +227,7 @@ class Paginator(View):
     #delete button
     @discord.ui.button(label="Close", style=discord.ButtonStyle.danger)
     async def close(self, button: Button, interaction: discord.Interaction):
-        await interaction.response.delete_message()
+        await interaction.message.delete()
 
     async def start(self, interaction: discord.Interaction, category, next_reset_unix):
         self.category = category
