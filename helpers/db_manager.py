@@ -3981,24 +3981,27 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
     :param item_id: The ID of the item that should be added.
     :param item_amount: The amount of the item that should be added.
     """
+    print(f"Connecting to the database to add item {item_id} for user {user_id}...")
     async with aiosqlite.connect("database/database.db") as db:
-        #check if the item already exists in the inventory table
+        # Check if the item already exists in the inventory table
         async with db.execute("SELECT * FROM inventory WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
             result = await cursor.fetchone()
             if result is not None:
-                #if the item already exists in the inventory table, add 1 to the item_amount
+                # If the item already exists in the inventory table, update the item_amount
+                print(f"Item {item_id} exists in inventory. Updating amount by {item_amount}.")
                 await db.execute("UPDATE inventory SET item_amount = item_amount + ? WHERE user_id = ? AND item_id = ?", (item_amount, user_id, item_id))
                 await db.commit()
                 return 1
             else:
-                #check if the item is a streamer item
+                # Check if the item is a streamer item
                 isStreamerItem = await check_streamer_item(item_id)
-                #print(isStreamerItem)
+                print(f"Is streamer item: {isStreamerItem}")
                 isBasicItem = await check_basic_item(item_id)
-                #print(isBasicItem)
+                print(f"Is basic item: {isBasicItem}")
                 isChest = await check_chest(item_id)
-                #print(isChest)
-                #add the item to the inventory table
+                print(f"Is chest: {isChest}")
+                
+                # Add the item to the inventory table
                 if isBasicItem == 1:
                     async with db.execute("SELECT * FROM basic_items WHERE item_id=?", (item_id,)) as cursor:
                         result = await cursor.fetchone()
@@ -4019,15 +4022,20 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             item_projectile = result[13]
                             item_sub_type = result[21]
                             isEquipped = 0
-                            #add the item to the inventory table
-                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type))
+                            
+                            print(f"Adding basic item {item_id} to inventory.")
+                            await db.execute("""
+                                INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            """, (user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type))
                             await db.commit()
-                            # If the item is a pet, add an entry to the pet_attributes table.
+
                             if item_type == 'Pet':
-                                # Check if user already owns a pet of this type.
+                                print(f"Adding pet attributes for item {item_id}.")
                                 async with db.execute("SELECT * FROM pet_attributes WHERE user_id=? AND item_id=?", (user_id, item_id)) as cursor:
                                     pet_exists = await cursor.fetchone()
                                     if pet_exists is not None:
+                                        print(f"User already owns pet {item_id}.")
                                         return 0  # User already owns a pet of this type.
                                     
                                 pet_name = item_name
@@ -4040,11 +4048,9 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                                 default_revival_time = None
                                 
                                 await db.execute("""
-                                    INSERT INTO `pet_attributes` 
-                                    (`item_id`, `user_id`, `pet_name`, `level`, `xp`, `hunger_percent`, `cleanliness_percent`, `happiness_percent`, `death_time`, `revival_time`) 
+                                    INSERT INTO pet_attributes (item_id, user_id, pet_name, level, xp, hunger_percent, cleanliness_percent, happiness_percent, death_time, revival_time) 
                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                                """,
-                                (item_id, user_id, pet_name, default_level, default_xp, default_hunger_percent, default_cleanliness_percent, default_happiness_percent, default_death_time, default_revival_time))
+                                """, (item_id, user_id, pet_name, default_level, default_xp, default_hunger_percent, default_cleanliness_percent, default_happiness_percent, default_death_time, default_revival_time))
                                 await db.commit()
                                 
                                 item_effect = await get_basic_item_effect(item_id)
@@ -4055,6 +4061,7 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                                     effect_add_or_minus = item_effect[1]
                                     effect_amount = int(item_effect[2])  # Assuming effect_amount is integer
 
+                                    print(f"Applying effect {effect} {effect_add_or_minus} {effect_amount} for pet item {item_id}.")
                                     if effect == "health":
                                         if effect_add_or_minus == "+":
                                             await add_health_boost(user_id, effect_amount)
@@ -4110,12 +4117,13 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                                             await add_frost_resistance(user_id, effect_amount)
                                         elif effect_add_or_minus == "-":
                                             await remove_frost_resistance(user_id, effect_amount)
+                                
                                 await db.commit()
                                 return 1
                         else:
+                            print(f"Basic item {item_id} not found in basic_items table.")
                             return 0
-                #get all the data above from the basic items table by the items ID
-                #get data from the chest table by the chest id
+                
                 if isChest == 1:
                     async with db.execute("SELECT * FROM chests WHERE chest_id=?", (item_id,)) as cursor:
                         result = await cursor.fetchone()
@@ -4129,12 +4137,19 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             chest_description = result[6]
                             key_id = result[7]
                             chest_contentsID = result[8]
-                            #add the chest to the inventory table, setting the values that are not in the chest table to 0
-                            await db.execute("INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (user_id, chest_id, chest_name, chest_price, chest_emoji, chest_rarity, item_amount, chest_type, 0, 0, "None", 0, "None", "None"))
+                            
+                            print(f"Adding chest {chest_id} to inventory.")
+                            await db.execute("""
+                                INSERT INTO inventory(user_id, item_id, item_name, item_price, item_emoji, item_rarity, item_amount, item_type, item_damage, isEquipped, item_element, item_crit_chance, item_projectile, item_sub_type) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            """, (user_id, chest_id, chest_name, chest_price, chest_emoji, chest_rarity, item_amount, chest_type, 0, 0, "None", 0, "None", "None"))
                             await db.commit()
                             return 1
                         else:
+                            print(f"Chest {item_id} not found in chests table.")
                             return 0
+                
+                print(f"Item {item_id} is neither a basic item nor a chest.")
                 await db.commit()
                 rows = await db.execute("SELECT COUNT(*) FROM inventory")
                 async with rows as cursor:
