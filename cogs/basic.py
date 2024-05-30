@@ -21,7 +21,7 @@ from discord import Embed, app_commands
 from discord.ext import commands, tasks
 from discord.ext.commands import Context, has_permissions
 import time
-from discord.ui import Select, View
+from discord.ui import Select, View, Button
 
 from helpers import battle, checks, db_manager, hunt, mine, search, bank, beg
 from typing import List, Tuple
