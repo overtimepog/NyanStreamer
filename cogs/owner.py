@@ -10,6 +10,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
+import os
 
 from helpers import checks, db_manager
 
@@ -416,7 +417,6 @@ class Owner(commands.Cog, name="owner"):
         await db_manager.remove_money(user.id, amount)
         await ctx.send(f"You removed `{amount}` bucks from {user.mention}.", ephemeral=True)
 
-    import os
     @commands.hybrid_command(
         name="listemojis",
         description="List all emojis in the server.",
