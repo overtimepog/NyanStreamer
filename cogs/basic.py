@@ -377,15 +377,22 @@ class Basic(commands.Cog, name="basic"):
         name="rank",
         description="This command will show your rank.",
     )
-    async def rank(self, ctx: Context, user: discord.User = None):
-        user_id = user.id if user else ctx.author.id
-        user_stats = await db_manager.get_user_stats(user_id)
-
-        if user_stats:
-            embed = discord.Embed(title=f"Leaderboard Ranks for {user_stats['username']}")
-            embed.add_field(name="Highest Level Rank", value=user_stats["highest_level_rank"], inline=True)
-            embed.add_field(name="Most Money Rank", value=user_stats["most_money_rank"], inline=True)
+    async def rank(ctx, user: discord.User):
+        user_id = user.id
+        print(f"Fetching ranks for user_id: {user_id}")
+        most_money_rank, highest_level_rank = await get_user_ranks(user_id)
+        
+        if most_money_rank is not None or highest_level_rank is not None:
+            embed = discord.Embed(title=f"Ranks for {user.name}", color=discord.Color.blue())
+            embed.add_field(name="Most Money Rank", value=most_money_rank if most_money_rank is not None else "Not ranked", inline=True)
+            embed.add_field(name="Highest Level Rank", value=highest_level_rank if highest_level_rank is not None else "Not ranked", inline=True)
+            
             await ctx.send(embed=embed)
+            print(f"Ranks sent for user_id: {user_id}")
+        else:
+            await ctx.send(f"User with ID {user_id} not found in the leaderboards.")
+            print(f"No ranks found for user_id: {user_id}")
+
 
 
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py

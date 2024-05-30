@@ -6257,66 +6257,41 @@ async def create_leaderboard_categories():
     
     print("~~~~~~~~~~ Leaderboard Setup Completed ~~~~~~~~~~")
 
-async def get_user_stats(user_id):
+async def get_user_ranks(user_id) -> list:
     """
-    Retrieve the stats for a specific user.
-    :param user_id: The ID of the user whose stats are to be retrieved.
-    :return: A dictionary containing the user's ID, username, level, money, and ranks.
+    Retrieve the leaderboard ranks for a specific user.
+    :param user_id: The ID of the user whose ranks are to be retrieved.
+    :return: A list containing the user's rank in the 'most_money' and 'highest_level' leaderboards.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        print(f"Connecting to database to fetch stats for user_id: {user_id}")
-        
-        # Get user stats
-        query = """
-        SELECT user_id, username, player_level, money
-        FROM users
-        WHERE user_id = ?
+        highest_level_rank = None
+        most_money_rank = None
+
+        # Get user rank in highest_level leaderboard
+        query_level_rank = """
+        SELECT rank
+        FROM leaderboard
+        WHERE category = 'highest_level' AND user_id = ?
         """
-        async with db.execute(query, (user_id,)) as cursor:
-            result = await cursor.fetchone()
-            print(f"User stats query result: {result}")
-        
-        if result:
-            user_stats = {
-                "user_id": result[0],
-                "username": result[1],
-                "player_level": result[2],
-                "money": result[3],
-                "highest_level_rank": None,
-                "most_money_rank": None
-            }
-            print(f"Initial user stats: {user_stats}")
-            
-            # Get user rank in highest_level leaderboard
-            query_level_rank = """
-            SELECT rank
-            FROM leaderboard
-            WHERE category = 'highest_level' AND user_id = ?
-            """
-            async with db.execute(query_level_rank, (user_id,)) as level_cursor:
-                level_result = await level_cursor.fetchone()
-                print(f"Level rank query result: {level_result}")
-                if level_result:
-                    user_stats["highest_level_rank"] = level_result[0]
+        async with db.execute(query_level_rank, (user_id,)) as level_cursor:
+            level_result = await level_cursor.fetchone()
+            print(f"Level rank query result: {level_result}")
+            if level_result:
+                highest_level_rank = level_result[0]
 
-            # Get user rank in most_money leaderboard
-            query_money_rank = """
-            SELECT rank
-            FROM leaderboard
-            WHERE category = 'most_money' AND user_id = ?
-            """
-            async with db.execute(query_money_rank, (user_id,)) as money_cursor:
-                money_result = await money_cursor.fetchone()
-                print(f"Money rank query result: {money_result}")
-                if money_result:
-                    user_stats["most_money_rank"] = money_result[0]
-            
-            print(f"Final user stats: {user_stats}")
-        else:
-            user_stats = None
-            print(f"No stats found for user_id: {user_id}")
+        # Get user rank in most_money leaderboard
+        query_money_rank = """
+        SELECT rank
+        FROM leaderboard
+        WHERE category = 'most_money' AND user_id = ?
+        """
+        async with db.execute(query_money_rank, (user_id,)) as money_cursor:
+            money_result = await money_cursor.fetchone()
+            print(f"Money rank query result: {money_result}")
+            if money_result:
+                most_money_rank = money_result[0]
 
-        return user_stats
+        return [most_money_rank, highest_level_rank]
 
 
 # In your db_manager.py or similar module
