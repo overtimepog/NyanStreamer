@@ -184,6 +184,37 @@ class PetSelectView(discord.ui.View):
             return self.user.id == interaction.user.id
 
 
+class LeaderboardDropdown(Select):
+    def __init__(self, view):
+        self.view = view
+        options = [
+            discord.SelectOption(label="Highest Level", value="highest_level"),
+            discord.SelectOption(label="Most Money", value="most_money"),
+        ]
+        super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        category = self.values[0]
+        leaderboard = await db_manager.get_leaderboard(interaction.client, category, limit=50)  # Adjust the limit as needed
+
+        if not leaderboard:
+            await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
+            return
+
+        # Calculate next reset time (Friday at 5 PM EST)
+        now = datetime.datetime.now(pytz.timezone('US/Eastern'))
+        next_friday = now + datetime.timedelta((4 - now.weekday()) % 7)
+        next_reset = next_friday.replace(hour=17, minute=0, second=0, microsecond=0)
+        next_reset_unix = int(time.mktime(next_reset.timetuple()))
+
+        per_page = 10  # Number of entries per page
+        pages = [leaderboard[i:i + per_page] for i in range(0, len(leaderboard), per_page)]
+
+        paginator = Paginator(pages, per_page, category, next_reset_unix)
+        self.view.paginator = paginator
+        embed = paginator.create_embed(pages[0])
+        await interaction.response.edit_message(content=None, embed=embed, view=paginator)
+
 class Paginator(View):
     def __init__(self, pages, per_page, category, next_reset_unix):
         super().__init__(timeout=180)
@@ -192,7 +223,6 @@ class Paginator(View):
         self.current_page = 0
         self.category = category
         self.next_reset_unix = next_reset_unix
-        self.add_item(LeaderboardDropdown(self))
 
     def create_embed(self, entries):
         embed = discord.Embed(title=f"{self.category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{self.next_reset_unix}:R>")
@@ -236,46 +266,14 @@ class Paginator(View):
         embed = self.create_embed(self.pages[self.current_page])
         await interaction.response.send_message(embed=embed, view=self)
 
-class LeaderboardDropdown(Select):
-    def __init__(self, paginator):
-        self.paginator = paginator
-        options = [
-            discord.SelectOption(label="Highest Level", value="highest_level"),
-            discord.SelectOption(label="Most Money", value="most_money"),
-        ]
-        super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
-
-    async def callback(self, interaction: discord.Interaction):
-        category = self.values[0]
-        leaderboard = await db_manager.get_leaderboard(interaction.client, category, limit=50)  # Adjust the limit as needed
-
-        if not leaderboard:
-            await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
-            return
-
-        # Calculate next reset time (Friday at 5 PM EST)
-        now = datetime.datetime.now(pytz.timezone('US/Eastern'))
-        next_friday = now + datetime.timedelta((4 - now.weekday()) % 7)
-        next_reset = next_friday.replace(hour=17, minute=0, second=0, microsecond=0)
-        next_reset_unix = int(time.mktime(next_reset.timetuple()))
-
-        per_page = 10  # Number of entries per page
-        pages = [leaderboard[i:i + per_page] for i in range(0, len(leaderboard), per_page)]
-
-        self.paginator.pages = pages
-        self.paginator.per_page = per_page
-        self.paginator.category = category
-        self.paginator.next_reset_unix = next_reset_unix
-        self.paginator.current_page = 0
-
-        embed = self.paginator.create_embed(pages[0])
-        await interaction.response.edit_message(embed=embed, view=self.paginator)
-
-
 class LeaderboardView(View):
     def __init__(self):
-        super().__init__()
-        self.add_item(LeaderboardDropdown())
+        super().__init__(timeout=180)
+        self.paginator = None
+        self.add_item(LeaderboardDropdown(self))
+
+    async def start(self, interaction: discord.Interaction):
+        await interaction.response.send_message("Select a leaderboard category:", view=self)
 
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
