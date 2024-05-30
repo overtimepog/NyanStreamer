@@ -72,6 +72,40 @@ async def open_chest(self, ctx, chest_id: str, user_luck: int):
         )
         await ctx.send(embed=embed)
 
+class LeaderboardDropdown(Select):
+    def __init__(self):
+        options = [
+            discord.SelectOption(label="Highest Level", value="highest_level"),
+            discord.SelectOption(label="Most Money"),
+        ]
+        super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        category = self.values[0]
+        leaderboard = await db_manager.get_leaderboard(interaction.client, category)
+
+        if not leaderboard:
+            await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
+            return
+
+        embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard", color=discord.Color.blue())
+        for entry in leaderboard:
+            embed.add_field(
+                name=f"Rank {entry['rank']}: {entry['username']}",
+                value=f"Value: {entry['value']}",
+                inline=False
+            )
+
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+class LeaderboardView(View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(LeaderboardDropdown())
+
+    async def get_leaderboard(self, bot, category, limit=10):
+        return await db_manager.get_leaderboard(bot, category, limit)
+
 class PetSelect(discord.ui.Select):
     def __init__(self, pets: list, bot, user, item):
         self.bot = bot
@@ -213,9 +247,14 @@ class Basic(commands.Cog, name="basic"):
     async def before_revive_users(self):
         await self.bot.wait_until_ready()
 
+    @commands.hybrid_command(name="leaderboard", description="Show the leaderboard for a specified category.")
+    async def leaderboard(self, ctx: commands.Context):
+        """
+        Display the leaderboard for a chosen category.
 
-
-
+        :param ctx: The context of the command.
+        """
+        await ctx.send("Select a leaderboard category:", view=LeaderboardView())
 
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
     #registering a streamer will also add them to the database user table
@@ -2875,46 +2914,6 @@ class Basic(commands.Cog, name="basic"):
         )
         embed.set_footer(text=f"Current streak: {streak} days")
         await ctx.send(embed=embed)
-
-    class LeaderboardDropdown(Select):
-        def __init__(self):
-            options = [
-                discord.SelectOption(label="Highest Level", value="highest_level"),
-                discord.SelectOption(label="Most Money", value="most_money")
-            ]
-            super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
-
-        async def callback(self, interaction: discord.Interaction):
-            category = self.values[0]
-            leaderboard = await get_leaderboard(category)
-
-            if not leaderboard:
-                await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
-                return
-
-            embed = discord.Embed(title=f"{category.replace('_', ' ').title()} Leaderboard", color=discord.Color.blue())
-            for entry in leaderboard:
-                embed.add_field(
-                    name=f"Rank {entry['rank']}: {entry['username']}#{entry['discriminator']}",
-                    value=f"Value: {entry['value']}",
-                    inline=False
-                )
-
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-
-    class LeaderboardView(View):
-        def __init__(self):
-            super().__init__()
-            self.add_item(LeaderboardDropdown())
-
-    @commands.hybrid_command(name="leaderboard", description="Show the leaderboard for a specified category.")
-    async def leaderboard(self, ctx: Context):
-        """
-        Display the leaderboard for a chosen category.
-
-        :param ctx: The context of the command.
-        """
-        await ctx.send("Select a leaderboard category:", view=LeaderboardView())
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.

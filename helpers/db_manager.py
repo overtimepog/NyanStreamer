@@ -441,7 +441,7 @@ async def can_job_level_up(user_id: str) -> bool:
         return None
     
 #get user, if they don't exist, create them
-async def get_user(user_id: int) -> None:
+async def get_user(user_id: int, username: str) -> None:
     db = DB()
     data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
@@ -474,9 +474,19 @@ async def get_user(user_id: int) -> None:
   #`paralysis_resistance` int(11) NOT NULL,
         
         #add the user to the database with all the data from above + the new quest data + the new twitch data + the new dodge chance + the new crit chance + the new damage boost + the new health boost + the new fire resistance + the new poison resistance + the new frost resistance + the new paralysis resistance
-        await db.execute("INSERT INTO users (user_id, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, shifts_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus, streak, time_of_death, time_of_revival) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, 500, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1), False, 0, 0, datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1)))
+        await db.execute("INSERT INTO users (user_id, username, money, health, isStreamer, isBurning, isPoisoned, isFrozen, isParalyzed, isBleeding, isDead, isInCombat, player_xp, player_level, quest_id, twitch_id, twitch_name, dodge_chance, crit_chance, damage_boost, health_boost, fire_resistance, poison_resistance, frost_resistance, paralysis_resistance, luck, player_title, job_id, job_level, job_xp, shifts_worked, last_worked, last_daily, last_weekly, rob_locked, percent_bonus, streak, time_of_death, time_of_revival) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (user_id, username, 500, 100, False, False, False, False, False, False, False, False, 0, 1, "None", "None", "None", 0, 0, 0, 0, 0, 0, 0, 0, 0, "None", "None", 0, 0, 0, datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1), False, 0, 0, datetime.datetime(1970, 1, 1), datetime.datetime(1970, 1, 1)))
         #create the bank acount of the user
         await db.execute(f"INSERT INTO `bank` (`user_id`, `bank_balance`, `bank_capacity`) VALUES (?, ?, ?)", (user_id, 0, 10000))
+        return None
+
+#get username
+async def get_username(user_id: int) -> str:
+    db = DB()
+    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if data is not None:
+        users = await db.execute(f"SELECT `username` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+        return users
+    else:
         return None
     
 #set streak
@@ -6151,7 +6161,7 @@ async def update_leaderboard():
     async with aiosqlite.connect("database/database.db") as db:
         # Fetch top users by level
         async with db.execute("""
-            SELECT user_id, player_level
+            SELECT user_id, username, player_level
             FROM users
             ORDER BY player_level DESC
             LIMIT 10
@@ -6160,7 +6170,7 @@ async def update_leaderboard():
 
         # Fetch top users by money
         async with db.execute("""
-            SELECT user_id, money
+            SELECT user_id, username, money
             FROM users
             ORDER BY money DESC
             LIMIT 10
@@ -6168,38 +6178,37 @@ async def update_leaderboard():
             top_money = await cursor.fetchall()
 
         # Update leaderboard for highest level
-        for rank, (user_id, player_level) in enumerate(top_levels, start=1):
+        for rank, (user_id, username, player_level) in enumerate(top_levels, start=1):
             await db.execute("""
-                INSERT INTO leaderboard (category, user_id, value, rank)
-                VALUES ('highest_level', ?, ?, ?)
-                ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value
-            """, (user_id, player_level, rank))
+                INSERT INTO leaderboard (category, user_id, username, value, rank)
+                VALUES ('highest_level', ?, ?, ?, ?)
+                ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value, username = excluded.username
+            """, (user_id, username, player_level, rank))
 
         # Update leaderboard for most money
-        for rank, (user_id, money) in enumerate(top_money, start=1):
+        for rank, (user_id, username, money) in enumerate(top_money, start=1):
             await db.execute("""
-                INSERT INTO leaderboard (category, user_id, value, rank)
-                VALUES ('most_money', ?, ?, ?)
-                ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value
-            """, (user_id, money, rank))
+                INSERT INTO leaderboard (category, user_id, username, value, rank)
+                VALUES ('most_money', ?, ?, ?, ?)
+                ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value, username = excluded.username
+            """, (user_id, username, money, rank))
 
         # Commit the transaction
         await db.commit()
 
 
-async def get_leaderboard(category: str, limit: int = 10):
+async def get_leaderboard(bot, category, limit=10):
     """
     Retrieve the top users in a specific leaderboard category.
-
+    :param bot: The bot instance to fetch user data.
     :param category: The category of the leaderboard.
     :param limit: The number of top users to retrieve.
     :return: A list of dictionaries containing user ID, value, and rank.
     """
     async with aiosqlite.connect("database/database.db") as db:
         query = """
-        SELECT l.rank, l.user_id, u.username, u.discriminator, l.value
+        SELECT l.rank, l.user_id, l.username, l.value
         FROM leaderboard l
-        JOIN users u ON l.user_id = u.user_id
         WHERE l.category = ?
         ORDER BY l.rank ASC
         LIMIT ?
@@ -6207,10 +6216,9 @@ async def get_leaderboard(category: str, limit: int = 10):
         async with db.execute(query, (category, limit)) as cursor:
             result = await cursor.fetchall()
 
-        # Convert the result to a list of dictionaries
         leaderboard = [
-            {"rank": row[0], "user_id": row[1], "username": row[2], "discriminator": row[3], "value": row[4]}
-        for row in result
+            {"rank": row[0], "user_id": row[1], "username": row[2], "value": row[3]}
+            for row in result
         ]
 
         return leaderboard
@@ -6229,8 +6237,8 @@ async def create_leaderboard_categories():
             print(f"~ Initializing category: {category}")
             for rank in range(1, 11):  # Initializing top 10 ranks for each category
                 await db.execute("""
-                    INSERT OR IGNORE INTO leaderboard (category, user_id, value, rank)
-                    VALUES (?, 'placeholder_user', 0, ?)
+                    INSERT OR IGNORE INTO leaderboard (category, user_id, username, value, rank)
+                    VALUES (?, 0, "placeholder :)" 0, ?)
                 """, (category, rank))
         
         # Commit the transaction

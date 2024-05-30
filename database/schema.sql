@@ -216,6 +216,7 @@ CREATE TABLE IF NOT EXISTS `shop` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` varchar(20) NOT NULL,
+  `username` varchar(255) NOT NULL,
   `money` int(11) NOT NULL,
   `health` int(11) NOT NULL,
   `isStreamer` boolean NOT NULL,
@@ -351,6 +352,7 @@ CREATE TABLE IF NOT EXISTS `enemy_drops` (
 CREATE TABLE IF NOT EXISTS `leaderboard` (
     `category` VARCHAR(255) NOT NULL,  -- The category of the leaderboard (e.g., 'highest_level', 'most_money')
     `user_id` VARCHAR(20) NOT NULL,    -- The ID of the user
+    `username` VARCHAR(255) NOT NULL,  -- The username of the user
     `value` INT NOT NULL,              -- The value for the leaderboard category (e.g., level or money)
     `rank` INT NOT NULL,               -- The rank of the user in the leaderboard
     PRIMARY KEY (`category`, `rank`),
