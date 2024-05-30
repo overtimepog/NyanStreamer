@@ -225,7 +225,7 @@ async def fish(self, ctx, user_luck: int):
         await ctx.send("You don't have any bait equipped to go fishing.")
         return
 
-    equipped_baits.sort(key=lambda x: x['item_price'], reverse=True)
+    equipped_baits.sort(key=lambda x: x[3], reverse=True)
     selected_bait = equipped_baits[0]
 
     try:
