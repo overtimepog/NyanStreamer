@@ -276,9 +276,9 @@ async def fish(self, ctx, user_luck: int):
             await ctx.send("An error occurred while fetching fish data.")
             continue
 
-        fish_emoji = fish_data[3]  # Assuming emoji is at index 3
-        fish_name = fish_data[1]  # Assuming name is at index 1
-        fish_rarity = fish_data[4]  # Assuming rarity is at index 4
+        fish_emoji = fish_data["item_emoji"]  # Assuming emoji is at index 3
+        fish_name = fish_data["item_name"]  # Assuming name is at index 1
+        fish_rarity = fish_data["item_rarity"]  # Assuming rarity is at index 4
         xp_gained = rarity_xp.get(fish_rarity, 0) * count
         total_xp += xp_gained
 
