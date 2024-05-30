@@ -1350,7 +1350,6 @@ class Basic(commands.Cog, name="basic"):
         user_stats = await db_manager.get_user_stats(user_id)
 
         if user_stats:
-            embed = discord.Embed(title=f"Leaderboard Ranks for {user_stats['username']}")
             embed.add_field(name="Highest Level Rank", value=user_stats["highest_level_rank"], inline=True)
             embed.add_field(name="Most Money Rank", value=user_stats["most_money_rank"], inline=True)
 
