@@ -6148,8 +6148,9 @@ async def api_key_value_exists(api_key: str) -> bool:
 
 
 
-#leaderboard stuff
-#delete leaderboard
+## delete leaderboard
+import aiosqlite
+
 async def delete_leaderboard() -> None:
     async with aiosqlite.connect("database/database.db") as db:
         await db.execute("DELETE FROM leaderboard")
@@ -6161,57 +6162,47 @@ async def update_leaderboard():
     This function updates the leaderboard for both highest level and most money.
     """
     async with aiosqlite.connect("database/database.db") as db:
-        # Fetch top users by level
+        # Fetch all users by level
         async with db.execute("""
             SELECT user_id, username, player_level
             FROM users
             ORDER BY player_level DESC
-            LIMIT 20
         """) as cursor:
-            top_levels = await cursor.fetchall()
+            all_levels = await cursor.fetchall()
 
-        # Fetch top users by money
+        # Fetch all users by money
         async with db.execute("""
             SELECT user_id, username, money
             FROM users
             ORDER BY money DESC
-            LIMIT 20
         """) as cursor:
-            top_money = await cursor.fetchall()
+            all_money = await cursor.fetchall()
 
-        unique_users = set()
-        
         # Update leaderboard for highest level
         rank = 1
-        for user_id, username, player_level in top_levels:
-            if user_id not in unique_users and rank <= 10:
-                await db.execute("""
-                    INSERT INTO leaderboard (category, user_id, username, value, rank)
-                    VALUES ('highest_level', ?, ?, ?, ?)
-                    ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value, username = excluded.username
-                """, (user_id, username, player_level, rank))
-                unique_users.add(user_id)
-                rank += 1
-
-        unique_users.clear()
+        for user_id, username, player_level in all_levels:
+            await db.execute("""
+                INSERT INTO leaderboard (category, user_id, username, value, rank)
+                VALUES ('highest_level', ?, ?, ?, ?)
+                ON CONFLICT(category, user_id) DO UPDATE SET value = excluded.value, rank = excluded.rank, username = excluded.username
+            """, (user_id, username, player_level, rank))
+            rank += 1
 
         # Update leaderboard for most money
         rank = 1
-        for user_id, username, money in top_money:
-            if user_id not in unique_users and rank <= 10:
-                await db.execute("""
-                    INSERT INTO leaderboard (category, user_id, username, value, rank)
-                    VALUES ('most_money', ?, ?, ?, ?)
-                    ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value, username = excluded.username
-                """, (user_id, username, money, rank))
-                unique_users.add(user_id)
-                rank += 1
+        for user_id, username, money in all_money:
+            await db.execute("""
+                INSERT INTO leaderboard (category, user_id, username, value, rank)
+                VALUES ('most_money', ?, ?, ?, ?)
+                ON CONFLICT(category, user_id) DO UPDATE SET value = excluded.value, rank = excluded.rank, username = excluded.username
+            """, (user_id, username, money, rank))
+            rank += 1
 
         # Commit the transaction
         await db.commit()
 
 
-async def get_leaderboard(bot, category, limit=10):
+async def get_leaderboard(bot, category, limit=20):
     """
     Retrieve the top users in a specific leaderboard category.
     :param bot: The bot instance to fetch user data.
@@ -6249,7 +6240,7 @@ async def create_leaderboard_categories():
         categories = ['highest_level', 'most_money']
         for category in categories:
             print(f"~ Initializing category: {category}")
-            for rank in range(1, 11):  # Initializing top 10 ranks for each category
+            for rank in range(1, 21):  # Initializing top 20 ranks for each category
                 await db.execute("""
                     INSERT OR IGNORE INTO leaderboard (category, user_id, username, value, rank)
                     VALUES (?, 0, "sub to overtimepog", 0, ?)
@@ -6260,6 +6251,59 @@ async def create_leaderboard_categories():
         print("~ Database commit completed.")
     
     print("~~~~~~~~~~ Leaderboard Setup Completed ~~~~~~~~~~")
+
+async def get_user_stats(user_id):
+    """
+    Retrieve the stats for a specific user.
+    :param user_id: The ID of the user whose stats are to be retrieved.
+    :return: A dictionary containing the user's ID, username, level, money, and ranks.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        # Get user stats
+        query = """
+        SELECT user_id, username, player_level, money
+        FROM users
+        WHERE user_id = ?
+        """
+        async with db.execute(query, (user_id,)) as cursor:
+            result = await cursor.fetchone()
+        
+        if result:
+            user_stats = {
+                "user_id": result[0],
+                "username": result[1],
+                "player_level": result[2],
+                "money": result[3],
+                "highest_level_rank": None,
+                "most_money_rank": None
+            }
+            
+            # Get user rank in highest_level leaderboard
+            query_level_rank = """
+            SELECT rank
+            FROM leaderboard
+            WHERE category = 'highest_level' AND user_id = ?
+            """
+            async with db.execute(query_level_rank, (user_id,)) as cursor:
+                result = await cursor.fetchone()
+                if result:
+                    user_stats["highest_level_rank"] = result[0]
+
+            # Get user rank in most_money leaderboard
+            query_money_rank = """
+            SELECT rank
+            FROM leaderboard
+            WHERE category = 'most_money' AND user_id = ?
+            """
+            async with db.execute(query_money_rank, (user_id,)) as cursor:
+                result = await cursor.fetchone()
+                if result:
+                    user_stats["most_money_rank"] = result[0]
+        else:
+            user_stats = None
+
+        return user_stats
+
 
 
 

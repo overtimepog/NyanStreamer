@@ -448,10 +448,32 @@ class General(commands.Cog, name="general"):
         """
         embed = discord.Embed(
             title="How to use the bot",
-            description="To see the shop, use `/shop`.\nTo buy some bait, use `/buy`.\nTo equip the bait, use `/equip` to equip it,\n then you can go fishing with `/fish`.",
-            color=0x9C84EF
+            description=(
+                "To see the shop, use `/shop`.\n"
+                "To buy some bait, use `/buy`.\n"
+                "To equip the bait, use `/equip` to equip it,\n"
+                "then you can go fishing with `/fish`.\n\n"
+                "**Searching for a Prize:**\n"
+                "Use `/search` to search a location for a prize.\n\n"
+                "**Daily Rewards:**\n"
+                "Claim your daily cash rewards using `/daily`.\n"
+                "Make sure to keep your streak up to earn more rewards!\n\n"
+                "**Begging:**\n"
+                "You can beg for money using `/beg`.\n"
+                "Try begging famous people for money and sometimes you'll get stuff.\n\n"
+                "**Jobs:**\n"
+                "Check the job board with `/job board`.\n"
+                "To accept a job, use `/job accept`.\n"
+                "Work the job you accepted with `/work`."
+                "To quit a job, use `/job quit`.\n"
+                "Check out your profile with `/profile` to see your job and other stats.\n\n"
+                "**Leaderboard:**\n"
+                "Check the leaderboard with `/leaderboard`.\n"
+                "To see your rank, use `/rank`.\n\n"
+            ),
         )
         await ctx.send(embed=embed)
+
         
 
 async def setup(bot):

@@ -371,6 +371,23 @@ class Basic(commands.Cog, name="basic"):
         view = LeaderboardView()
         await ctx.send("Select a leaderboard category:", view=view)
 
+    #rank
+    #command to view the user's rank, using the get_user_rank function from helpers\db_manager.py
+    @commands.hybrid_command(
+        name="rank",
+        description="This command will show your rank.",
+    )
+    async def rank(self, ctx: Context, user: discord.User = None):
+        user_id = user.id if user else ctx.author.id
+        user_stats = await db_manager.get_user_stats(user_id)
+
+        if user_stats:
+            embed = discord.Embed(title=f"Leaderboard Ranks for {user_stats['username']}")
+            embed.add_field(name="Highest Level Rank", value=user_stats["highest_level_rank"], inline=True)
+            embed.add_field(name="Most Money Rank", value=user_stats["most_money_rank"], inline=True)
+            await ctx.send(embed=embed)
+
+
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
     #registering a streamer will also add them to the database user table
     #command to veiw all streamers in the database streamer table, using the view_streamers function from helpers\db_manager.py
@@ -1328,6 +1345,14 @@ class Basic(commands.Cog, name="basic"):
         Userbadges = ''.join(Userbadges)
         if Userbadges:
             embed.add_field(name="Badges", value=f"{Userbadges}", inline=False)
+
+        user_id = user.id if user else ctx.author.id
+        user_stats = await db_manager.get_user_stats(user_id)
+
+        if user_stats:
+            embed = discord.Embed(title=f"Leaderboard Ranks for {user_stats['username']}")
+            embed.add_field(name="Highest Level Rank", value=user_stats["highest_level_rank"], inline=True)
+            embed.add_field(name="Most Money Rank", value=user_stats["most_money_rank"], inline=True)
 
         inventory_items = await db_manager.view_inventory(user.id)
 
