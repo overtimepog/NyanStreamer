@@ -434,6 +434,24 @@ class General(commands.Cog, name="general"):
         )
         await ctx.send(embed=embed, ephemeral=True)
 
+    #explain command, tell the user to use /shop to see the shop, use /buy to buy some bait, and use /equip to equip the bait
+    @commands.hybrid_command(
+        name="explain",
+        description="Explain how to use the bot.",
+    )
+    @checks.not_blacklisted()
+    async def explain(self, ctx: Context):
+        """
+        Explain how to use the bot.
+
+        :param ctx: The context in which the command was called.
+        """
+        embed = discord.Embed(
+            title="How to use the bot",
+            description="To see the shop, use `/shop`.\nTo buy some bait, use `/buy`.\nTo equip the bait, use `/equip` to equip it, then you can go fishing with /fish.",
+            color=0x9C84EF
+        )
+        await ctx.send(embed=embed)
         
 
 async def setup(bot):
