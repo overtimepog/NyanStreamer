@@ -250,7 +250,7 @@ async def fish(self, ctx, user_luck: int):
                 await ctx.send("An error occurred while removing bait from your inventory.")
                 return
 
-    description = "You caught: \n"
+    description = "**YOU CAUGHT: ** \n"
     for fish_id, count in catches.items():
         try:
             fish_data = await db_manager.get_basic_item_data(fish_id)
@@ -285,12 +285,12 @@ async def fish(self, ctx, user_luck: int):
     embed = discord.Embed(
         title=f"{ctx.author.name}",
         description=description,
-        color=0x00BFFF
     )
 
     view = discord.ui.View()
     view.add_item(discord.ui.Button(label="Sell Fish", style=discord.ButtonStyle.primary, custom_id="sell_fish"))
     view.add_item(discord.ui.Button(label="Replay", style=discord.ButtonStyle.primary, custom_id="replay_fish"))
+    view.add_item(discord.ui.Button(label="Return", style=discord.ButtonStyle.danger, custom_id="return"))
 
     message = await ctx.send(embed=embed, view=view)
 
@@ -328,11 +328,12 @@ async def fish(self, ctx, user_luck: int):
 
         sell_view = discord.ui.View()
         sell_view.add_item(discord.ui.Button(label="Replay", style=discord.ButtonStyle.primary, custom_id="replay_fish"))
+        sell_view.add_item(discord.ui.Button(label="Return", style=discord.ButtonStyle.danger, custom_id="return"))
 
         await interaction.response.edit_message(embed=sell_embed, view=sell_view)
 
     def button_check(interaction: discord.Interaction) -> bool:
-        return interaction.data.get('custom_id') in ["sell_fish", "replay_fish"] and interaction.user == ctx.author
+        return interaction.data.get('custom_id') in ["sell_fish", "replay_fish", "return"] and interaction.user == ctx.author
 
     try:
         while True:
@@ -343,11 +344,15 @@ async def fish(self, ctx, user_luck: int):
                 await message.delete()
                 await fish(self, ctx, user_luck)
                 break
+            elif interaction.data.get('custom_id') == "return":
+                await interaction.message.delete()
+                break
     except asyncio.TimeoutError:
         await message.edit(content="Option timed out.", view=None)
     except Exception as e:
         logging.error(f"Error handling interaction: {e}\n{traceback.format_exc()}")
         await ctx.send("An unknown error occurred during the interaction.")
+
 
 
 class TriviaButton(Button):
