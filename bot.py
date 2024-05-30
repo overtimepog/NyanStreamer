@@ -393,8 +393,6 @@ async def load_cogs() -> None:
 
 async def setup() -> None:
     await init_db()
-    print("\n---------Loading Cogs----------")
-    await load_cogs()
     print("\n---------Basic Items----------")
     await db_manager.clear_basic_items()
     await db_manager.add_basic_items()
@@ -444,18 +442,19 @@ async def setup() -> None:
 
 @bot.event
 async def on_ready() -> None:
-    await setup()
     print(f"Logged in as {bot.user.name}")
     print(f"discord.py API version: {discord.__version__}")
     print(f"Python version: {platform.python_version()}")
     print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
-    print("-----------------------------")
+    print("\n---------Loading Cogs----------")
+    await load_cogs()
     status_task.start()
     if config["sync_commands_globally"]:
         print("Syncing commands globally...")
         await bot.tree.sync()
         print("Done syncing commands globally!")
     print("-----------------------------")
+    await setup()
     #print("Structure Spawn Task Started")
     #structure_spawn_task.start()
     #print("-------------------")
