@@ -184,14 +184,14 @@ class PetSelectView(discord.ui.View):
             return self.user.id == interaction.user.id
 
 
+
 class LeaderboardDropdown(Select):
-    def __init__(self, view):
+    def __init__(self):
         options = [
             discord.SelectOption(label="Highest Level", value="highest_level"),
             discord.SelectOption(label="Most Money", value="most_money"),
         ]
         super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
-        self.view = view
 
     async def callback(self, interaction: discord.Interaction):
         category = self.values[0]
@@ -222,10 +222,10 @@ class LeaderboardView(View):
         self.current_page = 0
         self.category = "highest_level"
         self.next_reset_unix = int(time.mktime(datetime.datetime.now().timetuple()))
-        self.add_item(LeaderboardDropdown(self))
-        self.add_item(self.PreviousButton())
-        self.add_item(self.NextButton())
-        self.add_item(self.CloseButton())
+        self.add_item(LeaderboardDropdown())
+        self.add_item(PreviousButton())
+        self.add_item(NextButton())
+        self.add_item(CloseButton())
 
     def create_embed(self, entries):
         embed = discord.Embed(title=f"{self.category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{self.next_reset_unix}:R>")
@@ -254,38 +254,35 @@ class LeaderboardView(View):
         self.next_reset_unix = next_reset_unix
         self.current_page = 0
 
-    class PreviousButton(Button):
-        def __init__(self):
-            super().__init__(label="≪", style=discord.ButtonStyle.primary)
+class PreviousButton(Button):
+    def __init__(self):
+        super().__init__(label="≪", style=discord.ButtonStyle.primary)
 
-        async def callback(self, interaction: discord.Interaction):
-            view = self.view
-            if view.current_page > 0:
-                view.current_page -= 1
-                embed = view.create_embed(view.pages[view.current_page])
-                await interaction.response.edit_message(embed=embed, view=view)
+    async def callback(self, interaction: discord.Interaction):
+        view = self.view
+        if view.current_page > 0:
+            view.current_page -= 1
+            embed = view.create_embed(view.pages[view.current_page])
+            await interaction.response.edit_message(embed=embed, view=view)
 
-    class NextButton(Button):
-        def __init__(self):
-            super().__init__(label="≫", style=discord.ButtonStyle.primary)
+class NextButton(Button):
+    def __init__(self):
+        super().__init__(label="≫", style=discord.ButtonStyle.primary)
 
-        async def callback(self, interaction: discord.Interaction):
-            view = self.view
-            if view.current_page < len(view.pages) - 1:
-                view.current_page += 1
-                embed = view.create_embed(view.pages[view.current_page])
-                await interaction.response.edit_message(embed=embed, view=view)
+    async def callback(self, interaction: discord.Interaction):
+        view = self.view
+        if view.current_page < len(view.pages) - 1:
+            view.current_page += 1
+            embed = view.create_embed(view.pages[view.current_page])
+            await interaction.response.edit_message(embed=embed, view=view)
 
-    class CloseButton(Button):
-        def __init__(self):
-            super().__init__(label="Close", style=discord.ButtonStyle.danger)
+class CloseButton(Button):
+    def __init__(self):
+        super().__init__(label="Close", style=discord.ButtonStyle.danger)
 
-        async def callback(self, interaction: discord.Interaction):
-            await interaction.message.delete()
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.message.delete()
 
-    async def start(self, interaction: discord.Interaction):
-        embed = self.create_embed(self.pages[self.current_page])
-        await interaction.response.send_message(embed=embed, view=self)
 
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
