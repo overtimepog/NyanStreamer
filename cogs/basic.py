@@ -185,12 +185,13 @@ class PetSelectView(discord.ui.View):
 
 
 class LeaderboardDropdown(Select):
-    def __init__(self):
+    def __init__(self, view):
         options = [
             discord.SelectOption(label="Highest Level", value="highest_level"),
             discord.SelectOption(label="Most Money", value="most_money"),
         ]
         super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
+        self.view = view
 
     async def callback(self, interaction: discord.Interaction):
         category = self.values[0]
@@ -209,20 +210,22 @@ class LeaderboardDropdown(Select):
         per_page = 10  # Number of entries per page
         pages = [leaderboard[i:i + per_page] for i in range(0, len(leaderboard), per_page)]
 
-        paginator = Paginator(pages, per_page, category, next_reset_unix)
-        self.view.clear_items()
-        self.view.add_item(paginator)
-        embed = paginator.create_embed(pages[0])
-        await interaction.response.edit_message(content=None, embed=embed, view=paginator)
+        self.view.update_leaderboard(pages, per_page, category, next_reset_unix)
+        embed = self.view.create_embed(pages[0])
+        await interaction.response.edit_message(embed=embed, view=self.view)
 
-class Paginator(View):
-    def __init__(self, pages, per_page, category, next_reset_unix):
+class LeaderboardView(View):
+    def __init__(self):
         super().__init__(timeout=180)
-        self.pages = pages
-        self.per_page = per_page
+        self.pages = []
+        self.per_page = 10
         self.current_page = 0
-        self.category = category
-        self.next_reset_unix = next_reset_unix
+        self.category = "highest_level"
+        self.next_reset_unix = int(time.mktime(datetime.datetime.now().timetuple()))
+        self.add_item(LeaderboardDropdown(self))
+        self.add_item(self.PreviousButton())
+        self.add_item(self.NextButton())
+        self.add_item(self.CloseButton())
 
     def create_embed(self, entries):
         embed = discord.Embed(title=f"{self.category.replace('_', ' ').title()} Leaderboard | Next reset: <t:{self.next_reset_unix}:R>")
@@ -244,35 +247,45 @@ class Paginator(View):
         embed.set_footer(text=f"Page {self.current_page + 1} of {len(self.pages)}")
         return embed
 
-    @discord.ui.button(label="≪", style=discord.ButtonStyle.primary)
-    async def previous(self, interaction: discord.Interaction, button: Button):
-        if self.current_page > 0:
-            self.current_page -= 1
-            embed = self.create_embed(self.pages[self.current_page])
-            await interaction.response.edit_message(embed=embed, view=self)
+    def update_leaderboard(self, pages, per_page, category, next_reset_unix):
+        self.pages = pages
+        self.per_page = per_page
+        self.category = category
+        self.next_reset_unix = next_reset_unix
+        self.current_page = 0
 
-    @discord.ui.button(label="≫", style=discord.ButtonStyle.primary)
-    async def next(self, interaction: discord.Interaction, button: Button):
-        if self.current_page < len(self.pages) - 1:
-            self.current_page += 1
-            embed = self.create_embed(self.pages[self.current_page])
-            await interaction.response.edit_message(embed=embed, view=self)
+    class PreviousButton(Button):
+        def __init__(self):
+            super().__init__(label="≪", style=discord.ButtonStyle.primary)
 
-    @discord.ui.button(label="Close", style=discord.ButtonStyle.danger)
-    async def close(self, interaction: discord.Interaction, button: Button):
-        await interaction.message.delete()
+        async def callback(self, interaction: discord.Interaction):
+            view = self.view
+            if view.current_page > 0:
+                view.current_page -= 1
+                embed = view.create_embed(view.pages[view.current_page])
+                await interaction.response.edit_message(embed=embed, view=view)
+
+    class NextButton(Button):
+        def __init__(self):
+            super().__init__(label="≫", style=discord.ButtonStyle.primary)
+
+        async def callback(self, interaction: discord.Interaction):
+            view = self.view
+            if view.current_page < len(view.pages) - 1:
+                view.current_page += 1
+                embed = view.create_embed(view.pages[view.current_page])
+                await interaction.response.edit_message(embed=embed, view=view)
+
+    class CloseButton(Button):
+        def __init__(self):
+            super().__init__(label="Close", style=discord.ButtonStyle.danger)
+
+        async def callback(self, interaction: discord.Interaction):
+            await interaction.message.delete()
 
     async def start(self, interaction: discord.Interaction):
         embed = self.create_embed(self.pages[self.current_page])
         await interaction.response.send_message(embed=embed, view=self)
-
-class LeaderboardView(View):
-    def __init__(self):
-        super().__init__(timeout=180)
-        self.add_item(LeaderboardDropdown())
-
-    async def start(self, interaction: discord.Interaction):
-        await interaction.response.send_message("Select a leaderboard category:", view=self)
 
 class Basic(commands.Cog, name="basic"):
     def __init__(self, bot):
@@ -358,7 +371,8 @@ class Basic(commands.Cog, name="basic"):
 
         :param ctx: The context of the command.
         """
-        await ctx.send("Select a leaderboard category:", view=LeaderboardView())
+        view = LeaderboardView()
+        await ctx.send("Select a leaderboard category:", view=view)
 
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
     #registering a streamer will also add them to the database user table
