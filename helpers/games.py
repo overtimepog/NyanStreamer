@@ -341,7 +341,7 @@ async def fish(self, ctx, user_luck: int):
             if interaction.data.get('custom_id') == "sell_fish":
                 await sell_fish(interaction)
             elif interaction.data.get('custom_id') == "replay_fish":
-                await interaction.message.delete()
+                #await message.delete()
                 await fish(self, ctx, user_luck)
                 break
             elif interaction.data.get('custom_id') == "return":
