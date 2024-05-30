@@ -212,7 +212,8 @@ async def fish(self, ctx, user_luck: int):
             logging.error(f"Error fetching fish from DB: {e}\n{traceback.format_exc()}")
             await ctx.send("An error occurred while fetching fish data.")
             return None
-        
+
+        # Select fishes based on the user's luck and the fish's catch rate
         catchable_fishes = [fish for fish in fishes if random.randint(1, 100) <= (fish[2] + user_luck)]
         if not catchable_fishes:
             catchable_fishes = fishes
@@ -225,44 +226,46 @@ async def fish(self, ctx, user_luck: int):
         await ctx.send("You don't have any bait equipped to go fishing.")
         return
 
-    equipped_baits.sort(key=lambda x: x[3], reverse=True)
+    equipped_baits.sort(key=lambda x: x[3], reverse=True)  # Assuming the price is at index 3
     selected_bait = equipped_baits[0]
 
     try:
-        baitAmount = await db_manager.get_item_amount_from_inventory(ctx.author.id, selected_bait[1])
+        initial_bait_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, selected_bait[1])
     except Exception as e:
         logging.error(f"Error fetching bait amount: {e}\n{traceback.format_exc()}")
         await ctx.send("An error occurred while fetching bait data.")
         return
 
-    if baitAmount == 0:
+    if initial_bait_amount == 0:
         await ctx.send("You don't have any bait to go fishing.")
         return
 
-    tries = 5 + baitAmount
+    max_catches = 5
     catches = {}
     total_xp = 0
+    fish_caught = 0
+    bait_amount = initial_bait_amount
 
-    for _ in range(tries):
+    while bait_amount > 0 and fish_caught < max_catches:
         caught_fish = await catch_fish(user_luck)
         if not caught_fish:
             continue
 
         item_id = caught_fish[0]
-
         if item_id in catches:
             catches[item_id] += 1
         else:
             catches[item_id] = 1
 
-        if baitAmount > 0:
-            try:
-                await db_manager.remove_item_from_inventory(ctx.author.id, selected_bait[1], 1)
-                baitAmount -= 1
-            except Exception as e:
-                logging.error(f"Error removing bait from inventory: {e}\n{traceback.format_exc()}")
-                await ctx.send("An error occurred while removing bait from your inventory.")
-                return
+        try:
+            await db_manager.remove_item_from_inventory(ctx.author.id, selected_bait[1], 1)
+            bait_amount -= 1
+        except Exception as e:
+            logging.error(f"Error removing bait from inventory: {e}\n{traceback.format_exc()}")
+            await ctx.send("An error occurred while removing bait from your inventory.")
+            return
+
+        fish_caught += 1
 
     description = "**YOU CAUGHT: ** \n"
     for fish_id, count in catches.items():
@@ -273,9 +276,9 @@ async def fish(self, ctx, user_luck: int):
             await ctx.send("An error occurred while fetching fish data.")
             continue
 
-        fish_emoji = fish_data['item_emoji']
-        fish_name = fish_data['item_name']
-        fish_rarity = fish_data['item_rarity']
+        fish_emoji = fish_data[3]  # Assuming emoji is at index 3
+        fish_name = fish_data[1]  # Assuming name is at index 1
+        fish_rarity = fish_data[4]  # Assuming rarity is at index 4
         xp_gained = rarity_xp.get(fish_rarity, 0) * count
         total_xp += xp_gained
 
@@ -301,6 +304,9 @@ async def fish(self, ctx, user_luck: int):
         await db_manager.add_level(ctx.author.id, 1)
         new_level = await db_manager.get_level(ctx.author.id)
         description += f"\n{ctx.author.mention} has leveled up! They are now level " + str(new_level) + "!"
+
+    bait_used = initial_bait_amount - bait_amount
+    embed.set_footer(text=f"\nTotal bait used: {bait_used}")
 
     # Update leaderboard
     await db_manager.update_leaderboard()
@@ -328,8 +334,8 @@ async def fish(self, ctx, user_luck: int):
                 total_earned += earned
                 await db_manager.remove_item_from_inventory(ctx.author.id, fish_id, count)
 
-                fish_emoji = fish_data['item_emoji']
-                fish_name = fish_data['item_name']
+                fish_emoji = fish_data[3]  # Assuming emoji is at index 3
+                fish_name = fish_data[1]  # Assuming name is at index 1
                 sell_description += f"{count} {fish_emoji}{fish_name} - ⌬{earned}\n"
             except Exception as e:
                 logging.error(f"Error processing sell fish: {e}\n{traceback.format_exc()}")
@@ -376,7 +382,6 @@ async def fish(self, ctx, user_luck: int):
     except Exception as e:
         logging.error(f"Error handling interaction: {e}\n{traceback.format_exc()}")
         await ctx.send("An unknown error occurred during the interaction.")
-
 
 class TriviaButton(Button):
     def __init__(self, label, trivia_view, *args, **kwargs):
