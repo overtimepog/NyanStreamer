@@ -225,6 +225,19 @@ async def fish(self, ctx, user_luck: int):
         await ctx.send("An error occurred while fetching bait data.")
         return
 
+    if baitAmount == 0:
+        await ctx.send("You don't have any bait to go fishing.")
+        return
+
+    equipped_items = await db_manager.get_equipped_items(ctx.author.id)
+    equipped_baits = [item for item in equipped_items if "bait" in item['item_id']]
+    if not equipped_baits:
+        await ctx.send("You don't have any bait equipped to go fishing.")
+        return
+
+    equipped_baits.sort(key=lambda x: x['item_price'], reverse=True)
+    selected_bait = equipped_baits[0]
+
     tries = 5 + baitAmount
     catches = {}
     total_xp = 0
@@ -243,7 +256,7 @@ async def fish(self, ctx, user_luck: int):
 
         if baitAmount > 0:
             try:
-                await db_manager.remove_item_from_inventory(ctx.author.id, "bait", 1)
+                await db_manager.remove_item_from_inventory(ctx.author.id, selected_bait['item_id'], 1)
                 baitAmount -= 1
             except Exception as e:
                 logging.error(f"Error removing bait from inventory: {e}\n{traceback.format_exc()}")
@@ -281,14 +294,14 @@ async def fish(self, ctx, user_luck: int):
         return
 
     description += f"\nTotal XP gained: {total_xp}"
-    #level the user up if they have enough xp
+    # Level the user up if they have enough XP
     canLevelUp = await db_manager.can_level_up(ctx.author.id)
     if canLevelUp:
         await db_manager.add_level(ctx.author.id, 1)
         new_level = await db_manager.get_level(ctx.author.id)
         description += f"\n{ctx.author.mention} has leveled up! They are now level " + str(new_level) + "!"
 
-    #update leaderboard
+    # Update leaderboard
     await db_manager.update_leaderboard()
 
     embed = discord.Embed(
@@ -350,7 +363,6 @@ async def fish(self, ctx, user_luck: int):
             if interaction.data.get('custom_id') == "sell_fish":
                 await sell_fish(interaction)
             elif interaction.data.get('custom_id') == "replay_fish":
-                #await message.delete()
                 await interaction.response.defer()
                 await fish(self, ctx, user_luck)
                 break
