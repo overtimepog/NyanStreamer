@@ -6208,7 +6208,7 @@ async def update_leaderboard():
             await db.execute("""
                 INSERT INTO leaderboard (category, user_id, username, value, rank)
                 VALUES ('highest_level', ?, ?, ?, ?)
-                ON CONFLICT(category, user_id) DO UPDATE SET value = excluded.value, rank = excluded.rank, username = excluded.username
+                ON CONFLICT(category, rank) DO UPDATE SET user_id = excluded.user_id, username = excluded.username, value = excluded.value
             """, (user_id, username, player_level, rank))
             rank += 1
 
@@ -6219,7 +6219,7 @@ async def update_leaderboard():
             await db.execute("""
                 INSERT INTO leaderboard (category, user_id, username, value, rank)
                 VALUES ('most_money', ?, ?, ?, ?)
-                ON CONFLICT(category, user_id) DO UPDATE SET value = excluded.value, rank = excluded.rank, username = excluded.username
+                ON CONFLICT(category, rank) DO UPDATE SET user_id = excluded.user_id, username = excluded.username, value = excluded.value
             """, (user_id, username, money, rank))
             rank += 1
 
