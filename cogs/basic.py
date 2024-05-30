@@ -378,13 +378,13 @@ class Basic(commands.Cog, name="basic"):
         name="rank",
         description="This command will show your rank.",
     )
-    async def rank(ctx, user: discord.User = None):
+    async def rank(ctx: Context, user: discord.User = None):
         if user is None:
             user = ctx.author
             user_id = ctx.author.id
 
         print(f"Fetching ranks for user_id: {user_id}")
-        most_money_rank, highest_level_rank = await get_user_ranks(user_id)
+        most_money_rank, highest_level_rank = await db_manager.get_user_ranks(user_id)
 
         if most_money_rank is not None or highest_level_rank is not None:
             embed = discord.Embed(title=f"Ranks for {user.name}", color=discord.Color.blue())
