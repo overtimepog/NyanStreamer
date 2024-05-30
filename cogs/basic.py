@@ -46,17 +46,17 @@ async def open_chest(self, ctx, chest_id: str, user_luck: int):
         if not chest_data:
             await ctx.send("Invalid chest ID.")
             return
-    
+
         chest_contents = chest_data["chest_contents"]
         items_awarded = {}
-    
+
         for item in chest_contents:
             if random.randint(1, 100) <= (item["drop_chance"] * 100 + user_luck):
                 if item["item_id"] in items_awarded:
                     items_awarded[item["item_id"]] += item["item_amount"]
                 else:
                     items_awarded[item["item_id"]] = item["item_amount"]
-    
+
         description = "You opened the chest and received:\n"
         for item_id, amount in items_awarded.items():
             item_data = await db.execute("SELECT `item_emoji`, `item_name` FROM `basic_items` WHERE `item_id` = ?", (item_id,), fetch="one")
@@ -64,7 +64,7 @@ async def open_chest(self, ctx, chest_id: str, user_luck: int):
             item_name = item_data["item_name"]
             description += f"{amount} {item_emoji} {item_name}\n"
             await db_manager.add_item_to_inventory(ctx.author.id, item_id, amount)
-    
+
         embed = discord.Embed(
             title="Chest Opened",
             description=description,
@@ -93,7 +93,7 @@ class PetSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.values[0]
-        self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0]) 
+        self.selected_pet = await db_manager.get_pet_attributes(interaction.user.id, self.values[0])
         # Retrieve the selected pet from the dropdown menu
         selected_pet = self.selected_pet
         if selected_pet is not None:
@@ -107,7 +107,7 @@ class PetSelect(discord.ui.Select):
             if item_effect == "None":
                 print("Shouldn't get here")
                 return
-            
+
             #split the item effect by space
             item_effect = item_effect.split(" ")
             #get the item effect type
@@ -118,12 +118,12 @@ class PetSelect(discord.ui.Select):
                 item_effect_time = item_effect[3]
             except:
                 item_effect_time = 0
-            
+
             #if the time is 0, it is a permanent effect
             if item_effect_time == 0:
                 #get the effect
                 effecttype = item_effect_type
-                #if the item_effect is pet_xp 
+                #if the item_effect is pet_xp
                 if effecttype == "pet_xp":
                     #add the effect amount to the pet's xp
                     await db_manager.add_pet_xp(pet_id, item_effect_amount)
@@ -145,7 +145,7 @@ class PetSelect(discord.ui.Select):
                     else:
                         await interaction.response.send_message(f"You used **{item_emoji}{item_name}** on **{pet_name}** and gave them **{item_effect_amount} XP**!")
                         return
-            
+
             #if the time is not 0, it is a temporary effect
             #get the effect
             effect = await db_manager.get_basic_item_effect(self.item)
@@ -166,7 +166,7 @@ class PetSelect(discord.ui.Select):
         else:
             await interaction.response.send_message('No pet was selected.', ephemeral=True)
             return
-        
+
 
 class PetSelectView(discord.ui.View):
         def __init__(self, pets: list, user: discord.User, bot, item):
@@ -199,7 +199,7 @@ class Basic(commands.Cog, name="basic"):
         await db_manager.add_shop_items()
         print("Done Resetting Shop...")
         print("-----------------------------")
-    
+
     @shop_reset.before_loop
     async def before_shop_reset(self):
         await self.bot.wait_until_ready()
@@ -215,7 +215,7 @@ class Basic(commands.Cog, name="basic"):
 
 
 
-    
+
 
     #command to add a new streamer and their server and their ID to the database streamer table, using the add_streamer function from helpers\db_manager.py
     #registering a streamer will also add them to the database user table
@@ -390,7 +390,7 @@ class Basic(commands.Cog, name="basic"):
     #`item_name` varchar NOT NULL,
     #`item_emoji` varchar(255) NOT NULL,
     #`item_rarity` varchar(255) NOT NULL,
-     
+
 
     #@commands.hybrid_group(
     #    name="quest",
@@ -448,7 +448,7 @@ class Basic(commands.Cog, name="basic"):
     #                    item_name = await db_manager.get_basic_item_name(item_id)
     #                    item_emoji = await db_manager.get_basic_item_emoji(item_id)
     #                    quest = f"**{quest_parts[0]}** {item_emoji}{item_name}"
-    #                
+    #
     #                elif quest_type == "kill":
     #                        quest_type = "Kill"
     #                        quest_parts = quest.split(" ")
@@ -563,7 +563,7 @@ class Basic(commands.Cog, name="basic"):
     #    # Check if the user already has the quest
     #    user_has_quest = await db_manager.check_user_has_quest(user_id, quest_id)
 #
-    #    # Check if the user has any quest 
+    #    # Check if the user has any quest
     #    user_has_any_quest = await db_manager.check_user_has_any_quest(user_id)
 #
     #    isCompleted = await db_manager.check_quest_completed(user_id, quest_id)
@@ -592,8 +592,8 @@ class Basic(commands.Cog, name="basic"):
     #        # Remove the quest from the quest board
     #        # await db_manager.remove_quest_from_board(quest_id)
 #
-    #    
-    ##abandon quest hybrid command 
+    #
+    ##abandon quest hybrid command
     #@quest.command(
     #    name="abandon",
     #    description="Abandon your current quest",
@@ -601,7 +601,7 @@ class Basic(commands.Cog, name="basic"):
     #async def abandonquest(self, ctx: Context):
     #    await db_manager.remove_quest_from_user(ctx.author.id)
     #    await ctx.send("You have Abandoned your current quest, if you want to get a new one please check the quest board")
-        
+
 
 
     #ANCHOR - shop command that shows the shop
@@ -722,7 +722,7 @@ class Basic(commands.Cog, name="basic"):
                 #catch IndexError
                 except(IndexError):
                     await interaction.response.defer()
-                
+
         class ShopButton(discord.ui.View):
             def __init__(self, current_page, embeds, **kwargs):
                 super().__init__(**kwargs)
@@ -742,7 +742,7 @@ class Basic(commands.Cog, name="basic"):
                     self.current_page -= 1
                     await interaction.response.defer()
                     await interaction.message.edit(embed=self.embeds[self.current_page])
-                    
+
             @discord.ui.button(label=">", style=discord.ButtonStyle.green, row=1)
             async def on_next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
                 if self.current_page < len(self.embeds) - 1:
@@ -756,19 +756,19 @@ class Basic(commands.Cog, name="basic"):
                 await interaction.response.defer()
                 await interaction.message.edit(embed=self.embeds[self.current_page])
 
-                
-                
+
+
         view = ShopButton(current_page=0, embeds=embeds)
         await ctx.send(embed=embeds[0], view=view)
-                
+
      #buy command for buying items, multiple of the same item can be bought, and the user can buy multiple items at once, then removes them from the shop, and makes sure the user has enough bucks
-    
+
     @commands.hybrid_command(
         name="buy",
         description="This command will buy an item from the shop.",
     )
     #add options for items to buy
-    
+
     async def buy(self, ctx: Context, item: str, amount: int):
         shopitems = await db_manager.display_shop_items()
         """
@@ -820,7 +820,7 @@ class Basic(commands.Cog, name="basic"):
                         if amount > 1:
                             await ctx.send(f"You can only buy 1 of the same Weapon!")
                             return
-                        
+
                     if item_type == "Armor":
                         #check if the user has this armor on their inventory
                         user_inventory = await db_manager.view_inventory(user_id)
@@ -877,7 +877,7 @@ class Basic(commands.Cog, name="basic"):
                             if amount > 1:
                                 await ctx.send(f"You can only buy 1 of the same Weapon!")
                                 return
-                        
+
                         if item_type == "Armor":
                             #check if the user has this armor on their inventory
                             user_inventory = await db_manager.view_inventory(user_id)
@@ -889,7 +889,7 @@ class Basic(commands.Cog, name="basic"):
                             if amount > 1:
                                 await ctx.send(f"You can only buy 1 of the same Armor!")
                                 return
-                            
+
                         #if the user doesnt have enough money, tell them
                         if user_money < total_price:
                             await ctx.send(f"You don't have enough money to buy `{amount}` of `{item_name}`.")
@@ -923,7 +923,7 @@ class Basic(commands.Cog, name="basic"):
                                     #remove the quest from the user
                                     await db_manager.mark_quest_completed(user_id, userquestID)
 
-                            
+
                             #remove the price from the users money
                             await db_manager.remove_money(user_id, total_price)
                             await ctx.send(f"You bought `{amount}` of `{item_name}` for **{cash}{total_price:,}**")
@@ -933,7 +933,7 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(f"You don't have enough bucks to buy `{amount}` of `{item_name}`.")
                     return
         await ctx.send(f"Item doesn't exist in the shop.")
-    
+
     @buy.autocomplete("item")
     async def buy_autocomplete(self, ctx: Context, argument):
         shopitems = await db_manager.display_shop_items()
@@ -957,7 +957,7 @@ class Basic(commands.Cog, name="basic"):
         if checkUser == None or checkUser == False or checkUser == [] or checkUser == "None" or checkUser == 0:
             await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
-        
+
         """
         This command will sell an item from your inventory.
 
@@ -1003,7 +1003,7 @@ class Basic(commands.Cog, name="basic"):
                     await ctx.send(f"You don't have enough **{item_emoji}{i[2]}** to sell `{amount}`.")
                     return
         await ctx.send(f"Item doesn't exist in your inventory.")
-        
+
     @sell.autocomplete("item")
     async def sell_autocomplete(self, ctx: discord.Interaction, argument):
         #print(argument)
@@ -1027,17 +1027,13 @@ class Basic(commands.Cog, name="basic"):
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
-    
     @commands.hybrid_command(
         name="sellall",
         description="This command will sell all items from your inventory.",
     )
     async def sellall(self, ctx: Context):
-        print(f"sellall command invoked by user: {ctx.author.id}")
-
-        checkUser = await db_manager.check_user(ctx.author.id)
+        checkuser = await db_manager.check_user(ctx.author.id)
         print(f"Check user result: {checkUser}")
-
         if checkUser in [None, False, [], "None", 0]:
             await ctx.send("You are not in the database yet, please use the `s.start or /start` command to start your adventure!")
             return
@@ -1087,15 +1083,12 @@ class Basic(commands.Cog, name="basic"):
             item_name = item[2]  # item_name is at index 2
             item_emoji = item[4]  # item_emoji is at index 4
             item_total_value = item[6] * int(item[3])  # item_amount is at index 6 and item_sell_price is at index 3
-            embed.add_field(name=f"{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}", value=f"", inline=False)
+            embed.add_field(name=f"x{item[6]} {item_emoji}{item_name} - {cash}{item_total_value}", value=f"", inline=False)
             print(f"Added field to embed for item: {item}")
 
         embed.add_field(name=f"**{cash}{total_price}**", value=f"", inline=False)
         await ctx.send(embed=embed)
         print(f"Embed sent with total price: {total_price}")
-
-
-
 #view a users profile using the view_profile function from helpers\db_manager.py
     @commands.hybrid_command(
         name="profile",
@@ -1177,19 +1170,19 @@ class Basic(commands.Cog, name="basic"):
             badge_emote = badge[4]
             badge = f"{badge_emote}{badge_name} \n"
             Userbadges.append(badge)
-        
+
         #get each badge and add it to the badges feild
         Userbadges = ''.join(Userbadges)
         if Userbadges:
             embed.add_field(name="Badges", value=f"{Userbadges}", inline=False)
-        
+
         inventory_items = await db_manager.view_inventory(user.id)
-        
+
         pet_items = [item for item in inventory_items if item[7] == "Pet"]
 
         # Find the equipped pet
         equipped_pet = next((pet for pet in pet_items if pet[9] == 1), None)
-    
+
         if equipped_pet is not None:
             pet_id = equipped_pet[1]
             pet_name = equipped_pet[2]
@@ -1197,7 +1190,7 @@ class Basic(commands.Cog, name="basic"):
             pet_rarity = equipped_pet[5]
             pet_amount = equipped_pet[6]
             pet_description = await db_manager.get_basic_item_description(pet_id)
-    
+
             embed.add_field(name=f"Pet", value=f'{pet_emoji}{pet_name}', inline=False)
 
         if job_id is None or job_id == 0 or job_id == "None":
@@ -1215,7 +1208,7 @@ class Basic(commands.Cog, name="basic"):
         if user_twitch_id == None or user_twitch_id == "" or user_twitch_id == "None":
             user_twitch_id = "Not Connected"
         embed.set_footer(text=f"User ID: {user_id} | Twitch: {user_twitch_id} | Streamer: {isStreamer}")
-        
+
         async def display_inventory(ctx: Context, user):
             # Get user inventory items from the database
             inventory_items = await db_manager.view_inventory(user.id)
@@ -1295,7 +1288,7 @@ class Basic(commands.Cog, name="basic"):
                         new_view = InventoryButton(current_page=0, embeds=filtered_embeds)
                         try:
                             await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
-                    #catch IndexError 
+                    #catch IndexError
                         except(IndexError):
                             await interaction.response.defer()
 
@@ -1334,7 +1327,7 @@ class Basic(commands.Cog, name="basic"):
 
             view = InventoryButton(current_page=0, embeds=embeds)
             await ctx.send(embed=embeds[0], view=view, ephemeral=True)
-             
+
         async def display_pets(ctx: Context, user):
             # Get user inventory items from the database
             inventory_items = await db_manager.view_inventory(user.id)
@@ -1349,7 +1342,7 @@ class Basic(commands.Cog, name="basic"):
             num_pages = len(pet_items)
 
             current_page = 0
-            
+
 
             rarity_colors = {
                 "Common": 0x808080,  # Grey
@@ -1559,7 +1552,7 @@ class Basic(commands.Cog, name="basic"):
 
         view = ProfileView(ctx)
         await ctx.send(embed=embed, view=view)
-        
+
     #hybrid command to start the user on their journy, this will create a profile for the user using the profile function from helpers\db_manager.py and give them 200 bucks
     @commands.hybrid_command(
         name="start",
@@ -1603,7 +1596,7 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(f"You gave {user.mention} `{amount}`.")
         else:
             await ctx.send(f"You don't have enough money to give this user.")
-        
+
     #a command to equip an item using the equip_item function from helpers\db_manager.py, check if the item has isEquippable set to true, if there are mutiple items of the same type, remove the old one and equip the new one, if there are mutliples of the same item, equip the first one, if the item is already equipped, say that it is already equipped, check that only one of the weapon and armor item type is equipped at a time
     @commands.hybrid_command(
         name="equip",
@@ -1630,50 +1623,50 @@ class Basic(commands.Cog, name="basic"):
             weapon_equipped = await db_manager.is_weapon_equipped(user_id)
             if weapon_equipped == True:
                 await ctx.send(f"You already have a weapon equipped.")
-                return 
-            
+                return
+
         if item_type == "Pet":
             weapon_equipped = await db_manager.is_pet_equipped(user_id)
             if weapon_equipped == True:
                 await ctx.send(f"You can only have 1 pet equipped at a time.")
-                return 
-        
+                return
+
         if item_sub_type == "Ring":
             ring_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Ring")
             if ring_equipped == True:
                 await ctx.send(f"You already have a ring equipped.")
                 return
-            
+
         if item_sub_type == "Necklace":
             necklace_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Necklace")
             if necklace_equipped == True:
                 await ctx.send(f"You already have a necklace equipped.")
                 return
-            
+
         if item_sub_type == "Helmet":
             helmet_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Helmet")
             if helmet_equipped == True:
                 await ctx.send(f"You already have a helmet equipped.")
                 return
-            
+
         if item_sub_type == "Chestplate":
             chestplate_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Chestplate")
             if chestplate_equipped == True:
                 await ctx.send(f"You already have a chestplate equipped.")
                 return
-            
+
         if item_sub_type == "Leggings":
             leggings_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Leggings")
             if leggings_equipped == True:
                 await ctx.send(f"You already have leggings equipped.")
                 return
-            
+
         if item_sub_type == "Boots":
             boots_equipped = await db_manager.is_item_sub_type_equipped(user_id, "Boots")
             if boots_equipped == True:
                 await ctx.send(f"You already have boots equipped.")
                 return
-            
+
         isEquippable = await db_manager.is_basic_item_equipable(item)
         if isEquippable == 1:
             #get the item effect
@@ -1707,7 +1700,7 @@ class Basic(commands.Cog, name="basic"):
                     await db_manager.remove_health_boost(user_id, effect_amount)
                     await db_manager.remove_health(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` health."
-                    
+
             #if the effect is damage
             elif effect == "damage":
                 #if the effect is add
@@ -1720,7 +1713,7 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's damage
                     await db_manager.remove_damage_boost(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` damage."
-                    
+
             #if the effect is luck
             elif effect == "luck":
                 #if the effect is add
@@ -1733,7 +1726,7 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's luck
                     await db_manager.remove_luck(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` luck."
-                    
+
             #if the effect is crit chance
             elif effect == "crit_chance":
                 #if the effect is add
@@ -1746,7 +1739,7 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's crit chance
                     await db_manager.remove_crit_chance(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` crit chance."
-                    
+
             #if the effect is dodge chance
             elif effect == "dodge_chance":
                 #if the effect is add
@@ -1759,7 +1752,7 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's dodge chance
                     await db_manager.remove_dodge_chance(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` dodge chance."
-                    
+
             #if the effect is fire resistance
             elif effect == "fire_resistance":
                 #if the effect is add
@@ -1772,7 +1765,7 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's fire resistance
                     await db_manager.remove_fire_resistance(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` fire resistance."
-                    
+
             #if the effect is paralsys resistance
             elif effect == "paralysis_resistance":
                 #if the effect is add
@@ -1785,7 +1778,7 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's paralsys resistance
                     await db_manager.remove_paralysis_resistance(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` paralsys resistance."
-                    
+
             #if the effect is poison resistance
             elif effect == "poison_resistance":
                 #if the effect is add
@@ -1798,7 +1791,7 @@ class Basic(commands.Cog, name="basic"):
                     #remove the effect amount from the user's poison resistance
                     await db_manager.remove_poison_resistance(user_id, effect_amount)
                     message = f"You equipped `{item_name}`. It gave you -`{effect_amount}` poison resistance."
-                    
+
             #if the effect is frost resistance
             elif effect == "frost_resistance":
                 #if the effect is add
@@ -1835,8 +1828,8 @@ class Basic(commands.Cog, name="basic"):
                 isEquippable = await db_manager.is_basic_item_equipable(item[1])
                 if isEquippable == 1 or isEquippable == True:
                     choices.append(app_commands.Choice(name=item[2], value=item[1]))
-        return choices[:25]  
-            
+        return choices[:25]
+
     #a command to unequip an item using the unequip_item function from helpers\db_manager.py, check if the item is equipped, if it is, unequip it, if it isn't, say that it isn't equipped
     @commands.hybrid_command(
         name="unequip",
@@ -1904,7 +1897,7 @@ class Basic(commands.Cog, name="basic"):
                     #add the effect amount to the user's luck
                     await db_manager.add_luck(user_id, effect_amount)
                     message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` luck."
-                    
+
             #if the effect is crit chance
             elif effect == "crit_chance":
                 #if the effect is add
@@ -1917,7 +1910,7 @@ class Basic(commands.Cog, name="basic"):
                     #add the effect amount to the user's crit chance
                     await db_manager.add_crit_chance(user_id, effect_amount)
                     message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` crit chance."
-                
+
             #if the effect is dodge chance
             elif effect == "dodge_chance":
                 #if the effect is add
@@ -1930,7 +1923,7 @@ class Basic(commands.Cog, name="basic"):
                     #add the effect amount to the user's dodge chance
                     await db_manager.add_dodge_chance(user_id, effect_amount)
                     message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` dodge chance."
-                
+
             #if the effect is fire resistance
             elif effect == "fire_resistance":
                 #if the effect is add
@@ -1943,7 +1936,7 @@ class Basic(commands.Cog, name="basic"):
                     #add the effect amount to the user's fire resistance
                     await db_manager.add_fire_resistance(user_id, effect_amount)
                     message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` fire resistance."
-            
+
             #if the effect is poison resistance
             elif effect == "poison_resistance":
                 #if the effect is add
@@ -1956,7 +1949,7 @@ class Basic(commands.Cog, name="basic"):
                     #add the effect amount to the user's poison resistance
                     await db_manager.add_poison_resistance(user_id, effect_amount)
                     message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` poison resistance."
-                    
+
             #if the effect is frost resistance
             elif effect == "frost_resistance":
                 #if the effect is add
@@ -1969,7 +1962,7 @@ class Basic(commands.Cog, name="basic"):
                     #add the effect amount to the user's frost resistance
                     await db_manager.add_frost_resistance(user_id, effect_amount)
                     message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` frost resistance."
-                    
+
             #if the effect is paralysis resistance
             elif effect == "paralysis_resistance":
                 #if the effect is add
@@ -1983,7 +1976,7 @@ class Basic(commands.Cog, name="basic"):
                     await db_manager.add_paralysis_resistance(user_id, effect_amount)
                     message = f"You unequipped `{item_name}`. It gave you +`{effect_amount}` paralysis resistance."
 
-            #bonus 
+            #bonus
             elif effect == "bonus":
                 if effect_add_or_minus == "+":
                     await db_manager.remove_percent_bonus(user_id, effect_amount)
@@ -2008,7 +2001,7 @@ class Basic(commands.Cog, name="basic"):
                 choices.append(app_commands.Choice(name=item[2], value=item[1]))
         return choices[:25]
     #hybrid command to battle a monster
-        
+
     @commands.hybrid_command(
         name="fight",
         description="Fight a user!",
@@ -2036,7 +2029,7 @@ class Basic(commands.Cog, name="basic"):
             return
         #attack the user
         await battle.userattack(ctx, target)
-        
+
     #mine command
     #command cooldown of 20 seconds
     @commands.cooldown(1, 20, commands.BucketType.user)
@@ -2081,7 +2074,7 @@ class Basic(commands.Cog, name="basic"):
             return
         await hunt.hunt(ctx)
         await ctx.defer()
-    
+
     #ANCHOR use command
     #a cooldown of 2 minutes
     # Function to handle using chest items
@@ -2131,7 +2124,7 @@ class Basic(commands.Cog, name="basic"):
             embed.description = f"It seems {chest_name} ended up being empty!"
 
         await ctx.send(embed=embed)
-    
+
     # Function to handle using pet items
     async def use_pet_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         pets = await db_manager.get_users_pets(ctx.author.id)
@@ -2142,7 +2135,7 @@ class Basic(commands.Cog, name="basic"):
         await view.prepare()
         message = await ctx.send(f'Which Pet do You want to use {item_emoji}{item_name} on?', view=view)
         view.message = message
-    
+
     # Function to handle using timed items
     async def use_timed_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         item_effect = await db_manager.get_basic_item_effect(item)
@@ -2155,7 +2148,7 @@ class Basic(commands.Cog, name="basic"):
             item_effect_time = item_effect[3]
         except IndexError:
             item_effect_time = 0
-    
+
         if item_effect_type == "lock":
             await ctx.send(f"You used {item_emoji}`{item_name}` You now can't be robbed for {item_effect_time}!")
         elif item_effect_type == "halt_cleanliness":
@@ -2166,7 +2159,7 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now can't lose happiness for {item_effect_time}!")
         else:
             await ctx.send(f"You used {item_emoji}`{item_name}` and got +`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
-    
+
     # Function to handle using revive items
     async def use_revive_item(ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         if await db_manager.is_alive(user_id):
@@ -2176,7 +2169,7 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.set_alive(user_id)
             await db_manager.add_health(user_id, 100)
             await ctx.send(f"You used **{item_emoji}{item_name}** and revived!")
-    
+
     # Main use command function
     @commands.hybrid_command(
         name="use",
@@ -2188,47 +2181,47 @@ class Basic(commands.Cog, name="basic"):
             await ctx.send("You don't have an account! Use `/start` to start your adventure!")
             await self.use.reset_cooldown(ctx)
             return
-    
+
         if not await db_manager.is_item_in_inventory(ctx.author.id, item):
             await ctx.send("You don't have this item!")
             await self.use.reset_cooldown(ctx)
             return
-    
+
         user_id = ctx.author.id
         isChest = await db_manager.check_chest(item)
         item_name = await db_manager.get_chest_name(item) if isChest else await db_manager.get_basic_item_name(item)
         isUsable = 1 if isChest else await db_manager.is_basic_item_usable(item)
-    
+
         if isUsable:
             await db_manager.remove_item_from_inventory(user_id, item, 1)
             item_emoji = await db_manager.get_basic_item_emoji(item)
             sub_type = await db_manager.get_basic_item_sub_type(item)
-    
+
             if sub_type == "Pet Item":
                 await use_pet_item(ctx, item, user_id, item_emoji, item_name)
                 return
-    
+
             isTimed = await db_manager.is_timed_item(item)
             if isTimed:
                 await use_timed_item(ctx, item, user_id, item_emoji, item_name)
                 return
-    
+
             item_effect = await db_manager.get_basic_item_effect(item)
             item_effect = "None" if item_effect == "None" or isChest else item_effect.split(" ")[0]
-            
+
             if item_effect == "revive":
                 await use_revive_item(ctx, item, user_id, item_emoji, item_name)
                 return
-    
+
             if item == "chest" or item == "pet_chest":
                 luck = await db_manager.get_luck(user_id)
                 await use_chest(ctx, item, user_id, luck)
                 return
-    
+
             await ctx.send(f"You used `{item_name}`!" if item_effect == "None" else f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
         else:
             await ctx.send(f"`{item_name}` is not usable.")
-    
+
     @use.autocomplete("item")
     async def use_autocomplete(self, ctx: discord.Interaction, argument):
         user_id = ctx.user.id
@@ -2377,7 +2370,7 @@ class Basic(commands.Cog, name="basic"):
     #    await handle_outcomes(ctx, random_outcomes, db_manager, embed)
     #    await ctx.send(embed=embed)
 
-            
+
     #craft command
     @commands.hybrid_command(
         name="craft",
@@ -2470,8 +2463,8 @@ class Basic(commands.Cog, name="basic"):
         # Return the list of matching recipes
         return [app_commands.Choice(name=name, value=recipe) for recipe, name in matching_recipes[:25]]
 
-            
-            
+
+
 #attack command
     @commands.hybrid_command(
         name="attack",
@@ -2501,8 +2494,8 @@ class Basic(commands.Cog, name="basic"):
             #send a message saying the monster is not spawned
             await ctx.send(f"**{monsterName}** is not spawned, wait for the current Monster to be defeated!")
             return
-    
-    
+
+
 #spawn command
 ##mob command to view the current mob spawned
 #    @commands.hybrid_command()
@@ -2520,7 +2513,7 @@ class Basic(commands.Cog, name="basic"):
 #            await battle.send_spawned_embed(ctx)
 #            #get the mob emote
 #            return
-        
+
 #recipe book command, to view all the recipes
     @commands.hybrid_command(
         name="recipebook",
@@ -2610,7 +2603,7 @@ class Basic(commands.Cog, name="basic"):
                 filtered_embeds = await create_embeds(filtered_recipes)
                 new_view = RecipebookButton(current_page=0, embeds=filtered_embeds)
                 await interaction.response.edit_message(embed=filtered_embeds[0], view=new_view)
-            
+
         class RecipebookButton(discord.ui.View):
             def __init__(self, current_page, embeds, **kwargs):
                 super().__init__(**kwargs)
@@ -2774,7 +2767,7 @@ class Basic(commands.Cog, name="basic"):
             if requested_item not in [item[0] for item in other_user_inventory] or other_user_inventory[requested_item] < requested_item_count:
                 await ctx.send(f"{user.name} does not have enough `{requested_item}`.")
                 return
-            
+
         # Get the item emoji
         #if the item is a chest, get the chest emoji
         if item == "chest" or "pet_chest":
@@ -2857,11 +2850,11 @@ class Basic(commands.Cog, name="basic"):
             else:
                 streak = 0
         else:
-            streak = 0  
+            streak = 0
 
 
         # Grant daily reward
-        #get the bonus % of the user 
+        #get the bonus % of the user
         bonus = await db_manager.get_percent_bonus(user_id)
         bonus = int(bonus) / 100
         daily_reward = 500 + (streak * 100)  # Add bonus reward according to streak
