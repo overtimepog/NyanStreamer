@@ -389,7 +389,7 @@ async def fish(self, ctx, user_luck: int):
         interaction = await self.bot.wait_for("interaction", timeout=60.0, check=button_check_replay)
         if interaction.data.get('custom_id') == "replay_fish":
             await replay_message.delete()
-            await self.fish(ctx, user_luck)
+            await fish(self, ctx, user_luck)
     except asyncio.TimeoutError:
         await replay_message.edit(content="Replay timed out.", view=None)
     except Exception as e:
