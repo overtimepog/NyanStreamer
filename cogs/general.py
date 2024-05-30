@@ -465,7 +465,7 @@ class General(commands.Cog, name="general"):
                 "Check the job board with `/job board`.\n"
                 "To accept a job, use `/job accept`.\n"
                 "Work the job you accepted with `/work`."
-                "To quit a job, use `/job quit`.\n"
+                "To quit a job, use `/job quit`.\n\n"
                 "Check out your profile with `/profile` to see your job and other stats.\n\n"
                 "**Leaderboard:**\n"
                 "Check the leaderboard with `/leaderboard`.\n"
