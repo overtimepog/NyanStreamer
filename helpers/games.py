@@ -265,7 +265,7 @@ async def fish(self, ctx, user_luck: int):
         xp_gained = rarity_xp.get(fish_rarity, 0) * count
         total_xp += xp_gained
 
-        description += f"x{count} {fish_emoji}{fish_name} - XP: {xp_gained}\n"
+        description += f"{count} {fish_emoji}{fish_name} - XP: {xp_gained}\n"
         try:
             await db_manager.add_item_to_inventory(ctx.author.id, fish_id, count)
         except Exception as e:
@@ -307,7 +307,7 @@ async def fish(self, ctx, user_luck: int):
 
                 fish_emoji = fish_data['item_emoji']
                 fish_name = fish_data['item_name']
-                sell_description += f"x{count} {fish_emoji}{fish_name} - ⌬{earned}\n"
+                sell_description += f"{count} {fish_emoji}{fish_name} - ⌬{earned}\n"
             except Exception as e:
                 logging.error(f"Error processing sell fish: {e}\n{traceback.format_exc()}")
                 await interaction.response.send_message("An error occurred while selling fish.")
