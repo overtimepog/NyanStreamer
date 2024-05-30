@@ -6119,4 +6119,106 @@ async def api_key_value_exists(api_key: str) -> bool:
         finally:
             await cursor.close()
 
+
+
+#leaderboard stuff
+async def update_leaderboard():
+    """
+    Update the leaderboard based on the latest data from the users table.
+    This function updates the leaderboard for both highest level and most money.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        # Fetch top users by level
+        async with db.execute("""
+            SELECT user_id, player_level
+            FROM users
+            ORDER BY player_level DESC
+            LIMIT 10
+        """) as cursor:
+            top_levels = await cursor.fetchall()
+
+        # Fetch top users by money
+        async with db.execute("""
+            SELECT user_id, money
+            FROM users
+            ORDER BY money DESC
+            LIMIT 10
+        """) as cursor:
+            top_money = await cursor.fetchall()
+
+        # Update leaderboard for highest level
+        for rank, (user_id, player_level) in enumerate(top_levels, start=1):
+            await db.execute("""
+                INSERT INTO leaderboard (category, user_id, value, rank)
+                VALUES ('highest_level', ?, ?, ?)
+                ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value
+            """, (user_id, player_level, rank))
+
+        # Update leaderboard for most money
+        for rank, (user_id, money) in enumerate(top_money, start=1):
+            await db.execute("""
+                INSERT INTO leaderboard (category, user_id, value, rank)
+                VALUES ('most_money', ?, ?, ?)
+                ON CONFLICT(category, rank) DO UPDATE SET value = excluded.value
+            """, (user_id, money, rank))
+
+        # Commit the transaction
+        await db.commit()
+
+
+async def get_leaderboard(category: str, limit: int = 10):
+    """
+    Retrieve the top users in a specific leaderboard category.
+
+    :param category: The category of the leaderboard.
+    :param limit: The number of top users to retrieve.
+    :return: A list of dictionaries containing user ID, value, and rank.
+    """
+    async with aiosqlite.connect("database/database.db") as db:
+        query = """
+        SELECT l.rank, l.user_id, u.username, u.discriminator, l.value
+        FROM leaderboard l
+        JOIN users u ON l.user_id = u.user_id
+        WHERE l.category = ?
+        ORDER BY l.rank ASC
+        LIMIT ?
+        """
+        async with db.execute(query, (category, limit)) as cursor:
+            result = await cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        leaderboard = [
+            {"rank": row[0], "user_id": row[1], "username": row[2], "discriminator": row[3], "value": row[4]}
+        for row in result
+        ]
+
+        return leaderboard
+
+async def create_leaderboard_categories():
+    """
+    Create the leaderboard table if it does not exist and initialize categories.
+    This function should be called during the bot startup.
+    """
+    print("~~~~~~~~~~ Starting Leaderboard Setup ~~~~~~~~~~")
+    
+    async with aiosqlite.connect("database/database.db") as db:
+        # Initialize the leaderboard categories with placeholder data
+        categories = ['highest_level', 'most_money']
+        for category in categories:
+            print(f"~ Initializing category: {category}")
+            for rank in range(1, 11):  # Initializing top 10 ranks for each category
+                await db.execute("""
+                    INSERT OR IGNORE INTO leaderboard (category, user_id, value, rank)
+                    VALUES (?, 'placeholder_user', 0, ?)
+                """, (category, rank))
+        
+        # Commit the transaction
+        await db.commit()
+        print("~ Database commit completed.")
+    
+    print("~~~~~~~~~~ Leaderboard Setup Completed ~~~~~~~~~~")
+
+
+
+
 # In your db_manager.py or similar module

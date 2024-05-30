@@ -2883,6 +2883,52 @@ class Basic(commands.Cog, name="basic"):
         embed.set_footer(text=f"Current streak: {streak} days")
         await ctx.send(embed=embed)
 
+    #leaderboard command, I want multiple categories for the leaderboard that the users uses a view to move between
+    class LeaderboardDropdown(Select):
+        def __init__(self):
+            options = [
+                discord.SelectOption(label="Highest Level", value="highest_level"),
+                discord.SelectOption(label="Most Money", value="most_money")
+            ]
+            super().__init__(placeholder="Choose a leaderboard category...", min_values=1, max_values=1, options=options)
+    
+        async def callback(self, interaction: discord.Interaction):
+            category = self.values[0]
+            leaderboard = await get_leaderboard(category)
+    
+            if not leaderboard:
+                await interaction.response.send_message(f"No entries found for the '{category}' leaderboard.", ephemeral=True)
+                return
+    
+            embed = discord.Embed(title=f"Leaderboard for {category.replace('_', ' ').title()}", color=discord.Color.blue())
+            for entry in leaderboard:
+                embed.add_field(
+                    name=f"Rank {entry['rank']}: {entry['username']}#{entry['discriminator']}",
+                    value=f"Value: {entry['value']}",
+                    inline=False
+                )
+    
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+    
+    class LeaderboardView(View):
+        def __init__(self):
+            super().__init__()
+            self.add_item(LeaderboardDropdown())
+    
+    @bot.hybrid_command(
+        name="leaderboard",
+        description="This command will show the leaderboard.",
+    )
+    async def leaderboard(ctx: commands.Context):
+        """
+        Show the leaderboard for a specified category.
+    
+        :param ctx: The context of the command.
+        """
+        await ctx.send("Please select a leaderboard category:", view=LeaderboardView())
+
+
+
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot):
     await bot.add_cog(Basic(bot))

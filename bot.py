@@ -449,6 +449,7 @@ async def setup() -> None:
 @bot.event
 async def on_ready() -> None:
     await init_db()
+    await db_manager.create_leaderboard_categories()
     print("\n-----------------------------")
     print(f"Logged in as {bot.user.name}")
     print(f"discord.py API version: {discord.__version__}")

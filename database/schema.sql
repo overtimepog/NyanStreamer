@@ -348,6 +348,15 @@ CREATE TABLE IF NOT EXISTS `enemy_drops` (
   `item_drop_chance` int(11) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS `leaderboard` (
+    `category` VARCHAR(255) NOT NULL,  -- The category of the leaderboard (e.g., 'highest_level', 'most_money')
+    `user_id` VARCHAR(20) NOT NULL,    -- The ID of the user
+    `value` INT NOT NULL,              -- The value for the leaderboard category (e.g., level or money)
+    `rank` INT NOT NULL,               -- The rank of the user in the leaderboard
+    PRIMARY KEY (`category`, `rank`),
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)
+);
+
 CREATE TABLE IF NOT EXISTS `inventory` (
   `user_id` varchar(20) NOT NULL,
   `item_id` varchar(255) NOT NULL,
