@@ -170,14 +170,26 @@ async def slots(self, ctx: Context, user, gamble):
 # /slots_rules will also show the user how to play the slots game
 # /slots_rules will also show the user the rewards for each slot
 async def slot_rules(ctx: Context):
-    #create the embed
+    # Create the embed
     embed = discord.Embed(
         title="Slots Rules",
-        description="Slots is a game where you bet money and spin the slots. If the slots are the same, you win money. If the slots are different, you lose money. \n :gem: | :gem: | :gem: | 10x \n :crown: | :crown: | :crown: | 7.5x \n :apple: | :apple: | :apple: | 5x \n :apple: | :apple: | :question: | 3x \n :gem: | :question: | :question: | 1.5x \n :crown: | :question: | :question: | 1.2x",
-        color=discord.Color.blue()
+        description=(
+            "Slots is a game where you bet money and spin the slots. If the slots are the same, you win money. If the slots are different, you lose money.\n\n"
+            ":gem: | :gem: | :gem: | 8x\n"
+            ":crown: | :crown: | :crown: | 6x\n"
+            ":seven: | :seven: | :seven: | 5x\n"
+            ":apple: | :apple: | :apple: | 3x\n"
+            ":apple: | :apple: | :question: | 1.1x\n\n"
+            "Other winning combinations:\n"
+            ":gem: | :question: | :question: | 2x\n"
+            ":crown: | :question: | :question: | 1.5x\n"
+            ":seven: | :question: | :question: | 1.2x\n"
+            "Any fruit combination | 1.1x"
+        ),
     )
-    #send the embed
+    # Send the embed
     await ctx.send(embed=embed)
+
 
 import logging
 import traceback
