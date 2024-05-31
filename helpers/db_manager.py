@@ -830,89 +830,68 @@ async def is_unique(twitch_id: int) -> bool:
     else:
         return True
 
+
+
 #check if a user is not dead
+# Check if a user is not dead
 async def is_alive(user_id: int) -> bool:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    data = await db.execute("SELECT isDead FROM users WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
-        users = await db.execute(f"SELECT `isDead` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-        if users[0] == True:
-            return False
-        else:
-            return True
-    else:
-        return False
-    
-#set a user's dead status to true
+        return not data[0]
+    return False
+
+# Set a user's dead status to true
 async def set_dead(user_id: int, revival_hours: int = 6) -> None:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-    if data is not None:
+    if await is_alive(user_id):
         time_of_death = datetime.datetime.now()
         revival_time = time_of_death + datetime.timedelta(hours=revival_hours)
-        await db.execute(f"UPDATE `users` SET `isDead` = ?, `time_of_death` = ?, `time_of_revival` = ? WHERE `user_id` = ?", (True, time_of_death, revival_time, user_id))
-    else:
-        return None
-    
-async def get_revival_time(user_id: int) -> int:
+        await db.execute(
+            "UPDATE users SET isDead = ?, time_of_death = ?, time_of_revival = ? WHERE user_id = ?",
+            (True, time_of_death, revival_time, user_id)
+        )
+
+# Set a user's dead status to false
+async def set_alive(user_id: int) -> None:
     db = DB()
-    data = await db.execute(f"SELECT `time_of_revival` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    if not await is_alive(user_id):
+        await db.execute("UPDATE users SET isDead = ? WHERE user_id = ?", (False, user_id))
+
+# Get the remaining revival time for a user
+async def get_revival_time(user_id: int) -> Optional[int]:
+    db = DB()
+    data = await db.execute("SELECT time_of_revival FROM users WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
-        revival_time = data[0]
+        revival_time = datetime.datetime.fromisoformat(data[0])
         current_time = datetime.datetime.now()
-        #convert the string to a datetime object
-        revival_time = datetime.datetime.fromisoformat(revival_time)
         remaining_time = revival_time - current_time
         if remaining_time.total_seconds() <= 0:
-            # The user's revival time has passed, so set them as alive
             await set_alive(user_id)
             return 0
-        else:
-            return int(remaining_time.total_seconds())
-    else:
-        return None
-    
-#revive all users whos revival time has passed
+        return int(remaining_time.total_seconds())
+    return None
+
+# Revive all users whose revival time has passed
 async def revive_users() -> None:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `users` WHERE isDead = ?", (True,), fetch="all")
+    data = await db.execute("SELECT user_id, time_of_revival FROM users WHERE isDead = ?", (True,), fetch="all")
     if data is not None:
         for user in data:
             user_id = user[0]
-            revival_time = user[37]
-            #convert it to a datetime object
-            revival_time = datetime.datetime.fromisoformat(revival_time)
+            revival_time = datetime.datetime.fromisoformat(user[1])
             current_time = datetime.datetime.now()
-            remaining_time = revival_time - current_time
-            if remaining_time.total_seconds() <= 0:
-                # The user's revival time has passed, so set them as alive
+            if current_time >= revival_time:
                 await set_alive(user_id)
-            else:
-                return None
-    else:
-        return None
-    
-async def get_revival_timestamp(user_id: int) -> int:
-    db = DB()
-    data = await db.execute(f"SELECT `time_of_revival` FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
-    if data is not None:
-        revival_time = data[0]
-        # Convert the string to a datetime object
-        revival_time = datetime.datetime.fromisoformat(revival_time)
-        timestamp = revival_time.timestamp()
-        return int(timestamp)
-    else:
-        return None
 
-        
-#set a user's dead status to false
-async def set_alive(user_id: int) -> None:
+# Get the revival timestamp for a user
+async def get_revival_timestamp(user_id: int) -> Optional[int]:
     db = DB()
-    data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
+    data = await db.execute("SELECT time_of_revival FROM users WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
-        await db.execute(f"UPDATE `users` SET `isDead` = ? WHERE `user_id` = ?", (False, user_id))
-    else:
-        return None
+        revival_time = datetime.datetime.fromisoformat(data[0])
+        return int(revival_time.timestamp())
+    return None
 
 async def check_if_user_in_db(user_id: int) -> bool:
     db = DB()
