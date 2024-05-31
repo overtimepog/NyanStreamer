@@ -443,6 +443,10 @@ async def setup() -> None:
 
     tasks = [check_server(i, bot_guild, total_guilds) for i, bot_guild in enumerate(bot.guilds, start=1)]
     await asyncio.gather(*tasks)
+    
+    #give devs the dev badge
+    for dev in config["devs"]:
+        await db_manager.add_item_to_inventory(dev, "dev_badge", 1)
     print("\nSetup Complete")
     print("\n-----------------------------")
 

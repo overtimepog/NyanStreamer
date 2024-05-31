@@ -3,7 +3,7 @@
         "item_id": "dev_badge",
         "item_name": "Dev Badge",
         "item_price": -1,
-        "item_emoji": "<:Clock:1118276665395654806>",
+        "item_emoji": "<:96_Gear_Fancy:1246071212371738706>",
         "item_rarity": "Legendary",
         "item_type": "Badge",
         "item_damage": 0,
@@ -18,7 +18,7 @@
         "item_recipe": [],
         "isHuntable": true,
         "item_hunt_chance": 0,
-        "item_effect": "None",
+        "item_effect": "luck + 5",
         "isMineable": true,
         "item_mine_chance": 0,
         "item_sub_type": "Badge"
