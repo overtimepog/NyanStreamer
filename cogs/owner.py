@@ -444,5 +444,35 @@ class Owner(commands.Cog, name="owner"):
 
         # Delete the temporary file
         os.remove(filename)
+        
+    #kill command to kill a user
+    @commands.hybrid_command(
+        name="kill",
+        description="Kill a user.",
+    )
+    @commands.has_permissions(administrator=True)
+    @checks.is_owner()
+    async def kill(ctx: commands.Context, target: discord.Member):
+        if await db_manager.is_alive(target.id):
+            await db_manager.set_dead(target.id)
+            await ctx.send(f"{target.mention} has been killed. They will be revived in 6 hours.")
+        else:
+            await ctx.send(f"{target.mention} is already dead.")
+
+    # Command to revive a user
+    @commands.hybrid_command(
+        name="revive",
+        description="Revive a user.",
+    )
+    @commands.has_permissions(administrator=True)
+    @checks.is_owner()
+    async def revive(ctx: commands.Context, target: discord.Member):
+        if not await db_manager.is_alive(target.id):
+            await db_manager.set_alive(target.id)
+            await ctx.send(f"{target.mention} has been revived.")
+        else:
+            await ctx.send(f"{target.mention} is already alive.")
+        
+        
 async def setup(bot):
     await bot.add_cog(Owner(bot))
