@@ -2103,11 +2103,13 @@ async def userattack(ctx: Context, target: discord.Member):
         weapon_quotes = await db_manager.get_item_quotes(weapon)
 
     prompt = random.choice(weapon_quotes)
+    if isinstance(prompt, tuple):
+        prompt = prompt[0]
     prompt = prompt.replace("{user}", attacker.name)
     prompt = prompt.replace("{target}", target.name)
     prompt = prompt.replace("{damage}", str(damage))
     if crit:
-        prompt += " and a Critical Hit!"
+        prompt += " With a critical hit!"
 
     # Send the attack message
     await ctx.send(prompt)
@@ -2142,7 +2144,7 @@ async def userattack(ctx: Context, target: discord.Member):
                 if random.randint(1, 100) <= steal_chance:
                     stolen_items.append(item)
                     await db_manager.add_item_to_inventory(attacker.id, item, 1)
-                    await db_manager.remove_item_from_inventory(target.id, item[0], 1)
+                    await db_manager.remove_item_from_inventory(target.id, item, 1)
                     
         items_stolen_names = ", ".join([item[2] for item in stolen_items]) if stolen_items else "None"
         
@@ -2153,24 +2155,5 @@ async def userattack(ctx: Context, target: discord.Member):
         embed.add_field(name="Money Stolen", value=f"{money_to_give} coins", inline=True)
         embed.add_field(name="XP Stolen", value=f"{xp_to_give} XP", inline=True)
         embed.add_field(name="Items Stolen", value=items_stolen_names, inline=False)
-        
-        #check if the user can level up
-        CanLevelUp = await db_manager.can_level_up(attacker.id)
-        if CanLevelUp:
-            #if the user can level up, level them up
-            await db_manager.add_level(attacker.id, 1)
-            #send a message to the channel saying the user has leveled up
-            #get the users new level
-            new_level = await db_manager.get_level(attacker.id)
-            #remove the () and , from the level
-            new_level = str(new_level)
-            new_level = new_level.replace("(", "")
-            new_level = new_level.replace(")", "")
-            new_level = new_level.replace(",", "")
-            #convert the level to int
-            new_level = int(new_level)
-            #add it to the embed
-            embed.add_field(name="Level Up!", value=f"{attacker.name} has leveled up to level {new_level}!", inline=False)
-            #get the users quest
         
         await ctx.send(embed=embed)
