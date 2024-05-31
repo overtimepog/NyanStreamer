@@ -34,9 +34,13 @@ def load_json(file_path):
     with open(file_path, "r", encoding="utf8") as f:
         return json.load(f)
 
-# Function to extract lists from loaded JSON
-def extract_list(data):
-    return list(data.values())
+def ensure_list(data):
+    if isinstance(data, list):
+        return data
+    elif isinstance(data, dict):
+        return list(data.values())
+    else:
+        raise TypeError(f"Unexpected data type: {type(data)}")
 
 # Items
 item_files = [
@@ -52,9 +56,9 @@ item_files = [
     "assets/items/collectables.json"
 ]
 
-items = [extract_list(load_json(file)) for file in item_files]
+items = [ensure_list(load_json(file)) for file in item_files]
 weapons, materials, tools, armor, consumables, misc, badges, sellables, pets, collectables = items
-basic_items = sum(items, [])
+basic_items = [item for sublist in items for item in sublist]
 
 # Enemies
 enemies_files = [
@@ -62,21 +66,20 @@ enemies_files = [
     "assets/enemies/bosses.json"
 ]
 
-enemies, bosses = [extract_list(load_json(file)) for file in enemies_files]
+enemies, bosses = [ensure_list(load_json(file)) for file in enemies_files]
 enemies = enemies + bosses
 
 # Quests
-quests = extract_list(load_json("assets/quests/quests.json"))
+quests = ensure_list(load_json("assets/quests/quests.json"))
 
 # Jobs
-jobs = extract_list(load_json("assets/jobs/jobs.json"))
+jobs = ensure_list(load_json("assets/jobs/jobs.json"))
 
 # Chests
-chests = extract_list(load_json("assets/items/chests.json"))
+chests = ensure_list(load_json("assets/items/chests.json"))
 
 # Structures
-structures = extract_list(load_json("assets/items/structures.json"))
-
+structures = ensure_list(load_json("assets/items/structures.json"))
 
 class Database:
     @staticmethod
