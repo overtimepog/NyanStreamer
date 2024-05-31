@@ -121,56 +121,93 @@ async def slots(self, ctx: Context, user, gamble):
             base_probability = 0.45  # base probability of winning
             luck_factor = luck / 100  # assuming luck is out of 100
             return base_probability + (luck_factor * (1 - base_probability))
-
+    
         win_probability = adjust_probability(luck)
-
+    
         total_winnings = 0
-
+    
         if random.random() < win_probability:
-            lines = grid + list(zip(*grid))  # Rows and columns
-            diagonals = [[grid[i][i] for i in range(3)], [grid[i][2-i] for i in range(3)]]
-            all_lines = lines + diagonals
-
-            # Check for exact matches first (three in a row)
-            for line in all_lines:
-                unique_symbols = set(line)
-                if len(unique_symbols) == 1:
-                    symbol = unique_symbols.pop()
-                    if symbol == ":gem:":
-                        total_winnings += gamble * 8
-                    elif symbol == ":crown:":
-                        total_winnings += gamble * 6
-                    elif symbol == ":seven:":
-                        total_winnings += gamble * 5
-                    elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
-                        total_winnings += gamble * 3
-                    else:
-                        total_winnings += gamble * 4
-
-            # Check for partial matches (two in a row)
-            for line in all_lines:
-                if line[0] == line[1] or line[1] == line[2] or line[0] == line[2]:
-                    if line[0] == line[1]:
-                        symbol = line[0]
-                    elif line[1] == line[2]:
-                        symbol = line[1]
-                    elif line[0] == line[2]:
-                        symbol = line[0]
-
-                    if symbol == ":gem:":
-                        total_winnings += gamble * 2
-                    elif symbol == ":crown:":
-                        total_winnings += gamble * 1.5
-                    elif symbol == ":seven:":
-                        total_winnings += gamble * 1.2
-                    elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
-                        total_winnings += gamble * 1.1
-
+            # Check for three in a row (horizontal, vertical, and diagonal)
+            for i in range(3):
+                # Horizontal check
+                if grid[i][0] == grid[i][1] == grid[i][2]:
+                    symbol = grid[i][0]
+                    total_winnings += get_symbol_payout(symbol, gamble, 3)
+                
+                # Vertical check
+                if grid[0][i] == grid[1][i] == grid[2][i]:
+                    symbol = grid[0][i]
+                    total_winnings += get_symbol_payout(symbol, gamble, 3)
+    
+            # Diagonal checks
+            if grid[0][0] == grid[1][1] == grid[2][2]:
+                symbol = grid[0][0]
+                total_winnings += get_symbol_payout(symbol, gamble, 3)
+            if grid[0][2] == grid[1][1] == grid[2][0]:
+                symbol = grid[0][2]
+                total_winnings += get_symbol_payout(symbol, gamble, 3)
+    
+            # Check for two in a row (horizontal, vertical, and diagonal)
+            for i in range(3):
+                # Horizontal check
+                if grid[i][0] == grid[i][1] and grid[i][0] != grid[i][2]:
+                    symbol = grid[i][0]
+                    total_winnings += get_symbol_payout(symbol, gamble, 2)
+                if grid[i][1] == grid[i][2] and grid[i][1] != grid[i][0]:
+                    symbol = grid[i][1]
+                    total_winnings += get_symbol_payout(symbol, gamble, 2)
+    
+                # Vertical check
+                if grid[0][i] == grid[1][i] and grid[0][i] != grid[2][i]:
+                    symbol = grid[0][i]
+                    total_winnings += get_symbol_payout(symbol, gamble, 2)
+                if grid[1][i] == grid[2][i] and grid[1][i] != grid[0][i]:
+                    symbol = grid[1][i]
+                    total_winnings += get_symbol_payout(symbol, gamble, 2)
+    
+            # Diagonal checks
+            if grid[0][0] == grid[1][1] and grid[0][0] != grid[2][2]:
+                symbol = grid[0][0]
+                total_winnings += get_symbol_payout(symbol, gamble, 2)
+            if grid[1][1] == grid[2][2] and grid[1][1] != grid[0][0]:
+                symbol = grid[1][1]
+                total_winnings += get_symbol_payout(symbol, gamble, 2)
+            if grid[0][2] == grid[1][1] and grid[0][2] != grid[2][0]:
+                symbol = grid[0][2]
+                total_winnings += get_symbol_payout(symbol, gamble, 2)
+            if grid[1][1] == grid[2][0] and grid[1][1] != grid[0][2]:
+                symbol = grid[1][1]
+                total_winnings += get_symbol_payout(symbol, gamble, 2)
+    
         # If no winnings were calculated, the player loses the gamble amount
         if total_winnings == 0:
             return -gamble
-
+    
         return total_winnings - gamble  # Net winnings
+    
+    def get_symbol_payout(symbol, gamble, count):
+        if count == 3:
+            if symbol == ":gem:":
+                return gamble * 8
+            elif symbol == ":crown:":
+                return gamble * 6
+            elif symbol == ":seven:":
+                return gamble * 5
+            elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+                return gamble * 3
+            else:
+                return gamble * 4
+        elif count == 2:
+            if symbol == ":gem:":
+                return gamble * 2
+            elif symbol == ":crown:":
+                return gamble * 1.5
+            elif symbol == ":seven:":
+                return gamble * 1.2
+            elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+                return gamble * 1.1
+        return 0
+
 
     await play_slots(user, gamble)
 
