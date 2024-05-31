@@ -129,6 +129,7 @@ async def slots(self, ctx: Context, user, gamble):
             diagonals = [[grid[i][i] for i in range(3)], [grid[i][2-i] for i in range(3)]]
             all_lines = lines + diagonals
 
+            # Check for exact matches first (three in a row)
             for line in all_lines:
                 unique_symbols = set(line)
                 if len(unique_symbols) == 1:
@@ -144,23 +145,30 @@ async def slots(self, ctx: Context, user, gamble):
                     else:
                         return gamble * 4
 
+            # Check for partial matches (two in a row)
             for line in all_lines:
-                if ":gem:" in line:
-                    return gamble * 2
-                elif ":crown:" in line:
-                    return gamble * 1.5
-                elif ":seven:" in line:
-                    return gamble * 1.2
-                elif any(fruit in line for fruit in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
-                    return gamble * 1.1
+                if line[0] == line[1] or line[1] == line[2] or line[0] == line[2]:
+                    unique_symbols = set(line)
+                    if len(unique_symbols) == 2:
+                        if ":gem:" in unique_symbols:
+                            return gamble * 2
+                        elif ":crown:" in unique_symbols:
+                            return gamble * 1.5
+                        elif ":seven:" in unique_symbols:
+                            return gamble * 1.2
+                        elif any(fruit in unique_symbols for fruit in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
+                            return gamble * 1.1
 
+            # Special case checks (not part of the "Other Winning Combinations")
             if (grid[0][1] == grid[1][1] == grid[2][1] and grid[0][1] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
                 return gamble * 4
 
             if (grid[0][0] == grid[0][2] == grid[2][0] == grid[2][2] and grid[0][0] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
                 return gamble * 5
 
+        # If none of the winning conditions are met
         return -gamble
+
 
     await play_slots(user, gamble)
 
@@ -172,20 +180,21 @@ async def slots(self, ctx: Context, user, gamble):
 async def slot_rules(ctx: Context):
     # Create the embed
     embed = discord.Embed(
-        title="Slots Rules",
+        title="Slot Machine Rules",
         description=(
-            "Slots is a game where you bet money and spin the slots. If the slots are the same, you win money. If the slots are different, you lose money.\n\n"
-            ":gem: | :gem: | :gem: | 8x\n"
-            ":crown: | :crown: | :crown: | 6x\n"
-            ":seven: | :seven: | :seven: | 5x\n"
-            ":apple: | :apple: | :apple: | 3x\n"
-            ":apple: | :apple: | :question: | 1.1x\n\n"
-            "Other winning combinations:\n"
-            ":gem: | :question: | :question: | 2x\n"
-            ":crown: | :question: | :question: | 1.5x\n"
-            ":seven: | :question: | :question: | 1.2x\n"
-            "Any fruit combination | 1.1x"
+            "Slots is a game where you bet money and spin the slots. If the slots match according to the rules below, you win money. If they don't, you lose your bet.\n\n"
+            "Winning Combinations:\n"
+            ":gem: | :gem: | :gem: | **8x your bet**\n"
+            ":crown: | :crown: | :crown: | **6x your bet**\n"
+            ":seven: | :seven: | :seven: | **5x your bet**\n"
+            ":apple: | :apple: | :apple: | **3x your bet**\n\n"
+            "Partial Winning Combinations (Two in a row):\n"
+            ":gem: | :gem: | :question: | **2x your bet**\n"
+            ":crown: | :crown: | :question: | **1.5x your bet**\n"
+            ":seven: | :seven: | :question: | **1.2x your bet**\n"
+            "Any two matching fruit symbols | **1.1x your bet**"
         ),
+        color=0x00ff00  # Optional: add color to the embed
     )
     # Send the embed
     await ctx.send(embed=embed)
