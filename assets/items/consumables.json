@@ -106,37 +106,6 @@
             }
         ],
         "item_sub_type": "None"
-    },    
-    {
-        "item_id": "cheese",
-        "item_name": "Cheese",
-        "item_price": 50,
-        "item_emoji": "<:339_Cheese:1245951195135086654>",
-        "item_rarity": "Common",
-        "item_type": "Consumable",
-        "item_heal": "10-15",
-        "isUsable": true,
-        "inShop": true,
-        "isEquippable": false,
-        "item_description": "A delicious piece of cheese that restores health.",
-        "item_element": "None",
-        "item_crit_chance": "None",
-        "item_projectile": "None",
-        "recipe_id": "None",
-        "item_recipe": [],
-        "item_effect": "Heals {user} for {heal} health points.",
-        "isMineable": false,
-        "item_mine_chance": 0,
-        "quote_id": "cheese",
-        "item_quotes": [
-            {
-                "quote": "{user} eats some Cheese and recovers {heal} health points!"
-            },
-            {
-                "quote": "{user} enjoys a piece of Cheese, restoring {heal} health points!"
-            }
-        ],
-        "item_sub_type": "None"
     },
     {
         "item_id": "luckpotion",
