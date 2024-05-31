@@ -121,14 +121,14 @@ async def slots(self, ctx: Context, user, gamble):
             base_probability = 0.45  # base probability of winning
             luck_factor = luck / 100  # assuming luck is out of 100
             return base_probability + (luck_factor * (1 - base_probability))
-
+    
         win_probability = adjust_probability(luck)
-
+    
         if random.random() < win_probability:
             lines = grid + list(zip(*grid))  # Rows and columns
             diagonals = [[grid[i][i] for i in range(3)], [grid[i][2-i] for i in range(3)]]
             all_lines = lines + diagonals
-
+    
             # Check for exact matches first (three in a row)
             for line in all_lines:
                 unique_symbols = set(line)
@@ -144,32 +144,32 @@ async def slots(self, ctx: Context, user, gamble):
                         return gamble * 3
                     else:
                         return gamble * 4
-
+    
             # Check for partial matches (two in a row)
             for line in all_lines:
+                # Check if any two consecutive symbols are the same
                 if line[0] == line[1] or line[1] == line[2] or line[0] == line[2]:
-                    unique_symbols = set(line)
-                    if len(unique_symbols) == 2:
-                        if ":gem:" in unique_symbols:
-                            return gamble * 2
-                        elif ":crown:" in unique_symbols:
-                            return gamble * 1.5
-                        elif ":seven:" in unique_symbols:
-                            return gamble * 1.2
-                        elif any(fruit in unique_symbols for fruit in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
-                            return gamble * 1.1
-
+                    for i in range(2):
+                        if line[i] == line[i+1]:
+                            symbol = line[i]
+                            if symbol == ":gem:":
+                                return gamble * 2
+                            elif symbol == ":crown:":
+                                return gamble * 1.5
+                            elif symbol == ":seven:":
+                                return gamble * 1.2
+                            elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+                                return gamble * 1.1
+    
             # Special case checks (not part of the "Other Winning Combinations")
             if (grid[0][1] == grid[1][1] == grid[2][1] and grid[0][1] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
                 return gamble * 4
-
+    
             if (grid[0][0] == grid[0][2] == grid[2][0] == grid[2][2] and grid[0][0] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
                 return gamble * 5
-
+    
         # If none of the winning conditions are met
         return -gamble
-
-
     await play_slots(user, gamble)
 
 #create slots_rules function
