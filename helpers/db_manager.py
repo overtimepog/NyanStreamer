@@ -30,11 +30,13 @@ import collections
 #`isUsable` boolean NOT NULL,
 #`isEquippable` boolean NOT NULL    
       
-import json
-
 def load_json(file_path):
     with open(file_path, "r", encoding="utf8") as f:
         return json.load(f)
+
+# Function to extract lists from loaded JSON
+def extract_list(data):
+    return list(data.values())
 
 # Items
 item_files = [
@@ -50,9 +52,9 @@ item_files = [
     "assets/items/collectables.json"
 ]
 
-items = [load_json(file) for file in item_files]
+items = [extract_list(load_json(file)) for file in item_files]
 weapons, materials, tools, armor, consumables, misc, badges, sellables, pets, collectables = items
-basic_items = sellables + collectables + weapons + materials + tools + armor + consumables + misc + badges + pets
+basic_items = sum(items, [])
 
 # Enemies
 enemies_files = [
@@ -60,20 +62,21 @@ enemies_files = [
     "assets/enemies/bosses.json"
 ]
 
-enemies, bosses = [load_json(file) for file in enemies_files]
-enemies += bosses
+enemies, bosses = [extract_list(load_json(file)) for file in enemies_files]
+enemies = enemies + bosses
 
 # Quests
-quests = load_json("assets/quests/quests.json")
+quests = extract_list(load_json("assets/quests/quests.json"))
 
 # Jobs
-jobs = load_json("assets/jobs/jobs.json")
+jobs = extract_list(load_json("assets/jobs/jobs.json"))
 
 # Chests
-chests = load_json("assets/items/chests.json")
+chests = extract_list(load_json("assets/items/chests.json"))
 
 # Structures
-structures = load_json("assets/items/structures.json")
+structures = extract_list(load_json("assets/items/structures.json"))
+
 
 class Database:
     @staticmethod
