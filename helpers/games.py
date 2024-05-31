@@ -45,7 +45,8 @@ async def slots(self, ctx: Context, user, gamble):
     emoji = [
         ":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:",
         ":tangerine:", ":watermelon:", ":strawberry:", ":banana:",
-        ":pineapple:", ":kiwi:", ":pear:", ":crown:", ":gem:"
+        ":pineapple:", ":kiwi:", ":pear:", ":crown:", ":gem:",
+        ":bell:", ":star:", ":seven:", ":heart:"
     ]
     slot_spin = "<a:spin:1245491420165312594>"
     redo_emoji = "🔁"
@@ -85,8 +86,8 @@ async def slots(self, ctx: Context, user, gamble):
             return user_check == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
 
         grid = [[slot_spin] * 3 for _ in range(3)]
-        for row in range(3):
-            for col in range(3):
+        for col in range(3):
+            for row in range(3):
                 await asyncio.sleep(1)
                 grid[row][col] = await spin_slot()
                 await update_embed(slot_machine, grid, gamble)
@@ -120,15 +121,19 @@ async def slots(self, ctx: Context, user, gamble):
             if len(unique_symbols) == 1:
                 symbol = unique_symbols.pop()
                 if symbol == ":gem:":
-                    return gamble * 10
+                    return gamble * 8
                 elif symbol == ":crown:":
-                    return gamble * 7.5
-                else:
+                    return gamble * 6
+                elif symbol == ":seven:":
                     return gamble * 5
+                else:
+                    return gamble * 4
         for line in all_lines:
             if ":gem:" in line:
-                return gamble * 1.5
+                return gamble * 2
             elif ":crown:" in line:
+                return gamble * 1.5
+            elif ":seven:" in line:
                 return gamble * 1.2
         return -gamble
 
