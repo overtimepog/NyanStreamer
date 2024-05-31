@@ -84,7 +84,7 @@ async def slots(self, ctx: Context, user, gamble):
         def check(reaction, user_check):
             return user_check == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
 
-        slots = [await spin_slot() for _ in range(3)]
+        slots = [slot_spin, slot_spin, slot_spin]
         for i in range(3):
             await asyncio.sleep(1)
             slots[i] = await spin_slot()
