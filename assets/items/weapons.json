@@ -1,4 +1,5 @@
-{
+[
+    {
     "item_id": "handgun",
     "item_name": "Handgun",
     "item_price": 250,
@@ -52,4 +53,5 @@
         }
     ],
     "item_sub_type": "None"
-}
+    }
+]
