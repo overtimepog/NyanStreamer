@@ -40,7 +40,6 @@ rarity_colors = {
     # Add more rarities and colors as needed
 }
 
-#slots
 async def slots(self, ctx: Context, user, gamble):
     emoji = [
         ":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:",
@@ -87,7 +86,27 @@ async def slots(self, ctx: Context, user, gamble):
         def check(reaction, user_check):
             return user_check == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
 
-        grid = [[slot_spin] * 3 for _ in range(3)]
+        def build_grid(win_probability):
+            grid = [[None] * 3 for _ in range(3)]
+            for row in range(3):
+                for col in range(3):
+                    if random.random() < win_probability:
+                        # Increase chance of three in a row or adjacent matches
+                        if row > 0 and grid[row-1][col] is not None:
+                            grid[row][col] = grid[row-1][col]
+                        elif col > 0 and grid[row][col-1] is not None:
+                            grid[row][col] = grid[row][col-1]
+                        elif row > 0 and col > 0 and grid[row-1][col-1] is not None:
+                            grid[row][col] = grid[row-1][col-1]
+                        else:
+                            grid[row][col] = random.choice(emoji)
+                    else:
+                        grid[row][col] = random.choice(emoji)
+            return grid
+
+        luck_adjusted_probability = adjust_probability(luck)
+        grid = build_grid(luck_adjusted_probability)
+
         for col in range(3):
             await asyncio.sleep(1)
             for row in range(3):
@@ -115,12 +134,13 @@ async def slots(self, ctx: Context, user, gamble):
         else:
             await slot_machine.clear_reaction(redo_emoji)
             return await play_slots(user, gamble)
+        
+    def adjust_probability(luck):
+        base_probability = 0.45  # base probability of winning
+        luck_factor = luck / 100  # assuming luck is out of 100
+        return base_probability + (luck_factor * (1 - base_probability))
 
     def calculate_winnings_with_print(grid, gamble, luck):
-        def adjust_probability(luck):
-            base_probability = 0.45  # base probability of winning
-            luck_factor = luck / 100  # assuming luck is out of 100
-            return base_probability + (luck_factor * (1 - base_probability))
     
         def get_symbol_payout(symbol, gamble, count):
             if count == 3:
@@ -167,52 +187,49 @@ async def slots(self, ctx: Context, user, gamble):
                         matches.append((grid[i][j], 2))
             return matches
     
-        win_probability = adjust_probability(luck)
         total_winnings = 0
-    
-        if random.random() < win_probability:
-            # Check all possibilities for three in a row
-            for i in range(3):
-                # Horizontal check
-                if grid[i][0] == grid[i][1] == grid[i][2]:
-                    symbol = grid[i][0]
-                    print(f"Three in a row horizontally: {symbol} at row {i}")
-                    total_winnings += get_symbol_payout(symbol, gamble, 3)
-                # Vertical check
-                if grid[0][i] == grid[1][i] == grid[2][i]:
-                    symbol = grid[0][i]
-                    print(f"Three in a row vertically: {symbol} at column {i}")
-                    total_winnings += get_symbol_payout(symbol, gamble, 3)
-    
-            # Diagonal checks
-            if grid[0][0] == grid[1][1] == grid[2][2]:
-                symbol = grid[0][0]
-                print("Three in a row diagonally: ", symbol)
+
+        # Check all possibilities for three in a row
+        for i in range(3):
+            # Horizontal check
+            if grid[i][0] == grid[i][1] == grid[i][2]:
+                symbol = grid[i][0]
+                print(f"Three in a row horizontally: {symbol} at row {i}")
                 total_winnings += get_symbol_payout(symbol, gamble, 3)
-            if grid[0][2] == grid[1][1] == grid[2][0]:
-                symbol = grid[0][2]
-                print("Three in a row diagonally: ", symbol)
+            # Vertical check
+            if grid[0][i] == grid[1][i] == grid[2][i]:
+                symbol = grid[0][i]
+                print(f"Three in a row vertically: {symbol} at column {i}")
                 total_winnings += get_symbol_payout(symbol, gamble, 3)
-    
-            # Check for adjacent and diagonal matches
-            matches = check_adjacent_and_diagonal_matches(grid)
-            for match in matches:
-                symbol, count = match
-                print(f"Adjacent or diagonal match: {symbol} with count {count}")
-                total_winnings += get_symbol_payout(symbol, gamble, count)
-    
+
+        # Diagonal checks
+        if grid[0][0] == grid[1][1] == grid[2][2]:
+            symbol = grid[0][0]
+            print("Three in a row diagonally: ", symbol)
+            total_winnings += get_symbol_payout(symbol, gamble, 3)
+        if grid[0][2] == grid[1][1] == grid[2][0]:
+            symbol = grid[0][2]
+            print("Three in a row diagonally: ", symbol)
+            total_winnings += get_symbol_payout(symbol, gamble, 3)
+
+        # Check for adjacent and diagonal matches
+        matches = check_adjacent_and_diagonal_matches(grid)
+        for match in matches:
+            symbol, count = match
+            print(f"Adjacent or diagonal match: {symbol} with count {count}")
+            total_winnings += get_symbol_payout(symbol, gamble, count)
+
         # If no winnings were calculated, the player loses the gamble amount
         if total_winnings == 0:
             print("Loss")
             return -gamble
-    
+
         print("Total winnings: ", total_winnings - gamble)
         return total_winnings - gamble  # Net winnings
 
-
-
-
     await play_slots(user, gamble)
+
+
 
 #create slots_rules function
 #this function will be called when the user types !slots_rules
