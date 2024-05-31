@@ -118,11 +118,13 @@ async def slots(self, ctx: Context, user, gamble):
 
     def calculate_winnings(grid, gamble, luck):
         def adjust_probability(luck):
-            base_probability = 0.70  # base probability of winning
+            base_probability = 0.45  # base probability of winning
             luck_factor = luck / 100  # assuming luck is out of 100
             return base_probability + (luck_factor * (1 - base_probability))
     
         win_probability = adjust_probability(luck)
+    
+        total_winnings = 0
     
         if random.random() < win_probability:
             lines = grid + list(zip(*grid))  # Rows and columns
@@ -135,41 +137,43 @@ async def slots(self, ctx: Context, user, gamble):
                 if len(unique_symbols) == 1:
                     symbol = unique_symbols.pop()
                     if symbol == ":gem:":
-                        return gamble * 8
+                        total_winnings += gamble * 8
                     elif symbol == ":crown:":
-                        return gamble * 6
+                        total_winnings += gamble * 6
                     elif symbol == ":seven:":
-                        return gamble * 5
+                        total_winnings += gamble * 5
                     elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
-                        return gamble * 3
+                        total_winnings += gamble * 3
                     else:
-                        return gamble * 4
+                        total_winnings += gamble * 4
     
             # Check for partial matches (two in a row)
             for line in all_lines:
-                # Check if any two consecutive symbols are the same
-                if line[0] == line[1] or line[1] == line[2] or line[0] == line[2]:
-                    for i in range(2):
-                        if line[i] == line[i+1]:
-                            symbol = line[i]
-                            if symbol == ":gem:":
-                                return gamble * 2
-                            elif symbol == ":crown:":
-                                return gamble * 1.5
-                            elif symbol == ":seven:":
-                                return gamble * 1.2
-                            elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
-                                return gamble * 1.1
+                for i in range(2):
+                    if line[i] == line[i+1]:
+                        symbol = line[i]
+                        if symbol == ":gem:":
+                            total_winnings += gamble * 2
+                        elif symbol == ":crown:":
+                            total_winnings += gamble * 1.5
+                        elif symbol == ":seven:":
+                            total_winnings += gamble * 1.2
+                        elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+                            total_winnings += gamble * 1.1
     
             # Special case checks (not part of the "Other Winning Combinations")
             if (grid[0][1] == grid[1][1] == grid[2][1] and grid[0][1] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
-                return gamble * 4
+                total_winnings += gamble * 4
     
             if (grid[0][0] == grid[0][2] == grid[2][0] == grid[2][2] and grid[0][0] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
-                return gamble * 5
+                total_winnings += gamble * 5
     
-        # If none of the winning conditions are met
-        return -gamble
+        # If no winnings were calculated, the player loses the gamble amount
+        if total_winnings == 0:
+            return -gamble
+    
+        return total_winnings - gamble  # Net winnings
+
 
 
     await play_slots(user, gamble)
