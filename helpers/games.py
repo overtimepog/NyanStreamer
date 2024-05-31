@@ -117,13 +117,13 @@ async def slots(self, ctx: Context, user, gamble):
             for row in range(3):
                 grid[row][0] = await spin_slot()
             await update_embed(slot_machine, grid, gamble)
-            await asyncio.sleep(2)  # Adjust this sleep duration as needed for timing
+            await asyncio.sleep(1)  # Adjust this sleep duration as needed for timing
 
             # Stop columns 2, 5, and 8
             for row in range(3):
                 grid[row][1] = await spin_slot()
             await update_embed(slot_machine, grid, gamble)
-            await asyncio.sleep(3)  # Adjust this sleep duration as needed for timing
+            await asyncio.sleep(1)  # Adjust this sleep duration as needed for timing
 
             # Stop columns 3, 6, and 9
             for row in range(3):
