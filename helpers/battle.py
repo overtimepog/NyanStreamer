@@ -2016,7 +2016,7 @@ async def userattack(ctx: Context, target: discord.Member):
         return
 
     # Get the inventory of the attacker
-    inventory = await db_manager.get_inventory(attacker.id)
+    inventory = await db_manager.view_inventory(attacker.id)
     
     # Find the most expensive weapon
     weapons = [item for item in inventory if item[7] == 'Weapon']

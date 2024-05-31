@@ -30,53 +30,50 @@ import collections
 #`isUsable` boolean NOT NULL,
 #`isEquippable` boolean NOT NULL    
       
-#Items
-with open("assets/items/weapons.json", "r", encoding="utf8") as f:
-    weapons = json.load(f)
-with open("assets/items/materials.json", "r", encoding="utf8") as f:
-    materials = json.load(f)
-with open("assets/items/tools.json", "r", encoding="utf8") as f:
-    tools = json.load(f)
-with open("assets/items/armor.json", "r", encoding="utf8") as f:
-    armor = json.load(f)
-with open("assets/items/consumables.json", "r", encoding="utf8") as f:
-    consumables = json.load(f)
-with open("assets/items/misc.json", "r", encoding="utf8") as f:
-    misc = json.load(f)
-with open ("assets/items/badges.json", "r", encoding="utf8") as f:
-    badges = json.load(f)
-with open ("assets/items/sellables.json", "r", encoding="utf8") as f:
-    sellables = json.load(f)
-with open ("assets/items/pets.json", "r", encoding="utf8") as f:
-    pets = json.load(f)
-with open ("assets/items/collectables.json", "r", encoding="utf8") as f:
-    collectables = json.load(f)
+import json
+
+def load_json(file_path):
+    with open(file_path, "r", encoding="utf8") as f:
+        return json.load(f)
+
+# Items
+item_files = [
+    "assets/items/weapons.json",
+    "assets/items/materials.json",
+    "assets/items/tools.json",
+    "assets/items/armor.json",
+    "assets/items/consumables.json",
+    "assets/items/misc.json",
+    "assets/items/badges.json",
+    "assets/items/sellables.json",
+    "assets/items/pets.json",
+    "assets/items/collectables.json"
+]
+
+items = [load_json(file) for file in item_files]
+weapons, materials, tools, armor, consumables, misc, badges, sellables, pets, collectables = items
 basic_items = sellables + collectables + weapons + materials + tools + armor + consumables + misc + badges + pets
-    
-#Enemies
-with open("assets/enemies/enemies.json", "r", encoding="utf8") as f:
-    enemies = json.load(f)
-with open("assets/enemies/bosses.json", "r", encoding="utf8") as f:
-    bosses = json.load(f)
-enemies = enemies  + bosses
 
-#Quests
-with open("assets/quests/quests.json", "r", encoding="utf8") as f:
-    quests = json.load(f)
+# Enemies
+enemies_files = [
+    "assets/enemies/enemies.json",
+    "assets/enemies/bosses.json"
+]
 
-# Load jobs data
-with open("assets/jobs/jobs.json", "r", encoding="utf8") as f:
-    jobs = json.load(f)
+enemies, bosses = [load_json(file) for file in enemies_files]
+enemies += bosses
 
+# Quests
+quests = load_json("assets/quests/quests.json")
 
-#chests
-with open("assets/items/chests.json", "r", encoding="utf8") as f:
-    chests = json.load(f)
-    
-#structures
-with open("assets/items/structures.json", "r", encoding="utf8") as f:
-    structures = json.load(f)
+# Jobs
+jobs = load_json("assets/jobs/jobs.json")
 
+# Chests
+chests = load_json("assets/items/chests.json")
+
+# Structures
+structures = load_json("assets/items/structures.json")
 
 class Database:
     @staticmethod
