@@ -1994,6 +1994,11 @@ async def userattack(ctx: Context, target: discord.Member):
     attacker = ctx.author
     attacker_health = await db_manager.get_health(attacker.id)
     target_health = await db_manager.get_health(target.id)
+    
+    #if attacker and target are the same
+    if attacker == target:
+        await ctx.send("You cannot attack yourself!")
+        return
 
     if attacker_health is None:
         await ctx.send(f"{attacker.name} does not exist!, do `/start` to start playing!")
