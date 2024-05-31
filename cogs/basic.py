@@ -2374,26 +2374,40 @@ class Basic(commands.Cog, name="basic"):
     async def use_timed_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         item_effect = await db_manager.get_basic_item_effect(item)
         await db_manager.add_timed_item(user_id, item, item_effect)
-        item_effect = item_effect.split(" ")
-        item_effect_type = item_effect[0]
-        item_effect_amount = item_effect[2]
-        plus_or_minus = item_effect[1]
-        try:
-            item_effect_time = item_effect[3]
-        except IndexError:
-            item_effect_time = 0
-
-        if item_effect_type == "lock":
-            await ctx.send(f"You used {item_emoji}`{item_name}` You now can't be robbed for {item_effect_time}!")
-        elif item_effect_type == "halt_cleanliness":
-            await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now can't lose cleanliness for {item_effect_time}!")
-        elif item_effect_type == "halt_hunger":
-            await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now can't lose hunger for {item_effect_time}!")
-        elif item_effect_type == "halt_happiness":
-            await ctx.send(f"You used {item_emoji}`{item_name}` Your pet now can't lose happiness for {item_effect_time}!")
-        else:
-            await ctx.send(f"You used {item_emoji}`{item_name}` and got {plus_or_minus}`{item_effect_amount}` {item_effect_type} for {item_effect_time}!")
-
+    
+        item_effect_parts = item_effect.split(" ")
+        item_effect_type = item_effect_parts[0]
+        plus_or_minus = item_effect_parts[1]
+        item_effect_amount = item_effect_parts[2]
+        item_effect_time = item_effect_parts[3] if len(item_effect_parts) > 3 else "0"
+    
+        await self.process_and_send_item_quote(ctx, item, item_emoji, item_name, {
+            "item_effect_type": item_effect_type,
+            "plus_or_minus": plus_or_minus,
+            "effect_amount": item_effect_amount,
+            "item_effect_time": item_effect_time
+        })
+    
+    async def process_and_send_item_quote(self, ctx: Context, item: str, item_emoji: str, item_name: str, additional_placeholders: dict):
+        # Get the item's quotes
+        item_quotes_data = await db_manager.get_item_quotes(item)
+        item_quotes = [quote[1] for quote in item_quotes_data]
+        # Pick a random quote
+        prompt = random.choice(item_quotes)
+        # Replace placeholders
+        placeholders = {
+            "{user}": ctx.author.mention,
+            "{item}": f"{item_emoji}{item_name}"
+        }
+        placeholders.update(additional_placeholders)
+    
+        for placeholder, replacement in placeholders.items():
+            if replacement is not None:
+                prompt = prompt.replace(f"{{{placeholder}}}", replacement)
+    
+        # Send the message
+        await ctx.send(prompt)
+    
     # Function to handle using revive items
     async def use_revive_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         if await db_manager.is_alive(user_id):
@@ -2403,24 +2417,37 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.set_alive(user_id)
             await db_manager.add_health(user_id, 100)
             await db_manager.revive_users()
-            await ctx.send(f"You used **{item_emoji}{item_name}** and revived!")
-            
-    #use effect item
+            await self.process_and_send_item_quote(ctx, item, item_emoji, item_name, {})
+    
+    # Use effect item
     async def use_effect_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         item_effect = await db_manager.get_basic_item_effect(item)
-        item_effect = item_effect.split(" ")
-        item_effect_type = item_effect[0]
-        item_effect_amount = item_effect[2]
-        plus_or_minus = item_effect[1]
+        item_effect_parts = item_effect.split(" ")
+        item_effect_type = item_effect_parts[0]
+        plus_or_minus = item_effect_parts[1]
+        item_effect_amount = item_effect_parts[2]
+    
         if item_effect_type == "heal":
-            await db_manager.add_health(user_id, item_effect_amount)
-            #check the users health, if it is greater than 100, set it to 100
+            if '-' in item_effect_amount:
+                min_effect, max_effect = map(int, item_effect_amount.split('-'))
+                effect_amount = random.randint(min_effect, max_effect)
+            else:
+                effect_amount = int(item_effect_amount)
+    
+            await db_manager.add_health(user_id, effect_amount)
+            # Check the user's health, if it is greater than 100, set it to 100
             user_health = await db_manager.get_health(user_id)
             if user_health > 100:
                 await db_manager.set_health(user_id, 100)
-                
-        await ctx.send(f"You used {item_emoji}`{item_name}` and got {plus_or_minus}`{item_effect_amount}` {item_effect_type}!")
-            
+    
+        # Process and send item quotes
+        await self.process_and_send_item_quote(ctx, item, item_emoji, item_name, {
+            "item_effect_type": item_effect_type,
+            "plus_or_minus": plus_or_minus,
+            "effect_amount": str(effect_amount)
+        })
+
+
 
     # Main use command function
     @commands.hybrid_command(

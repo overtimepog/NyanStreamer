@@ -45,8 +45,26 @@
         "item_effect": "heal + 5",
         "isMineable": false,
         "item_mine_chance": 0,
+        "quote_id": "lesser_healing_potion",
+        "item_quotes": [
+            {
+                "quote": "{user} savors a {item}, feeling a gentle warmth as they recover {effect_amount} health points!"
+            },
+            {
+                "quote": "With a twinkle in their eye, {user} sips a {item}, healing {effect_amount} health points!"
+            },
+            {
+                "quote": "{user} drinks a {item}, and a soothing glow restores {effect_amount} health points!"
+            },
+            {
+                "quote": "As {user} enjoys a {item}, a comforting aura surrounds them, healing {effect_amount} health points!"
+            },
+            {
+                "quote": "{user} feels rejuvenated after drinking a {item}, restoring {effect_amount} health points!"
+            }
+        ],
         "item_sub_type": "None"
-    },
+    },    
     {
         "item_id": "greater_healing_potion",
         "item_name": "Greater Healing Potion",
@@ -69,8 +87,57 @@
         "item_effect": "heal + 20",
         "isMineable": false,
         "item_mine_chance": 0,
+        "quote_id": "greater_healing_potion",
+        "item_quotes": [
+            {
+                "quote": "{user} drinks a {item}, and a powerful wave of energy restores {effect_amount} health points!"
+            },
+            {
+                "quote": "With a hearty gulp of {item}, {user} feels their strength returning, healing {effect_amount} health points!"
+            },
+            {
+                "quote": "{user} sips a {item}, and a brilliant glow rejuvenates them, restoring {effect_amount} health points!"
+            },
+            {
+                "quote": "As {user} enjoys a {item}, they feel a surge of vitality, healing {effect_amount} health points!"
+            },
+            {
+                "quote": "{user} feels invigorated after drinking a {item}, gaining {effect_amount} health points!"
+            }
+        ],
         "item_sub_type": "None"
-    },        
+    },    
+    {
+        "item_id": "cheese",
+        "item_name": "Cheese",
+        "item_price": 50,
+        "item_emoji": "<:339_Cheese:1245951195135086654>",
+        "item_rarity": "Common",
+        "item_type": "Consumable",
+        "item_heal": "10-15",
+        "isUsable": true,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A delicious piece of cheese that restores health.",
+        "item_element": "None",
+        "item_crit_chance": "None",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "Heals {user} for {heal} health points.",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "cheese",
+        "item_quotes": [
+            {
+                "quote": "{user} eats some Cheese and recovers {heal} health points!"
+            },
+            {
+                "quote": "{user} enjoys a piece of Cheese, restoring {heal} health points!"
+            }
+        ],
+        "item_sub_type": "None"
+    },
     {
         "item_id": "luckpotion",
         "item_name": "Luck Potion",
