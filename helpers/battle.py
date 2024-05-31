@@ -2101,12 +2101,13 @@ async def userattack(ctx: Context, target: discord.Member):
         ]
     else:
         weapon_quotes = await db_manager.get_item_quotes(weapon)
+        print(weapon_quotes)
 
     prompt = random.choice(weapon_quotes)
     if isinstance(prompt, tuple):
         prompt = prompt[0]
-    prompt = prompt.replace("{user}", attacker.name)
-    prompt = prompt.replace("{target}", target.name)
+    prompt = prompt.replace("{user}", attacker.mention)
+    prompt = prompt.replace("{target}", target.mention)
     prompt = prompt.replace("{damage}", str(damage))
     if crit:
         prompt += " With a critical hit!"
