@@ -55,9 +55,9 @@ async def slots(self, ctx: Context, user, gamble):
         description = "\n".join(" | ".join(row) for row in grid) + f"\n\n **{user.name}** is gambling **{gamble:,}**"
         if result is not None:
             color = 0x00ff00 if win else 0xff0000
-            description += f"\n {'Won' if win else 'Lost'}: **{int(result):,}**" if result.is_integer() else f"\n {'Won' if win else 'Lost'}: **{result:,.2f}**"
-            description += f"\n Profit: **{int(profit):,}**" if profit.is_integer() else f"\n Profit: **{profit:,.2f}**"
-            description += f"\n Total Balance: **{int(total_balance):,}**" if total_balance.is_integer() else f"\n Total Balance: **{total_balance:,.2f}**"
+            description += f"\n {'Won' if win else 'Lost'}: **{result:,}**" if isinstance(result, int) else f"\n {'Won' if win else 'Lost'}: **{result:,.2f}**"
+            description += f"\n Profit: **{profit:,}**" if isinstance(profit, int) else f"\n Profit: **{profit:,.2f}**"
+            description += f"\n Total Balance: **{total_balance:,}**" if isinstance(total_balance, int) else f"\n Total Balance: **{total_balance:,.2f}**"
             embed = discord.Embed(title="Slot Machine", description=description, color=color)
             embed.set_footer(text="use 🔁 to play again")
             await slot_machine.edit(embed=embed)
@@ -156,8 +156,6 @@ async def slots(self, ctx: Context, user, gamble):
 
     await play_slots(user, gamble)
 
-
-        
 #create slots_rules function
 #this function will be called when the user types !slots_rules
 # /slots_rules will show the rules of the slots game
