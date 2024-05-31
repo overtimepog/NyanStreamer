@@ -94,7 +94,7 @@ async def slots(self, ctx: Context, user, gamble):
                 grid[row][col] = await spin_slot()
             await update_embed(slot_machine, grid, gamble)
 
-        winnings = calculate_winnings(grid, gamble, luck)
+        winnings = calculate_winnings_with_print(grid, gamble, luck)
         net_winnings = winnings - gamble if winnings > 0 else winnings
         profit = net_winnings if net_winnings > 0 else -gamble
         total_balance = money + net_winnings
@@ -116,97 +116,111 @@ async def slots(self, ctx: Context, user, gamble):
             await slot_machine.clear_reaction(redo_emoji)
             return await play_slots(user, gamble)
 
-    def calculate_winnings(grid, gamble, luck):
+    def calculate_winnings_with_print(grid, gamble, luck):
         def adjust_probability(luck):
             base_probability = 0.45  # base probability of winning
             luck_factor = luck / 100  # assuming luck is out of 100
             return base_probability + (luck_factor * (1 - base_probability))
-    
+
+        def get_symbol_payout(symbol, gamble, count):
+            if count == 3:
+                if symbol == ":gem:":
+                    return gamble * 8
+                elif symbol == ":crown:":
+                    return gamble * 6
+                elif symbol == ":seven:":
+                    return gamble * 5
+                elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+                    return gamble * 3
+                else:
+                    return gamble * 4
+            elif count == 2:
+                if symbol == ":gem:":
+                    return gamble * 2
+                elif symbol == ":crown:":
+                    return gamble * 1.5
+                elif symbol == ":seven:":
+                    return gamble * 1.2
+                elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+                    return gamble * 1.1
+            return 0
+
         win_probability = adjust_probability(luck)
-    
+
         total_winnings = 0
-    
+
         if random.random() < win_probability:
             # Check for three in a row (horizontal, vertical, and diagonal)
             for i in range(3):
                 # Horizontal check
                 if grid[i][0] == grid[i][1] == grid[i][2]:
                     symbol = grid[i][0]
+                    print(f"Three in a row horizontally: {symbol} at row {i}")
                     total_winnings += get_symbol_payout(symbol, gamble, 3)
-                
+
                 # Vertical check
                 if grid[0][i] == grid[1][i] == grid[2][i]:
                     symbol = grid[0][i]
+                    print(f"Three in a row vertically: {symbol} at column {i}")
                     total_winnings += get_symbol_payout(symbol, gamble, 3)
-    
+
             # Diagonal checks
             if grid[0][0] == grid[1][1] == grid[2][2]:
                 symbol = grid[0][0]
+                print("Three in a row diagonally: ", symbol)
                 total_winnings += get_symbol_payout(symbol, gamble, 3)
             if grid[0][2] == grid[1][1] == grid[2][0]:
                 symbol = grid[0][2]
+                print("Three in a row diagonally: ", symbol)
                 total_winnings += get_symbol_payout(symbol, gamble, 3)
-    
+
             # Check for two in a row (horizontal, vertical, and diagonal)
             for i in range(3):
                 # Horizontal check
                 if grid[i][0] == grid[i][1] and grid[i][0] != grid[i][2]:
                     symbol = grid[i][0]
+                    print(f"Two in a row horizontally: {symbol} at row {i} positions 0 and 1")
                     total_winnings += get_symbol_payout(symbol, gamble, 2)
                 if grid[i][1] == grid[i][2] and grid[i][1] != grid[i][0]:
                     symbol = grid[i][1]
+                    print(f"Two in a row horizontally: {symbol} at row {i} positions 1 and 2")
                     total_winnings += get_symbol_payout(symbol, gamble, 2)
-    
+
                 # Vertical check
                 if grid[0][i] == grid[1][i] and grid[0][i] != grid[2][i]:
                     symbol = grid[0][i]
+                    print(f"Two in a row vertically: {symbol} at column {i} positions 0 and 1")
                     total_winnings += get_symbol_payout(symbol, gamble, 2)
                 if grid[1][i] == grid[2][i] and grid[1][i] != grid[0][i]:
                     symbol = grid[1][i]
+                    print(f"Two in a row vertically: {symbol} at column {i} positions 1 and 2")
                     total_winnings += get_symbol_payout(symbol, gamble, 2)
-    
+
             # Diagonal checks
             if grid[0][0] == grid[1][1] and grid[0][0] != grid[2][2]:
                 symbol = grid[0][0]
+                print("Two in a row diagonally: ", symbol, " from top-left to center")
                 total_winnings += get_symbol_payout(symbol, gamble, 2)
             if grid[1][1] == grid[2][2] and grid[1][1] != grid[0][0]:
                 symbol = grid[1][1]
+                print("Two in a row diagonally: ", symbol, " from center to bottom-right")
                 total_winnings += get_symbol_payout(symbol, gamble, 2)
             if grid[0][2] == grid[1][1] and grid[0][2] != grid[2][0]:
                 symbol = grid[0][2]
+                print("Two in a row diagonally: ", symbol, " from top-right to center")
                 total_winnings += get_symbol_payout(symbol, gamble, 2)
             if grid[1][1] == grid[2][0] and grid[1][1] != grid[0][2]:
                 symbol = grid[1][1]
+                print("Two in a row diagonally: ", symbol, " from center to bottom-left")
                 total_winnings += get_symbol_payout(symbol, gamble, 2)
-    
+
         # If no winnings were calculated, the player loses the gamble amount
         if total_winnings == 0:
+            print("Loss")
             return -gamble
-    
+
+        print("Total winnings: ", total_winnings - gamble)
         return total_winnings - gamble  # Net winnings
-    
-    def get_symbol_payout(symbol, gamble, count):
-        if count == 3:
-            if symbol == ":gem:":
-                return gamble * 8
-            elif symbol == ":crown:":
-                return gamble * 6
-            elif symbol == ":seven:":
-                return gamble * 5
-            elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
-                return gamble * 3
-            else:
-                return gamble * 4
-        elif count == 2:
-            if symbol == ":gem:":
-                return gamble * 2
-            elif symbol == ":crown:":
-                return gamble * 1.5
-            elif symbol == ":seven:":
-                return gamble * 1.2
-            elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
-                return gamble * 1.1
-        return 0
 
 
     await play_slots(user, gamble)
