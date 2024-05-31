@@ -106,11 +106,22 @@ async def slots(self, ctx: Context, user, gamble):
             luck_adjusted_probability = adjust_probability(luck)
             grid = build_grid(luck_adjusted_probability)
 
-            for col in range(3):
-                for row in range(3):
-                    grid[row][col] = await spin_slot()
-                await update_embed(slot_machine, grid, gamble)
-                await asyncio.sleep(1)  # Adjust this sleep duration as needed for timing
+            # First column (1, 4, 7)
+            for row in range(3):
+                grid[row][0] = await spin_slot()
+            await update_embed(slot_machine, grid, gamble)
+            await asyncio.sleep(1)  # Adjust this sleep duration as needed for timing
+
+            # Second column (2, 5, 8)
+            for row in range(3):
+                grid[row][1] = await spin_slot()
+            await update_embed(slot_machine, grid, gamble)
+            await asyncio.sleep(1)  # Adjust this sleep duration as needed for timing
+
+            # Third column (3, 6, 9)
+            for row in range(3):
+                grid[row][2] = await spin_slot()
+            await update_embed(slot_machine, grid, gamble)
 
             winnings = calculate_winnings_with_print(grid, gamble, luck)
             net_winnings = winnings - gamble if winnings > 0 else winnings
