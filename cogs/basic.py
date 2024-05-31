@@ -2708,34 +2708,34 @@ class Basic(commands.Cog, name="basic"):
 
 
 #attack command
-    @commands.hybrid_command(
-        name="attack",
-        description="Attack an enemy",
-        aliases=["atk"]
-    )
-    async def attack(self, ctx: Context, enemy: str):
-        """Attack an enemy"""
-        userID = ctx.author.id
-        userName = ctx.author.name
-        monsterID = enemy
-        monsterName = await db_manager.get_enemy_name(enemy)
-        #check if the monster is spawned
-        monsterSpawned = await db_manager.check_current_spawn(monsterID, ctx.guild.id)
-        #check if a user is alive
-        isAlive = await db_manager.is_alive(userID)
-        if isAlive == False:
-            await ctx.send("You are dead! Use a revive potion <:RevivePotion:1077645427647725578> to revive!")
-            return
-        #if the monster is spawned
-        if monsterSpawned == 1:
-            #start the battle
-            monsterHealth = await db_manager.get_enemy_health(monsterID)
-            await battle.attack(ctx, userID, userName, monsterID, monsterName)
-        #if the monster is not spawned
-        else:
-            #send a message saying the monster is not spawned
-            await ctx.send(f"**{monsterName}** is not spawned, wait for the current Monster to be defeated!")
-            return
+    #@commands.hybrid_command(
+    #    name="attack",
+    #    description="Attack an enemy",
+    #    aliases=["atk"]
+    #)
+    #async def attack(self, ctx: Context, enemy: str):
+    #    """Attack an enemy"""
+    #    userID = ctx.author.id
+    #    userName = ctx.author.name
+    #    monsterID = enemy
+    #    monsterName = await db_manager.get_enemy_name(enemy)
+    #    #check if the monster is spawned
+    #    monsterSpawned = await db_manager.check_current_spawn(monsterID, ctx.guild.id)
+    #    #check if a user is alive
+    #    isAlive = await db_manager.is_alive(userID)
+    #    if isAlive == False:
+    #        await ctx.send("You are dead! Use a revive potion <:RevivePotion:1077645427647725578> to revive!")
+    #        return
+    #    #if the monster is spawned
+    #    if monsterSpawned == 1:
+    #        #start the battle
+    #        monsterHealth = await db_manager.get_enemy_health(monsterID)
+    #        await battle.attack(ctx, userID, userName, monsterID, monsterName)
+    #    #if the monster is not spawned
+    #    else:
+    #        #send a message saying the monster is not spawned
+    #        await ctx.send(f"**{monsterName}** is not spawned, wait for the current Monster to be defeated!")
+    #        return
 
 
 #spawn command

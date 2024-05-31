@@ -1,30 +1,55 @@
-[
-    {
-        "item_id": "handgun",
-        "item_name": "Handgun",
-        "item_price": 250,
-        "item_emoji": "<:Handgun:1122282641337626655>",
-        "item_rarity": "Uncommon",
-        "item_type": "Weapon",
-        "item_damage": "5-8",
-        "isUsable": false,
-        "inShop": false,
-        "isEquippable": true,
-        "item_description": "it's a gun, what else do you want? found from a few jobs",
-        "item_element": "None",
-        "item_crit_chance": "7%",
-        "item_projectile": "None",
-        "recipe_id": "None",
-        "item_recipe": [],
-        "item_effect": "None",
-        "isMineable": false,
-        "item_mine_chance": 0,
-        "quote_id": "handgun",
-        "item_quotes": [
-            {
-                "quote": "{user} fires their Handgun at {target} and deals {damage} damage!"
-            }
-        ],
-        "item_sub_type": "None"
-    }    
-]    
+{
+    "item_id": "handgun",
+    "item_name": "Handgun",
+    "item_price": 250,
+    "item_emoji": "<:Handgun:1122282641337626655>",
+    "item_rarity": "Uncommon",
+    "item_type": "Weapon",
+    "item_damage": "5-8",
+    "isUsable": false,
+    "inShop": true,
+    "isEquippable": false,
+    "item_description": "it's a gun, what else do you want? found from a few jobs",
+    "item_element": "None",
+    "item_crit_chance": "7%",
+    "item_projectile": "None",
+    "recipe_id": "None",
+    "item_recipe": [],
+    "item_effect": "None",
+    "isMineable": false,
+    "item_mine_chance": 0,
+    "quote_id": "handgun",
+    "item_quotes": [
+        {
+            "quote": "{user} fires their Handgun at {target} and deals {damage} damage!"
+        },
+        {
+            "quote": "{user} pulls out their Handgun and shoots at {target}, causing {damage} damage!"
+        },
+        {
+            "quote": "With a steady hand, {user} aims their Handgun at {target} and inflicts {damage} damage!"
+        },
+        {
+            "quote": "Bang! {user} uses their Handgun to strike {target}, dealing {damage} damage!"
+        },
+        {
+            "quote": "{user} takes aim with their Handgun and hits {target} for {damage} damage!"
+        },
+        {
+            "quote": "A quick shot from {user}'s Handgun hits {target}, causing {damage} damage!"
+        },
+        {
+            "quote": "{user} shoots their Handgun at {target} and scores {damage} damage!"
+        },
+        {
+            "quote": "The sound of gunfire echoes as {user} fires their Handgun at {target}, dealing {damage} damage!"
+        },
+        {
+            "quote": "A well-placed shot from {user}'s Handgun strikes {target}, causing {damage} damage!"
+        },
+        {
+            "quote": "{user} unloads their Handgun on {target}, dealing {damage} damage in the process!"
+        }
+    ],
+    "item_sub_type": "None"
+}

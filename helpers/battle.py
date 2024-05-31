@@ -1994,18 +1994,16 @@ async def send_spawned_embed(ctx: Context):
         await ctx.send(embed=embed)
 
 
-
 async def userattack(ctx: Context, target: discord.Member):
     attacker = ctx.author
     attacker_health = await db_manager.get_health(attacker.id)
     target_health = await db_manager.get_health(target.id)
 
-    #if none is returned, it means the user doesn't exist in the database
-    if attacker_health == None:
+    if attacker_health is None:
         await ctx.send(f"{attacker.name} does not exist!, do `/start` to start playing!")
         return
     
-    if target_health == None:
+    if target_health is None:
         await ctx.send(f"{target.name} does not exist!, tell them to do `/start` to start playing!")
         return
 
@@ -2016,55 +2014,46 @@ async def userattack(ctx: Context, target: discord.Member):
     if int(target_health[0]) <= 0:
         await ctx.send(f"{target.name} has already been defeated and needs to be revived!")
         return
+
+    # Get the inventory of the attacker
+    inventory = await db_manager.get_inventory(attacker.id)
     
-    #calculate damage dealt
-    # User 1
-    #get the equipped weapon
-    weapon = await db_manager.get_equipped_weapon(attacker.id)
-    #print(user1_weapon)
-    if weapon == None or weapon == []:
+    # Find the most expensive weapon
+    weapons = [item for item in inventory if item[7] == 'Weapon']
+    if weapons:
+        most_expensive_weapon = max(weapons, key=lambda x: int(x[3]))
+        weapon_name = most_expensive_weapon[2]
+        damage_range = most_expensive_weapon[8]
+        damage_range = damage_range.split("-")
+        damage = random.randint(int(damage_range[0]), int(damage_range[1]))
+        weapon_subtype = most_expensive_weapon[13] if len(most_expensive_weapon) > 13 else 'None'
+    else:
         weapon_name = "Fists"
         damage = random.randint(1, 10)
         weapon_subtype = "None"
-        #convert subtype to str
-        weapon_subtype = str(weapon_subtype)
-        #convert projectile to str
-    else:
-        weapon_name = weapon[0][2]
-        #convert it to str
-        weapon_name = str(weapon_name)
-        damage = weapon[0][8]
-        damage = str(damage)
-        #split it by the - 
-        damage = damage.split("-")
-        #get a random number between the two numbers
-        damage = random.randint(int(damage[0]), int(damage[1]))
-        weapon_subtype = weapon[0][10]
-        #convert subtype to str
-        weapon_subtype = str(weapon_subtype)
 
+    weapon_subtype = str(weapon_subtype)
 
-
-    #get the equipped armor of the user being attacked so they can take less damage
+    # Get the equipped armor of the user being attacked so they can take less damage
     armor = await db_manager.get_equipped_armor(target.id)
-    if armor == None or armor == []:
+    if armor is None or not armor:
         armor_name = "Clothes"
         defense = 1
     else:
         armor_name = armor[0][2]
         defense = armor[0][8]
 
-    #calculate the damage
+    # Calculate the damage
     damage = int(damage) - int(defense)
     if damage < 0:
         damage = 0
-    
+
     if damage >= target_health[0]:
         damage = target_health[0]
 
-
+    # Get quotes for the weapon
     weapon = await db_manager.get_item_id(weapon_name)
-    if weapon == None:
+    if weapon is None:
         weapon_quotes = [
             "{user} trips and accidentally hurls a rock, it bounces off a wall and hits {target} for {damage} damage. Accurate and hilarious!",
             "{user} digs in their pockets and pulls out a stale loaf of bread, hurling it at {target}. It hits for {damage} damage. Who knew carbs could be so dangerous?",
@@ -2075,46 +2064,48 @@ async def userattack(ctx: Context, target: discord.Member):
             "{user} summons a horde of angry pigeons that swoop down on {target}, causing {damage} damage. They've really got those birds trained!",
             "{user} pulls out a rubber chicken and slaps {target} around a bit with it. It's so absurd that it causes {damage} damage. If you can't beat 'em, make 'em laugh!",
             "{user} starts telling a bad joke. {target} laughs so hard they take {damage} damage. A sense of humor can be a lethal weapon!",
-            "{user} pulls out a spoon and charges at {target}. It's so unexpected that it causes {damage} damage. Never underestimate the power of cutlery!"
+            "{user} pulls out a spoon and charges at {target}. It's so unexpected that it causes {damage} damage. Never underestimate the power of cutlery!",
+            "{user} launches a barrage of paper airplanes at {target}, causing {damage} damage. Death by a thousand cuts!",
+            "{user} pulls out a banana peel and throws it at {target}. They slip and take {damage} damage. Classic!",
+            "{user} throws a handful of marbles at {target}'s feet. They slip and fall, taking {damage} damage. Watch your step!",
+            "{user} finds a kazoo and plays it loudly in {target}'s ear, causing {damage} damage. Musical mayhem!",
+            "{user} hurls a snowball at {target}, hitting them squarely and causing {damage} damage. Snow way!",
+            "{user} starts a game of dodgeball with {target}. {target} gets hit and takes {damage} damage. Dodge this!",
+            "{user} pulls out a rubber band and snaps it at {target}, causing {damage} damage. Snap attack!",
+            "{user} finds an old yo-yo and uses it to whack {target}, dealing {damage} damage. Yo, watch out!",
+            "{user} discovers an ancient whoopee cushion and deploys it under {target}. The surprise causes {damage} damage. What a gas!",
+            "{user} starts juggling a set of knives and accidentally drops one on {target}, causing {damage} damage. Oops!",
+            "{user} pulls out a slingshot and launches a pebble at {target}, hitting them for {damage} damage. Bullseye!",
+            "{user} blows a bubble with gum and pops it in {target}'s face, causing {damage} damage. Sticky situation!",
+            "{user} brandishes a rubber mallet and bonks {target} on the head, causing {damage} damage. Bonk!",
+            "{user} finds a toy dart gun and shoots {target}, causing {damage} damage. Direct hit!"
         ]
     else:
         weapon_quotes = await db_manager.get_item_quotes(weapon)
-        print(weapon_quotes)
-        weapon_quotes = weapon_quotes
-    Promt = random.choice(weapon_quotes)
-    if Promt == weapon:
-        Promt = random.choice(weapon_quotes)
-    Promt = str(Promt)
-    Promt = Promt.replace("{user}", attacker.name)
-    Promt = Promt.replace("{target}", target.name)
-    Promt = Promt.replace("{damage}", str(damage))
 
-    full_promt = Promt
 
-    #send the message
-    await ctx.send(full_promt)
-    #deal the damage
+    prompt = random.choice(weapon_quotes)
+    prompt = prompt.replace("{user}", attacker.name)
+    prompt = prompt.replace("{target}", target.name)
+    prompt = prompt.replace("{damage}", str(damage))
+
+    # Send the message
+    await ctx.send(prompt)
+    # Deal the damage
     await db_manager.remove_health(target.id, damage)
-    #check if the target is dead
+    # Check if the target is dead
     target_health = await db_manager.get_health(target.id)
     if target_health[0] <= 0:
-        #if they are dead, give the attacker some of the targets gold
         target_money = await db_manager.get_money(target.id)
         attacker_money = await db_manager.get_money(attacker.id)
-        #give the attacker 10% of the targets money
-        money_to_give = target_money * 0.1
-        money_to_give = int(money_to_give)
+        money_to_give = int(target_money * 0.1)
         await db_manager.add_money(attacker.id, money_to_give)
         await db_manager.remove_money(target.id, money_to_give)
-        #give the attacker some xp
         target_xp = await db_manager.get_xp(target.id)
         attacker_xp = await db_manager.get_xp(attacker.id)
-        #give the attacker 10% of the targets xp, if the target has no xp, give the attacker 10 xp
-        xp_to_give = target_xp * 0.1
-        xp_to_give = int(xp_to_give)
+        xp_to_give = int(target_xp * 0.1)
         if xp_to_give == 0:
             xp_to_give = 10
         await db_manager.add_xp(attacker.id, xp_to_give)
         await db_manager.remove_xp(target.id, xp_to_give)
-        #say who won
         await ctx.send(f"{attacker.name} has defeated {target.name}!")
