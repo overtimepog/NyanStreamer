@@ -456,6 +456,7 @@ async def on_ready() -> None:
     print(f"Python version: {platform.python_version()}")
     print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
     print("\n---------Loading Cogs----------")
+    await setup()
     await load_cogs()
     status_task.start()
     if config["sync_commands_globally"]:
@@ -463,7 +464,6 @@ async def on_ready() -> None:
         await bot.tree.sync()
         print("Done syncing commands globally!")
     print("\n-----------------------------")
-    await setup()
     #print("Structure Spawn Task Started")
     #structure_spawn_task.start()
     #print("-------------------")
