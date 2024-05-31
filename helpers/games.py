@@ -58,7 +58,7 @@ async def slots(self, ctx: Context, user, gamble):
         ":crown:",
         ":gem:",
     ]
-    slot_spin = "🔄"
+    slot_spin = "<a:spin:1245491420165312594>"
     redo_emoji = "🔁"
 
     async def update_embed(slot_machine, slot1, slot2, slot3, gamble, result=None, win=False):
