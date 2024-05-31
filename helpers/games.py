@@ -95,7 +95,7 @@ async def slots(self, ctx: Context, user, gamble):
         else:
             return random.choice(emoji)
 
-    async def play_slots():
+    async def play_slots(user, gamble):
         money = await db_manager.get_money(user.id)
         luck = await db_manager.get_luck(user.id)
         await db_manager.add_money_spent(user.id, gamble)
@@ -164,9 +164,9 @@ async def slots(self, ctx: Context, user, gamble):
                     await slot_machine.clear_reaction(redo_emoji)
                 except discord.Forbidden:
                     await ctx.send("I can't do this in DMs, I'm sorry")
-                return await play_slots()
+                return await play_slots(user, gamble)
 
-    await play_slots()
+    await play_slots(user, gamble)
 
 
         
