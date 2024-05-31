@@ -562,8 +562,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         if await db_manager.can_level_up(user1):
             #if the user can level up, level them up
             await db_manager.add_level(user1, 1)
-            #set the users xp to 0
-            await db_manager.set_xp(user1, 0)
             #send a message to the channel saying the user has leveled up
             #get the users new level
             new_level = await db_manager.get_level(user1)
@@ -631,8 +629,6 @@ async def deathbattle(ctx: Context, user1, user2, user1_name, user2_name):
         if await db_manager.can_level_up(user2):
             #if the user can level up, level them up
             await db_manager.add_level(user2, 1)
-            #set the users xp to 0
-            await db_manager.set_xp(user2, 0)
             #send a message to the channel saying the user has leveled up
             #get the users new level
             new_level = await db_manager.get_level(user2)
@@ -1064,8 +1060,6 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                 if await db_manager.can_level_up(userID):
                     #if the user can level up, level them up
                     await db_manager.add_level(userID, 1)
-                    #set the users xp to 0
-                    await db_manager.set_xp(userID, 0)
                     #send a message to the channel saying the user has leveled up
                     #get the users new level
                     new_level = await db_manager.get_level(userID)
@@ -1733,8 +1727,6 @@ async def attack(ctx: Context, userID, userName, monsterID, monsterName):
             if await db_manager.can_level_up(userID):
                 #if the user can level up, level them up
                 await db_manager.add_level(userID, 1)
-                #set the users xp to 0
-                await db_manager.set_xp(userID, 0)
                 #send a message to the channel saying the user has leveled up
                 #get the users new level
                 new_level = await db_manager.get_level(userID)
@@ -1994,6 +1986,10 @@ async def send_spawned_embed(ctx: Context):
         await ctx.send(embed=embed)
 
 
+import discord
+from discord.ext.commands import Context
+import random
+
 async def userattack(ctx: Context, target: discord.Member):
     attacker = ctx.author
     attacker_health = await db_manager.get_health(attacker.id)
@@ -2025,11 +2021,34 @@ async def userattack(ctx: Context, target: discord.Member):
         weapon_name = most_expensive_weapon[2]
         damage_range = most_expensive_weapon[8]
         damage_range = damage_range.split("-")
-        damage = random.randint(int(damage_range[0]), int(damage_range[1]))
+        min_damage = int(damage_range[0])
+        max_damage = int(damage_range[1])
+        # Apply luck to damage
+        attacker_luck = await db_manager.get_luck(attacker.id)
+        luck_modifier = min(max(0, attacker_luck * 0.1), 1.0)  # Ensure modifier is between 0 and 1
+        damage = random.randint(min_damage, max_damage)
+        if random.random() <= luck_modifier:
+            damage = max_damage  # Critical hit
+            crit = True
+        else:
+            damage = int(damage * (1 + luck_modifier))
+            damage = min(damage, max_damage)  # Ensure damage does not exceed max_damage
+            crit = False
         weapon_subtype = most_expensive_weapon[13] if len(most_expensive_weapon) > 13 else 'None'
     else:
         weapon_name = "Fists"
-        damage = random.randint(1, 10)
+        min_damage = 1
+        max_damage = 10
+        attacker_luck = await db_manager.get_luck(attacker.id)
+        luck_modifier = min(max(0, attacker_luck * 0.1), 1.0)
+        damage = random.randint(min_damage, max_damage)
+        if random.random() <= luck_modifier:
+            damage = max_damage
+            crit = True
+        else:
+            damage = int(damage * (1 + luck_modifier))
+            damage = min(damage, max_damage)
+            crit = False
         weapon_subtype = "None"
 
     weapon_subtype = str(weapon_subtype)
@@ -2083,16 +2102,19 @@ async def userattack(ctx: Context, target: discord.Member):
     else:
         weapon_quotes = await db_manager.get_item_quotes(weapon)
 
-
     prompt = random.choice(weapon_quotes)
     prompt = prompt.replace("{user}", attacker.name)
     prompt = prompt.replace("{target}", target.name)
     prompt = prompt.replace("{damage}", str(damage))
+    if crit:
+        prompt += " and a Critical Hit!"
 
-    # Send the message
+    # Send the attack message
     await ctx.send(prompt)
+    
     # Deal the damage
     await db_manager.remove_health(target.id, damage)
+    
     # Check if the target is dead
     target_health = await db_manager.get_health(target.id)
     if target_health[0] <= 0:
@@ -2108,4 +2130,47 @@ async def userattack(ctx: Context, target: discord.Member):
             xp_to_give = 10
         await db_manager.add_xp(attacker.id, xp_to_give)
         await db_manager.remove_xp(target.id, xp_to_give)
-        await ctx.send(f"{attacker.name} has defeated {target.name}!")
+        
+        # Steal items based on luck
+        target_inventory = await db_manager.view_inventory(target.id)
+        stolen_items = []
+
+        if target_inventory:
+            for item in target_inventory:
+                item_value = int(item[3])
+                steal_chance = min(100, attacker_luck * 10)
+                if random.randint(1, 100) <= steal_chance:
+                    stolen_items.append(item)
+                    await db_manager.add_item_to_inventory(attacker.id, item, 1)
+                    await db_manager.remove_item_from_inventory(target.id, item[0], 1)
+                    
+        items_stolen_names = ", ".join([item[2] for item in stolen_items]) if stolen_items else "None"
+        
+        # Create an embed for the death and stolen items
+        embed = discord.Embed(title="Defeat!", color=discord.Color.red())
+        embed.add_field(name="Attacker", value=attacker.name, inline=True)
+        embed.add_field(name="Defeated", value=target.name, inline=True)
+        embed.add_field(name="Money Stolen", value=f"{money_to_give} coins", inline=True)
+        embed.add_field(name="XP Stolen", value=f"{xp_to_give} XP", inline=True)
+        embed.add_field(name="Items Stolen", value=items_stolen_names, inline=False)
+        
+        #check if the user can level up
+        CanLevelUp = await db_manager.can_level_up(attacker.id)
+        if CanLevelUp:
+            #if the user can level up, level them up
+            await db_manager.add_level(attacker.id, 1)
+            #send a message to the channel saying the user has leveled up
+            #get the users new level
+            new_level = await db_manager.get_level(attacker.id)
+            #remove the () and , from the level
+            new_level = str(new_level)
+            new_level = new_level.replace("(", "")
+            new_level = new_level.replace(")", "")
+            new_level = new_level.replace(",", "")
+            #convert the level to int
+            new_level = int(new_level)
+            #add it to the embed
+            embed.add_field(name="Level Up!", value=f"{attacker.name} has leveled up to level {new_level}!", inline=False)
+            #get the users quest
+        
+        await ctx.send(embed=embed)
