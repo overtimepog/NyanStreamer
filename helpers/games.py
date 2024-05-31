@@ -43,57 +43,28 @@ rarity_colors = {
 #slots
 async def slots(self, ctx: Context, user, gamble):
     emoji = [
-        ":apple:",
-        ":cherries:",
-        ":grapes:",
-        ":lemon:",
-        ":peach:",
-        ":tangerine:",
-        ":watermelon:",
-        ":strawberry:",
-        ":banana:",
-        ":pineapple:",
-        ":kiwi:",
-        ":pear:",
-        ":crown:",
-        ":gem:",
+        ":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:",
+        ":tangerine:", ":watermelon:", ":strawberry:", ":banana:",
+        ":pineapple:", ":kiwi:", ":pear:", ":crown:", ":gem:"
     ]
     slot_spin = "<a:spin:1245491420165312594>"
     redo_emoji = "🔁"
 
     async def update_embed(slot_machine, slot1, slot2, slot3, gamble, result=None, win=False):
-        if result is None:
-            description = f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{gamble}**"
-        else:
-            if win:
-                color = 0x00ff00
-                description = f"{slot1} | {slot2} | {slot3} \n Won: **{result}**"
-            else:
-                color = 0xff0000
-                description = f"{slot1} | {slot2} | {slot3} \n Lost: **{result}**"
-
-            embed = discord.Embed(
-                title="Slot Machine",
-                description=description,
-                color=color
-            )
+        description = f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{gamble}**"
+        if result is not None:
+            color = 0x00ff00 if win else 0xff0000
+            description += f"\n {'Won' if win else 'Lost'}: **{result}**"
+            embed = discord.Embed(title="Slot Machine", description=description, color=color)
             embed.set_footer(text="use 🔁 to play again")
             await slot_machine.edit(embed=embed)
             await slot_machine.add_reaction(redo_emoji)
+        else:
+            embed = discord.Embed(title="Slot Machine", description=description)
+            await slot_machine.edit(embed=embed)
 
     async def spin_slot():
         return random.choice(emoji)
-
-    async def get_slot_result(luck):
-        random_number = random.randint(1, 100)
-        if random_number <= 5:
-            return ":gem:"
-        elif random_number <= 10:
-            return ":crown:"
-        elif random_number <= luck:
-            return random.choice([":gem:", ":crown:"])
-        else:
-            return random.choice(emoji)
 
     async def play_slots(user, gamble):
         money = await db_manager.get_money(user.id)
@@ -101,70 +72,57 @@ async def slots(self, ctx: Context, user, gamble):
         await db_manager.add_money_spent(user.id, gamble)
         money = int(money[0])
         gamble = int(gamble)
+
         if money < gamble:
             return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble}**.")
 
-        embed = discord.Embed(
+        slot_machine = await ctx.send(embed=discord.Embed(
             title="Slot Machine",
             description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{gamble}**"
-        )
-        slot_machine = await ctx.send(embed=embed)
+        ))
 
         def check(reaction, user_check):
             return user_check == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
 
-        while True:
+        slots = [await spin_slot() for _ in range(3)]
+        for i in range(3):
             await asyncio.sleep(1)
-            slot1 = await spin_slot()
-            await update_embed(slot_machine, slot1, slot_spin, slot_spin, gamble)
+            slots[i] = await spin_slot()
+            await update_embed(slot_machine, *slots, gamble)
 
-            await asyncio.sleep(1)
-            slot2 = await spin_slot()
-            await update_embed(slot_machine, slot1, slot2, slot_spin, gamble)
+        unique_slots = set(slots)
+        if len(unique_slots) == 1 and slots[0] == ":gem:":
+            winnings = gamble * 10
+        elif len(unique_slots) == 1 and slots[0] == ":crown:":
+            winnings = gamble * 7.5
+        elif len(unique_slots) == 1:
+            winnings = gamble * 5
+        elif ":gem:" in unique_slots:
+            winnings = gamble * 1.5
+        elif ":crown:" in unique_slots:
+            winnings = gamble * 1.2
+        elif len(unique_slots) == 2:
+            winnings = gamble * 3
+        else:
+            winnings = -gamble
 
-            await asyncio.sleep(1)
-            slot3 = await spin_slot()
-            await update_embed(slot_machine, slot1, slot2, slot3, gamble)
+        if winnings > 0:
+            profit = winnings - gamble
+            await db_manager.add_money(user.id, profit)
+            await db_manager.add_money_earned(user.id, profit)
+            await update_embed(slot_machine, *slots, gamble, result=winnings, win=True)
+        else:
+            await db_manager.remove_money(user.id, gamble)
+            await db_manager.add_money_spent(user.id, gamble)
+            await update_embed(slot_machine, *slots, gamble, result=-winnings, win=False)
 
-            slots = [slot1, slot2, slot3]
-            unique_slots = set(slots)
-
-            if len(unique_slots) == 1 and slot1 == ":gem:":
-                winnings = gamble * 10
-            elif len(unique_slots) == 1 and slot1 == ":crown:":
-                winnings = gamble * 7.5
-            elif len(unique_slots) == 1:
-                winnings = gamble * 5
-            elif ":gem:" in unique_slots:
-                winnings = gamble * 1.5
-            elif ":crown:" in unique_slots:
-                winnings = gamble * 1.2
-            elif len(unique_slots) == 2:
-                winnings = gamble * 3
-            else:
-                winnings = -gamble
-
-            if winnings > 0:
-                profit = winnings - gamble
-                await db_manager.add_money(user.id, profit)
-                await db_manager.add_money_earned(user.id, profit)
-                await update_embed(slot_machine, slot1, slot2, slot3, gamble, result=winnings, win=True)
-            else:
-                await db_manager.remove_money(user.id, gamble)
-                await db_manager.add_money_spent(user.id, gamble)
-                await update_embed(slot_machine, slot1, slot2, slot3, gamble, result=-winnings, win=False)
-
-            try:
-                reaction, user_check = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
-            except asyncio.TimeoutError:
-                await slot_machine.clear_reaction(redo_emoji)
-                break
-            else:
-                try:
-                    await slot_machine.clear_reaction(redo_emoji)
-                except discord.Forbidden:
-                    await ctx.send("I can't do this in DMs, I'm sorry")
-                return await play_slots(user, gamble)
+        try:
+            reaction, user_check = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+            await slot_machine.clear_reaction(redo_emoji)
+        else:
+            await slot_machine.clear_reaction(redo_emoji)
+            return await play_slots(user, gamble)
 
     await play_slots(user, gamble)
 
