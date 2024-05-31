@@ -1138,9 +1138,9 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[1].lower():
                 if item[5] == 'Pet':
                     rarity = await db_manager.get_basic_item_rarity(item[0])
-                    item_name = f"{item[3]}{rarity} {item[1]} ({cash}{int(item[2]):,})"
+                    item_name = f"{rarity} {item[1]} ({cash}{int(item[2]):,})"
                 else:
-                    item_name = f"{item[3]}{item[1]} ({cash}{int(item[2]):,})"
+                    item_name = f"{item[1]} ({cash}{int(item[2]):,})"
                 choices.append(app_commands.Choice(name=item_name, value=item[0]))
         return choices[:25]
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
@@ -1210,13 +1210,13 @@ class Basic(commands.Cog, name="basic"):
                     rarity = await db_manager.get_basic_item_rarity(item[1])
                     item_amount_in_inventory = await db_manager.get_item_amount_from_inventory(user_id, item[1])
                     if item[7] == "Pet":
-                        item_name = f"{rarity} {item[4]}{pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
+                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
                     elif item[5] == 'Collectable':
                         #not for sale
                         continue
                     else:
-                        item_name = f"{item[4]}{item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
+                        item_name = f"{item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
@@ -2060,7 +2060,7 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[2].lower():
                 isEquippable = await db_manager.is_basic_item_equipable(item[1])
                 if isEquippable == 1 or isEquippable == True:
-                    choices.append(app_commands.Choice(name=f"{item[4]}{item[2]}", value=item[1]))
+                    choices.append(app_commands.Choice(name=f"{item[2]}", value=item[1]))
         return choices[:25]
 
     #a command to unequip an item using the unequip_item function from helpers\db_manager.py, check if the item is equipped, if it is, unequip it, if it isn't, say that it isn't equipped
@@ -2231,7 +2231,7 @@ class Basic(commands.Cog, name="basic"):
         for item in user_items:
             isEquipped = await db_manager.is_item_equipped(user_id, item[1])
             if isEquipped == 1 or isEquipped == True:
-                choices.append(app_commands.Choice(name=f"{item[4]}{item[2]}", value=item[1]))
+                choices.append(app_commands.Choice(name=item[2], value=item[1]))
         return choices[:25]
     #hybrid command to battle a monster
     
@@ -2515,7 +2515,7 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory(user_id)
         choices = [
-            app_commands.Choice(name=f"{item[4]}{item[2]}", value=item[1])
+            app_commands.Choice(name=item[2], value=item[1])
             for item in user_inventory
             if argument.lower() in item[2].lower() and (
                 await db_manager.is_basic_item_usable(item[1]) or await db_manager.check_chest(item[1])
