@@ -153,7 +153,7 @@ async def slots(self, ctx: Context, user, gamble):
                 return await play_slots(user, gamble)
 
         def adjust_probability(luck):
-            base_probability = 0.45  # base probability of winning
+            base_probability = 0.65  # base probability of winning
             luck_factor = luck / 100  # assuming luck is out of 100
             return base_probability + (luck_factor * (1 - base_probability))
 
