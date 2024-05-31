@@ -1138,9 +1138,9 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[1].lower():
                 if item[5] == 'Pet':
                     rarity = await db_manager.get_basic_item_rarity(item[0])
-                    item_name = f"{rarity} {item[1]} ({cash}{int(item[2]):,})"
+                    item_name = f"{item[3]}{rarity} {item[1]} ({cash}{int(item[2]):,})"
                 else:
-                    item_name = f"{item[1]} ({cash}{int(item[2]):,})"
+                    item_name = f"{item[3]}{item[1]} ({cash}{int(item[2]):,})"
                 choices.append(app_commands.Choice(name=item_name, value=item[0]))
         return choices[:25]
     #sell command for selling items, multiple of the same item can be sold, and the user can sell multiple items at once, then removes them from the users inventory, and adds the price to the users money
@@ -1210,13 +1210,13 @@ class Basic(commands.Cog, name="basic"):
                     rarity = await db_manager.get_basic_item_rarity(item[1])
                     item_amount_in_inventory = await db_manager.get_item_amount_from_inventory(user_id, item[1])
                     if item[7] == "Pet":
-                        item_name = f"{rarity} {pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
+                        item_name = f"{rarity} {item[4]}{pet_name if item[7] == 'Pet' else item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
                     elif item[5] == 'Collectable':
                         #not for sale
                         continue
                     else:
-                        item_name = f"{item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
+                        item_name = f"{item[4]}{item[2]} ({cash}{int(item[3]):,}) (x{item_amount_in_inventory})"
                         choices.append(app_commands.Choice(name=item_name, value=item[1]))
         return choices[:25]
 
@@ -2060,7 +2060,7 @@ class Basic(commands.Cog, name="basic"):
             if argument.lower() in item[2].lower():
                 isEquippable = await db_manager.is_basic_item_equipable(item[1])
                 if isEquippable == 1 or isEquippable == True:
-                    choices.append(app_commands.Choice(name=item[2], value=item[1]))
+                    choices.append(app_commands.Choice(name=f"{item[4]}{item[2]}", value=item[1]))
         return choices[:25]
 
     #a command to unequip an item using the unequip_item function from helpers\db_manager.py, check if the item is equipped, if it is, unequip it, if it isn't, say that it isn't equipped
@@ -2231,7 +2231,7 @@ class Basic(commands.Cog, name="basic"):
         for item in user_items:
             isEquipped = await db_manager.is_item_equipped(user_id, item[1])
             if isEquipped == 1 or isEquipped == True:
-                choices.append(app_commands.Choice(name=item[2], value=item[1]))
+                choices.append(app_commands.Choice(name=f"{item[4]}{item[2]}", value=item[1]))
         return choices[:25]
     #hybrid command to battle a monster
     
@@ -2374,20 +2374,20 @@ class Basic(commands.Cog, name="basic"):
     async def use_timed_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         item_effect = await db_manager.get_basic_item_effect(item)
         await db_manager.add_timed_item(user_id, item, item_effect)
-    
+
         item_effect_parts = item_effect.split(" ")
         item_effect_type = item_effect_parts[0]
         plus_or_minus = item_effect_parts[1]
         item_effect_amount = item_effect_parts[2]
         item_effect_time = item_effect_parts[3] if len(item_effect_parts) > 3 else "0"
-    
+
         await self.process_and_send_item_quote(ctx, item, item_emoji, item_name, {
             "item_effect_type": item_effect_type,
             "plus_or_minus": plus_or_minus,
             "effect_amount": item_effect_amount,
             "item_effect_time": item_effect_time
         })
-    
+
     async def process_and_send_item_quote(self, ctx: Context, item: str, item_emoji: str, item_name: str, additional_placeholders: dict):
         # Get the item's quotes
         item_quotes_data = await db_manager.get_item_quotes(item)
@@ -2400,14 +2400,14 @@ class Basic(commands.Cog, name="basic"):
             "{item}": f"{item_emoji}{item_name}"
         }
         placeholders.update(additional_placeholders)
-    
+
         for placeholder, replacement in placeholders.items():
             if replacement is not None:
                 prompt = prompt.replace(f"{{{placeholder}}}", replacement)
-    
+
         # Send the message
         await ctx.send(prompt)
-    
+
     # Function to handle using revive items
     async def use_revive_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         if await db_manager.is_alive(user_id):
@@ -2418,7 +2418,7 @@ class Basic(commands.Cog, name="basic"):
             await db_manager.add_health(user_id, 100)
             await db_manager.revive_users()
             await self.process_and_send_item_quote(ctx, item, item_emoji, item_name, {})
-    
+
     # Use effect item
     async def use_effect_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
         item_effect = await db_manager.get_basic_item_effect(item)
@@ -2426,20 +2426,20 @@ class Basic(commands.Cog, name="basic"):
         item_effect_type = item_effect_parts[0]
         plus_or_minus = item_effect_parts[1]
         item_effect_amount = item_effect_parts[2]
-    
+
         if item_effect_type == "heal":
             if '-' in item_effect_amount:
                 min_effect, max_effect = map(int, item_effect_amount.split('-'))
                 effect_amount = random.randint(min_effect, max_effect)
             else:
                 effect_amount = int(item_effect_amount)
-    
+
             await db_manager.add_health(user_id, effect_amount)
             # Check the user's health, if it is greater than 100, set it to 100
             user_health = await db_manager.get_health(user_id)
             if user_health > 100:
                 await db_manager.set_health(user_id, 100)
-    
+
         # Process and send item quotes
         await self.process_and_send_item_quote(ctx, item, item_emoji, item_name, {
             "item_effect_type": item_effect_type,
@@ -2515,7 +2515,7 @@ class Basic(commands.Cog, name="basic"):
         user_id = ctx.user.id
         user_inventory = await db_manager.view_inventory(user_id)
         choices = [
-            app_commands.Choice(name=item[2], value=item[1])
+            app_commands.Choice(name=f"{item[4]}{item[2]}", value=item[1])
             for item in user_inventory
             if argument.lower() in item[2].lower() and (
                 await db_manager.is_basic_item_usable(item[1]) or await db_manager.check_chest(item[1])
