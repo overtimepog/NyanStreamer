@@ -2557,8 +2557,6 @@ class Basic(commands.Cog, name="basic"):
     #        if await db_manager.can_level_up(ctx.author.id):
     #            #if the user can level up, level them up
     #            await db_manager.add_level(ctx.author.id, 1)
-    #            #set the users xp to 0
-    #            await db_manager.set_xp(ctx.author.id, 0)
     #            #send a message to the channel saying the user has leveled up
     #            #get the users new level
     #            new_level = await db_manager.get_level(ctx.author.id)

@@ -2105,8 +2105,8 @@ async def userattack(ctx: Context, target: discord.Member):
     # Ensure prompt is a string
     weapon_quotes = [quote[1] for quote in weapon_quotes]
     prompt = random.choice(weapon_quotes)
-    prompt = prompt.replace("{user}", attacker.name)
-    prompt = prompt.replace("{target}", target.name)
+    prompt = prompt.replace("{user}", attacker.mention)
+    prompt = prompt.replace("{target}", target.mention)
     prompt = prompt.replace("{damage}", str(damage))
     if crit:
         prompt += " With a critical hit!"
