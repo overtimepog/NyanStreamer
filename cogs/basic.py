@@ -1280,7 +1280,7 @@ class Basic(commands.Cog, name="basic"):
             print(f"Added field to embed for item: {item}")
             
         money = await db_manager.get_money(user_id)    
-
+        money = int(str(money).replace("(", "").replace(")", "").replace(",", ""))
         embed.add_field(name=f"**{cash}{total_price}**", value=f"You now have **{cash}{money}**", inline=False)
         await ctx.send(embed=embed)
         print(f"Embed sent with total price: {total_price}")

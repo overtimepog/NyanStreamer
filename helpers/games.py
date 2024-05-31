@@ -346,7 +346,8 @@ async def fish(self, ctx, user_luck: int):
             logging.error(f"Error adding money: {e}\n{traceback.format_exc()}")
             await interaction.response.send_message("An error occurred while adding money.")
             return
-
+        #turn money into a string, remove the ( ) and , and turn it into an int
+        money = int(str(money).replace("(", "").replace(")", "").replace(",", ""))
         sell_description += f"\nTotal money earned from selling: ⌬{total_earned} | You now have ⌬{money}"
         sell_embed = discord.Embed(
             title=f"{ctx.author.name}",
