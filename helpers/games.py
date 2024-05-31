@@ -50,8 +50,8 @@ async def slots(self, ctx: Context, user, gamble):
     slot_spin = "<a:spin:1245491420165312594>"
     redo_emoji = "🔁"
 
-    async def update_embed(slot_machine, slot1, slot2, slot3, gamble, result=None, win=False):
-        description = f"{slot1} | {slot2} | {slot3} \n **{user.name}** is gambling **{gamble}**"
+    async def update_embed(slot_machine, grid, gamble, result=None, win=False):
+        description = "\n".join(" | ".join(row) for row in grid) + f"\n\n **{user.name}** is gambling **{gamble}**"
         if result is not None:
             color = 0x00ff00 if win else 0xff0000
             description += f"\n {'Won' if win else 'Lost'}: **{result}**"
@@ -78,43 +78,29 @@ async def slots(self, ctx: Context, user, gamble):
 
         slot_machine = await ctx.send(embed=discord.Embed(
             title="Slot Machine",
-            description=f"{slot_spin} | {slot_spin} | {slot_spin} \n **{user.name}** is gambling **{gamble}**"
+            description=f"{slot_spin} | {slot_spin} | {slot_spin}\n{slot_spin} | {slot_spin} | {slot_spin}\n{slot_spin} | {slot_spin} | {slot_spin}\n\n **{user.name}** is gambling **{gamble}**"
         ))
 
         def check(reaction, user_check):
             return user_check == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
 
-        slots = [slot_spin, slot_spin, slot_spin]
-        for i in range(3):
-            await asyncio.sleep(1)
-            slots[i] = await spin_slot()
-            await update_embed(slot_machine, *slots, gamble)
+        grid = [[slot_spin] * 3 for _ in range(3)]
+        for row in range(3):
+            for col in range(3):
+                await asyncio.sleep(1)
+                grid[row][col] = await spin_slot()
+                await update_embed(slot_machine, grid, gamble)
 
-        unique_slots = set(slots)
-        if len(unique_slots) == 1 and slots[0] == ":gem:":
-            winnings = gamble * 10
-        elif len(unique_slots) == 1 and slots[0] == ":crown:":
-            winnings = gamble * 7.5
-        elif len(unique_slots) == 1:
-            winnings = gamble * 5
-        elif ":gem:" in unique_slots:
-            winnings = gamble * 1.5
-        elif ":crown:" in unique_slots:
-            winnings = gamble * 1.2
-        elif len(unique_slots) == 2:
-            winnings = gamble * 3
-        else:
-            winnings = -gamble
-
+        winnings = calculate_winnings(grid, gamble)
         if winnings > 0:
             profit = winnings - gamble
             await db_manager.add_money(user.id, profit)
             await db_manager.add_money_earned(user.id, profit)
-            await update_embed(slot_machine, *slots, gamble, result=winnings, win=True)
+            await update_embed(slot_machine, grid, gamble, result=winnings, win=True)
         else:
             await db_manager.remove_money(user.id, gamble)
             await db_manager.add_money_spent(user.id, gamble)
-            await update_embed(slot_machine, *slots, gamble, result=-winnings, win=False)
+            await update_embed(slot_machine, grid, gamble, result=-winnings, win=False)
 
         try:
             reaction, user_check = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
@@ -123,6 +109,28 @@ async def slots(self, ctx: Context, user, gamble):
         else:
             await slot_machine.clear_reaction(redo_emoji)
             return await play_slots(user, gamble)
+
+    def calculate_winnings(grid, gamble):
+        lines = grid + list(zip(*grid))  # Rows and columns
+        diagonals = [[grid[i][i] for i in range(3)], [grid[i][2-i] for i in range(3)]]
+        all_lines = lines + diagonals
+
+        for line in all_lines:
+            unique_symbols = set(line)
+            if len(unique_symbols) == 1:
+                symbol = unique_symbols.pop()
+                if symbol == ":gem:":
+                    return gamble * 10
+                elif symbol == ":crown:":
+                    return gamble * 7.5
+                else:
+                    return gamble * 5
+        for line in all_lines:
+            if ":gem:" in line:
+                return gamble * 1.5
+            elif ":crown:" in line:
+                return gamble * 1.2
+        return -gamble
 
     await play_slots(user, gamble)
 
