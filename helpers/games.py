@@ -121,7 +121,7 @@ async def slots(self, ctx: Context, user, gamble):
             base_probability = 0.45  # base probability of winning
             luck_factor = luck / 100  # assuming luck is out of 100
             return base_probability + (luck_factor * (1 - base_probability))
-
+    
         def get_symbol_payout(symbol, gamble, count):
             if count == 3:
                 if symbol == ":gem:":
@@ -144,11 +144,11 @@ async def slots(self, ctx: Context, user, gamble):
                 elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
                     return gamble * 1.1
             return 0
-
+    
         win_probability = adjust_probability(luck)
-
+    
         total_winnings = 0
-
+    
         if random.random() < win_probability:
             # Check for three in a row (horizontal, vertical, and diagonal)
             for i in range(3):
@@ -157,13 +157,13 @@ async def slots(self, ctx: Context, user, gamble):
                     symbol = grid[i][0]
                     print(f"Three in a row horizontally: {symbol} at row {i}")
                     total_winnings += get_symbol_payout(symbol, gamble, 3)
-
+                
                 # Vertical check
                 if grid[0][i] == grid[1][i] == grid[2][i]:
                     symbol = grid[0][i]
                     print(f"Three in a row vertically: {symbol} at column {i}")
                     total_winnings += get_symbol_payout(symbol, gamble, 3)
-
+    
             # Diagonal checks
             if grid[0][0] == grid[1][1] == grid[2][2]:
                 symbol = grid[0][0]
@@ -173,7 +173,7 @@ async def slots(self, ctx: Context, user, gamble):
                 symbol = grid[0][2]
                 print("Three in a row diagonally: ", symbol)
                 total_winnings += get_symbol_payout(symbol, gamble, 3)
-
+    
             # Check for two in a row (horizontal, vertical, and diagonal)
             for i in range(3):
                 # Horizontal check
@@ -185,7 +185,7 @@ async def slots(self, ctx: Context, user, gamble):
                     symbol = grid[i][1]
                     print(f"Two in a row horizontally: {symbol} at row {i} positions 1 and 2")
                     total_winnings += get_symbol_payout(symbol, gamble, 2)
-
+    
                 # Vertical check
                 if grid[0][i] == grid[1][i] and grid[0][i] != grid[2][i]:
                     symbol = grid[0][i]
@@ -195,7 +195,7 @@ async def slots(self, ctx: Context, user, gamble):
                     symbol = grid[1][i]
                     print(f"Two in a row vertically: {symbol} at column {i} positions 1 and 2")
                     total_winnings += get_symbol_payout(symbol, gamble, 2)
-
+    
             # Diagonal checks
             if grid[0][0] == grid[1][1] and grid[0][0] != grid[2][2]:
                 symbol = grid[0][0]
@@ -213,14 +213,15 @@ async def slots(self, ctx: Context, user, gamble):
                 symbol = grid[1][1]
                 print("Two in a row diagonally: ", symbol, " from center to bottom-left")
                 total_winnings += get_symbol_payout(symbol, gamble, 2)
-
+    
         # If no winnings were calculated, the player loses the gamble amount
         if total_winnings == 0:
             print("Loss")
             return -gamble
-
+    
         print("Total winnings: ", total_winnings - gamble)
         return total_winnings - gamble  # Net winnings
+
 
 
     await play_slots(user, gamble)
