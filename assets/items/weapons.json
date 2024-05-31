@@ -10,7 +10,7 @@
     "isUsable": false,
     "inShop": true,
     "isEquippable": false,
-    "item_description": "it's a gun, what else do you want? found from a few jobs",
+    "item_description": "it's a gun, what else do you want?",
     "item_element": "None",
     "item_crit_chance": "7%",
     "item_projectile": "None",

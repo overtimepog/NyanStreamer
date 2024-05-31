@@ -2234,7 +2234,8 @@ class Basic(commands.Cog, name="basic"):
                 choices.append(app_commands.Choice(name=item[2], value=item[1]))
         return choices[:25]
     #hybrid command to battle a monster
-
+    
+    @commands.cooldown(1, 8, commands.BucketType.user)
     @commands.hybrid_command(
         name="fight",
         description="Fight a user!",

@@ -2046,7 +2046,7 @@ async def userattack(ctx: Context, target: discord.Member):
     else:
         weapon_name = "Fists"
         min_damage = 1
-        max_damage = 10
+        max_damage = 3
         crit_chance = 0
         attacker_luck = await db_manager.get_luck(attacker.id)
         luck_modifier = min(max(0, attacker_luck * 0.1), 1.0)
@@ -2107,7 +2107,14 @@ async def userattack(ctx: Context, target: discord.Member):
             "{user} pulls out a slingshot and launches a pebble at {target}, hitting them for {damage} damage. Bullseye!",
             "{user} blows a bubble with gum and pops it in {target}'s face, causing {damage} damage. Sticky situation!",
             "{user} brandishes a rubber mallet and bonks {target} on the head, causing {damage} damage. Bonk!",
-            "{user} finds a toy dart gun and shoots {target}, causing {damage} damage. Direct hit!"
+            "{user} finds a toy dart gun and shoots {target}, causing {damage} damage. Direct hit!",
+            "{user} throws a handful of confetti at {target}, causing {damage} damage. Celebrate good times!",
+            "{user} pulls out a foam sword and challenges {target} to a duel. The foam sword fight causes {damage} damage. En garde!",
+            "{user} finds a rubber duck and throws it at {target}, causing {damage} damage. Quack attack!",
+            "{user} pulls out a whoopee cushion and places it under {target}. The surprise causes {damage} damage. What a gas!",
+            "{user} discovers a water gun and squirts {target}, causing {damage} damage. Soaked!",
+            "{user} finds a toy lightsaber and swings it at {target}, causing {damage} damage. The Force is strong with this one!",
+            "{user} pulls out a rubber chicken and whacks {target} with it, causing {damage} damage. Fowl play!",
         ]
     else:
         weapon_quotes_data = await db_manager.get_item_quotes(weapon)
