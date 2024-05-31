@@ -51,11 +51,13 @@ async def slots(self, ctx: Context, user, gamble):
     slot_spin = "<a:spin:1245491420165312594>"
     redo_emoji = "🔁"
 
-    async def update_embed(slot_machine, grid, gamble, result=None, win=False):
+    async def update_embed(slot_machine, grid, gamble, result=None, profit=None, win=False, total_balance=None):
         description = "\n".join(" | ".join(row) for row in grid) + f"\n\n **{user.name}** is gambling **{gamble}**"
         if result is not None:
             color = 0x00ff00 if win else 0xff0000
             description += f"\n {'Won' if win else 'Lost'}: **{result}**"
+            description += f"\n Profit: **{profit}**"
+            description += f"\n Total Balance: **{total_balance}**"
             embed = discord.Embed(title="Slot Machine", description=description, color=color)
             embed.set_footer(text="use 🔁 to play again")
             await slot_machine.edit(embed=embed)
@@ -93,15 +95,18 @@ async def slots(self, ctx: Context, user, gamble):
             await update_embed(slot_machine, grid, gamble)
 
         winnings = calculate_winnings(grid, gamble)
-        if winnings > 0:
-            profit = winnings - gamble
-            await db_manager.add_money(user.id, profit)
-            await db_manager.add_money_earned(user.id, profit)
-            await update_embed(slot_machine, grid, gamble, result=winnings, win=True)
+        net_winnings = winnings - gamble if winnings > 0 else winnings
+        profit = net_winnings if net_winnings > 0 else -gamble
+        total_balance = money + net_winnings
+
+        if net_winnings > 0:
+            await db_manager.add_money(user.id, net_winnings)
+            await db_manager.add_money_earned(user.id, net_winnings)
+            await update_embed(slot_machine, grid, gamble, result=winnings, profit=profit, win=True, total_balance=total_balance)
         else:
-            await db_manager.remove_money(user.id, gamble)
+            await db_manager.remove_money(user.id, -net_winnings)  # This is because net_winnings is negative for a loss
             await db_manager.add_money_spent(user.id, gamble)
-            await update_embed(slot_machine, grid, gamble, result=-winnings, win=False)
+            await update_embed(slot_machine, grid, gamble, result=winnings, profit=profit, win=False, total_balance=total_balance)
 
         try:
             reaction, user_check = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
@@ -115,7 +120,8 @@ async def slots(self, ctx: Context, user, gamble):
         lines = grid + list(zip(*grid))  # Rows and columns
         diagonals = [[grid[i][i] for i in range(3)], [grid[i][2-i] for i in range(3)]]
         all_lines = lines + diagonals
-
+    
+        # Check for same symbols in lines (rows, columns, diagonals)
         for line in all_lines:
             unique_symbols = set(line)
             if len(unique_symbols) == 1:
@@ -126,8 +132,12 @@ async def slots(self, ctx: Context, user, gamble):
                     return gamble * 6
                 elif symbol == ":seven:":
                     return gamble * 5
+                elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+                    return gamble * 3
                 else:
                     return gamble * 4
+    
+        # Check for presence of specific symbols in lines
         for line in all_lines:
             if ":gem:" in line:
                 return gamble * 2
@@ -135,6 +145,18 @@ async def slots(self, ctx: Context, user, gamble):
                 return gamble * 1.5
             elif ":seven:" in line:
                 return gamble * 1.2
+            elif any(fruit in line for fruit in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
+                return gamble * 1.1
+    
+        # Check for specific patterns in the 3x3 grid
+        # Example: T pattern
+        if grid[0][1] == grid[1][1] == grid[2][1] and grid[0][1] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+            return gamble * 4
+    
+        # Example: Cross pattern
+        if grid[0][0] == grid[0][2] == grid[2][0] == grid[2][2] and grid[0][0] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+            return gamble * 5
+    
         return -gamble
 
     await play_slots(user, gamble)
