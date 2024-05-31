@@ -94,7 +94,7 @@ async def slots(self, ctx: Context, user, gamble):
                 grid[row][col] = await spin_slot()
             await update_embed(slot_machine, grid, gamble)
 
-        winnings = calculate_winnings(grid, gamble)
+        winnings = calculate_winnings(grid, gamble, luck)
         net_winnings = winnings - gamble if winnings > 0 else winnings
         profit = net_winnings if net_winnings > 0 else -gamble
         total_balance = money + net_winnings
@@ -116,41 +116,49 @@ async def slots(self, ctx: Context, user, gamble):
             await slot_machine.clear_reaction(redo_emoji)
             return await play_slots(user, gamble)
 
-    def calculate_winnings(grid, gamble):
-        lines = grid + list(zip(*grid))  # Rows and columns
-        diagonals = [[grid[i][i] for i in range(3)], [grid[i][2-i] for i in range(3)]]
-        all_lines = lines + diagonals
+    def calculate_winnings(grid, gamble, luck):
+        def adjust_probability(luck):
+            base_probability = 0.45  # base probability of winning
+            luck_factor = luck / 100  # assuming luck is out of 100
+            return base_probability + (luck_factor * (1 - base_probability))
 
-        for line in all_lines:
-            unique_symbols = set(line)
-            if len(unique_symbols) == 1:
-                symbol = unique_symbols.pop()
-                if symbol == ":gem:":
-                    return gamble * 8
-                elif symbol == ":crown:":
-                    return gamble * 6
-                elif symbol == ":seven:":
-                    return gamble * 5
-                elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
-                    return gamble * 3
-                else:
-                    return gamble * 4
+        win_probability = adjust_probability(luck)
 
-        for line in all_lines:
-            if ":gem:" in line:
-                return gamble * 2
-            elif ":crown:" in line:
-                return gamble * 1.5
-            elif ":seven:" in line:
-                return gamble * 1.2
-            elif any(fruit in line for fruit in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
-                return gamble * 1.1
+        if random.random() < win_probability:
+            lines = grid + list(zip(*grid))  # Rows and columns
+            diagonals = [[grid[i][i] for i in range(3)], [grid[i][2-i] for i in range(3)]]
+            all_lines = lines + diagonals
 
-        if (grid[0][1] == grid[1][1] == grid[2][1] and grid[0][1] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
-            return gamble * 4
+            for line in all_lines:
+                unique_symbols = set(line)
+                if len(unique_symbols) == 1:
+                    symbol = unique_symbols.pop()
+                    if symbol == ":gem:":
+                        return gamble * 8
+                    elif symbol == ":crown:":
+                        return gamble * 6
+                    elif symbol == ":seven:":
+                        return gamble * 5
+                    elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
+                        return gamble * 3
+                    else:
+                        return gamble * 4
 
-        if (grid[0][0] == grid[0][2] == grid[2][0] == grid[2][2] and grid[0][0] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
-            return gamble * 5
+            for line in all_lines:
+                if ":gem:" in line:
+                    return gamble * 2
+                elif ":crown:" in line:
+                    return gamble * 1.5
+                elif ":seven:" in line:
+                    return gamble * 1.2
+                elif any(fruit in line for fruit in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
+                    return gamble * 1.1
+
+            if (grid[0][1] == grid[1][1] == grid[2][1] and grid[0][1] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
+                return gamble * 4
+
+            if (grid[0][0] == grid[0][2] == grid[2][0] == grid[2][2] and grid[0][0] in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]):
+                return gamble * 5
 
         return -gamble
 
