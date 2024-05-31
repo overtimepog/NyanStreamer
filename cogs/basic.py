@@ -2479,7 +2479,7 @@ class Basic(commands.Cog, name="basic"):
             if item_effect_type == "None":
                 await ctx.send(f"You used `{item_name}`!")
             else:
-                await ctx.send(f"You used `{item_name}` and got +`{item_effect_amount}` {item_effect_type}!")
+                self.use_effect_item(ctx, item, user_id, item_emoji, item_name)
         else:
             await ctx.send(f"`{item_name}` is not usable.")
 
