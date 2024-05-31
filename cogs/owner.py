@@ -452,10 +452,10 @@ class Owner(commands.Cog, name="owner"):
     )
     @commands.has_permissions(administrator=True)
     @checks.is_owner()
-    async def kill(ctx: commands.Context, target: discord.Member):
+    async def kill(self, ctx: commands.Context, target: discord.Member):
         if await db_manager.is_alive(target.id):
             await db_manager.set_dead(target.id)
-            await ctx.send(f"{target.mention} has been killed. They will be revived in 6 hours.")
+            await ctx.send(f"{target.mention} has beeen struck down by the gods and is dead, the gods are probably trolling and will revive you soon.")
         else:
             await ctx.send(f"{target.mention} is already dead.")
 
@@ -466,10 +466,10 @@ class Owner(commands.Cog, name="owner"):
     )
     @commands.has_permissions(administrator=True)
     @checks.is_owner()
-    async def revive(ctx: commands.Context, target: discord.Member):
+    async def revive(self, ctx: commands.Context, target: discord.Member):
         if not await db_manager.is_alive(target.id):
             await db_manager.set_alive(target.id)
-            await ctx.send(f"{target.mention} has been revived.")
+            await ctx.send(f"{target.mention} has been revived, the gods love you :) /p")
         else:
             await ctx.send(f"{target.mention} is already alive.")
         
