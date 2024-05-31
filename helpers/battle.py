@@ -2020,6 +2020,8 @@ async def userattack(ctx: Context, target: discord.Member):
         most_expensive_weapon = max(weapons, key=lambda x: int(x[3]))
         weapon_name = most_expensive_weapon[2]
         damage_range = most_expensive_weapon[8]
+        crit_chance = most_expensive_weapon[11]  # item_crit_chance
+        crit_chance = int(crit_chance.replace("%", ""))  # Convert crit chance to an integer
         damage_range = damage_range.split("-")
         min_damage = int(damage_range[0])
         max_damage = int(damage_range[1])
@@ -2027,7 +2029,8 @@ async def userattack(ctx: Context, target: discord.Member):
         attacker_luck = await db_manager.get_luck(attacker.id)
         luck_modifier = min(max(0, attacker_luck * 0.1), 1.0)  # Ensure modifier is between 0 and 1
         damage = random.randint(min_damage, max_damage)
-        if random.random() <= luck_modifier:
+        crit_chance = min(max(0, crit_chance + attacker_luck * 2), 100)  # Include luck in crit chance
+        if random.randint(1, 100) <= crit_chance:
             damage = max_damage  # Critical hit
             crit = True
         else:
@@ -2039,10 +2042,12 @@ async def userattack(ctx: Context, target: discord.Member):
         weapon_name = "Fists"
         min_damage = 1
         max_damage = 10
+        crit_chance = 0
         attacker_luck = await db_manager.get_luck(attacker.id)
         luck_modifier = min(max(0, attacker_luck * 0.1), 1.0)
         damage = random.randint(min_damage, max_damage)
-        if random.random() <= luck_modifier:
+        crit_chance = min(max(0, crit_chance + attacker_luck * 2), 100)
+        if random.randint(1, 100) <= crit_chance:
             damage = max_damage
             crit = True
         else:

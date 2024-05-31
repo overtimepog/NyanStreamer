@@ -53,5 +53,245 @@
         }
     ],
     "item_sub_type": "None"
+    },
+    {
+        "item_id": "shotgun",
+        "item_name": "Shotgun",
+        "item_price": 400,
+        "item_emoji": "<:485_Gun_Shotgun:1245926521470849024>",
+        "item_rarity": "Rare",
+        "item_type": "Weapon",
+        "item_damage": "12-18",
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A powerful shotgun that deals significant damage at close range.",
+        "item_element": "None",
+        "item_crit_chance": "10%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "shotgun",
+        "item_quotes": [
+            {
+                "quote": "{user} fires their Shotgun at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} blasts {target} with their Shotgun, causing {damage} damage!"
+            },
+            {
+                "quote": "With a loud bang, {user} shoots their Shotgun at {target}, inflicting {damage} damage!"
+            },
+            {
+                "quote": "Boom! {user} uses their Shotgun to strike {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} takes aim with their Shotgun and hits {target} for {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    },
+    {
+        "item_id": "desert_eagle",
+        "item_name": "Desert Eagle",
+        "item_price": 600,
+        "item_emoji": "<:486_Gun_DesertEagle:1245926522058178693>",
+        "item_rarity": "Epic",
+        "item_type": "Weapon",
+        "item_damage": "20-25",
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A high-caliber handgun with impressive stopping power.",
+        "item_element": "None",
+        "item_crit_chance": "15%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "desert_eagle",
+        "item_quotes": [
+            {
+                "quote": "{user} fires their Desert Eagle at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} shoots at {target} with their Desert Eagle, causing {damage} damage!"
+            },
+            {
+                "quote": "With a powerful shot, {user} uses their Desert Eagle on {target}, inflicting {damage} damage!"
+            },
+            {
+                "quote": "Bang! {user} strikes {target} with their Desert Eagle, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} aims their Desert Eagle at {target} and hits for {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    },
+    {
+        "item_id": "m4",
+        "item_name": "M4",
+        "item_price": 800,
+        "item_emoji": "<:487_Gun_M4:1245926523475595344>",
+        "item_rarity": "Epic",
+        "item_type": "Weapon",
+        "item_damage": "15-20",
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A versatile and reliable assault rifle.",
+        "item_element": "None",
+        "item_crit_chance": "12%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "m4",
+        "item_quotes": [
+            {
+                "quote": "{user} fires their M4 at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} sprays {target} with bullets from their M4, causing {damage} damage!"
+            },
+            {
+                "quote": "With precision, {user} uses their M4 on {target}, inflicting {damage} damage!"
+            },
+            {
+                "quote": "Ratatat! {user} strikes {target} with their M4, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} takes aim with their M4 and hits {target} for {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    },
+    {
+        "item_id": "minigun",
+        "item_name": "Minigun",
+        "item_price": 1200,
+        "item_emoji": "<:488_Gun_Minigun:1245926524708847647>",
+        "item_rarity": "Legendary",
+        "item_type": "Weapon",
+        "item_damage": "30-40",
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A heavy machine gun with extreme firepower.",
+        "item_element": "None",
+        "item_crit_chance": "20%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "minigun",
+        "item_quotes": [
+            {
+                "quote": "{user} unleashes a torrent of bullets with their Minigun at {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} mows down {target} with their Minigun, causing {damage} damage!"
+            },
+            {
+                "quote": "With relentless fire, {user} uses their Minigun on {target}, inflicting {damage} damage!"
+            },
+            {
+                "quote": "Ratatat! {user} devastates {target} with their Minigun, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} aims their Minigun at {target} and unleashes {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    },
+    {
+        "item_id": "railgun",
+        "item_name": "Railgun",
+        "item_price": 1500,
+        "item_emoji": "<:489_Gun_Rail:1245926526034382898>",
+        "item_rarity": "Legendary",
+        "item_type": "Weapon",
+        "item_damage": "50-60",
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A futuristic weapon that fires high-velocity projectiles.",
+        "item_element": "None",
+        "item_crit_chance": "25%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "railgun",
+        "item_quotes": [
+            {
+                "quote": "{user} fires their Railgun at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} shoots a high-velocity projectile at {target} with their Railgun, causing {damage} damage!"
+            },
+            {
+                "quote": "With futuristic precision, {user} uses their Railgun on {target}, inflicting {damage} damage!"
+            },
+            {
+                "quote": "Zap! {user} strikes {target} with their Railgun, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} takes aim with their Railgun and hits {target} for {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
+    },
+    {
+        "item_id": "grenade_launcher",
+        "item_name": "Grenade Launcher",
+        "item_price": 1000,
+        "item_emoji": "<:490_Gun_GrenadeLauncher:1245926527552589854>",
+        "item_rarity": "Epic",
+        "item_type": "Weapon",
+        "item_damage": "25-35",
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "A weapon that fires explosive grenades, dealing area damage.",
+        "item_element": "None",
+        "item_crit_chance": "18%",
+        "item_projectile": "None",
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "grenade_launcher",
+        "item_quotes": [
+            {
+                "quote": "{user} fires a grenade at {target} with their Grenade Launcher, causing {damage} damage!"
+            },
+            {
+                "quote": "{user} launches an explosive at {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "Boom! {user} uses their Grenade Launcher on {target}, inflicting {damage} damage!"
+            },
+            {
+                "quote": "Kaboom! {user} strikes {target} with an explosive from their Grenade Launcher, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} aims their Grenade Launcher at {target} and unleashes {damage} damage!"
+            }
+        ],
+        "item_sub_type": "None"
     }
 ]
