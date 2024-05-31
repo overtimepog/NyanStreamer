@@ -2101,13 +2101,12 @@ async def userattack(ctx: Context, target: discord.Member):
         ]
     else:
         weapon_quotes = await db_manager.get_item_quotes(weapon)
-        print(weapon_quotes)
 
+    # Ensure prompt is a string
+    weapon_quotes = [quote[1] for quote in weapon_quotes]
     prompt = random.choice(weapon_quotes)
-    if isinstance(prompt, tuple):
-        prompt = prompt[0]
-    prompt = prompt.replace("{user}", attacker.mention)
-    prompt = prompt.replace("{target}", target.mention)
+    prompt = prompt.replace("{user}", attacker.name)
+    prompt = prompt.replace("{target}", target.name)
     prompt = prompt.replace("{damage}", str(damage))
     if crit:
         prompt += " With a critical hit!"
@@ -2144,8 +2143,8 @@ async def userattack(ctx: Context, target: discord.Member):
                 steal_chance = min(100, attacker_luck * 10)
                 if random.randint(1, 100) <= steal_chance:
                     stolen_items.append(item)
-                    await db_manager.add_item_to_inventory(attacker.id, item, 1)
-                    await db_manager.remove_item_from_inventory(target.id, item, 1)
+                    await db_manager.add_item_to_inventory(attacker.id, item[1], 1)
+                    await db_manager.remove_item_from_inventory(target.id, item[1], 1)
                     
         items_stolen_names = ", ".join([item[2] for item in stolen_items]) if stolen_items else "None"
         
