@@ -87,10 +87,10 @@ async def slots(self, ctx: Context, user, gamble):
 
         grid = [[slot_spin] * 3 for _ in range(3)]
         for col in range(3):
+            await asyncio.sleep(1)
             for row in range(3):
-                await asyncio.sleep(1)
                 grid[row][col] = await spin_slot()
-                await update_embed(slot_machine, grid, gamble)
+            await update_embed(slot_machine, grid, gamble)
 
         winnings = calculate_winnings(grid, gamble)
         if winnings > 0:
