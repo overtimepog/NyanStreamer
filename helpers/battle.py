@@ -2100,13 +2100,12 @@ async def userattack(ctx: Context, target: discord.Member):
             "{user} finds a toy dart gun and shoots {target}, causing {damage} damage. Direct hit!"
         ]
     else:
-        weapon_quotes = await db_manager.get_item_quotes(weapon)
+        weapon_quotes_data = await db_manager.get_item_quotes(weapon)
+        weapon_quotes = [quote[1] for quote in weapon_quotes_data]
 
-    # Ensure prompt is a string
-    weapon_quotes = [quote[1] for quote in weapon_quotes]
     prompt = random.choice(weapon_quotes)
-    prompt = prompt.replace("{user}", attacker.mention)
-    prompt = prompt.replace("{target}", target.mention)
+    prompt = prompt.replace("{user}", attacker.name)
+    prompt = prompt.replace("{target}", target.name)
     prompt = prompt.replace("{damage}", str(damage))
     if crit:
         prompt += " With a critical hit!"
