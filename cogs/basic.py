@@ -1172,7 +1172,7 @@ class Basic(commands.Cog, name="basic"):
         # Check if the item exists in the user's inventory
         user_inventory = await db_manager.view_inventory(user_id)
         for i in user_inventory:
-            if item == i[2]:
+            if item == i[1]:
                 # Check if it's equipped
                 if i[9]:
                     await ctx.send(f"You can't sell an equipped item!, unequip it first with `/unequip {item}`")
