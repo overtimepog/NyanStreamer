@@ -2402,7 +2402,25 @@ class Basic(commands.Cog, name="basic"):
         else:
             await db_manager.set_alive(user_id)
             await db_manager.add_health(user_id, 100)
+            await db_manager.revive_users()
             await ctx.send(f"You used **{item_emoji}{item_name}** and revived!")
+            
+    #use effect item
+    async def use_effect_item(self, ctx: Context, item: str, user_id: int, item_emoji: str, item_name: str):
+        item_effect = await db_manager.get_basic_item_effect(item)
+        item_effect = item_effect.split(" ")
+        item_effect_type = item_effect[0]
+        item_effect_amount = item_effect[2]
+        plus_or_minus = item_effect[1]
+        if item_effect_type == "heal":
+            await db_manager.add_health(user_id, item_effect_amount)
+            #check the users health, if it is greater than 100, set it to 100
+            user_health = await db_manager.get_health(user_id)
+            if user_health > 100:
+                await db_manager.set_health(user_id, 100)
+                
+        await ctx.send(f"You used {item_emoji}`{item_name}` and got {plus_or_minus}`{item_effect_amount}` {item_effect_type}!")
+            
 
     # Main use command function
     @commands.hybrid_command(
