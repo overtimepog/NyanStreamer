@@ -1,4 +1,4 @@
-from panda3d.core import Point3, Vec3, PNMImage, Texture, FrameBufferProperties, GraphicsPipe, WindowProperties
+from panda3d.core import Point3, Vec3, PNMImage, Texture, FrameBufferProperties, GraphicsPipe, WindowProperties, TransparencyAttrib, ColorBlendAttrib
 from direct.showbase.ShowBase import ShowBase
 import os
 from PIL import Image, ImageSequence
@@ -102,7 +102,7 @@ class ModelViewer(ShowBase):
         win_props = WindowProperties.size(self.win.getXSize(), self.win.getYSize())
         self.buffer = self.graphicsEngine.makeOutput(self.pipe, "offscreen buffer", -2, fb_props, win_props,
                                                      GraphicsPipe.BFRefuseWindow, self.win.getGsg(), self.win)
-        self.buffer.setClearColor((1, 1, 1, 1))
+        self.buffer.setClearColor((0, 0, 0, 0))
 
         dr = self.buffer.makeDisplayRegion()
         dr.setCamera(self.cam)
@@ -121,6 +121,9 @@ class ModelViewer(ShowBase):
         subprocess.run(cmd)
 
     def spin_task(self, task):
+        if self.frame_counter == 0:
+            time.sleep(1)  # Delay to ensure proper loading
+
         self.model.setH(self.model.getH() + self.rotation_speed)
         if self.frame_counter < self.total_frames:
             frame_path = os.path.join("assets/frames", f"frame_{self.frame_counter}.png")
@@ -151,7 +154,7 @@ class ModelViewer(ShowBase):
                 desired_duration_per_frame = (reference_frame_count * reference_duration_per_frame) // actual_frame_count
                 with open(f'{self.filename}.gif', 'wb') as f:
                     fcntl.flock(f, fcntl.LOCK_EX)
-                    frames[0].save(f, save_all=True, append_images=frames[1:], duration=desired_duration_per_frame, loop=0, disposal=2)
+                    frames[0].save(f, save_all=True, append_images=frames[1:], duration=desired_duration_per_frame, loop=0, disposal=2, transparency=0)
                     fcntl.flock(f, fcntl.LOCK_UN)
                 print(f"GIF created: {self.filename}.gif")
             except Exception as e:
