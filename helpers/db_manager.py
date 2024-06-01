@@ -144,7 +144,7 @@ async def get_basic_item_data(item_id):
             'item_description': data[10],
             'item_element': data[11],
             'item_crit_chance': data[12],
-            'item_projectile': data[13],
+            'item_projectile': json.loads(data[13]),
             'recipe_id': data[14],
             'isHuntable': data[15],
             'item_hunt_chance': data[16],
@@ -963,25 +963,22 @@ async def add_basic_items() -> None:
     db = DB()
     for item in basic_items:
         data = await db.execute("SELECT * FROM `basic_items` WHERE item_id = ?", (item['item_id'],), fetch="one")
-
-        # Prepare the fields
-        isHuntable = item.get('isHuntable', False)
-        item_hunt_chance = item.get('item_hunt_chance', 0)
-        isMineable = item.get('isMineable', False)
-        item_mine_chance = item.get('item_mine_chance', 0)
-        isFishable = item.get('isFishable', False)
-        item_fish_chance = item.get('item_fish_chance', 0)
+        
         quote_id = item.get('quote_id', "None")
-        item_sub_type = item.get('item_sub_type', "None")
         recipe_id = item.get('recipe_id', "None")
+
+        # Convert item_projectile to JSON string
+        item_projectile = json.dumps(item['item_projectile'])
 
         # New item data
         new_item_data = (
             item['item_id'], item['item_name'], item['item_price'], item['item_emoji'], item['item_rarity'], 
             item['item_type'], item['item_damage'], item['isUsable'], item['inShop'], item['isEquippable'], 
-            item['item_description'], item['item_element'], item['item_crit_chance'], item['item_projectile'], 
-            recipe_id, isHuntable, item_hunt_chance, item['item_effect'], isMineable, item_mine_chance, 
-            isFishable, item_fish_chance, quote_id, item_sub_type
+            item['item_description'], item['item_element'], item['item_crit_chance'], item_projectile, 
+            item.get('recipe_id', "None"), item.get('isHuntable', False), item.get('item_hunt_chance', 0), 
+            item['item_effect'], item.get('isMineable', False), item.get('item_mine_chance', 0), 
+            item.get('isFishable', False), item.get('item_fish_chance', 0), item.get('quote_id', "None"), 
+            item.get('item_sub_type', "None")
         )
 
         if data is not None:
@@ -4029,7 +4026,7 @@ async def add_item_to_inventory(user_id: int, item_id: str, item_amount: int) ->
                             item_description = result[10]
                             item_element = result[11]
                             item_crit_chance = result[12]
-                            item_projectile = result[13]
+                            item_projectile = json.loads(result[13])
                             item_sub_type = result[21]
                             isEquipped = 0
                             
@@ -6295,6 +6292,26 @@ async def get_user_ranks(user_id) -> list:
                 most_money_rank = money_result[0]
 
         return [most_money_rank, highest_level_rank]
+
+async def get_ammo_type(item_id: str) -> str:
+    db = DB()
+    data = await db.execute("SELECT `item_projectile` FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
+    if data:
+        item_projectile = json.loads(data[0])  # Convert JSON string back to dict
+        ammo_type = item_projectile.get('ammo_type', 'Unknown')
+        return ammo_type
+    else:
+        return 'Unknown'
+
+async def get_ammo_per_shot(item_id: str) -> int:
+    db = DB()
+    data = await db.execute("SELECT `item_projectile` FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
+    if data:
+        item_projectile = json.loads(data[0])  # Convert JSON string back to dict
+        ammo_per_shot = item_projectile.get('ammo_per_shot', 0)
+        return ammo_per_shot
+    else:
+        return 0
 
 
 # In your db_manager.py or similar module

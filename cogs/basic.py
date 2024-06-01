@@ -468,7 +468,7 @@ class Basic(commands.Cog, name="basic"):
                     is_equipped = item[9]
                     item_element = item[10]
                     item_crit_chance = item[11]
-                    item_projectile = item[12]
+                    item_projectile = json.loads(item[12])
                     if item_type == "Chest":
                         item_description = await db_manager.get_chest_description(item_id)
                     else:
@@ -1452,7 +1452,7 @@ class Basic(commands.Cog, name="basic"):
                         is_equipped = item[9]
                         item_element = item[10]
                         item_crit_chance = item[11]
-                        item_projectile = item[12]
+                        item_projectile = json.loads(item[12])
                         item_description = await db_manager.get_basic_item_description(item_id)
 
                         isEquippable = await db_manager.is_basic_item_equipable(item_id)

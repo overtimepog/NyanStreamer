@@ -1,58 +1,61 @@
 [
     {
-    "item_id": "handgun",
-    "item_name": "Handgun",
-    "item_price": 250,
-    "item_emoji": "<:Handgun:1122282641337626655>",
-    "item_rarity": "Uncommon",
-    "item_type": "Weapon",
-    "item_damage": "6-10",
-    "isUsable": false,
-    "inShop": true,
-    "isEquippable": false,
-    "item_description": "it's a gun, what else do you want?",
-    "item_element": "None",
-    "item_crit_chance": "7%",
-    "item_projectile": "None",
-    "recipe_id": "None",
-    "item_recipe": [],
-    "item_effect": "None",
-    "isMineable": false,
-    "item_mine_chance": 0,
-    "quote_id": "handgun",
-    "item_quotes": [
-        {
-            "quote": "{user} fires their Handgun at {target} and deals {damage} damage!"
+        "item_id": "handgun",
+        "item_name": "Handgun",
+        "item_price": 250,
+        "item_emoji": "<:Handgun:1122282641337626655>",
+        "item_rarity": "Uncommon",
+        "item_type": "Weapon",
+        "item_damage": "6-10",
+        "isUsable": false,
+        "inShop": true,
+        "isEquippable": false,
+        "item_description": "it's a gun, what else do you want?",
+        "item_element": "None",
+        "item_crit_chance": "7%",
+        "item_projectile": {
+            "ammo_type": "pistol_round",
+            "ammo_per_shot": 1
         },
-        {
-            "quote": "{user} pulls out their Handgun and shoots at {target}, causing {damage} damage!"
-        },
-        {
-            "quote": "With a steady hand, {user} aims their Handgun at {target} and inflicts {damage} damage!"
-        },
-        {
-            "quote": "Bang! {user} uses their Handgun to strike {target}, dealing {damage} damage!"
-        },
-        {
-            "quote": "{user} takes aim with their Handgun and hits {target} for {damage} damage!"
-        },
-        {
-            "quote": "A quick shot from {user}'s Handgun hits {target}, causing {damage} damage!"
-        },
-        {
-            "quote": "{user} shoots their Handgun at {target} and scores {damage} damage!"
-        },
-        {
-            "quote": "The sound of gunfire echoes as {user} fires their Handgun at {target}, dealing {damage} damage!"
-        },
-        {
-            "quote": "A well-placed shot from {user}'s Handgun strikes {target}, causing {damage} damage!"
-        },
-        {
-            "quote": "{user} unloads their Handgun on {target}, dealing {damage} damage in the process!"
-        }
-    ],
-    "item_sub_type": "None"
+        "recipe_id": "None",
+        "item_recipe": [],
+        "item_effect": "None",
+        "isMineable": false,
+        "item_mine_chance": 0,
+        "quote_id": "handgun",
+        "item_quotes": [
+            {
+                "quote": "{user} fires their Handgun at {target} and deals {damage} damage!"
+            },
+            {
+                "quote": "{user} pulls out their Handgun and shoots at {target}, causing {damage} damage!"
+            },
+            {
+                "quote": "With a steady hand, {user} aims their Handgun at {target} and inflicts {damage} damage!"
+            },
+            {
+                "quote": "Bang! {user} uses their Handgun to strike {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "{user} takes aim with their Handgun and hits {target} for {damage} damage!"
+            },
+            {
+                "quote": "A quick shot from {user}'s Handgun hits {target}, causing {damage} damage!"
+            },
+            {
+                "quote": "{user} shoots their Handgun at {target} and scores {damage} damage!"
+            },
+            {
+                "quote": "The sound of gunfire echoes as {user} fires their Handgun at {target}, dealing {damage} damage!"
+            },
+            {
+                "quote": "A well-placed shot from {user}'s Handgun strikes {target}, causing {damage} damage!"
+            },
+            {
+                "quote": "{user} unloads their Handgun on {target}, dealing {damage} damage in the process!"
+            }
+        ],
+        "item_sub_type": "None"
     },
     {
         "item_id": "shotgun",
@@ -68,7 +71,10 @@
         "item_description": "A powerful shotgun that deals significant damage at close range.",
         "item_element": "None",
         "item_crit_chance": "10%",
-        "item_projectile": "None",
+        "item_projectile": {
+            "ammo_type": "shotgun_shell",
+            "ammo_per_shot": 1
+        },
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "None",
@@ -108,7 +114,10 @@
         "item_description": "A high-caliber handgun with impressive stopping power.",
         "item_element": "None",
         "item_crit_chance": "15%",
-        "item_projectile": "None",
+        "item_projectile": {
+            "ammo_type": "pistol_round",
+            "ammo_per_shot": 1
+        },
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "None",
@@ -148,7 +157,10 @@
         "item_description": "A versatile and reliable assault rifle.",
         "item_element": "None",
         "item_crit_chance": "12%",
-        "item_projectile": "None",
+        "item_projectile": {
+            "ammo_type": "rifle_round",
+            "ammo_per_shot": 1
+        },
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "None",
@@ -188,7 +200,10 @@
         "item_description": "A heavy machine gun with extreme firepower.",
         "item_element": "None",
         "item_crit_chance": "20%",
-        "item_projectile": "None",
+        "item_projectile": {
+            "ammo_type": "rifle_round",
+            "ammo_per_shot": 10
+        },
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "None",
@@ -228,7 +243,10 @@
         "item_description": "A futuristic weapon that fires high-velocity projectiles.",
         "item_element": "None",
         "item_crit_chance": "25%",
-        "item_projectile": "None",
+        "item_projectile": {
+            "ammo_type": "railgun_round",
+            "ammo_per_shot": 1
+        },
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "None",
@@ -268,7 +286,10 @@
         "item_description": "A weapon that fires explosive grenades, dealing area damage.",
         "item_element": "None",
         "item_crit_chance": "18%",
-        "item_projectile": "None",
+        "item_projectile": {
+            "ammo_type": "grenade_round",
+            "ammo_per_shot": 1
+        },
         "recipe_id": "None",
         "item_recipe": [],
         "item_effect": "None",

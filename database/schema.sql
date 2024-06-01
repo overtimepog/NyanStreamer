@@ -94,14 +94,14 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `item_emoji` varchar(255) NOT NULL,
   `item_rarity` varchar(255) NOT NULL,
   `item_type` varchar(255) NOT NULL,
-  `item_damage` int(11) NOT NULL,
+  `item_damage` int(11),
   `isUsable` boolean NOT NULL,
   `inShop` boolean NOT NULL,
   `isEquippable` boolean NOT NULL,
   `item_description` varchar(255) NOT NULL,
-  `item_element` varchar(255) NOT NULL,
-  `item_crit_chance` int(11) NOT NULL,
-  `item_projectile` varchar(255),
+  `item_element` varchar(255),
+  `item_crit_chance` int(11),
+  `item_projectile` TEXT,  -- Added comma
   `recipe_id` varchar(255),
   `isHuntable` boolean,
   `item_hunt_chance` int(11),
@@ -109,11 +109,28 @@ CREATE TABLE IF NOT EXISTS `basic_items` (
   `item_mine_chance` int(11),
   `isFishable` boolean,
   `item_fish_chance` int(11),
-  `item_effect` varchar(255) NOT NULL,
+  `item_effect` varchar(255),
   `quote_id` varchar(255),
-  `item_sub_type` varchar(255) NOT NULL,
-  FOREIGN KEY (recipe_id) REFERENCES recipes(item_id)
+  `item_sub_type` varchar(255),
+  FOREIGN KEY (recipe_id) REFERENCES recipes(item_id),
   FOREIGN KEY (quote_id) REFERENCES item_quotes(item_id)
+);
+
+CREATE TABLE IF NOT EXISTS `inventory` (
+  `user_id` varchar(20) NOT NULL,
+  `item_id` varchar(255) NOT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `item_price` varchar(255) NOT NULL,
+  `item_emoji` varchar(255) NOT NULL,
+  `item_rarity` varchar(255) NOT NULL,
+  `item_amount` int(11) NOT NULL,
+  `item_type` varchar(255) NOT NULL,
+  `item_damage` int(11),
+  `isEquipped` boolean NOT NULL,
+  `item_element` varchar(255),
+  `item_crit_chance` int(11),
+  `item_projectile` TEXT,  -- Added comma
+  `item_sub_type` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `item_quotes` (
@@ -357,23 +374,6 @@ CREATE TABLE IF NOT EXISTS `leaderboard` (
     `rank` INT NOT NULL,               -- The rank of the user in the leaderboard
     PRIMARY KEY (`category`, `rank`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)
-);
-
-CREATE TABLE IF NOT EXISTS `inventory` (
-  `user_id` varchar(20) NOT NULL,
-  `item_id` varchar(255) NOT NULL,
-  `item_name` varchar(255) NOT NULL,
-  `item_price` varchar(255) NOT NULL,
-  `item_emoji` varchar(255) NOT NULL,
-  `item_rarity` varchar(255) NOT NULL,
-  `item_amount` int(11) NOT NULL,
-  `item_type` varchar(255) NOT NULL,
-  `item_damage` int(11) NOT NULL,
-  `isEquipped` boolean NOT NULL,
-  `item_element` varchar(255) NOT NULL,
-  `item_crit_chance` int(11) NOT NULL,
-  `item_projectile` varchar(255),
-  `item_sub_type` varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `streamer_item_inventory` (

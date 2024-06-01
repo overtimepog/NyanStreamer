@@ -997,7 +997,6 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                                 item_damage = await db_manager.get_basic_item_damage(quest_reward)
                                 item_element = await db_manager.get_basic_item_element(quest_reward)
                                 item_crit_chance = await db_manager.get_basic_item_crit_chance(quest_reward)
-                                item_projectile = await db_manager.get_basic_item_projectile(quest_reward)
                                 #convert the item name to str
                                 item_name = str(item_name[0])
                                 #convert the item price to int
@@ -1014,8 +1013,6 @@ async def deathbattle_monster(ctx: Context, userID, userName, monsterID, monster
                                 item_element = str(item_element[0])
                                 #convert the item crit chance to int
                                 item_crit_chance = int(item_crit_chance[0])
-                                #convert the item projectile to str
-                                item_projectile = str(item_projectile[0])
                                 #add the item to the users inventory, with all the info needed for the function
                                 await db_manager.add_item_to_inventory(userID, quest_reward, quest_reward_amount)
                                 await ctx.send(f"You have completed the quest and been rewarded with {item_name}!, and {quest_xp_reward} xp!")
