@@ -447,6 +447,13 @@ async def setup() -> None:
     #give devs the dev badge
     print("\nSetup Complete")
     print("\n-----------------------------")
+    
+#resync the commands every 4 hours
+@tasks.loop(hours=4)
+async def resync_commands() -> None:
+    print("Resyncing commands...")
+    await bot.tree.sync()
+    print("Done resyncing commands!")
 
 @bot.event
 async def on_ready() -> None:
@@ -466,6 +473,7 @@ async def on_ready() -> None:
         await bot.tree.sync()
         print("Done syncing commands globally!")
     print("\n-----------------------------")
+    resync_commands.start()
     #print("Structure Spawn Task Started")
     #structure_spawn_task.start()
     #print("-------------------")
@@ -486,6 +494,8 @@ async def on_guild_join(guild: discord.Guild) -> None:
         if member.bot:
             continue
         await db_manager.get_user(member.id, member.name)
+        
+
 
 #when a user joins a server, add them to the database
 @bot.event
