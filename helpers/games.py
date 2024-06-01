@@ -88,6 +88,7 @@ async def slots(self, ctx: Context, user, gamble):
 
         def build_grid(win_probability):
             grid = [[None] * 3 for _ in range(3)]
+            win_detected = False
             for row in range(3):
                 for col in range(3):
                     if random.random() < win_probability:
@@ -101,10 +102,34 @@ async def slots(self, ctx: Context, user, gamble):
                             grid[row][col] = random.choice(emoji)
                     else:
                         grid[row][col] = random.choice(emoji)
-            return grid
+
+            # Check for wins during grid creation
+            for i in range(3):
+                if grid[i][0] == grid[i][1] == grid[i][2]:
+                    win_detected = True
+                if grid[0][i] == grid[1][i] == grid[2][i]:
+                    win_detected = True
+
+            if grid[0][0] == grid[1][1] == grid[2][2]:
+                win_detected = True
+            if grid[0][2] == grid[1][1] == grid[2][0]:
+                win_detected = True
+
+            for i in range(3):
+                for j in range(3):
+                    if i < 2 and grid[i][j] == grid[i+1][j]:
+                        win_detected = True
+                    if j < 2 and grid[i][j] == grid[i][j+1]:
+                        win_detected = True
+                    if i < 2 and j < 2 and grid[i][j] == grid[i+1][j+1]:
+                        win_detected = True
+                    if i < 2 and j > 0 and grid[i][j] == grid[i+1][j-1]:
+                        win_detected = True
+
+            return grid, win_detected
 
         luck_adjusted_probability = adjust_probability(luck)
-        grid = build_grid(luck_adjusted_probability)
+        grid, win_detected = build_grid(luck_adjusted_probability)
 
         # Initial display with all columns spinning
         for row in range(3):
@@ -185,16 +210,16 @@ async def slots(self, ctx: Context, user, gamble):
             matches = []
             for i in range(3):
                 for j in range(3):
-                    # Horizontal and vertical checks
+                    # Check all possible 2-adjacent matches
                     if i < 2 and grid[i][j] == grid[i+1][j]:
-                        matches.append((grid[i][j], 2))
+                        matches.append((grid[i][j], 2))  # vertical
                     if j < 2 and grid[i][j] == grid[i][j+1]:
-                        matches.append((grid[i][j], 2))
-                    # Diagonal checks
+                        matches.append((grid[i][j], 2))  # horizontal
                     if i < 2 and j < 2 and grid[i][j] == grid[i+1][j+1]:
-                        matches.append((grid[i][j], 2))
+                        matches.append((grid[i][j], 2))  # diagonal down-right
                     if i < 2 and j > 0 and grid[i][j] == grid[i+1][j-1]:
-                        matches.append((grid[i][j], 2))
+                        matches.append((grid[i][j], 2))  # diagonal down-left
+
             return matches
 
         total_winnings = 0
@@ -238,8 +263,6 @@ async def slots(self, ctx: Context, user, gamble):
         return total_winnings - gamble  # Net winnings
 
     await play_slots(user, gamble)
-
-
 
 #create slots_rules function
 #this function will be called when the user types !slots_rules
