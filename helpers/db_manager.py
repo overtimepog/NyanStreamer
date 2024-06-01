@@ -6169,7 +6169,7 @@ async def update_leaderboard():
             ORDER BY player_level DESC
         """) as cursor:
             all_levels = await cursor.fetchall()
-            print(f"All levels fetched: {all_levels}")
+            #print(f"All levels fetched: {all_levels}")
 
         # Fetch all users by money
         async with db.execute("""
@@ -6178,7 +6178,7 @@ async def update_leaderboard():
             ORDER BY money DESC
         """) as cursor:
             all_money = await cursor.fetchall()
-            print(f"All money fetched: {all_money}")
+            #print(f"All money fetched: {all_money}")
 
         # Update leaderboard for highest level
         rank = 1
@@ -6275,7 +6275,7 @@ async def get_user_ranks(user_id) -> list:
         """
         async with db.execute(query_level_rank, (user_id,)) as level_cursor:
             level_result = await level_cursor.fetchone()
-            print(f"Level rank query result: {level_result}")
+            #print(f"Level rank query result: {level_result}")
             if level_result:
                 highest_level_rank = level_result[0]
 
@@ -6287,7 +6287,7 @@ async def get_user_ranks(user_id) -> list:
         """
         async with db.execute(query_money_rank, (user_id,)) as money_cursor:
             money_result = await money_cursor.fetchone()
-            print(f"Money rank query result: {money_result}")
+            #print(f"Money rank query result: {money_result}")
             if money_result:
                 most_money_rank = money_result[0]
 
