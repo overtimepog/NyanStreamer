@@ -76,113 +76,73 @@ class Images(commands.Cog):
         # Use subprocess.Popen to start the process
         subprocess.Popen([sys.executable, 'helpers/spinning_model_maker.py', model_path, avatar_url, str(frames), filename, *angles])
 
-    @commands.hybrid_command(
-        name="becomeacan",
-        description="generate a can GIF from an avatar",
-    )
-    async def become_a_can(self, ctx: Context, user: discord.User):
+    async def generate_gif(self, ctx, user, model_path, position, rotation, camera):
         avatar_url = str(user.avatar.url)
-        logging.info(f"Received request to generate can GIF for avatar: {avatar_url}")
-        
+        logging.info(f"Received request to generate GIF for avatar: {avatar_url}")
+
         frames = 24
         timestamp = int(time.time())
-        filename = f"can_image_{timestamp}"  # Unique filename based on timestamp
-        model_path = "/root/NyanStreamer/assets/models/Can.egg"
-        
+        filename = f"{model_path.split('/')[-1].split('.')[0]}_image_{timestamp}"  # Unique filename based on timestamp
+
         if not os.path.exists(model_path):
-            logging.error("The can model is missing.")
-            await ctx.send("The can model is missing. Please try again later.")
+            logging.error(f"The {model_path} model is missing.")
+            await ctx.send(f"The {model_path} model is missing. Please try again later.")
             return
-        
+
+        embed = discord.Embed(
+            title="GIF Generation in Progress",
+            description=f"This is where your {model_path.split('/')[-1].split('.')[0]} will go.",
+            color=discord.Color.blue()
+        )
+        message = await ctx.send(embed=embed)
+
         # Run the image generation synchronously
         try:
-            self.run_model_subprocess(model_path, avatar_url, frames, filename, ['0,0,-0.85', '0,100,0', '0,-5,0'])
+            self.run_model_subprocess(model_path, avatar_url, frames, filename, [position, rotation, camera])
             
             # Wait for the GIF to be unlocked (i.e., fully generated)
             gif_path = filename + ".gif"
             self.wait_for_unlock(gif_path)
-            
+
             logging.info(f"Successfully generated GIF: {gif_path}")
-            await ctx.send(file=discord.File(gif_path))
             
+            file = discord.File(gif_path)
+            embed = discord.Embed(
+                title="GIF Generated",
+                description="Here is your GIF!",
+                color=discord.Color.green()
+            )
+            embed.set_image(url=f"attachment://{gif_path}")
+            await message.edit(embed=embed)
+            await ctx.send(file=file)
+
             # Schedule the cleanup task to run in the background after sending the response
             self.bot.loop.run_in_executor(None, self.delete_file, gif_path)
             self.bot.loop.run_in_executor(None, self.delete_all_download_files)
         except Exception as e:
             logging.error(f"Failed to generate GIF: {str(e)}")
-            await ctx.send("Failed to generate the can GIF. Please try again.")
+            await ctx.send("Failed to generate the GIF. Please try again.")
+
+    @commands.hybrid_command(
+        name="becomeacan",
+        description="Generate a can GIF from an avatar",
+    )
+    async def become_a_can(self, ctx: commands.Context, user: discord.User):
+        await self.generate_gif(ctx, user, "/root/NyanStreamer/assets/models/Can.egg", '0,0,-0.85', '0,100,0', '0,-5,0')
 
     @commands.hybrid_command(
         name="becomeachair",
-        description="generate a chair GIF from an avatar",
+        description="Generate a chair GIF from an avatar",
     )
-    async def become_a_chair(self, ctx: Context, user: discord.User):
-        avatar_url = str(user.avatar.url)
-        logging.info(f"Received request to generate chair GIF for avatar: {avatar_url}")
-        
-        frames = 24
-        timestamp = int(time.time())
-        filename = f"chair_image_{timestamp}"  # Unique filename based on timestamp
-        model_path = "/root/NyanStreamer/assets/models/Chair.egg"
-        
-        if not os.path.exists(model_path):
-            logging.error("The chair model is missing.")
-            await ctx.send("The chair model is missing. Please try again later.")
-            return
-        
-        # Run the image generation synchronously
-        try:
-            self.run_model_subprocess(model_path, avatar_url, frames, filename, ['0,0,0', '0,96,25', '0,-3,0'])
-            
-            # Wait for the GIF to be unlocked (i.e., fully generated)
-            gif_path = filename + ".gif"
-            self.wait_for_unlock(gif_path)
-            
-            logging.info(f"Successfully generated GIF: {gif_path}")
-            await ctx.send(file=discord.File(gif_path))
-            
-            # Schedule the cleanup task to run in the background after sending the response
-            self.bot.loop.run_in_executor(None, self.delete_file, gif_path)
-            self.bot.loop.run_in_executor(None, self.delete_all_download_files)
-        except Exception as e:
-            logging.error(f"Failed to generate GIF: {str(e)}")
-            await ctx.send("Failed to generate the chair GIF. Please try again.")
+    async def become_a_chair(self, ctx: commands.Context, user: discord.User):
+        await self.generate_gif(ctx, user, "/root/NyanStreamer/assets/models/Chair.egg", '0,0,0', '0,96,25', '0,-3,0')
 
     @commands.hybrid_command(
         name="becomeanuke",
-        description="generate a nuke GIF from an avatar",
+        description="Generate a nuke GIF from an avatar",
     )
-    async def become_a_nuke(self, ctx: Context, user: discord.User):
-        avatar_url = str(user.avatar.url)
-        logging.info(f"Received request to generate nuke GIF for avatar: {avatar_url}")
-        
-        frames = 24
-        timestamp = int(time.time())
-        filename = f"nuke_image_{timestamp}"  # Unique filename based on timestamp
-        model_path = "/root/NyanStreamer/assets/models/Nuke.egg"
-        
-        if not os.path.exists(model_path):
-            logging.error("The nuke model is missing.")
-            await ctx.send("The nuke model is missing. Please try again later.")
-            return
-        
-        # Run the image generation synchronously
-        try:
-            self.run_model_subprocess(model_path, avatar_url, frames, filename, ['0,0,0', '0,0,45', '0,-4,0'])
-            
-            # Wait for the GIF to be unlocked (i.e., fully generated)
-            gif_path = filename + ".gif"
-            self.wait_for_unlock(gif_path)
-            
-            logging.info(f"Successfully generated GIF: {gif_path}")
-            await ctx.send(file=discord.File(gif_path))
-            
-            # Schedule the cleanup task to run in the background after sending the response
-            self.bot.loop.run_in_executor(None, self.delete_file, gif_path)
-            self.bot.loop.run_in_executor(None, self.delete_all_download_files)
-        except Exception as e:
-            logging.error(f"Failed to generate GIF: {str(e)}")
-            await ctx.send("Failed to generate the nuke GIF. Please try again.")
+    async def become_a_nuke(self, ctx: commands.Context, user: discord.User):
+        await self.generate_gif(ctx, user, "/root/NyanStreamer/assets/models/Nuke.egg", '0,0,0', '0,0,45', '0,-4,0')
             
             
     @commands.hybrid_command(
