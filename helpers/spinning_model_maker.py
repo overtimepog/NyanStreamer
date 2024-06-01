@@ -140,19 +140,23 @@ class ModelViewer(ShowBase):
             print(f"Frame {self.frame_counter} captured.")
             return task.cont
         else:
-            frames = [Image.open(frame_path) for frame_path in self.frames if os.path.exists(frame_path)]
-            if not frames:
-                print("Error: No frames captured.")
+            try:
+                frames = [Image.open(frame_path) for frame_path in self.frames if os.path.exists(frame_path)]
+                if not frames:
+                    print("Error: No frames captured.")
+                    return task.done
+                reference_frame_count = 36
+                reference_duration_per_frame = 50
+                actual_frame_count = len(frames)
+                desired_duration_per_frame = (reference_frame_count * reference_duration_per_frame) // actual_frame_count
+                with open(f'{self.filename}.gif', 'wb') as f:
+                    fcntl.flock(f, fcntl.LOCK_EX)
+                    frames[0].save(f, save_all=True, append_images=frames[1:], duration=desired_duration_per_frame, loop=0, disposal=2)
+                    fcntl.flock(f, fcntl.LOCK_UN)
+                print(f"GIF created: {self.filename}.gif")
+            except Exception as e:
+                print(f"Error occurred while creating GIF: {e}")
                 return task.done
-            reference_frame_count = 36
-            reference_duration_per_frame = 50
-            actual_frame_count = len(frames)
-            desired_duration_per_frame = (reference_frame_count * reference_duration_per_frame) // actual_frame_count
-            with open(f'{self.filename}.gif', 'wb') as f:
-                fcntl.flock(f, fcntl.LOCK_EX)
-                frames[0].save(f, save_all=True, append_images=frames[1:], duration=desired_duration_per_frame, loop=0, disposal=2)
-                fcntl.flock(f, fcntl.LOCK_UN)
-            print(f"GIF created: {self.filename}.gif")
 
 def spinning_chair(model_path: str, image_url: str, frames: int, filename: str, 
                    model_pos: tuple = (0, 0, 0), 
