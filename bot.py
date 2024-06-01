@@ -445,8 +445,6 @@ async def setup() -> None:
     await asyncio.gather(*tasks)
     
     #give devs the dev badge
-    for dev in config["owners"]:
-        await db_manager.add_item_to_inventory(dev, "dev_badge", 1)
     print("\nSetup Complete")
     print("\n-----------------------------")
 
