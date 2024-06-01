@@ -108,6 +108,10 @@ class ModelViewer(ShowBase):
         dr.setCamera(self.cam)
         
     def remove_background(self, input_path, output_path):
+        """Remove background using ImageMagick."""
+        if not os.path.exists(input_path):
+            print(f"Error: {input_path} does not exist.")
+            return
         cmd = [
             'convert', input_path, 
             '-fuzz', '10%',  
@@ -127,12 +131,19 @@ class ModelViewer(ShowBase):
             no_bg_path = os.path.join("assets/frames", f"frame_no_bg_{self.frame_counter}.png")
             self.remove_background(frame_path, no_bg_path)
 
-            self.frames.append(no_bg_path)
+            if os.path.exists(no_bg_path):
+                self.frames.append(no_bg_path)
+            else:
+                print(f"Error: {no_bg_path} does not exist.")
+
             self.frame_counter += 1
             print(f"Frame {self.frame_counter} captured.")
             return task.cont
         else:
             frames = [Image.open(frame_path) for frame_path in self.frames if os.path.exists(frame_path)]
+            if not frames:
+                print("Error: No frames captured.")
+                return task.done
             reference_frame_count = 36
             reference_duration_per_frame = 50
             actual_frame_count = len(frames)
