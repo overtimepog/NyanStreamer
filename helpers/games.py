@@ -156,18 +156,17 @@ async def slots(self, ctx: Context, user, gamble):
         await update_embed(slot_machine, grid, gamble)
 
         winnings = calculate_winnings_with_print(grid, gamble, luck)
-        net_winnings = winnings - gamble if winnings > 0 else winnings
-        profit = net_winnings if net_winnings > 0 else -gamble
+        net_winnings = winnings - gamble
         total_balance = money + net_winnings
 
-        if net_winnings > 0:
+        if net_winnings >= 0:
             await db_manager.add_money(user.id, net_winnings)
             await db_manager.add_money_earned(user.id, net_winnings)
-            await update_embed(slot_machine, grid, gamble, result=winnings, profit=profit, win=True, total_balance=total_balance)
+            await update_embed(slot_machine, grid, gamble, result=winnings, profit=net_winnings, win=True, total_balance=total_balance)
         else:
             await db_manager.remove_money(user.id, -net_winnings)  # This is because net_winnings is negative for a loss
             await db_manager.add_money_spent(user.id, gamble)
-            await update_embed(slot_machine, grid, gamble, result=winnings, profit=profit, win=False, total_balance=total_balance)
+            await update_embed(slot_machine, grid, gamble, result=winnings, profit=net_winnings, win=False, total_balance=total_balance)
 
         try:
             reaction, user_check = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
@@ -259,10 +258,11 @@ async def slots(self, ctx: Context, user, gamble):
             print("Loss")
             return -gamble
 
-        print("Total winnings: ", total_winnings - gamble)
-        return total_winnings - gamble  # Net winnings
+        print("Total winnings: ", total_winnings)
+        return total_winnings  # Return total winnings instead of net winnings
 
     await play_slots(user, gamble)
+
 
 #create slots_rules function
 #this function will be called when the user types !slots_rules
