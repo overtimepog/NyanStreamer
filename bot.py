@@ -459,6 +459,7 @@ async def on_ready() -> None:
     print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
     print("\n---------Loading Cogs----------")
     await setup()
+    await load_cogs()
     status_task.start()
     if config["sync_commands_globally"]:
         print("Syncing commands globally...")
@@ -476,7 +477,6 @@ async def on_ready() -> None:
     #run the drawing file 
     #subprocess.Popen([sys.executable, r'drawing_code/main.py'])
     #subprocess.Popen([sys.executable, r'twitch.py'])
-    await load_cogs()
 
 #when the bot joins a server, add all the members to the database
 @bot.event
