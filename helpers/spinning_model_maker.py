@@ -22,7 +22,7 @@ class ModelViewer(ShowBase):
 
         self.model_path = model_path
         self.frames = []
-        self.frame_counter = 0
+        self.frame_counter = -1  # Start at -1 to handle initial delay
         self.total_frames = frames
         self.rotation_speed = 360.0 / self.total_frames
         self.filename = filename
@@ -121,8 +121,9 @@ class ModelViewer(ShowBase):
         subprocess.run(cmd)
 
     def spin_task(self, task):
-        if self.frame_counter == 0:
-            time.sleep(1)  # Delay to ensure proper loading
+        if self.frame_counter == -1:
+            self.frame_counter += 1
+            return task.cont
 
         self.model.setH(self.model.getH() + self.rotation_speed)
         if self.frame_counter < self.total_frames:
