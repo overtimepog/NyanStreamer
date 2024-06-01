@@ -183,8 +183,8 @@ class Images(commands.Cog):
             
             
     @commands.hybrid_command(
-        name="johnOliver",
-        description="this is a __ with a users avatar",
+        name="johnoliver",
+        description='"this is a __" with a users avatar',
     )
     async def john_oliver(self, ctx: Context, user: discord.User, *, text: str):
         avatar_url = str(user.avatar.url)
