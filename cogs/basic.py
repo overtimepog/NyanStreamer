@@ -443,7 +443,7 @@ class Basic(commands.Cog, name="basic"):
         current_page = 0
 
         # Create a function to generate embeds from a list of items
-        async def create_embeds(item_list):
+        async def create_embeds(item_list, ctx: Context):
             num_pages = (len(item_list) // 5) + (1 if len(item_list) % 5 > 0 else 0)
             embeds = []
 
@@ -468,7 +468,25 @@ class Basic(commands.Cog, name="basic"):
                     is_equipped = item[9]
                     item_element = item[10]
                     item_crit_chance = item[11]
-                    item_projectile = json.loads(item[12])
+                    #check for all the ammo of the type in the users inventory
+                    
+                    if item_type == "Weapon":
+                        ammo_id = await db_manager.get_ammo_id(item_id)
+                        ammo_amount = await db_manager.get_item_amount_from_inventory(ctx.author.id, ammo_id)
+                        ammo_name = await db_manager.get_basic_item_name(ammo_id)
+                        ammo_emoji = await db_manager.get_basic_item_emoji(ammo_id)
+
+                        inventory_embed.add_field(
+                            name=f"{item_emoji}{item_name} - x{item_amount}",
+                            value=(
+                                f'**{item_description}** \n Price: `{int(item_price):,}` \n Type: `{item_type}` \n '
+                                f'ID: `{item_id}` \n Damage: `{item_damage}` \n '
+                                f'Crit Chance: `{item_crit_chance}` \n '
+                                f'Ammo: {ammo_emoji}`{ammo_name}` \n Ammo in Inventory: x`{ammo_amount}`'
+                            ),
+                            inline=False
+                        )
+
                     if item_type == "Chest":
                         item_description = await db_manager.get_chest_description(item_id)
                     else:
@@ -480,6 +498,8 @@ class Basic(commands.Cog, name="basic"):
                             value=f'**{item_description}** \n Price: `{int(item_price):,}` \n Type: `{item_type}` \n ID | `{item_id}` \n Equipped: {"Yes" if is_equipped else "No"}',
                             inline=False
                         )
+                        
+                        
                     elif item_type == "Pet":
                         pet_name = await db_manager.get_pet_name(ctx.author.id, item_id)
                         if pet_name != item_name:
@@ -504,6 +524,7 @@ class Basic(commands.Cog, name="basic"):
                 embeds.append(inventory_embed)
 
             return embeds
+
 
         # Create a list of embeds with 5 items per embed
         embeds = await create_embeds(inventory_items)

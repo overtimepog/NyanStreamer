@@ -16,6 +16,9 @@ from typing import Any
 from fastapi import BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.responses import StreamingResponse
+from petpetgif import petpet
+from io import BytesIO
+import aiohttp
 
 class Images(commands.Cog):
     def __init__(self, bot):
@@ -221,6 +224,32 @@ class Images(commands.Cog):
         except Exception as e:
             logging.error(f"Failed to generate John Oliver image: {str(e)}")
             await ctx.send("Failed to generate the John Oliver image. Please try again.")
+            
+    @commands.hybrid_command(
+        name="pat",
+        description="pat a user",
+    )
+    async def pat(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
+        logging.info(f"Received request to generate Pat image for avatar: {avatar_url}")
+
+        # Download the user's avatar image
+        async with aiohttp.ClientSession() as session:
+            async with session.get(avatar_url) as response:
+                if response.status != 200:
+                    return await ctx.send('Failed to download avatar.')
+                image_content = await response.read()
+
+        # Process the image
+        source = BytesIO(image_content)
+        dest = BytesIO()
+        petpet.make(source, dest)
+        dest.seek(0)
+
+        # Send the processed image back to the channel
+        file = discord.File(dest, filename="pat.gif")
+        await ctx.send(file=file)
+
 
 async def setup(bot):
     await bot.add_cog(Images(bot))

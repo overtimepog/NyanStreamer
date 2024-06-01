@@ -6293,13 +6293,13 @@ async def get_user_ranks(user_id) -> list:
 
         return [most_money_rank, highest_level_rank]
 
-async def get_ammo_type(item_id: str) -> str:
+async def get_ammo_id(item_id: str) -> str:
     db = DB()
     data = await db.execute("SELECT `item_projectile` FROM `basic_items` WHERE item_id = ?", (item_id,), fetch="one")
     if data:
         item_projectile = json.loads(data[0])  # Convert JSON string back to dict
-        ammo_type = item_projectile.get('ammo_type', 'Unknown')
-        return ammo_type
+        ammo_id = item_projectile.get('ammo_id', 'Unknown')
+        return ammo_id
     else:
         return 'Unknown'
 

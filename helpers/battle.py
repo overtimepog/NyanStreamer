@@ -2040,6 +2040,20 @@ async def userattack(ctx: Context, target: discord.Member):
             damage = min(damage, max_damage)  # Ensure damage does not exceed max_damage
             crit = False
         weapon_subtype = most_expensive_weapon[13] if len(most_expensive_weapon) > 13 else 'None'
+        #get the ammo type and ammount from the weapon'd id
+        ammo_id = await db_manager.get_ammo_id(most_expensive_weapon[0])
+        ammo_amount = await db_manager.get_ammo_per_shot(most_expensive_weapon[0])
+        #check if the user has ammo in their inventory and enough of it, if they do, remove the ammount
+        ammo = await db_manager.get_item_amount_from_inventory(attacker.id, ammo_id)
+        if ammo == 0:
+            await ctx.send(f"You do not have enough ammo fire your {weapon_name}!")
+            return
+        if ammo < ammo_amount:
+            await ctx.send(f"You do not have enough ammo fire your {weapon_name}!")
+            return
+        if ammo >= ammo_amount:
+            await db_manager.remove_item_from_inventory(attacker.id, ammo_id, ammo_amount)
+            print(f"Removed {ammo_amount} {ammo_id} from {attacker.id}")
     else:
         weapon_name = "Fists"
         min_damage = 1
