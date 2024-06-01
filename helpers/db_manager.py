@@ -6183,7 +6183,7 @@ async def update_leaderboard():
         # Update leaderboard for highest level
         rank = 1
         for user_id, username, player_level in all_levels:
-            print(f"Updating highest_level for user_id: {user_id} with rank: {rank}")
+            #print(f"Updating highest_level for user_id: {user_id} with rank: {rank}")
             await db.execute("""
                 INSERT INTO leaderboard (category, user_id, username, value, rank)
                 VALUES ('highest_level', ?, ?, ?, ?)
@@ -6194,7 +6194,7 @@ async def update_leaderboard():
         # Update leaderboard for most money
         rank = 1
         for user_id, username, money in all_money:
-            print(f"Updating most_money for user_id: {user_id} with rank: {rank}")
+            #print(f"Updating most_money for user_id: {user_id} with rank: {rank}")
             await db.execute("""
                 INSERT INTO leaderboard (category, user_id, username, value, rank)
                 VALUES ('most_money', ?, ?, ?, ?)
