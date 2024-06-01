@@ -6,9 +6,7 @@ import requests
 from io import BytesIO
 import sys
 import subprocess
-import os
 from panda3d.core import loadPrcFileData
-from panda3d.core import getModelPath
 import fcntl
 import hashlib
 import time
@@ -18,20 +16,21 @@ class ModelViewer(ShowBase):
                  model_pos=(0, 0, 0), model_hpr=(0, 96, 25), 
                  cam_pos=(0, -3, 0)):
 
-        #getModelPath().appendDirectory("/Users/overtime/Documents/GitHub/NyanStreamer/assets/models")
         loadPrcFileData("", "window-type offscreen")
         loadPrcFileData("", "audio-library-name null")
         ShowBase.__init__(self)
-        #base.disableMouse()  # Disable mouse-based camera control
 
         self.model_path = model_path
         self.frames = []
         self.frame_counter = 0
-        self.total_frames = frames  # Adjust this value for the number of frames you want
-        self.rotation_speed = 360.0 / self.total_frames  # Automatically adjust rotation speed based on total frames
+        self.total_frames = frames
+        self.rotation_speed = 360.0 / self.total_frames
         self.filename = filename
 
-        # Check if the model is in .obj format
+        # Ensure the frames directory exists
+        frames_dir = "assets/frames"
+        os.makedirs(frames_dir, exist_ok=True)
+
         if self.model_path.endswith('.obj'):
             print("Converting .obj to .egg...")
             egg_path = self.model_path.replace('.obj', '.egg')
@@ -42,7 +41,6 @@ class ModelViewer(ShowBase):
             self.model_path = egg_path
             print(".obj converted to .egg successfully!")
             
-        # Load the 3D model
         print("Loading the 3D model...")
         self.model = self.loader.loadModel(self.model_path)
         if not self.model:
@@ -50,69 +48,47 @@ class ModelViewer(ShowBase):
             return
         print("Model loaded successfully!")
 
-        # Scale the model to fit the view
         min_point, max_point = self.model.getTightBounds()
         max_dim = max_point - min_point
         scale_factor = 1.8 / max_dim.length()
-        self.model.setScale(scale_factor)  # Zoom in by scaling the model up
+        self.model.setScale(scale_factor)
 
-
-        # Load and apply the texture
-        #download the texture
         response = requests.get(image_url)
         response.raise_for_status()
 
-        # Open the image using PIL
         image = Image.open(BytesIO(response.content))
-        # If the image is a GIF, get its first frame
-        # If the image is a GIF, get its first frame
         if image.is_animated:
             image = ImageSequence.Iterator(image)[0]
 
-        # Handle transparency by filling with white background
         if image.mode == 'RGBA':
             background = Image.new('RGB', image.size, (255, 255, 255))
-            background.paste(image, mask=image.split()[3])  # 3 is the alpha channel
+            background.paste(image, mask=image.split()[3])
             image = background
 
-        # Resize the image to 16:9
         image = image.resize((1920, 1080))
-
-        # Save as PNG
         image.save(save_path, "PNG")
 
         self.texture = self.loader.loadTexture(save_path)
         self.model.setTexture(self.texture, 1)
 
-        # Position the model
         self.model.setPos(*model_pos)
         self.model.setHpr(*model_hpr)
         self.model.reparentTo(self.render)
 
-        # Set up the camera
-        self.cam.setPos(*cam_pos)  # Move the camera closer
-        #self.cam.lookAt(self.model)
+        self.cam.setPos(*cam_pos)
 
-        # Set up lighting
         self.setup_lighting()
-
-        # Set up offscreen buffer for capturing frames
         self.setup_offscreen_buffer()
-
-        # Start the spinning task
         self.taskMgr.add(self.spin_task, "spin_task")
-        #after the task is done, close the window
 
     def setup_lighting(self):
         from panda3d.core import AmbientLight, DirectionalLight
 
-        # Ambient light
         ambient = AmbientLight("ambient_light")
         ambient.setColor((0.2, 0.2, 0.2, 1))
         ambient_np = self.render.attachNewNode(ambient)
         self.render.setLight(ambient_np)
 
-        # Directional light
         directional = DirectionalLight("directional_light")
         directional.setDirection(Vec3(0, 8, -2.5))
         directional.setColor((1, 1, 1, 1))
@@ -120,7 +96,6 @@ class ModelViewer(ShowBase):
         self.render.setLight(directional_np)
 
     def setup_offscreen_buffer(self):
-        # Create offscreen buffer
         fb_props = FrameBufferProperties()
         fb_props.setRgbaBits(8, 8, 8, 8)
         fb_props.setDepthBits(1)
@@ -129,16 +104,14 @@ class ModelViewer(ShowBase):
                                                      GraphicsPipe.BFRefuseWindow, self.win.getGsg(), self.win)
         self.buffer.setClearColor((1, 1, 1, 1))
 
-        # Set up the display region
         dr = self.buffer.makeDisplayRegion()
         dr.setCamera(self.cam)
         
     def remove_background(self, input_path, output_path):
-        """Remove background using ImageMagick."""
         cmd = [
             'convert', input_path, 
-            '-fuzz', '10%',  # Adjust this value if needed
-            '-transparent', 'white',  # Change 'white' to the color of the background you want to remove
+            '-fuzz', '10%',  
+            '-transparent', 'white',  
             output_path
         ]
         subprocess.run(cmd)
@@ -151,7 +124,6 @@ class ModelViewer(ShowBase):
             self.buffer.getScreenshot(img)
             img.write(frame_path)
 
-            # Remove background from the captured frame
             no_bg_path = os.path.join("assets/frames", f"frame_no_bg_{self.frame_counter}.png")
             self.remove_background(frame_path, no_bg_path)
 
@@ -160,29 +132,24 @@ class ModelViewer(ShowBase):
             print(f"Frame {self.frame_counter} captured.")
             return task.cont
         else:
-            frames = [Image.open(frame_path) for frame_path in self.frames]
+            frames = [Image.open(frame_path) for frame_path in self.frames if os.path.exists(frame_path)]
             reference_frame_count = 36
-            reference_duration_per_frame = 50  # 50 milliseconds for 36 frames
+            reference_duration_per_frame = 50
             actual_frame_count = len(frames)
             desired_duration_per_frame = (reference_frame_count * reference_duration_per_frame) // actual_frame_count
             with open(f'{self.filename}.gif', 'wb') as f:
-                fcntl.flock(f, fcntl.LOCK_EX)  # Acquire an exclusive lock
-                frames[1].save(f, save_all=True, append_images=frames[2:], duration=desired_duration_per_frame, loop=0, disposal=2)
-                fcntl.flock(f, fcntl.LOCK_UN)  # Release the lock
+                fcntl.flock(f, fcntl.LOCK_EX)
+                frames[0].save(f, save_all=True, append_images=frames[1:], duration=desired_duration_per_frame, loop=0, disposal=2)
+                fcntl.flock(f, fcntl.LOCK_UN)
             print(f"GIF created: {self.filename}.gif")
-
-
 
 def spinning_chair(model_path: str, image_url: str, frames: int, filename: str, 
                    model_pos: tuple = (0, 0, 0), 
                    model_hpr: tuple = (0, 0, 0), 
                    cam_pos: tuple = (0, -3, 0)):
     
-    # Generate a hash of the image_url
     hash_object = hashlib.md5(image_url.encode())
     hex_dig = hash_object.hexdigest()
-
-    # Combine the hash with the current timestamp to generate a unique filename
     timestamp = int(time.time())
     save_path = f"download_{hex_dig}_{timestamp}.png"
     app = ModelViewer(model_path, image_url, save_path, frames, filename, model_pos, model_hpr, cam_pos)
@@ -190,7 +157,6 @@ def spinning_chair(model_path: str, image_url: str, frames: int, filename: str,
     
     if os.path.exists(save_path):
         os.remove(save_path)
-
 
 if __name__ == "__main__":
     model_path = sys.argv[1]
