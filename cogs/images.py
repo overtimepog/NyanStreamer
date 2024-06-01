@@ -180,6 +180,26 @@ class Images(commands.Cog):
         except Exception as e:
             logging.error(f"Failed to generate GIF: {str(e)}")
             await ctx.send("Failed to generate the nuke GIF. Please try again.")
+            
+            
+    @commands.hybrid_command(
+        name="johnOliver",
+        description="this is a __ with a users avatar",
+    )
+    async def john_oliver(self, ctx: Context, user: discord.User, *, text: str):
+        avatar_url = str(user.avatar.url)
+        logging.info(f"Received request to generate John Oliver image for avatar: {avatar_url}")
+        
+        try:
+            johnoliver_instance = self.endpoints.get("johnoliver").JohnOliver()
+            if not johnoliver_instance:
+                raise Exception("John Oliver endpoint is missing.")
+            
+            image_data = johnoliver_instance.generate([avatar_url], text, [], {})
+            await ctx.send(file=discord.File(fp=image_data, filename="johnoliver.png"))
+        except Exception as e:
+            logging.error(f"Failed to generate John Oliver image: {str(e)}")
+            await ctx.send("Failed to generate the John Oliver image. Please try again.")
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
