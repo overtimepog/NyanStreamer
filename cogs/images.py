@@ -200,6 +200,27 @@ class Images(commands.Cog):
         except Exception as e:
             logging.error(f"Failed to generate John Oliver image: {str(e)}")
             await ctx.send("Failed to generate the John Oliver image. Please try again.")
+            
+            
+    #gay command
+    @commands.hybrid_command(
+        name="gay",
+        description="make a user gay",
+    )
+    async def gay(self, ctx: Context, user: discord.User):
+        avatar_url = str(user.avatar.url)
+        logging.info(f"Received request to generate Gay image for avatar: {avatar_url}")
+        
+        try:
+            gay_instance = self.endpoints.get("gay").Gay()
+            if not gay_instance:
+                raise Exception("John Oliver endpoint is missing.")
+            
+            image_data = gay_instance.generate([avatar_url], "", [], {})
+            await ctx.send(file=discord.File(fp=image_data, filename="gay.png"))
+        except Exception as e:
+            logging.error(f"Failed to generate John Oliver image: {str(e)}")
+            await ctx.send("Failed to generate the John Oliver image. Please try again.")
 
 async def setup(bot):
     await bot.add_cog(Images(bot))
