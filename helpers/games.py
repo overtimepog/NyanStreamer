@@ -157,16 +157,17 @@ async def slots(self, ctx: Context, user, gamble):
 
         winnings = calculate_winnings_with_print(grid, gamble, luck)
         net_winnings = winnings - gamble
-        total_balance = money + net_winnings
+        profit = max(net_winnings, -gamble)  # Ensure the loss is not more than the gamble amount
+        total_balance = money + profit
 
-        if net_winnings >= 0:
-            await db_manager.add_money(user.id, net_winnings)
-            await db_manager.add_money_earned(user.id, net_winnings)
-            await update_embed(slot_machine, grid, gamble, result=winnings, profit=net_winnings, win=True, total_balance=total_balance)
+        if profit >= 0:
+            await db_manager.add_money(user.id, profit)
+            await db_manager.add_money_earned(user.id, profit)
+            await update_embed(slot_machine, grid, gamble, result=winnings, profit=profit, win=True, total_balance=total_balance)
         else:
-            await db_manager.remove_money(user.id, -net_winnings)  # This is because net_winnings is negative for a loss
+            await db_manager.remove_money(user.id, -profit)  # This is because profit is negative for a loss
             await db_manager.add_money_spent(user.id, gamble)
-            await update_embed(slot_machine, grid, gamble, result=winnings, profit=net_winnings, win=False, total_balance=total_balance)
+            await update_embed(slot_machine, grid, gamble, result=winnings, profit=profit, win=False, total_balance=total_balance)
 
         try:
             reaction, user_check = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
@@ -256,7 +257,7 @@ async def slots(self, ctx: Context, user, gamble):
         # If no winnings were calculated, the player loses the gamble amount
         if total_winnings == 0:
             print("Loss")
-            return -gamble
+            return 0
 
         print("Total winnings: ", total_winnings)
         return total_winnings  # Return total winnings instead of net winnings
