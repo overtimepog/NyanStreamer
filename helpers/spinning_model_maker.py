@@ -22,7 +22,7 @@ class ModelViewer(ShowBase):
         loadPrcFileData("", "window-type offscreen")
         loadPrcFileData("", "audio-library-name null")
         ShowBase.__init__(self)
-        base.disableMouse()  # Disable mouse-based camera control
+        #base.disableMouse()  # Disable mouse-based camera control
 
         self.model_path = model_path
         self.frames = []

@@ -49,7 +49,7 @@ async def slots(self, ctx: Context, user, gamble):
         ]
         slot_spin = "<a:spin:1245491420165312594>"
         redo_emoji = "🔁"
-
+    
         async def update_embed(slot_machine, grid, gamble, result=None, profit=None, win=False, total_balance=None):
             description = "\n".join(" | ".join(row) for row in grid) + f"\n\n **{user.name}** is gambling **{gamble:,}**"
             if result is not None:
@@ -64,28 +64,28 @@ async def slots(self, ctx: Context, user, gamble):
             else:
                 embed = discord.Embed(title="Slot Machine", description=description)
                 await slot_machine.edit(embed=embed)
-
+    
         async def spin_slot():
             return random.choice(emoji)
-
+    
         async def play_slots(user, gamble):
             money = await db_manager.get_money(user.id)
             luck = await db_manager.get_luck(user.id)
             await db_manager.add_money_spent(user.id, gamble)
             money = int(money[0])
             gamble = int(gamble)
-
+    
             if money < gamble:
                 return await ctx.send(f"**{user.name}** doesn't have enough money to gamble **{gamble:,}**.")
-
+    
             slot_machine = await ctx.send(embed=discord.Embed(
                 title="Slot Machine",
                 description=f"{slot_spin} | {slot_spin} | {slot_spin}\n{slot_spin} | {slot_spin} | {slot_spin}\n{slot_spin} | {slot_spin} | {slot_spin}\n\n **{user.name}** is gambling **{gamble:,}**"
             ))
-
+    
             def check(reaction, user_check):
                 return user_check == ctx.author and str(reaction.emoji) == redo_emoji and reaction.message.id == slot_machine.id
-
+    
             def build_grid(win_probability):
                 grid = [[None] * 3 for _ in range(3)]
                 for row in range(3):
@@ -102,39 +102,39 @@ async def slots(self, ctx: Context, user, gamble):
                         else:
                             grid[row][col] = random.choice(emoji)
                 return grid
-
+    
             luck_adjusted_probability = adjust_probability(luck)
             grid = build_grid(luck_adjusted_probability)
-
+    
             # Initial display with all columns spinning
             for row in range(3):
                 for col in range(3):
                     grid[row][col] = slot_spin
             await update_embed(slot_machine, grid, gamble)
             await asyncio.sleep(1)  # Adjust this sleep duration as needed for timing
-
+    
             # Stop columns 1, 4, and 7
             for row in range(3):
                 grid[row][0] = await spin_slot()
             await update_embed(slot_machine, grid, gamble)
             await asyncio.sleep(1)  # Adjust this sleep duration as needed for timing
-
+    
             # Stop columns 2, 5, and 8
             for row in range(3):
                 grid[row][1] = await spin_slot()
             await update_embed(slot_machine, grid, gamble)
             await asyncio.sleep(1)  # Adjust this sleep duration as needed for timing
-
+    
             # Stop columns 3, 6, and 9
             for row in range(3):
                 grid[row][2] = await spin_slot()
             await update_embed(slot_machine, grid, gamble)
-
+    
             winnings = calculate_winnings_with_print(grid, gamble, luck)
             net_winnings = winnings - gamble if winnings > 0 else winnings
             profit = net_winnings if net_winnings > 0 else -gamble
             total_balance = money + net_winnings
-
+    
             if net_winnings > 0:
                 await db_manager.add_money(user.id, net_winnings)
                 await db_manager.add_money_earned(user.id, net_winnings)
@@ -143,7 +143,7 @@ async def slots(self, ctx: Context, user, gamble):
                 await db_manager.remove_money(user.id, -net_winnings)  # This is because net_winnings is negative for a loss
                 await db_manager.add_money_spent(user.id, gamble)
                 await update_embed(slot_machine, grid, gamble, result=winnings, profit=profit, win=False, total_balance=total_balance)
-
+    
             try:
                 reaction, user_check = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
             except asyncio.TimeoutError:
@@ -151,12 +151,12 @@ async def slots(self, ctx: Context, user, gamble):
             else:
                 await slot_machine.clear_reaction(redo_emoji)
                 return await play_slots(user, gamble)
-
+    
         def adjust_probability(luck):
             base_probability = 0.65  # base probability of winning
             luck_factor = luck / 100  # assuming luck is out of 100
             return base_probability + (luck_factor * (1 - base_probability))
-
+    
         def calculate_winnings_with_print(grid, gamble, luck):
             def get_symbol_payout(symbol, gamble, count):
                 if count == 3:
@@ -180,31 +180,25 @@ async def slots(self, ctx: Context, user, gamble):
                     elif symbol in [":apple:", ":cherries:", ":grapes:", ":lemon:", ":peach:", ":tangerine:", ":watermelon:", ":strawberry:", ":banana:", ":pineapple:", ":kiwi:", ":pear:"]:
                         return gamble * 1.1
                 return 0
-
+    
             def check_adjacent_and_diagonal_matches(grid):
                 matches = []
                 for i in range(3):
                     for j in range(3):
-                        if i > 0 and grid[i][j] == grid[i-1][j]:
-                            matches.append((grid[i][j], 2))
+                        # Horizontal and vertical checks
                         if i < 2 and grid[i][j] == grid[i+1][j]:
-                            matches.append((grid[i][j], 2))
-                        if j > 0 and grid[i][j] == grid[i][j-1]:
                             matches.append((grid[i][j], 2))
                         if j < 2 and grid[i][j] == grid[i][j+1]:
                             matches.append((grid[i][j], 2))
-                        if i > 0 and j > 0 and grid[i][j] == grid[i-1][j-1]:
-                            matches.append((grid[i][j], 2))
-                        if i > 0 and j < 2 and grid[i][j] == grid[i-1][j+1]:
+                        # Diagonal checks
+                        if i < 2 and j < 2 and grid[i][j] == grid[i+1][j+1]:
                             matches.append((grid[i][j], 2))
                         if i < 2 and j > 0 and grid[i][j] == grid[i+1][j-1]:
                             matches.append((grid[i][j], 2))
-                        if i < 2 and j < 2 and grid[i][j] == grid[i+1][j+1]:
-                            matches.append((grid[i][j], 2))
                 return matches
-
+    
             total_winnings = 0
-
+    
             # Check all possibilities for three in a row
             for i in range(3):
                 # Horizontal check
@@ -217,7 +211,7 @@ async def slots(self, ctx: Context, user, gamble):
                     symbol = grid[0][i]
                     print(f"Three in a row vertically: {symbol} at column {i}")
                     total_winnings += get_symbol_payout(symbol, gamble, 3)
-
+    
             # Diagonal checks
             if grid[0][0] == grid[1][1] == grid[2][2]:
                 symbol = grid[0][0]
@@ -227,23 +221,24 @@ async def slots(self, ctx: Context, user, gamble):
                 symbol = grid[0][2]
                 print("Three in a row diagonally: ", symbol)
                 total_winnings += get_symbol_payout(symbol, gamble, 3)
-
+    
             # Check for adjacent and diagonal matches
             matches = check_adjacent_and_diagonal_matches(grid)
             for match in matches:
                 symbol, count = match
                 print(f"Adjacent or diagonal match: {symbol} with count {count}")
                 total_winnings += get_symbol_payout(symbol, gamble, count)
-
+    
             # If no winnings were calculated, the player loses the gamble amount
             if total_winnings == 0:
                 print("Loss")
                 return -gamble
-
+    
             print("Total winnings: ", total_winnings - gamble)
             return total_winnings - gamble  # Net winnings
-
+    
         await play_slots(user, gamble)
+
 
 
 #create slots_rules function
