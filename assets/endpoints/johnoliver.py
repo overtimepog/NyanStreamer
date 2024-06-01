@@ -27,8 +27,16 @@ class JohnOliver:
         # Add text to the bottom middle of the image
         draw = ImageDraw.Draw(main_img)
         font = ImageFont.truetype('assets/assets/fonts/Arial-Bold.ttf', 30)  # Adjust font size and path as needed
-        text_width, text_height = draw.textsize(text, font=font)
+        
+        # Get the bounding box of the text
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+        
+        # Calculate the text position
         text_position = ((main_img.width - text_width) // 2, main_img.height - text_height - 20)
+        
+        # Draw the text on the image
         draw.text(text_position, text, font=font, fill="white")
         
         # Convert the image to bytes and return
