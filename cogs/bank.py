@@ -221,7 +221,7 @@ class Bank(commands.Cog, name="bank"):
         bank_capacity = int(bank_capacity)
 
         profile = await db_manager.profile(ctx.author.id)
-        locked = profile[33]
+        locked = profile[34]
 
 
         # Create and send the embed with all the information
@@ -230,9 +230,9 @@ class Bank(commands.Cog, name="bank"):
             description=f"Here are your current balances.", 
             )
         if locked == True:
-            embed.add_field(name="Wallet<:Padlock_Locked:1116772808110911498>", value=f"{cash}{wallet_balance:,}", inline=True)
+            embed.add_field(name="Wallet<:119_Padlock_Locked:1246917790451896393>", value=f"{cash}{wallet_balance:,}", inline=True)
         else:
-            embed.add_field(name="Wallet<:Padlock_Unlocked:1116772713952981103>", value=f"{cash}{wallet_balance:,}", inline=True)
+            embed.add_field(name="Wallet<:112_Padlock_Unlocked:1246917716846055476>", value=f"{cash}{wallet_balance:,}", inline=True)
         embed.add_field(name="Bank", value=f"{cash}{bank_balance:,}/{cash}{bank_capacity:,}", inline=True)
 
         await ctx.send(embed=embed)

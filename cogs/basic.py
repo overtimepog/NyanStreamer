@@ -1376,7 +1376,16 @@ class Basic(commands.Cog, name="basic"):
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
         net_dict = await bank.get_user_net_worth(user)
-        embed.add_field(name="Net Worth", value=f'{cash}{int(net_dict["networth"]):,}', inline=True)
+        profile = await db_manager.profile(ctx.author.id)
+        locked = profile[34] 
+        if locked == True:
+            embed.add_field(name="Wallet", value=f"{cash}{int(user_money):,}<:119_Padlock_Locked:1246917790451896393>", inline=True)
+        else:
+            embed.add_field(name="Wallet", value=f"{cash}{int(user_money):,}", inline=True)
+        
+        #bank
+        bank_balance = await db_manager.get_bank_balance(user)
+        embed.add_field(name="Bank", value=f"{cash}{int(bank_balance):,}", inline=True)
         #add xp and level
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
         embed.add_field(name="Level", value=f"{user_level}", inline=True)
@@ -3153,7 +3162,7 @@ class Basic(commands.Cog, name="basic"):
                 await ctx.send(embed=embed)
                 return
             elif seconds_passed < 172800:  # 172800 seconds in two days
-                streak = user_data[34] + 1
+                streak = user_data[36] + 1
             else:
                 streak = 0
         else:
@@ -3181,6 +3190,114 @@ class Basic(commands.Cog, name="basic"):
         )
         embed.set_footer(text=f"Current streak: {streak} days")
         await ctx.send(embed=embed)
+        
+    #rob command
+    @commands.hybrid_command(
+        name="rob",
+        description="Rob a user.",
+        usage="rob <user>",
+    )
+    async def rob(self, ctx: Context, user: discord.Member):
+        user_id = ctx.author.id
+        target_id = user.id
+
+        # Fetch user data
+        user_data = await db_manager.profile(user_id)
+        target_data = await db_manager.profile(target_id)
+        
+        # Check if the target is locked
+        if target_data[34] == True:
+            # Go into the attacker's inventory and see if they have a lockpick or skeleton_key
+            inventory = await db_manager.view_inventory(user_id)
+            has_lockpick = False
+            has_skeleton_key = False
+
+            # Look through the inventory to see if the user has a lockpick or skeleton_key
+            for item in inventory:
+                if item[1] == "lockpick":
+                    has_lockpick = True
+                elif item[1] == "skeleton_key":
+                    has_skeleton_key = True
+                    break  # Skeleton key found, no need to check further
+
+            result_embed = discord.Embed(title="Robbing Results", color=discord.Color.red())
+
+            if has_skeleton_key:
+                # Proceed with the rob attempt using the skeleton key (unbreakable)
+                result_embed.add_field(name="Lockpick", value="Used an unbreakable skeleton key", inline=False)
+            elif has_lockpick:
+                # Get the user's luck (assuming it's stored in user_data)
+                user_luck = user_data.get('luck', 0)  # default to 0 if not found
+
+                # Calculate the chance of the lockpick breaking
+                import random
+                base_break_chance = 50  # 50% base chance of breaking for 0 luck
+                break_chance = max(base_break_chance - user_luck, 5)  # ensure at least 5% chance of breaking
+
+                if random.randint(1, 100) <= break_chance:
+                    # Lockpick breaks
+                    result_embed.add_field(name="Lockpick", value="Your lockpick broke while trying to rob the target", inline=False)
+                    # Remove the lockpick from the user's inventory
+                    await db_manager.remove_item_from_inventory(user_id, "lockpick")
+                    await ctx.send(embed=result_embed)
+                    return  # Exit after lockpick breaks
+                else:
+                    # Lockpick did not break, proceed with the rob attempt
+                    result_embed.add_field(name="Lockpick", value="Successfully unlocked the target's belongings with a lockpick", inline=False)
+
+            else:
+                result_embed.add_field(name="Error", value="You don't have a lockpick or skeleton key to use for the robbery", inline=False)
+                await ctx.send(embed=result_embed)
+                return
+
+            # Calculate money steal amount
+            base_money_stolen = 50  # Base money stolen
+            luck_factor = user_luck / 100  # Luck factor based on user's luck
+            max_money_stolen = int(base_money_stolen * (1 + luck_factor))  # Max money based on luck
+            money_stolen = random.randint(base_money_stolen, max_money_stolen)  # Random amount influenced by luck
+            money_stolen = min(money_stolen, target_data['balance'])  # Ensure not to steal more than target has
+
+            new_user_balance = user_data['balance'] + money_stolen
+            new_target_balance = target_data['balance'] - money_stolen
+            await db_manager.set_money(user_id, new_user_balance)
+            await db_manager.set_money(target_id, new_target_balance)
+
+            result_embed.add_field(name="Money Stolen", value=f"{cash}{money_stolen}", inline=False)
+
+            # Calculate item steal chance and number of items to steal
+            base_steal_chance = 5  # 5% base chance to steal an item
+            steal_chance = min(base_steal_chance + user_luck, 95)  # Cap at 95%
+            max_items_to_steal = 1 + (user_luck // 20)  # More items with higher luck, e.g., 0-4 additional items
+
+            target_inventory = await db_manager.view_inventory(target_id)
+            items_stolen = []
+
+            for _ in range(max_items_to_steal):
+                if random.randint(1, 100) <= steal_chance:
+                    if not target_inventory:
+                        break  # No items left to steal
+                    stolen_item = random.choice(target_inventory)
+                    item_count_to_steal = min(random.randint(1, 3), stolen_item[2])  # Steal 1-3 items or as many as they have
+                    await db_manager.remove_item_from_inventory(target_id, stolen_item[1], item_count_to_steal)
+                    await db_manager.add_item_to_inventory(user_id, stolen_item[1], item_count_to_steal)
+                    items_stolen.append({
+                        'name': stolen_item[2],
+                        'count': item_count_to_steal,
+                        'emoji': stolen_item[4]  # Assuming the 4th field is the item emoji
+                    })
+                    target_inventory = [item for item in target_inventory if item[1] != stolen_item[1]]
+
+            if items_stolen:
+                stolen_items_str = ', '.join([f"{item['emoji']} {item['count']}x {item['name']}" for item in items_stolen])
+                result_embed.add_field(name="Items Stolen", value=stolen_items_str, inline=False)
+            else:
+                result_embed.add_field(name="Items Stolen", value="No items stolen", inline=False)
+
+            await ctx.send(embed=result_embed)
+        else:
+            result_embed = discord.Embed(title="Robbing Results", color=discord.Color.red())
+            result_embed.add_field(name="Error", value="The target's belongings are not locked", inline=False)
+            await ctx.send(embed=result_embed)
 
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.

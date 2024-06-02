@@ -158,6 +158,86 @@ async def get_basic_item_data(item_id):
         }
     return None
 
+async def get_user_data(user_id):
+    db = DB()
+    data = await db.execute(
+        "SELECT `user_id`, `username`, `money`, `health`, `isStreamer`, `isBurning`, `isPoisoned`, `isFrozen`, `isParalyzed`, `isBleeding`, `isDead`, `isInCombat`, `player_xp`, `player_level`, `quest_id`, `twitch_id`, `twitch_name`, `dodge_chance`, `crit_chance`, `damage_boost`, `health_boost`, `fire_resistance`, `poison_resistance`, `frost_resistance`, `paralysis_resistance`, `luck`, `player_title`, `job_id`, `job_level`, `job_xp`, `shifts_worked`, `last_worked`, `last_daily`, `last_weekly`, `rob_locked`, `percent_bonus`, `streak`, `time_of_death`, `time_of_revival`, `twitch_oauth_token`, `twitch_refresh_token` FROM `users` WHERE `user_id` = ?", 
+        (user_id,), fetch="one"
+    )
+    if data is not None:
+        return {
+            'user_id': data[0],
+            'username': data[1],
+            'money': data[2],
+            'health': data[3],
+            'isStreamer': data[4],
+            'isBurning': data[5],
+            'isPoisoned': data[6],
+            'isFrozen': data[7],
+            'isParalyzed': data[8],
+            'isBleeding': data[9],
+            'isDead': data[10],
+            'isInCombat': data[11],
+            'player_xp': data[12],
+            'player_level': data[13],
+            'quest_id': data[14],
+            'twitch_id': data[15],
+            'twitch_name': data[16],
+            'dodge_chance': data[17],
+            'crit_chance': data[18],
+            'damage_boost': data[19],
+            'health_boost': data[20],
+            'fire_resistance': data[21],
+            'poison_resistance': data[22],
+            'frost_resistance': data[23],
+            'paralysis_resistance': data[24],
+            'luck': data[25],
+            'player_title': data[26],
+            'job_id': data[27],
+            'job_level': data[28],
+            'job_xp': data[29],
+            'shifts_worked': data[30],
+            'last_worked': data[31],
+            'last_daily': data[32],
+            'last_weekly': data[33],
+            'rob_locked': data[34],
+            'percent_bonus': data[35],
+            'streak': data[36],
+            'time_of_death': data[37],
+            'time_of_revival': data[38],
+            'twitch_oauth_token': data[39],
+            'twitch_refresh_token': data[40]
+        }
+    return None
+
+async def get_user_inventory(user_id):
+    db = DB()
+    data = await db.execute(
+        "SELECT `user_id`, `item_id`, `item_name`, `item_price`, `item_emoji`, `item_rarity`, `item_amount`, `item_type`, `item_damage`, `isEquipped`, `item_element`, `item_crit_chance`, `item_projectile`, `item_sub_type` FROM `inventory` WHERE `user_id` = ?", 
+        (user_id,), fetch="all"
+    )
+    if data is not None:
+        inventory = []
+        for item in data:
+            inventory.append({
+                'user_id': item[0],
+                'item_id': item[1],
+                'item_name': item[2],
+                'item_price': item[3],
+                'item_emoji': item[4],
+                'item_rarity': item[5],
+                'item_amount': item[6],
+                'item_type': item[7],
+                'item_damage': item[8],
+                'isEquipped': item[9],
+                'item_element': item[10],
+                'item_crit_chance': item[11],
+                'item_projectile': json.loads(item[12]),
+                'item_sub_type': item[13]
+            })
+        return inventory
+    return None
+
 async def get_money(user_id: int) -> int:
         db = DB()
         data = await db.execute(f"SELECT * FROM `users` WHERE user_id = ?", (user_id,), fetch="one")
@@ -842,7 +922,7 @@ async def is_alive(user_id: int) -> bool:
     return False
 
 # Set a user's dead status to true
-async def set_dead(user_id: int, revival_hours: int = 6) -> None:
+async def set_dead(user_id: int, revival_hours: int = 2) -> None:
     db = DB()
     if await is_alive(user_id):
         time_of_death = datetime.datetime.now()

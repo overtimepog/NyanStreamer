@@ -281,7 +281,6 @@ CREATE TABLE IF NOT EXISTS `bank`(
   `bank_capacity` int(11) NOT NULL
 );
 
-
 CREATE TABLE IF NOT EXISTS `stats`(
   `user_id` int(11) NOT NULL,
   `money_earned` int(11) NOT NULL,
