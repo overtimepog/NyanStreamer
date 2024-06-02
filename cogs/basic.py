@@ -1376,7 +1376,7 @@ class Basic(commands.Cog, name="basic"):
         else:
             embed.add_field(name="Health", value=f"{user_health}", inline=True)
         net_dict = await bank.get_user_net_worth(user)
-        profile = await db_manager.profile(ctx.author.id)
+        profile = await db_manager.profile(user_id)
         locked = profile[34] 
         if locked == True:
             embed.add_field(name="Wallet", value=f"{cash}{int(user_money):,}<:119_Padlock_Locked:1246917790451896393>", inline=True)
@@ -1384,7 +1384,7 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name="Wallet", value=f"{cash}{int(user_money):,}", inline=True)
         
         #bank
-        bank_balance = await db_manager.get_bank_balance(user)
+        bank_balance = await db_manager.get_bank_balance(user_id)
         embed.add_field(name="Bank", value=f"{cash}{int(bank_balance):,}", inline=True)
         #add xp and level
         embed.add_field(name="XP", value=f"{user_xp} / {xp_needed}", inline=True)
@@ -1411,7 +1411,7 @@ class Basic(commands.Cog, name="basic"):
             embed.add_field(name="Most Money Rank", value=most_money_rank if most_money_rank is not None else "Not ranked", inline=True)
             embed.add_field(name="Highest Level Rank", value=highest_level_rank if highest_level_rank is not None else "Not ranked", inline=True)
 
-        inventory_items = await db_manager.view_inventory(user.id)
+        inventory_items = await db_manager.view_inventory(user_id)
 
         pet_items = [item for item in inventory_items if item[7] == "Pet"]
 
