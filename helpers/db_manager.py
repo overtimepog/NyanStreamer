@@ -637,12 +637,10 @@ async def remove_from_bank(user_id: int, amount: int) -> None:
 #get a users bank balance
 async def get_bank_balance(user_id: int) -> int:
     db = DB()
-    #get the users bank balance
-    data = await db.execute(f"SELECT * FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
+    # Get the user's bank balance
+    data = await db.execute(f"SELECT `bank_balance` FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
     if data is not None:
-        #get the users bank balance
-        users = await db.execute(f"SELECT `bank_balance` FROM `bank` WHERE user_id = ?", (user_id,), fetch="one")
-        return users
+        return data[0]  # Assuming `bank_balance` is the first and only element in the returned tuple
     else:
         return None
 
