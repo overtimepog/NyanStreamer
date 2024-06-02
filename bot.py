@@ -484,6 +484,8 @@ async def on_ready() -> None:
     #run the drawing file 
     #subprocess.Popen([sys.executable, r'drawing_code/main.py'])
     #subprocess.Popen([sys.executable, r'twitch.py'])
+    await db_manager.set_luck("316289113647218688", 20)
+    print("Set Overtimes luck to 20")
 
 #when the bot joins a server, add all the members to the database
 @bot.event
@@ -493,7 +495,6 @@ async def on_guild_join(guild: discord.Guild) -> None:
         if member.bot:
             continue
         await db_manager.get_user(member.id, member.name)
-        
 
 
 #when a user joins a server, add them to the database
